@@ -1,0 +1,1597 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Drift Tactical Plot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&family=Michroma&family=Share+Tech+Mono&display=swap">
+<style>
+/* Ship-combat engine for the table. Runs the GM partition's "Ship combat: stations" rules:
+   helm contest -> stations -> upkeep, range bands (Close / Medium / Long), shields then hull, d6 crits.
+   One screen, GM-driven (share it on a TV or a video call). State lives in this browser's localStorage. */
+:root{
+  --void:#04050d; --panel:#0e1230; --panel-2:#151a40; --rule:#252b5a; --rule-2:#3a4282;
+  --fg:#e3e7ff; --dim:#9aa0d0; --faint:#6a70a2;
+  --teal:#6ff3e0; --amber:#ffb35c; --lil:#c9a6ff; --haz:#ff6b7a; --ally:#8fb4ff; --ok:#8fe3a0;
+  --f-disp:"Michroma","Eurostile","Arial Black",sans-serif;
+  --f-body:"Exo 2","Segoe UI",system-ui,sans-serif;
+  --f-data:"Share Tech Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--void);color:var(--fg);font:400 14.5px/1.5 var(--f-body);display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:1px dashed var(--teal);outline-offset:2px}
+a{color:var(--teal)}
+
+header.bar{display:flex;align-items:center;gap:8px;padding:8px max(14px,env(safe-area-inset-right)) 8px max(14px,env(safe-area-inset-left));border-bottom:1px solid var(--rule);background:#080a19;flex-wrap:wrap}
+.brand{font:400 12px var(--f-disp);letter-spacing:.22em;text-transform:uppercase;background:linear-gradient(115deg,#6ff3e0,#8fb4ff 40%,#c9a6ff 70%,#ffb35c);-webkit-background-clip:text;background-clip:text;color:transparent;margin-right:auto}
+.btn{background:var(--panel-2);border:1px solid var(--rule-2);padding:7px 11px;font:400 11.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border-radius:0;color:var(--fg);white-space:nowrap}
+.btn:hover:not(:disabled){border-color:var(--teal);color:var(--teal)}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.btn.pri{background:var(--teal);color:#03211d;border-color:var(--teal)}
+.btn.pri:hover:not(:disabled){color:#03211d;filter:brightness(1.12)}
+.btn.warn{border-color:var(--haz);color:var(--haz)}
+.btn.sm{padding:4px 8px;font-size:10.5px;letter-spacing:.08em}
+.btn.on{border-color:var(--amber);color:var(--amber)}
+
+main{display:grid;grid-template-columns:minmax(0,1fr) 400px;min-height:0}
+#stage{position:relative;min-height:0;overflow:hidden;background:radial-gradient(ellipse 70% 60% at 50% 45%,#0d1030,var(--void))}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.hud{position:absolute;left:12px;top:12px;right:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none;z-index:2}
+.hud>*{pointer-events:auto}
+.round{font:400 12px var(--f-disp);letter-spacing:.14em;background:rgba(8,10,25,.85);border:1px solid var(--rule-2);padding:6px 10px}
+.phase{display:flex;font:400 11px var(--f-data);letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--rule-2);background:rgba(8,10,25,.85)}
+.phase span{padding:6px 10px;color:var(--faint)}
+.phase span.cur{color:#1b1206;background:var(--amber)}
+.hud .btn:not(.pri){background:rgba(21,26,64,.9)}
+.hint{position:absolute;left:12px;bottom:10px;font:400 11px var(--f-data);color:var(--faint);letter-spacing:.08em;pointer-events:none;z-index:2}
+.lbl3d{position:absolute;left:0;top:0;pointer-events:none;font:400 11px var(--f-data);white-space:nowrap;text-align:center;text-shadow:0 0 4px #000,0 0 2px #000;z-index:1;will-change:transform}
+.lbl3d b{font-weight:400;letter-spacing:.06em}
+.lbl3d .st{font-size:10px;color:var(--dim)}
+.lbl3d .bars{width:70px;margin:3px auto 0}
+.meter{height:4px;background:rgba(255,255,255,.12);margin-top:2px;overflow:hidden}
+.meter i{display:block;height:100%;transition:width .4s}
+.meter.sh i{background:var(--ally)} .meter.hu i{background:var(--ok)} .meter.hu.low i{background:var(--amber)} .meter.hu.crit i{background:var(--haz)}
+.band3d{position:absolute;left:0;top:0;font:400 9.5px var(--f-disp);letter-spacing:.3em;color:var(--faint);pointer-events:none;z-index:1;opacity:.85}
+.offline{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--dim);padding:24px;font:400 13px var(--f-data)}
+
+aside{border-left:1px solid var(--rule);background:#0a0c1e;display:grid;grid-template-rows:auto minmax(0,1fr) minmax(120px,26%);min-height:0}
+.tabs{display:flex;border-bottom:1px solid var(--rule)}
+.tabs button{flex:1;background:none;border:0;border-bottom:2px solid transparent;padding:11px 6px;font:400 11px var(--f-data);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);cursor:pointer}
+.tabs button[aria-selected=true]{color:var(--teal);border-bottom-color:var(--teal)}
+.pane{overflow:auto;padding:12px 14px 18px;min-height:0}
+h3{font:400 10.5px var(--f-disp);letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin:16px 0 8px}
+h3:first-child{margin-top:4px}
+.note{color:var(--dim);font-size:13px;margin:0 0 10px}
+.box{border:1px solid var(--rule);background:var(--panel);padding:10px 12px;margin-bottom:10px;border-left:3px solid var(--c,var(--rule-2))}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.row+.row{margin-top:8px}
+.spread{justify-content:space-between}
+label.f{display:grid;gap:3px;font:400 10.5px var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);flex:1;min-width:90px}
+input[type=number],input[type=text],select,textarea{background:#070918;border:1px solid var(--rule-2);padding:6px 8px;font:400 14px var(--f-data);color:var(--fg);border-radius:0;width:100%;min-width:0}
+textarea{resize:vertical;font-size:12.5px;line-height:1.5}
+input.mini{width:64px}
+.chk{display:inline-flex;gap:6px;align-items:center;font:400 12px var(--f-data);color:var(--dim);cursor:pointer;padding:3px 0}
+.chk input{accent-color:var(--teal)}
+.chip{display:inline-block;font:400 10.5px var(--f-data);letter-spacing:.08em;padding:2px 7px;border:1px solid var(--c,var(--rule-2));color:var(--c,var(--dim));text-transform:uppercase}
+button.chip{background:none;cursor:pointer}
+.name{font:600 15px var(--f-body)}
+.side{font:400 10px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--c)}
+.stats{font:400 12.5px var(--f-data);color:var(--dim)}
+.stats b{color:var(--fg);font-weight:400}
+.mods{font:400 12px var(--f-data);margin:8px 0 0;color:var(--dim)}
+.mods .adv,.mods.adv{color:var(--ok)} .mods .dis,.mods.dis{color:var(--haz)}
+.res{font:400 13px var(--f-data);margin-top:8px}
+.big{font:400 13px var(--f-data);color:var(--amber)}
+.track{display:flex;gap:4px}
+.track i{width:16px;height:16px;border:1px solid var(--rule-2);display:inline-block}
+.track.s i.on{background:var(--ok);border-color:var(--ok)}
+.track.f i.on{background:var(--haz);border-color:var(--haz)}
+.status-dis{opacity:.6}
+#log{border-top:1px solid var(--rule);overflow:auto;padding:8px 14px 12px;font:400 12px/1.5 var(--f-data);color:var(--dim);background:#080a19}
+#log p{margin:0 0 5px}
+#log .r{color:var(--faint)}
+#log .hit{color:var(--ok)} #log .miss{color:var(--faint)} #log .crit{color:var(--amber)} #log .dead{color:var(--haz)} #log .sys{color:var(--lil)}
+#log b{color:var(--fg);font-weight:400}
+
+dialog{background:var(--panel);color:var(--fg);border:1px solid var(--rule-2);border-top:2px solid var(--teal);padding:0;width:min(560px,calc(100% - 24px));max-height:calc(100% - 24px)}
+dialog::backdrop{background:rgba(2,3,10,.7)}
+dialog form{padding:16px 18px;display:grid;gap:10px}
+dialog h2{margin:0;font:400 13px var(--f-disp);letter-spacing:.16em;text-transform:uppercase}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.help{font:400 11.5px/1.5 var(--f-data);color:var(--faint);margin:0}
+.help code{color:var(--dim)}
+
+.livetag{display:inline-flex;align-items:center;gap:7px;font:400 11px var(--f-data);letter-spacing:.14em;color:var(--haz);border:1px solid var(--haz);padding:5px 9px;text-transform:uppercase}
+.livetag i{width:7px;height:7px;border-radius:50%;background:var(--haz);box-shadow:0 0 8px var(--haz);animation:blink 1.6s infinite}
+.livetag.wait{color:var(--amber);border-color:var(--amber)}.livetag.wait i{background:var(--amber);box-shadow:none;animation:none}
+@keyframes blink{50%{opacity:.25}}
+.code{font:400 30px var(--f-disp);letter-spacing:.3em;color:var(--teal);margin:2px 0 10px}
+ol.note{padding-left:20px}ol.note li{margin-bottom:4px}
+code{font-family:var(--f-data);color:var(--fg)}
+body.watch .gm-only{display:none!important}
+.grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px}
+.seat{padding:6px 0;border-top:1px solid var(--rule)}
+.seat:first-of-type{border-top:0}
+.sub{padding:8px 0;border-top:1px solid var(--rule)}
+.sub:first-child{border-top:0;padding-top:2px}
+.mine{--c:var(--teal);border:1px solid var(--teal);border-left-width:3px}
+body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
+@media (max-width:860px){
+  body.watch aside{grid-template-rows:auto 260px}
+  html,body{height:auto}
+  body{overflow:auto;display:block}
+  main{grid-template-columns:1fr;grid-template-rows:56vh auto}
+  aside{border-left:0;border-top:1px solid var(--rule);grid-template-rows:auto auto 240px}
+  .pane{overflow:visible}
+  .grid4{grid-template-columns:repeat(2,1fr)}
+  .grid5{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .hint{display:none}
+}
+</style>
+</head>
+<body>
+<header class="bar">
+ <span class="brand">Drift · Tactical plot</span>
+ <span class="livetag" id="liveTag" hidden><i></i><span></span></span>
+ <button class="btn gm-only" id="liveBtn" type="button" title="Let players watch this fight live on their own devices">Go live</button>
+ <button class="btn gm-only" id="newBtn" type="button" title="Clear the board and start a new encounter">New encounter</button>
+ <button class="btn gm-only" id="exportBtn" type="button" title="Download this encounter as a file">Save file</button>
+ <button class="btn gm-only" id="importBtn" type="button" title="Load an encounter file">Load file</button>
+ <input type="file" id="importFile" accept=".json,application/json" hidden>
+</header>
+<main>
+ <div id="stage">
+  <div class="hud">
+   <span class="round" id="hudRound">Round 1</span>
+   <span class="phase" id="hudPhase"><span data-p="helm">Helm</span><span data-p="stations">Stations</span><span data-p="upkeep">Upkeep</span></span>
+   <button class="btn pri gm-only" id="nextBtn" type="button">Next phase ▸</button>
+   <button class="btn" id="viewBtn" type="button" title="Reset the camera">View</button>
+  </div>
+  <div class="hint gm-only">Drag to orbit · scroll or pinch to zoom · click a ship to pick it</div>
+ </div>
+ <aside>
+  <div class="tabs gm-only" role="tablist">
+   <button role="tab" data-tab="helm">Helm</button>
+   <button role="tab" data-tab="stations">Stations</button>
+   <button role="tab" data-tab="crew">Crew</button>
+   <button role="tab" data-tab="fleet">Fleet</button>
+  </div>
+  <div class="pane" id="pane"></div>
+  <div id="log" aria-live="polite"></div>
+ </aside>
+</main>
+
+<dialog id="editor">
+ <form method="dialog" id="edForm">
+  <h2 id="edTitle">Ship</h2>
+  <div class="row">
+   <label class="f" style="flex:2">Name<input type="text" name="name" required maxlength="40"></label>
+   <label class="f">Side<select name="side"><option value="party">Party</option><option value="ally">Ally</option><option value="enemy">Hostile</option></select></label>
+   <label class="f">Model<select name="model"></select></label>
+  </div>
+  <div class="grid4">
+   <label class="f">AC<input type="number" name="ac" min="0" max="40"></label>
+   <label class="f">Hull<input type="number" name="maxHull" min="1" max="9999"></label>
+   <label class="f">Shields<input type="number" name="maxSh" min="0" max="9999"></label>
+   <label class="f">Regen / rd<input type="number" name="regen" min="0" max="999"></label>
+   <label class="f">Pilot bonus<input type="number" name="pilot" min="-10" max="30"></label>
+   <label class="f">Range<select name="band"><option value="C">Close</option><option value="M">Medium</option><option value="L">Long</option></select></label>
+  </div>
+  <label class="chk"><input type="checkbox" name="pd"> Point defense (missiles attack it at disadvantage)</label>
+  <label class="f">Weapons (one per line)<textarea name="weapons" rows="5" spellcheck="false"></textarea></label>
+  <p class="help">Format: <code>Name | +attack | damage | bands | options | note</code><br>
+   Bands: <code>C</code>lose, <code>M</code>edium, <code>L</code>ong, e.g. <code>CML</code>. Options: <code>dis:L</code> (disadvantage at Long), <code>missile</code>, <code>helm</code> (fires only if your pilot won the helm), <code>ammo:6</code>. The note is shown on a hit.</p>
+  <div class="row spread">
+   <button class="btn" value="cancel" formnovalidate type="submit">Cancel</button>
+   <button class="btn pri" value="ok" type="submit">Save ship</button>
+  </div>
+ </form>
+</dialog>
+
+<dialog id="liveDlg">
+ <form method="dialog">
+  <h2>Live player view</h2>
+  <div id="liveBody"></div>
+  <div class="row spread"><span></span><button class="btn" value="close" type="submit">Close</button></div>
+ </form>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<!-- Firebase settings for the live player view (window.LIVE_CONFIG). -->
+<script src="live-config.js"></script>
+<!-- Optional campaign presets (window.GM_SHIPS). Lives in the GM partition; missing file is fine. -->
+<script src="../gm/ships.js" onerror="void 0"></script>
+<script>
+"use strict";
+/* ============================== rules data ============================== */
+const BANDS=["C","M","L"];
+const BAND_NAME={C:"Close",M:"Medium",L:"Long"};
+const BAND_R={C:7,M:14,L:22};
+const SIDES={
+  party:{label:"Party",css:"var(--teal)",hex:0x6ff3e0},
+  ally:{label:"Ally",css:"var(--ally)",hex:0x8fb4ff},
+  enemy:{label:"Hostile",css:"var(--haz)",hex:0xff6b7a},
+};
+const MODELS=["dropship","corsair","corvette","fighter","capital"];
+// d6 critical damage table, from the GM partition's ship-combat rules.
+const CRITS=[
+  {k:"cockpit",name:"Cockpit hit",text:"Helm and Sensors take 2d6 thunder (DC 12 Dex half). Pilot has disadvantage."},
+  {k:"turret",name:"Turret jammed",text:"Fix it in the turret room."},
+  {k:"launcher",name:"Launcher jammed",text:"Fix it in the launcher room."},
+  {k:"reactor",name:"Reactor scram",text:"No shield regen, no Overcharge or Boost, pilot has disadvantage."},
+  {k:"breach",name:"Cargo bay breach",text:"DC 12 Dex or be pulled toward the hole. A tenth of the cargo vents."},
+  {k:"fire",name:"Fire aboard",text:"1d6 hull each round until put out (DC 12)."},
+];
+const CRIT_BY=Object.fromEntries(CRITS.map(c=>[c.k,c]));
+const HELM_FX={
+  closer:"Shift range closer", farther:"Shift range farther", lineup:"Line up (gunners have advantage)",
+  evade:"Evade (attacks on them have disadvantage)", breakaway:"Break away (escape)",
+};
+
+// Generic presets. Campaign ships come from ../gm/ships.js if it loads.
+const BASE_PRESETS=[
+  {name:"Patience",side:"party",model:"dropship",ac:13,maxHull:25,maxSh:10,regen:0,pilot:4,
+   weapons:["Dorsal turret (lasers) | +5 | 2d8 | CML | dis:L",
+            "Stern launcher (missiles) | +5 | 3d10 | ML | missile helm ammo:6 | Rear arc. 6 spare in the hold."]},
+  {name:"Light fighter",side:"enemy",model:"fighter",ac:15,maxHull:10,maxSh:0,regen:0,pilot:5,
+   weapons:["Twin lasers | +4 | 2d6 | CML | dis:L"]},
+  {name:"Pirate gunboat",side:"enemy",model:"corsair",ac:13,maxHull:22,maxSh:5,regen:5,pilot:3,
+   weapons:["Lasers | +5 | 2d8 | CML | dis:L","Missile rack | +4 | 3d8 | ML | missile ammo:4"]},
+  {name:"Patrol corvette",side:"enemy",model:"corvette",ac:15,maxHull:45,maxSh:20,regen:10,pilot:4,pd:true,
+   weapons:["Railgun | +6 | 3d10 | CML","Point-defense lasers | +5 | 2d6 | C"]},
+  {name:"Capital ship",side:"enemy",model:"capital",ac:17,maxHull:125,maxSh:60,regen:15,pilot:1,pd:true,
+   weapons:["Main battery | +8 | 6d10 | ML","Broadside lasers | +6 | 4d8 | CML | dis:L","Flak screen | +5 | 2d8 | C"]},
+];
+const PRESETS=BASE_PRESETS.concat(Array.isArray(window.GM_SHIPS)?window.GM_SHIPS:[]);
+
+/* ============================== helpers ============================== */
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const sgn=n=>(n>=0?"+":"")+n;
+function die(n){const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n+1}
+// "2d8+1d6+3" -> {total, text}
+function roll(expr){
+  const s=String(expr||"0").replace(/\s+/g,"");let total=0;const bits=[];const re=/([+-]?)(\d*)d(\d+)|([+-]?)(\d+)/gi;let m;
+  while((m=re.exec(s))){
+    if(m[3]){const n=+(m[2]||1),f=+m[3],neg=m[1]==="-";const rs=[];for(let i=0;i<Math.min(n,100);i++)rs.push(die(f));
+      const sum=rs.reduce((a,b)=>a+b,0);total+=neg?-sum:sum;bits.push(`${neg?"−":bits.length?"+":""}${n}d${f}[${rs.join(",")}]`);}
+    else{const v=+m[5],neg=m[4]==="-";total+=neg?-v:v;bits.push(`${neg?"−":"+"}${v}`);}
+  }
+  return {total:Math.max(0,total),text:bits.join(" ")||"0"};
+}
+function d20(mode){const a=die(20),b=die(20);
+  if(mode==="adv")return {nat:Math.max(a,b),text:`[${a},${b}]▲`};
+  if(mode==="dis")return {nat:Math.min(a,b),text:`[${a},${b}]▼`};
+  return {nat:a,text:String(a)};}
+function parseWeapon(line){
+  const p=String(line).split("|").map(x=>x.trim());if(!p[0])return null;
+  const w={name:p[0].slice(0,48),atk:parseInt(p[1],10)||0,dmg:(p[2]||"1d6").replace(/\s+/g,""),bands:(p[3]||"CML").toUpperCase().replace(/[^CML]/g,"")||"CML",
+    dis:"",missile:false,helm:false,ammo:null,note:(p[5]||"").slice(0,160)};
+  for(const t of (p[4]||"").split(/\s+/).filter(Boolean)){
+    const [k,v]=t.toLowerCase().split(":");
+    if(k==="dis")w.dis=(v||"").toUpperCase().replace(/[^CML]/g,"");
+    else if(k==="missile")w.missile=true;
+    else if(k==="helm")w.helm=true;
+    else if(k==="ammo")w.ammo=Math.max(0,parseInt(v,10)||0);
+  }
+  return w;
+}
+function weaponLine(w){
+  const o=[w.dis?"dis:"+w.dis:"",w.missile?"missile":"",w.helm?"helm":"",w.ammo!=null?"ammo:"+w.ammo:""].filter(Boolean).join(" ");
+  return [w.name,sgn(w.atk),w.dmg,w.bands,o,w.note].join(" | ").replace(/( \| )+$/,"");
+}
+
+/* ============================== state ============================== */
+const KEY="drift-tactical-v1";
+// ?watch=CODE turns this page into a read-only player view of a live room.
+const PARAMS=new URLSearchParams(location.search);
+const WATCH=PARAMS.has("watch");
+const ROOM_IN=(PARAMS.get("watch")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
+let S;
+const UI={tab:"helm",att:null,wpn:0,tgt:null,bonus:"",nat:"",over:false,scan:false,jam:false,adv:"auto",eng:null,helmIn:{},adj:"",pd:{},
+  pin:{},ptgt:null,pover:"w0",pfix:"-1",pjam:null,lastRef:"",sending:false,localMsg:"",watchOnly:false};
+function blank(){return {v:1,nid:1,round:1,phase:"helm",ships:[],helm:{},spool:{s:0,f:0},log:[],
+  crew:[],cnid:1,seats:{},acted:{},pending:{},mods:{scan:false,over:"",boost:false,jam:{}}}}
+function save(){if(WATCH)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&Array.isArray(j.ships))return sanitizeState(j)}catch(e){}return null}
+
+const ship=id=>S.ships.find(s=>s.id===id);
+const team=s=>s.side==="enemy"?"enemy":"party";
+const live=s=>s&&s.status==="ok";
+const present=s=>s&&s.status!=="escaped";
+// The flagship flies the helm contest: the first party ship still fighting, else the first one present.
+function flagship(){const p=S.ships.filter(s=>s.side==="party"&&present(s));return p.find(live)||p[0]||S.ships.find(s=>s.side==="ally"&&present(s))||null}
+function pairBand(a,b){
+  if(team(a)===team(b))return "C";
+  return (team(a)==="enemy"?a:b).band;
+}
+/* ---- crew & stations ---- */
+const STATION_NAME={helm:"Helm",eng:"Engineering",sens:"Sensors & comms"};
+const SEAT_RE=/^\d+:(helm|eng|sens|w\d{1,2})$/;
+const crewOn=()=>S.crew.length>0;
+const crewById=id=>S.crew.find(c=>c.id===id)||null;
+const seatKey=(sid,st)=>`${sid}:${st}`;
+function seated(sid,st){return crewById(S.seats[seatKey(sid,st)])}
+function seatOf(cid){for(const [k,v] of Object.entries(S.seats))if(v===cid){const i=k.indexOf(":");const s=ship(+k.slice(0,i));if(s)return {key:k,ship:s,st:k.slice(i+1)}}return null}
+function stationsOf(s){return [{st:"helm",label:"Helm"},...s.weapons.map((w,i)=>({st:"w"+i,label:w.name})),{st:"eng",label:"Engineering"},{st:"sens",label:"Sensors & comms"}]}
+const stationLabel=(s,st)=>STATION_NAME[st]||(s.weapons[+st.slice(1)]||{}).name||st;
+// Once anyone is on the crew list, a party station with nobody in it can't act. Allies and hostiles are always crewed.
+const manned=(s,st)=>s.side!=="party"||!crewOn()||!!seated(s.id,st);
+function gunBonus(s,i){const w=s.weapons[i];const c=s.side==="party"?seated(s.id,"w"+i):null;return c?(w.missile?c.missile:c.gun):w.atk}
+function pilotBonus(s){const c=s.side==="party"?seated(s.id,"helm"):null;return c?c.pilot:s.pilot}
+function helmBlock(f){if(!live(f))return `${f.name} is disabled`;if(!manned(f,"helm"))return "nobody is at the helm";return ""}
+function helmMode(f){const dis=f.crits.some(k=>k==="cockpit"||k==="reactor"),adv=f.side==="party"&&S.mods.boost;return adv&&!dis?"adv":dis&&!adv?"dis":"normal"}
+function dropSeats(sid,keep){for(const k of Object.keys(S.seats))if(k.startsWith(sid+":")&&!(keep&&keep(k.slice(k.indexOf(":")+1))))delete S.seats[k]}
+function makeShip(p){
+  const enemies=S.ships.filter(s=>s.side==="enemy").length;
+  const s={id:S.nid++,name:p.name,side:p.side||"enemy",model:MODELS.includes(p.model)?p.model:"corvette",
+    ac:+p.ac||12,maxHull:+p.maxHull||30,maxSh:+p.maxSh||0,regen:+p.regen||0,pilot:+p.pilot||0,pd:!!p.pd,
+    weapons:(p.weapons||[]).map(w=>typeof w==="string"?parseWeapon(w):w).filter(Boolean),
+    band:p.band||"M",angle:enemies*2.2+0.4,crits:[],status:"ok",marks:0,brace:false};
+  s.hull=s.maxHull;s.sh=s.maxSh;
+  return s;
+}
+// pub: the version players see when hostile stats are hidden (omit when it's the same).
+function log(html,cls="",pub){const e={r:S.round,h:html,c:cls};if(pub!=null&&pub!==html)e.p=pub;S.log.push(e);if(S.log.length>200)S.log.splice(0,S.log.length-200)}
+const forFoe=(s,pub)=>s.side==="enemy"?pub:undefined;
+// Files and live data come from outside: coerce everything to known shapes.
+const num=(v,d=0,lo=-1e6,hi=1e6)=>{v=Number(v);return Number.isFinite(v)?clamp(Math.round(v),lo,hi):d};
+const arr=v=>Array.isArray(v)?v:v&&typeof v==="object"?Object.values(v):[];
+const bandStr=v=>String(v||"").toUpperCase().replace(/[^CML]/g,"");
+function cleanShip(s){
+  const o={id:num(s.id,0,0),name:String(s.name||"Ship").slice(0,40),side:SIDES[s.side]?s.side:"enemy",model:MODELS.includes(s.model)?s.model:"corvette",
+    ac:num(s.ac,12,0,99),maxHull:num(s.maxHull,30,1,99999),maxSh:num(s.maxSh,0,0,99999),regen:num(s.regen,0,0,9999),pilot:num(s.pilot,0,-50,50),pd:!!s.pd,
+    weapons:arr(s.weapons).filter(w=>w&&typeof w==="object").map(w=>({name:String(w.name||"Weapon").slice(0,48),atk:num(w.atk,0,-50,50),
+      dmg:String(w.dmg||"0").replace(/[^0-9dD+-]/g,"").slice(0,24)||"0",bands:bandStr(w.bands)||"CML",dis:bandStr(w.dis),missile:!!w.missile,helm:!!w.helm,
+      ammo:w.ammo==null?null:num(w.ammo,0,0,9999),note:String(w.note||"").slice(0,160)})),
+    band:BANDS.includes(s.band)?s.band:"M",angle:Number.isFinite(+s.angle)?+s.angle:0,crits:arr(s.crits).filter(k=>CRIT_BY[k]),
+    status:["ok","disabled","escaped"].includes(s.status)?s.status:"ok",marks:num(s.marks,s.halfCrit?2:0,0,3),brace:!!s.brace};
+  o.hull=num(s.hull,o.maxHull,0,o.maxHull);o.sh=num(s.sh,o.maxSh,0,o.maxSh);
+  return o;
+}
+function sanitizeState(j){
+  const o=blank();j=j&&typeof j==="object"?j:{};
+  o.round=num(j.round,1,1);o.phase=j.phase==="stations"?"stations":"helm";
+  const seen=new Set();
+  o.ships=arr(j.ships).filter(x=>x&&typeof x==="object").map(cleanShip).map(s=>{if(!s.id||seen.has(s.id))s.id=0;else seen.add(s.id);return s});
+  let next=Math.max(num(j.nid,1,1),...o.ships.map(s=>s.id+1));for(const s of o.ships)if(!s.id){s.id=next++}o.nid=next;
+  for(const [k,h] of Object.entries(j.helm&&typeof j.helm==="object"?j.helm:{})){
+    if(!h||!o.ships.some(s=>String(s.id)===k))continue;
+    o.helm[k]={p:num(h.p),q:num(h.q),winner:["party","enemy","tie"].includes(h.winner)?h.winner:"tie",effect:HELM_FX[h.effect]?h.effect:null,
+      prev:BANDS.includes(h.prev)?h.prev:null,brace:!!h.brace,auto:!!h.auto};
+  }
+  o.spool={s:num(j.spool&&j.spool.s,0,0,3),f:num(j.spool&&j.spool.f,0,0,3)};
+  o.log=arr(j.log).filter(e=>e&&typeof e==="object").slice(-200).map(e=>{const x={r:num(e.r,1,1),h:String(e.h||"").slice(0,2000),c:/^[a-z]{0,8}$/.test(e.c)?e.c:""};if(e.p!=null)x.p=String(e.p).slice(0,2000);return x});
+  o.crew=arr(j.crew).filter(c=>c&&typeof c==="object").slice(0,16).map(c=>({id:num(c.id,0,0),name:String(c.name||"Crew").slice(0,30),
+    pilot:num(c.pilot,0,-20,30),gun:num(c.gun,0,-20,30),missile:num(c.missile,0,-20,30),tech:num(c.tech,0,-20,30),sensors:num(c.sensors,0,-20,30)}));
+  {const ids=new Set();let n=Math.max(num(j.cnid,1,1),...o.crew.map(c=>c.id+1));for(const c of o.crew){if(!c.id||ids.has(c.id))c.id=n++;ids.add(c.id)}o.cnid=n}
+  const shipIds=new Set(o.ships.map(s=>s.id)),crewIds=new Set(o.crew.map(c=>c.id));
+  const okKey=k=>SEAT_RE.test(k)&&shipIds.has(+k.split(":")[0]);
+  const obj=v=>v&&typeof v==="object"?v:{};
+  const used=new Set();
+  for(const [k,v] of Object.entries(obj(j.seats)))if(okKey(k)&&crewIds.has(+v)&&!used.has(+v)){o.seats[k]=+v;used.add(+v)}
+  for(const [k,v] of Object.entries(obj(j.acted)))if(okKey(k)&&v)o.acted[k]=true;
+  for(const [k,p] of Object.entries(obj(j.pending)))if(okKey(k)&&p&&typeof p==="object")o.pending[k]={tgt:num(p.tgt,0,0),wi:num(p.wi,0,0,99),nat20:!!p.nat20,over:!!p.over,scan:!!p.scan};
+  const md=obj(j.mods);
+  o.mods={scan:!!md.scan,over:typeof md.over==="string"&&okKey(md.over)?md.over:"",boost:!!md.boost,jam:{}};
+  for(const [k,v] of Object.entries(obj(md.jam)))if(v&&shipIds.has(+k))o.mods.jam[k]=true;
+  return o;
+}
+// Log lines are stored as HTML. Keep only text and <b> with a palette color.
+function safeHtml(h){
+  const t=document.createElement("template");t.innerHTML=String(h);
+  const walk=n=>[...n.childNodes].map(c=>{
+    if(c.nodeType===3)return esc(c.textContent);
+    if(c.nodeType!==1)return "";
+    const inner=walk(c);
+    if(c.tagName==="B"){const m=/^color:\s*var\(--[a-z]+\)$/.exec(c.getAttribute("style")||"");return `<b${m?` style="${m[0]}"`:""}>${inner}</b>`}
+    return inner;
+  }).join("");
+  return walk(t.content);
+}
+function nm(s){return `<b style="color:${SIDES[s.side].css}">${esc(s.name)}</b>`}
+
+/* ============================== rules engine ============================== */
+// Damage hits shields first, then hull.
+function applyDamage(t,dmg,{nat20=false,bypassShields=false}={}){
+  const before=t.hull;let absorbed=0;
+  if(!bypassShields){absorbed=Math.min(t.sh,dmg);t.sh-=absorbed}
+  const hullDmg=Math.min(t.hull,dmg-absorbed);t.hull-=hullDmg;
+  const parts=[];if(absorbed)parts.push(`shields −${absorbed}`);if(hullDmg)parts.push(`hull −${hullDmg}`);
+  log(`${nm(t)}: ${parts.join(", ")||"no damage"} (hull ${t.hull}/${t.maxHull}, shields ${t.sh}/${t.maxSh}).`,"hit",
+    forFoe(t,`${nm(t)}: ${[absorbed&&"shields hit",hullDmg&&"hull hit"].filter(Boolean).join(", ")||"no damage"}.`));
+  if(t.hull<=0&&t.status==="ok"){
+    t.status="disabled";
+    log(`${nm(t)} is <b>disabled</b>.${t.side!=="enemy"?" One hour of emergency life support.":""}`,"dead");
+    FX.boom(t.id);return {absorbed,hullDmg};
+  }
+  // A crit on a natural 20, and each time hull first drops below 75%, 50% and 25%.
+  let crits=nat20?1:0;
+  while((t.marks||0)<3&&t.hull<t.maxHull*[.75,.5,.25][t.marks||0]){t.marks=(t.marks||0)+1;crits++}
+  for(let i=0;i<crits&&t.hull>0;i++)rollCrit(t);
+  return {absorbed,hullDmg};
+}
+function rollCrit(t){
+  const r=die(6),c=CRITS[r-1];let extra="";
+  if(c.k==="reactor")extra=` (${die(2)===1?"port":"starboard"})`;
+  t.crits.push(c.k);
+  log(`Critical on ${nm(t)}: d6=${r}, <b>${c.name}${extra}</b>. ${c.text}`,"crit");
+}
+function attackMods(a,w,t){
+  const adv=[],dis=[];const band=pairBand(a,t);
+  const e=team(a)==="enemy"?a:team(t)==="enemy"?t:null;const h=e&&S.helm[e.id];
+  if(h&&h.effect==="lineup"&&h.winner===team(a))adv.push("lined up");
+  if(h&&h.effect==="evade"&&h.winner===team(t))dis.push("target evading");
+  if(w.dis.includes(band))dis.push(`${BAND_NAME[band]} range`);
+  if(w.missile&&t.pd)dis.push("point defense");
+  if(UI.jam||S.mods.jam[a.id])dis.push("jammed");
+  let mode=adv.length&&!dis.length?"adv":dis.length&&!adv.length?"dis":"normal";
+  if(UI.adv!=="auto")mode=UI.adv;
+  return {adv,dis,mode,band};
+}
+function canFire(a,w,t){
+  if(!a||!w||!t)return "Pick an attacker, a weapon and a target.";
+  if(!live(a))return `${a.name} is not in the fight.`;
+  if(!present(t))return `${t.name} is gone.`;
+  if(team(a)===team(t))return "That's a friendly ship.";
+  const wi=a.weapons.indexOf(w);
+  if(!manned(a,"w"+wi))return `Nobody is manning ${w.name}.`;
+  if(S.pending[seatKey(a.id,"w"+wi)])return `${w.name} is waiting for the damage roll from its last hit.`;
+  const band=pairBand(a,t);
+  if(!w.bands.includes(band))return `${w.name} can't fire at ${BAND_NAME[band]} range.`;
+  if(w.ammo!=null&&w.ammo<=0)return `${w.name} is out of ammo.`;
+  if(w.helm){const e=team(a)==="enemy"?a:t;const h=S.helm[e.id];if(!h||h.winner!==team(a))return `${w.name} fires only when your pilot wins the helm.`}
+  return "";
+}
+// One attack. bonus: null uses the crew member's (or weapon's) bonus. nat: a natural d20 rolled at the table.
+// manualDamage: a player rolls damage at the table; a hit waits in S.pending until they enter it.
+function attack(a,wi,t,{bonus=null,nat=null,manualDamage=false}={}){
+  const w=a&&a.weapons[wi];
+  const why=canFire(a,w,t);if(why)return why;
+  const key=seatKey(a.id,"w"+wi);
+  const m=attackMods(a,w,t);
+  if(bonus==null)bonus=gunBonus(a,wi);
+  const r=nat>=1&&nat<=20?{nat,text:`${nat} (table)`}:d20(m.mode);
+  const ac=t.ac+(t.brace?2:0);const total=r.nat+bonus;
+  const hit=r.nat===20||(r.nat!==1&&total>=ac);
+  if(w.ammo!=null)w.ammo--;
+  const gunner=a.side==="party"?seated(a.id,"w"+wi):null;
+  const who=gunner?` (${esc(gunner.name)})`:"";
+  const tag=m.mode==="adv"?" with advantage":m.mode==="dis"?" with disadvantage":"";
+  const natTxt=r.nat===20?"<b>Natural 20!</b> ":r.nat===1?"Natural 1. ":"";
+  log(`${nm(a)}${who} fires <b>${esc(w.name)}</b> at ${nm(t)}${tag}: ${r.text}${sgn(bonus)} = <b>${total}</b> vs AC ${ac}${t.brace?" (braced)":""}. ${natTxt}${hit?"Hit.":"Miss."}`,hit?"hit":"miss",
+    a.side==="enemy"?`${nm(a)} fires <b>${esc(w.name)}</b> at ${nm(t)}${tag}. ${natTxt}${hit?"Hit.":"Miss."}`
+    :t.side==="enemy"?`${nm(a)}${who} fires <b>${esc(w.name)}</b> at ${nm(t)}${tag}: ${r.text}${sgn(bonus)} = <b>${total}</b>. ${natTxt}${hit?"Hit.":"Miss."}`:undefined);
+  const over=UI.over||S.mods.over===key,scan=UI.scan||(team(a)==="party"&&S.mods.scan);
+  if(S.mods.over===key)S.mods.over="";
+  UI.over=false;
+  if(S.mods.jam[a.id])delete S.mods.jam[a.id];
+  if(a.side==="party"&&crewOn())S.acted[key]=true;
+  if(hit&&manualDamage&&w.dmg!=="0"){
+    S.pending[key]={tgt:t.id,wi,nat20:r.nat===20,over,scan};
+    log(`Waiting for ${gunner?esc(gunner.name)+"'s":"the"} damage roll.`,"sys");
+    commit();return "";
+  }
+  let res=null;
+  if(hit){
+    const dmg=roll(w.dmg);let total=dmg.total;const extra=[];
+    if(over){const o=roll("1d8");total+=o.total;extra.push(`overcharge ${o.text}`)}
+    if(scan){const o=roll("1d8");total+=o.total;extra.push(`scan ${o.text}`);UI.scan=false;S.mods.scan=false}
+    if(w.dmg!=="0"&&total>0)log(`Damage ${dmg.text}${extra.length?" + "+extra.join(" + "):""} = <b>${total}</b>.`,"hit");
+    if(w.note)log(`${esc(w.name)}: ${esc(w.note)}`,"sys");
+    if(total>0)res=applyDamage(t,total,{nat20:r.nat===20});
+  }
+  FX.shot(a.id,t.id,w,hit,res);
+  commit();return "";
+}
+function fire(){
+  const a=ship(UI.att),t=ship(UI.tgt);
+  const bonus=UI.bonus===""?null:(parseInt(UI.bonus,10)||0);const nat=parseInt(UI.nat,10);UI.nat="";
+  const why=attack(a,UI.wpn,t,{bonus,nat:Number.isFinite(nat)?nat:null});
+  if(why){log(why,"miss");commit()}
+}
+const dmgText=(w,p)=>`${w?w.dmg:"damage"}${p.over?" + 1d8 (overcharge)":""}${p.scan?" + 1d8 (scan)":""}`;
+// Finish a hit that is waiting for damage: total from the table, or null to roll it here.
+function finishHit(key,total=null){
+  const p=S.pending[key];if(!p)return "No hit is waiting for damage.";
+  delete S.pending[key];
+  const a=ship(+key.split(":")[0]),t=ship(p.tgt),w=a&&a.weapons[p.wi];
+  if(!a||!t||!w||!present(t)){commit();return "That target is gone."}
+  if(p.scan){S.mods.scan=false;UI.scan=false}
+  if(total==null){const r=roll(dmgText(w,p).replace(/ \((overcharge|scan)\)/g,""));total=r.total;log(`Damage ${r.text} = <b>${total}</b>.`,"hit")}
+  else{total=clamp(Math.round(total),0,999);log(`Damage <b>${total}</b>, rolled at the table${p.over||p.scan?` (${[p.over&&"overcharge",p.scan&&"scan"].filter(Boolean).join(" and ")} included)`:""}.`,"hit")}
+  if(w.note)log(`${esc(w.name)}: ${esc(w.note)}`,"sys");
+  const res=total>0?applyDamage(t,total,{nat20:p.nat20}):null;
+  FX.shot(a.id,t.id,w,true,res);
+  commit();return "";
+}
+function spool(k,detail=""){
+  const f=flagship();const d=detail?` (${detail})`:"";
+  S.spool[k]=Math.min(3,S.spool[k]+1);
+  if(S.spool.s>=3){log(`Drive spooled${d}. ${f?nm(f):"The party"} jumps clear.`,"sys");if(f)f.status="escaped";S.spool={s:0,f:0}}
+  else if(S.spool.f>=3){log(`Drive spool fails${d}. Start over next round.`,"crit");S.spool={s:0,f:0}}
+  else log(`Drive spool ${k==="s"?"success":"failure"}${d}: ${S.spool.s} successes, ${S.spool.f} failures.`,"sys");
+}
+// pTotal: a player's pilot total from their device. Otherwise the GM's typed totals, or auto-rolls.
+function resolveHelm(e,pTotal=null){
+  const f=flagship();if(!f||!live(e)||S.helm[e.id])return;
+  const inP=pTotal!=null?pTotal:parseInt((UI.helmIn[e.id]||{}).p,10),inE=parseInt((UI.helmIn[e.id]||{}).e,10);
+  const ed=e.crits.some(k=>k==="cockpit"||k==="reactor")?"dis":"normal";
+  const er=Number.isFinite(inE)?{nat:null,text:`${inE} (table)`}:d20(ed);const q=Number.isFinite(inE)?inE:er.nat+e.pilot;
+  UI.helmIn[e.id]={};
+  const blk=helmBlock(f);
+  if(blk){
+    S.helm[e.id]={p:0,q,winner:"enemy",effect:null,prev:null,brace:false,auto:true};
+    log(`Helm vs ${nm(e)}: ${nm(f)} can't contest, ${esc(blk)}. ${nm(e)} wins the helm.`,"sys");
+    commit();return;
+  }
+  const pb=pilotBonus(f),pilot=f.side==="party"?seated(f.id,"helm"):null;
+  const pr=Number.isFinite(inP)?{nat:null,text:`${inP} (table)`}:d20(helmMode(f));
+  const p=Number.isFinite(inP)?inP:pr.nat+pb;
+  const winner=p>q?"party":q>p?"enemy":"tie";
+  S.helm[e.id]={p,q,winner,effect:null,prev:null,brace:false,auto:false};
+  const fn=`${nm(f)}${pilot?` (${esc(pilot.name)})`:""}`;
+  log(`Helm vs ${nm(e)}: ${fn} ${pr.text}${Number.isFinite(inP)?"":sgn(pb)} = <b>${p}</b>, ${nm(e)} ${er.text}${Number.isFinite(inE)?"":sgn(e.pilot)} = <b>${q}</b>. ${winner==="tie"?"Tie: no effect.":`${winner==="party"?nm(f):nm(e)} wins the helm.`}`,"sys",
+    `Helm vs ${nm(e)}: ${fn} <b>${p}</b>, ${nm(e)} <b>${q}</b>. ${winner==="tie"?"Tie: no effect.":`${winner==="party"?nm(f):nm(e)} wins the helm.`}`);
+  commit();
+}
+function helmEffect(e,fx){
+  const h=S.helm[e.id];if(!h||h.winner==="tie"||h.effect)return;
+  const f=flagship();const who=h.winner==="party"?f:e;
+  const i=BANDS.indexOf(e.band);
+  if(fx==="closer"){if(i===0)return;h.prev=e.band;e.band=BANDS[i-1]}
+  if(fx==="farther"){if(i===2)return;h.prev=e.band;e.band=BANDS[i+1]}
+  if(fx==="breakaway"){if(e.band!=="L")return;e.status="escaped";
+    log(h.winner==="party"?`${nm(f)} breaks away from ${nm(e)}.`:`${nm(e)} breaks away and is gone.`,"dead")}
+  h.effect=fx;
+  if(fx!=="breakaway")log(`${nm(who)}: ${HELM_FX[fx]}${fx==="closer"||fx==="farther"?`, now at ${BAND_NAME[e.band]}`:""}.`,"sys");
+  commit();
+}
+function undoHelm(e){
+  const h=S.helm[e.id];if(!h)return;
+  if(h.prev)e.band=h.prev;
+  if(h.effect==="breakaway")e.status="ok";
+  if(h.brace){const l=h.winner==="party"?e:flagship();if(l)l.brace=false}
+  delete S.helm[e.id];log(`Helm vs ${nm(e)} cleared.`,"sys");commit();
+}
+function brace(e){
+  const h=S.helm[e.id];if(!h||h.winner==="tie"||h.brace)return;
+  if(h.auto&&h.winner==="enemy")return; // an empty or disabled helm can't brace
+  const l=h.winner==="party"?e:flagship();if(!l)return;
+  l.brace=true;h.brace=true;log(`${nm(l)} braces: +2 AC this round.`,"sys");commit();
+}
+function upkeep(){
+  log(`Upkeep, round ${S.round}.`,"r");
+  for(const s of S.ships){
+    if(!live(s))continue;
+    if(s.regen&&s.sh<s.maxSh){
+      if(s.crits.includes("reactor"))log(`${nm(s)}: reactor scram, no shield regen.`,"miss");
+      else{const g=Math.min(s.regen,s.maxSh-s.sh);s.sh+=g;log(`${nm(s)}: shields +${g} (${s.sh}/${s.maxSh}).`,"sys",forFoe(s,`${nm(s)}: shields regenerate.`))}
+    }
+    const fires=s.crits.filter(k=>k==="fire").length;
+    for(let i=0;i<fires;i++){const r=roll("1d6");log(`${nm(s)}: fire burns, ${r.text} = ${r.total}.`,"crit");applyDamage(s,r.total,{bypassShields:true})}
+    s.brace=false;
+  }
+  S.helm={};S.acted={};S.pending={};S.mods.over="";S.mods.jam={};S.round++;S.phase="helm";
+  log(`Round ${S.round}.`,"r");
+}
+function nextPhase(){
+  if(S.phase==="helm"){S.phase="stations";S.mods.boost=false;UI.tab="stations";log(`Stations, round ${S.round}.`,"r")}
+  else{S.phase="upkeep";render();upkeep();UI.tab="helm"}
+  commit();
+}
+function commit(){save();render();FX.sync()}
+
+// A player's action from their device. cid: the crew member they claimed. Returns "" or why it was refused.
+function playerAction(cid,a){
+  const c=crewById(cid);if(!c)return "Your character isn't on the crew list any more.";
+  const seat=seatOf(cid);if(!seat)return "You don't have a station yet. The GM will seat you.";
+  const s=seat.ship,st=seat.st,key=seat.key,type=String(a.type||"");
+  if(!live(s))return `${s.name} is disabled.`;
+  const d=num(a.d20,0,0,99),ok20=d>=1&&d<=20;
+  if(type==="helm"||type==="helmfx"||type==="brace"){
+    if(st!=="helm")return "Only the pilot can do that.";
+    if(S.phase!=="helm")return "The helm phase is over for this round.";
+    if(s!==flagship())return `${s.name} isn't the flagship, so it doesn't fly the helm contest.`;
+    const e=ship(num(a.enemy));if(!e||e.side!=="enemy"||!live(e))return "That ship isn't in the fight.";
+    const h=S.helm[e.id];
+    if(type==="helm"){if(h)return "That contest is already rolled.";if(!ok20)return "Enter your d20 roll (1 to 20).";resolveHelm(e,d+c.pilot);return ""}
+    if(!h||h.winner==="tie")return "There's no result to act on.";
+    if(type==="helmfx"){
+      if(h.winner!=="party")return "Only the winner picks an effect.";if(h.effect)return "The effect is already chosen.";if(!HELM_FX[a.fx])return "Pick an effect.";
+      helmEffect(e,a.fx);return S.helm[e.id]&&S.helm[e.id].effect?"":"That effect isn't possible at this range."}
+    if(h.winner!=="enemy"||h.auto)return "You can't brace now.";if(h.brace)return "Already braced.";
+    brace(e);return "";
+  }
+  if(S.phase!=="stations")return "Wait for the stations phase.";
+  if(type==="damage"){if(!S.pending[key])return "No hit is waiting for damage.";const t=num(a.total,-1,-1,999);if(t<0)return "Enter your damage total.";return finishHit(key,t)}
+  if(S.acted[key])return "You've already acted this round.";
+  if(type==="fire"){
+    if(!/^w\d+$/.test(st))return "You're not at a weapon.";if(!ok20)return "Enter your d20 roll (1 to 20).";
+    const t=ship(num(a.target));if(!t)return "Pick a target.";
+    return attack(s,+st.slice(1),t,{nat:d,manualDamage:true});
+  }
+  const done=(msg,cls="sys")=>{S.acted[key]=true;log(msg,cls);commit();return ""};
+  const who=`${nm(s)}: ${esc(c.name)}`;
+  if(st==="eng"){
+    const reactor=s.crits.includes("reactor");
+    if(type==="shields"){const g=Math.min(5,s.maxSh-s.sh);s.sh+=g;return done(`${who} reroutes power, shields +${g}.`)}
+    if(type==="overcharge"){if(reactor)return "Reactor scram: no Overcharge until it's fixed.";const ws=String(a.station||"");
+      if(!/^w\d+$/.test(ws)||!s.weapons[+ws.slice(1)])return "Pick a weapon to overcharge.";
+      S.mods.over=seatKey(s.id,ws);return done(`${who} overcharges ${esc(stationLabel(s,ws))}: +1d8 on its next hit this round.`)}
+    if(type==="boost"){if(reactor)return "Reactor scram: no Boost until it's fixed.";S.mods.boost=true;return done(`${who} boosts the engines: the pilot has advantage at the next helm.`)}
+    if(type==="dc"){if(!ok20)return "Enter your d20 roll (1 to 20).";const tot=d+c.tech,roll1=`${d}${sgn(c.tech)} = ${tot} vs DC 12`;
+      if(tot<12)return done(`${who} attempts damage control: ${roll1}. It doesn't hold.`,"miss");
+      const fi=num(a.fix,-1,-1,99);
+      if(fi>=0&&s.crits[fi]){const k=s.crits.splice(fi,1)[0];return done(`${who}, damage control: ${roll1}. ${CRIT_BY[k].name} fixed.`)}
+      const r=roll("1d6"),g=Math.min(r.total,s.maxHull-s.hull);s.hull+=g;return done(`${who}, damage control: ${roll1}. Hull +${g} (${r.text}).`)}
+    if(type==="spool"){if(!ok20)return "Enter your d20 roll (1 to 20).";
+      if(S.ships.some(x=>x.side==="enemy"&&live(x)&&x.band==="C"))return "You can't spool the drive with a hostile at Close.";
+      const tot=d+c.tech;S.acted[key]=true;spool(tot>=13?"s":"f",`${esc(c.name)}: ${d}${sgn(c.tech)} = ${tot} vs DC 13`);
+      if(tot<=8){log(`${esc(c.name)} failed by 5 or more.`,"crit");rollCrit(s)}
+      commit();return ""}
+  }
+  if(st==="sens"){
+    if(type==="scan"){if(!ok20)return "Enter your d20 roll (1 to 20).";const tot=d+c.sensors;
+      if(tot>=13){S.mods.scan=true;return done(`${who} scans: ${d}${sgn(c.sensors)} = ${tot} vs DC 13. The next hit gets +1d8.`)}
+      return done(`${who} scans: ${d}${sgn(c.sensors)} = ${tot} vs DC 13. Nothing useful.`,"miss")}
+    if(type==="jam"){const e=ship(num(a.enemy));if(!e||e.side!=="enemy"||!live(e))return "Pick a hostile ship to jam.";if(!ok20)return "Enter your d20 roll (1 to 20).";
+      const tot=d+c.sensors;
+      if(tot>=13){S.mods.jam[e.id]=true;return done(`${who} jams ${nm(e)}: ${d}${sgn(c.sensors)} = ${tot} vs DC 13. Its next attack has disadvantage.`)}
+      return done(`${who} tries to jam ${nm(e)}: ${d}${sgn(c.sensors)} = ${tot} vs DC 13. No effect.`,"miss")}
+  }
+  return "That action isn't available at your station.";
+}
+
+/* ============================== UI ============================== */
+function meters(s){
+  const hp=s.hull/s.maxHull;const cls=hp<=.25?"crit":hp<=.5?"low":"";
+  return `${s.maxSh?`<div class="meter sh"><i style="width:${100*s.sh/s.maxSh}%"></i></div>`:""}<div class="meter hu ${cls}"><i style="width:${100*hp}%"></i></div>`;
+}
+function statusChip(s){
+  if(s.status==="disabled")return `<span class="chip" style="--c:var(--haz)">Disabled</span>`;
+  if(s.status==="escaped")return `<span class="chip">Gone</span>`;
+  return "";
+}
+function shipOpts(list,sel){return list.map(s=>`<option value="${s.id}"${s.id===sel?" selected":""}>${esc(s.name)}${s.side==="enemy"?` · ${BAND_NAME[s.band]}`:""}</option>`).join("")}
+
+function renderHelm(){
+  const f=flagship();const es=S.ships.filter(s=>s.side==="enemy"&&live(s));
+  let h=`<h3>Helm · round ${S.round}</h3><p class="note">Opposed pilot checks (Dex + proficiency with vehicles (space)). Only the winner gets an effect; the loser can brace for +2 AC. Leave a box empty to auto-roll, or type the total from the table.</p>`;
+  if(!f)return h+`<p class="note">Add a party ship in the Fleet tab.</p>`;
+  if(!es.length)return h+`<p class="note">No hostile ships in the fight. Add one in the Fleet tab.</p>`;
+  for(const e of es){
+    const r=S.helm[e.id];const inp=UI.helmIn[e.id]||{};
+    h+=`<div class="box" style="--c:var(--haz)"><div class="row spread"><span class="name">${esc(e.name)}</span><span class="chip" style="--c:var(--amber)">${BAND_NAME[e.band]}</span></div>`;
+    const blk=helmBlock(f),pilot=f.side==="party"?seated(f.id,"helm"):null,pm=helmMode(f);
+    if(!r&&blk){
+      h+=`<div class="mods dis">${esc(f.name)} can't contest: ${esc(blk)}. ${esc(e.name)} wins automatically.</div>
+          <div class="row"><button class="btn pri" data-act="helm" data-id="${e.id}">Resolve</button></div>`;
+    }else if(!r){
+      h+=`<div class="row"><label class="f">${esc(pilot?pilot.name:f.name)} (${sgn(pilotBonus(f))})<input type="number" data-k="hin:${e.id}:p" data-hin="${e.id}:p" value="${esc(inp.p??"")}" placeholder="auto"></label>
+          <label class="f">${esc(e.name)} (${sgn(e.pilot)})<input type="number" data-k="hin:${e.id}:e" data-hin="${e.id}:e" value="${esc(inp.e??"")}" placeholder="auto"></label></div>
+          ${pm!=="normal"?`<div class="mods ${pm==="adv"?"adv":"dis"}">${esc(f.name)} rolls with ${pm==="adv"?"advantage (engines boosted)":"disadvantage (pilot crit)"}.</div>`:""}
+          <div class="row"><button class="btn pri" data-act="helm" data-id="${e.id}">Roll helm</button>${pilot&&Live.seatOnDevice(pilot.id)?`<span class="mods" style="margin:0">${esc(pilot.name)} can roll this from their device.</span>`:""}</div>`;
+    }else{
+      const win=r.winner==="party"?f.name:r.winner==="enemy"?e.name:null;
+      h+=`<div class="res">${r.auto?`${esc(f.name)} <b>can't contest</b>`:`${esc(f.name)} <b>${r.p}</b>`} vs ${esc(e.name)} <b>${r.q}</b> · <span class="big">${win?esc(win)+" wins":"Tie, no effect"}</span></div>`;
+      if(win&&!r.effect){
+        h+=`<div class="row" style="margin-top:8px">`+
+          `<button class="btn sm" data-act="hfx" data-fx="closer" data-id="${e.id}"${e.band==="C"?" disabled":""}>Closer</button>`+
+          `<button class="btn sm" data-act="hfx" data-fx="farther" data-id="${e.id}"${e.band==="L"?" disabled":""}>Farther</button>`+
+          `<button class="btn sm" data-act="hfx" data-fx="lineup" data-id="${e.id}">Line up</button>`+
+          `<button class="btn sm" data-act="hfx" data-fx="evade" data-id="${e.id}">Evade</button>`+
+          `<button class="btn sm" data-act="hfx" data-fx="breakaway" data-id="${e.id}"${e.band!=="L"?" disabled title=\"Long range only\"":""}>Break away</button></div>`;
+      }else if(r.effect){h+=`<div class="mods">${esc(win)}: ${HELM_FX[r.effect]}</div>`}
+      h+=`<div class="row" style="margin-top:8px">${win&&!r.brace&&!(r.auto&&r.winner==="enemy")?`<button class="btn sm" data-act="brace" data-id="${e.id}">${esc(r.winner==="party"?e.name:f.name)} braces</button>`:""}${r.brace?`<span class="chip" style="--c:var(--ally)">Loser braced +2 AC</span>`:""}<button class="btn sm" data-act="hundo" data-id="${e.id}">Clear</button></div>`;
+    }
+    h+=`</div>`;
+  }
+  return h+`<p class="note">Done? Press <b>To stations</b> above the plot.</p>`;
+}
+function renderStations(){
+  const fighters=S.ships.filter(live);
+  if(!fighters.length)return `<h3>Stations</h3><p class="note">No ships yet. Add some in the Fleet tab.</p>`;
+  if(!ship(UI.att)||!live(ship(UI.att)))UI.att=(flagship()&&live(flagship())?flagship():fighters[0]).id;
+  const a=ship(UI.att);
+  if(UI.wpn>=a.weapons.length)UI.wpn=0;
+  const foes=S.ships.filter(s=>present(s)&&team(s)!==team(a));
+  if(!foes.some(s=>s.id===UI.tgt))UI.tgt=(foes.find(live)||foes[0]||{}).id??null;
+  const t=ship(UI.tgt),w=a.weapons[UI.wpn];
+  let h=crewRound();
+  h+=`<h3>Gunner · round ${S.round}</h3>
+  <div class="box" style="--c:${SIDES[a.side].css}">
+   <div class="row"><label class="f">Attacker<select data-ui="att">${shipOpts(fighters,UI.att)}</select></label>
+   <label class="f">Target<select data-ui="tgt">${foes.length?shipOpts(foes,UI.tgt):"<option>none</option>"}</select></label></div>
+   <div class="row"><label class="f">Weapon<select data-ui="wpn">${a.weapons.map((x,i)=>`<option value="${i}"${i===UI.wpn?" selected":""}>${esc(x.name)} · ${sgn(x.atk)} · ${esc(x.dmg)}${x.ammo!=null?` · ${x.ammo} left`:""}</option>`).join("")||"<option>no weapons</option>"}</select></label></div>`;
+  if(w&&t){
+    const m=attackMods(a,w,t);const why=canFire(a,w,t);
+    h+=`<div class="mods">Range <b>${BAND_NAME[m.band]}</b> · bands ${w.bands.split("").map(b=>BAND_NAME[b]).join("/")} · AC ${t.ac}${t.brace?" +2 braced":""}<br>`+
+      (m.adv.length?`<span class="adv">▲ ${m.adv.join(", ")}</span> `:"")+(m.dis.length?`<span class="dis">▼ ${m.dis.join(", ")}</span>`:"")+
+      (!m.adv.length&&!m.dis.length?"No advantage or disadvantage.":"")+
+      `<br>Roll: <b>${m.mode==="adv"?"with advantage":m.mode==="dis"?"with disadvantage":"straight"}</b></div>`+
+      (why?`<div class="mods dis">${esc(why)}</div>`:"");
+    const wk=seatKey(a.id,"w"+UI.wpn),gunner=a.side==="party"?seated(a.id,"w"+UI.wpn):null;
+    if(S.mods.over===wk)h+=`<div class="mods adv">Overcharged by engineering: +1d8 on a hit.</div>`;
+    if(team(a)==="party"&&S.mods.scan)h+=`<div class="mods adv">Scan ready: +1d8 on the next hit.</div>`;
+    if(a.side==="party"&&crewOn()&&S.acted[wk]&&!why)h+=`<div class="mods" style="color:var(--amber)">This station already fired this round.</div>`;
+    h+=`<div class="row"><label class="f">Attack bonus${gunner?` (${esc(gunner.name)})`:""}<input type="number" data-k="bonus" data-ui="bonus" value="${esc(UI.bonus)}" placeholder="${gunBonus(a,UI.wpn)}"></label>
+      <label class="f">d20 from table<input type="number" min="1" max="20" data-k="nat" data-ui="nat" value="${esc(UI.nat)}" placeholder="auto"></label>
+      <label class="f">Override<select data-ui="adv">${["auto","adv","dis","normal"].map(v=>`<option value="${v}"${UI.adv===v?" selected":""}>${{auto:"Auto",adv:"Advantage",dis:"Disadvantage",normal:"Straight"}[v]}</option>`).join("")}</select></label></div>
+      <div class="row"><label class="chk"><input type="checkbox" data-ui="over"${UI.over?" checked":""}> Overcharge +1d8</label>
+      <label class="chk"><input type="checkbox" data-ui="scan"${UI.scan?" checked":""}> Scan +1d8</label>
+      <label class="chk"><input type="checkbox" data-ui="jam"${UI.jam?" checked":""}> Jammed</label></div>
+      <div class="row"><button class="btn pri" data-act="fire"${why?" disabled":""}>Fire</button></div>`;
+  }
+  h+=`</div>`;
+  // Engineer
+  const friends=S.ships.filter(s=>s.side!=="enemy"&&present(s));
+  if(!ship(UI.eng)||!present(ship(UI.eng)))UI.eng=(friends[0]||fighters[0]).id;
+  const g=ship(UI.eng);
+  if(g){
+    h+=`<h3>Engineer & crew</h3><div class="box" style="--c:${SIDES[g.side].css}">
+     <div class="row"><label class="f">Ship<select data-ui="eng">${shipOpts(S.ships.filter(present),UI.eng)}</select></label></div>
+     <div class="stats" style="margin-top:6px">Hull <b>${g.hull}/${g.maxHull}</b> · Shields <b>${g.sh}/${g.maxSh}</b></div>
+     <div class="row"><button class="btn sm" data-act="shields" data-id="${g.id}">Shields +5</button>
+      <button class="btn sm" data-act="dc" data-id="${g.id}" title="Damage control succeeded (DC 12)">Repair 1d6</button>
+      <button class="btn sm" data-act="crit" data-id="${g.id}">Roll crit</button></div>
+     ${g.crits.length?`<div class="row">${g.crits.map((k,i)=>`<button class="chip" style="--c:var(--amber)" data-act="fix" data-id="${g.id}" data-i="${i}" title="Fixed: remove">${CRIT_BY[k].name} ×</button>`).join("")}</div>`:""}
+     <div class="row"><label class="f">Damage / repair<input type="number" id="adjN" data-k="adjN" min="0" placeholder="amount" value="${esc(UI.adj)}"></label>
+      <button class="btn sm" data-act="dmg" data-id="${g.id}" style="align-self:flex-end">Damage</button>
+      <button class="btn sm" data-act="heal" data-id="${g.id}" style="align-self:flex-end">Repair</button></div>
+    </div>`;
+  }
+  // Spool drive
+  const close=S.ships.some(s=>s.side==="enemy"&&live(s)&&s.band==="C")||!live(flagship());
+  h+=`<h3>Spool drive</h3><div class="box"><p class="note" style="margin:0 0 8px">3 successes before 3 failures (Int + tinker's tools, DC 13). Not at Close. Fail by 5+: roll a crit on your own ship.</p>
+   <div class="row spread"><span class="track s">${[0,1,2].map(i=>`<i class="${i<S.spool.s?"on":""}"></i>`).join("")}</span><span class="track f">${[0,1,2].map(i=>`<i class="${i<S.spool.f?"on":""}"></i>`).join("")}</span></div>
+   <div class="row"><button class="btn sm" data-act="spool" data-k="s"${close?" disabled":""}>Success</button><button class="btn sm" data-act="spool" data-k="f"${close?" disabled":""}>Failure</button><button class="btn sm" data-act="spool" data-k="x">Reset</button>${close?`<span class="mods dis" style="margin:0">${live(flagship())?"A hostile is at Close.":"The flagship is disabled."}</span>`:""}</div></div>`;
+  return h;
+}
+const seatChip=k=>S.pending[k]?`<span class="chip" style="--c:var(--amber)">Damage due</span>`:S.acted[k]?`<span class="chip" style="--c:var(--ok)">Acted</span>`:"";
+// Stations summary for the round: who's where, who has acted, and hits waiting for a player's damage roll.
+function crewRound(){
+  if(!crewOn())return "";
+  const ps=S.ships.filter(s=>s.side==="party"&&present(s));if(!ps.length)return "";
+  const md=[];
+  if(S.mods.scan)md.push("Scan ready: +1d8 on the party's next hit");
+  if(S.mods.over){const [sid,st]=S.mods.over.split(":");const x=ship(+sid);if(x)md.push(`Overcharge on ${esc(stationLabel(x,st))}`)}
+  for(const id of Object.keys(S.mods.jam)){const e=ship(+id);if(e)md.push(`${esc(e.name)} jammed: next attack at disadvantage`)}
+  if(S.mods.boost)md.push("Engines boosted: pilot advantage at the next helm");
+  let h=`<h3>Crew · round ${S.round}</h3><div class="box" style="--c:var(--teal)">`;
+  for(const s of ps){
+    if(ps.length>1)h+=`<div class="name" style="font-size:13px">${esc(s.name)}</div>`;
+    for(const x of stationsOf(s)){
+      const k=seatKey(s.id,x.st),c=seated(s.id,x.st),p=S.pending[k];
+      h+=`<div class="row spread seat"><span class="stats">${esc(x.label)} · ${c?`<b>${esc(c.name)}</b>`:`<span class="dis">empty</span>`}</span>${seatChip(k)}</div>`;
+      if(p){const w=s.weapons[p.wi],t=ship(p.tgt);
+        h+=`<div class="mods">Hit on ${t?esc(t.name):"?"}. ${c?esc(c.name):"The gunner"} rolls ${esc(dmgText(w,p))}.</div>
+        <div class="row"><input type="number" class="mini" min="0" data-k="pd:${k}" data-pd="${k}" value="${esc(UI.pd[k]??"")}" placeholder="total">
+         <button class="btn sm" data-act="pdmg" data-key="${k}">Apply</button><button class="btn sm" data-act="pauto" data-key="${k}">Roll it here</button></div>`}
+    }
+  }
+  if(md.length)h+=`<div class="mods adv">${md.join("<br>")}</div>`;
+  return h+`</div>`;
+}
+const CREW_STATS=[["pilot","Pilot"],["gun","Gunnery"],["missile","Missiles"],["tech","Tech"],["sensors","Sensors"]];
+function renderCrew(){
+  let h=`<h3>Crew</h3><p class="note">The characters aboard. Their bonuses are used at their station, so players only roll dice. Once anyone is on this list, a station with nobody in it can't act.</p>`;
+  for(const c of S.crew){
+    const seat=seatOf(c.id),dev=Live.seatOnDevice(c.id);
+    h+=`<div class="box" style="--c:var(--teal)">
+     <div class="row"><label class="f" style="flex:2">Name<input type="text" maxlength="30" data-k="crew:${c.id}:name" data-crew="${c.id}:name" value="${esc(c.name)}"></label>${dev?`<span class="chip" style="--c:var(--ok);align-self:flex-end">On a device</span>`:""}</div>
+     <div class="grid5">${CREW_STATS.map(([k,l])=>`<label class="f" style="min-width:0">${l}<input type="number" data-k="crew:${c.id}:${k}" data-crew="${c.id}:${k}" value="${c[k]}"></label>`).join("")}</div>
+     <div class="row spread"><span class="stats">${seat?`Seat: <b>${esc(stationLabel(seat.ship,seat.st))}</b> · ${esc(seat.ship.name)}`:"No seat"}</span><button class="btn sm warn" data-act="crewdel" data-cid="${c.id}">Remove</button></div></div>`;
+  }
+  h+=`<div class="row"><button class="btn" data-act="crewadd">Add crew member</button></div>
+   <p class="note" style="margin-top:10px"><b>Pilot</b> Dex + proficiency (vehicles, space) · <b>Gunnery</b> proficiency + Dex · <b>Missiles</b> proficiency + Int · <b>Tech</b> Int + tinker's tools (damage control, drive spool) · <b>Sensors</b> the check you use for Scan and Jam.</p>`;
+  const ps=S.ships.filter(s=>s.side==="party"&&present(s));
+  h+=`<h3>Stations</h3>`;
+  if(!ps.length)h+=`<p class="note">Add a party ship in the Fleet tab.</p>`;
+  for(const s of ps){
+    h+=`<div class="box" style="--c:var(--teal)"><div class="name">${esc(s.name)}${s===flagship()?` <span class="side" style="--c:var(--teal)">Flagship</span>`:""}</div>`;
+    for(const x of stationsOf(s)){const k=seatKey(s.id,x.st),cur=S.seats[k];
+      h+=`<div class="row spread seat"><span class="stats">${esc(x.label)}</span><span class="row" style="gap:6px;margin:0">${seatChip(k)}<select data-seat="${k}" style="width:auto;min-width:140px"><option value="">Empty</option>${S.crew.map(c=>`<option value="${c.id}"${c.id===cur?" selected":""}>${esc(c.name)}</option>`).join("")}</select></span></div>`}
+    h+=`</div>`;
+  }
+  const L=Live.state();
+  h+=`<h3>Player devices</h3>`;
+  if(L.status!=="live")h+=`<p class="note">Go live to let players act from their phones. They pick their character, then get the controls for their station.</p>`;
+  else{
+    const devs=Object.entries(Live.players());
+    h+=`<label class="chk"><input type="checkbox" data-live="pause"${Live.paused()?" checked":""}> Pause player actions</label>`;
+    h+=devs.length?devs.map(([uid,p])=>{const c=crewById(num(p&&p.crew,0));return `<div class="row spread seat"><span class="stats">${c?`<b>${esc(c.name)}</b>`:"Unknown character"} · device ${esc(uid.slice(0,5))}</span><button class="btn sm" data-act="release" data-uid="${esc(uid)}">Release</button></div>`}).join("")
+      :`<p class="note">No players have picked a character yet.</p>`;
+  }
+  return h;
+}
+function renderFleet(){
+  let h=`<h3>Add a ship</h3><div class="row"><select id="presetSel" style="flex:1">${PRESETS.map((p,i)=>`<option value="${i}">${esc(p.name)} (${SIDES[p.side||"enemy"].label})</option>`).join("")}</select>
+   <button class="btn" data-act="addp">Add</button><button class="btn" data-act="new">Custom…</button></div>
+   <h3>Ships</h3>`;
+  if(!S.ships.length)h+=`<p class="note">The plot is empty.</p>`;
+  for(const s of S.ships){
+    h+=`<div class="box ${s.status!=="ok"?"status-dis":""}" style="--c:${SIDES[s.side].css}">
+     <div class="row spread"><span><span class="name">${esc(s.name)}</span> <span class="side" style="--c:${SIDES[s.side].css}">${SIDES[s.side].label}</span></span>${statusChip(s)}</div>
+     <div class="stats">AC <b>${s.ac}</b>${s.brace?" (+2)":""} · Hull <b>${s.hull}/${s.maxHull}</b> · Shields <b>${s.sh}/${s.maxSh}</b>${s.regen?` (+${s.regen}/rd)`:""} · Pilot <b>${sgn(s.pilot)}</b>${s.pd?" · PD":""}</div>
+     <div style="max-width:220px">${meters(s)}</div>
+     <div class="stats" style="margin-top:6px">${s.weapons.map(w=>`${esc(w.name)} ${sgn(w.atk)} ${esc(w.dmg)} [${w.bands}]${w.ammo!=null?` ${w.ammo} left`:""}`).join("<br>")||"Unarmed"}</div>
+     ${s.crits.length?`<div class="row">${s.crits.map((k,i)=>`<button class="chip" style="--c:var(--amber)" data-act="fix" data-id="${s.id}" data-i="${i}" title="Fixed: remove">${CRIT_BY[k].name} ×</button>`).join("")}</div>`:""}
+     <div class="row">
+      ${s.side==="enemy"?`<button class="btn sm" data-act="band" data-d="-1" data-id="${s.id}"${s.band==="C"?" disabled":""}>◂</button><span class="chip" style="--c:var(--amber)">${BAND_NAME[s.band]}</span><button class="btn sm" data-act="band" data-d="1" data-id="${s.id}"${s.band==="L"?" disabled":""}>▸</button>`:""}
+      <button class="btn sm" data-act="edit" data-id="${s.id}">Edit</button>
+      <button class="btn sm" data-act="dup" data-id="${s.id}">Copy</button>
+      ${s.status!=="ok"?`<button class="btn sm" data-act="restore" data-id="${s.id}">Restore</button>`:""}
+      <button class="btn sm warn" data-act="del" data-id="${s.id}">Remove</button>
+     </div></div>`;
+  }
+  h+=`<h3>Encounter</h3><div class="row"><button class="btn sm" data-act="refit">Full refit (all ships)</button><button class="btn sm" data-act="clearlog">Clear log</button></div>`;
+  return h;
+}
+function renderWatch(){
+  if(!ROOM_IN)return `<h3>Join a live fight</h3><p class="note">Enter the room code your GM gave you.</p>
+    <form class="row" id="joinForm"><input type="text" name="code" maxlength="6" placeholder="ABC123" autocomplete="off" style="flex:1;text-transform:uppercase"><button class="btn pri">Watch</button></form>`;
+  const L=Live.state();
+  const msg={connecting:"Connecting…",live:"Watching live. The GM runs the fight; this screen follows along.",reconnecting:"Connection lost. Reconnecting…",
+    ended:"The GM ended this live session.",error:L.err||"Couldn't connect."}[L.status]||"";
+  let h=`<h3>Room ${esc(ROOM_IN)} · round ${S.round}</h3><p class="note"${L.status==="error"||L.status==="ended"?' style="color:var(--haz)"':""}>${esc(msg)}</p>`;
+  if(L.status==="live")h+=renderMine();
+  const f=flagship();
+  const helm=Object.entries(S.helm).map(([id,r])=>{const e=ship(+id);if(!e||!f)return "";
+    const who=r.winner==="party"?f:r.winner==="enemy"?e:null;
+    return `<div class="mods">Helm vs ${nm(e)}: ${who?`${nm(who)} wins${r.effect?`, ${esc(HELM_FX[r.effect].split(" (")[0].toLowerCase())}`:""}`:"tie"}${r.brace?", loser braces":""}.</div>`}).join("");
+  if(helm)h+=`<div class="box">${helm}</div>`;
+  for(const s of S.ships){
+    const hidden=S.hide&&s.side==="enemy";
+    h+=`<div class="box ${s.status!=="ok"?"status-dis":""}" style="--c:${SIDES[s.side].css}">
+     <div class="row spread"><span><span class="name">${esc(s.name)}</span> <span class="side" style="--c:${SIDES[s.side].css}">${SIDES[s.side].label}</span></span>${statusChip(s)}</div>
+     ${hidden?"":`<div class="stats">AC <b>${s.ac}</b>${s.brace?" (+2)":""} · Hull <b>${s.hull}/${s.maxHull}</b> · Shields <b>${s.sh}/${s.maxSh}</b></div>`}
+     <div style="max-width:220px">${meters(s)}</div>
+     <div class="row">${s.side==="enemy"&&s.status!=="escaped"?`<span class="chip" style="--c:var(--amber)">${BAND_NAME[s.band]}</span>`:""}${hidden&&s.brace?`<span class="chip" style="--c:var(--ally)">Braced</span>`:""}
+      ${s.crits.map(k=>`<span class="chip" style="--c:var(--amber)">${CRIT_BY[k].name}</span>`).join("")}</div></div>`;
+  }
+  if(!S.ships.length&&L.status==="live")h+=`<p class="note">No ships on the plot yet.</p>`;
+  return h;
+}
+/* ---- the player's own station (live view) ---- */
+const pinBox=(k,ph="d20",min=1)=>`<input type="number" class="mini" inputmode="numeric" min="${min}" data-pin="${k}" data-k="pin:${k}" value="${esc(UI.pin[k]??"")}" placeholder="${ph}">`;
+const rollWord=m=>m==="adv"?"with advantage":m==="dis"?"with disadvantage":"straight";
+function renderMine(){
+  const me=Live.me();if(!me.ready)return "";
+  if(me.crew==null||!crewById(me.crew)){
+    if(UI.watchOnly||!S.crew.length)return S.crew.length?`<div class="row" style="margin-bottom:10px"><button class="btn sm" data-act="iam">I'm a crew member</button></div>`:"";
+    return `<div class="box mine"><div class="name">Who are you?</div><p class="note" style="margin:4px 0 8px">Pick your character to act from your station.</p>
+      <div class="row">${S.crew.map(c=>`<button class="btn" data-act="claim" data-cid="${c.id}">${esc(c.name)}</button>`).join("")}<button class="btn sm" data-act="justwatch">Just watching</button></div>
+      ${UI.localMsg?`<div class="mods dis">${esc(UI.localMsg)}</div>`:""}</div>`;
+  }
+  const c=crewById(me.crew),seat=seatOf(c.id);
+  let h=`<div class="box mine"><div class="row spread"><span class="name">${esc(c.name)}</span><button class="btn sm" data-act="unclaim">Not you?</button></div>`;
+  if(!seat)h+=`<p class="note" style="margin:6px 0 0">No station yet. The GM will seat you.</p>`;
+  else h+=`<div class="side" style="--c:var(--teal);margin-bottom:6px">${esc(stationLabel(seat.ship,seat.st))} · ${esc(seat.ship.name)}</div>${stationPanel(c,seat)}`;
+  const r=me.reply;
+  if(UI.sending)h+=`<div class="mods">Sending…</div>`;
+  else if(UI.localMsg)h+=`<div class="mods dis">${esc(UI.localMsg)}</div>`;
+  else if(r&&r.ref===UI.lastRef&&r.msg&&!r.ok)h+=`<div class="mods dis">${esc(r.msg)}</div>`;
+  return h+`</div>`;
+}
+function stationPanel(c,seat){
+  const s=seat.ship,st=seat.st,key=seat.key;
+  if(!live(s))return `<p class="note">${esc(s.name)} is disabled. Nothing to do from your station.</p>`;
+  const es=S.ships.filter(x=>x.side==="enemy"&&live(x));
+  if(st==="helm"){
+    if(S.phase!=="helm")return `<p class="note">You fly the helm at the start of each round. Waiting for round ${S.round+1}.</p>`;
+    if(s!==flagship())return `<p class="note">Only the flagship flies the helm contest.</p>`;
+    if(!es.length)return `<p class="note">No hostiles to outfly.</p>`;
+    const mode=helmMode(s);
+    return es.map(e=>{const r=S.helm[e.id];
+      let b=`<div class="sub"><div class="row spread"><span>vs ${nm(e)}</span><span class="chip" style="--c:var(--amber)">${BAND_NAME[e.band]}</span></div>`;
+      if(!r)b+=`${mode!=="normal"?`<div class="mods ${mode}">Roll ${rollWord(mode)}.</div>`:""}<div class="row">${pinBox("h"+e.id)}<span class="stats">${sgn(c.pilot)}</span><button class="btn pri sm" data-pact="helm" data-enemy="${e.id}">Roll helm</button></div>`;
+      else{
+        b+=`<div class="res">${r.auto?"You can't contest":`You <b>${r.p}</b>`} vs <b>${r.q}</b> · <span class="big">${r.winner==="party"?"You win":r.winner==="enemy"?"They win":"Tie"}</span></div>`;
+        if(r.winner==="party"&&!r.effect)b+=`<div class="row">${[["closer","Closer",e.band==="C"],["farther","Farther",e.band==="L"],["lineup","Line up",false],["evade","Evade",false],["breakaway","Break away",e.band!=="L"]]
+          .map(([fx,l,off])=>`<button class="btn sm" data-pact="helmfx" data-fx="${fx}" data-enemy="${e.id}"${off?" disabled":""}>${l}</button>`).join("")}</div>`;
+        else if(r.effect)b+=`<div class="mods">${esc(HELM_FX[r.effect])}</div>`;
+        if(r.winner==="enemy"&&!r.auto)b+=r.brace?`<div class="mods">Braced: +2 AC this round.</div>`:`<div class="row"><button class="btn sm" data-pact="brace" data-enemy="${e.id}">Brace (+2 AC)</button></div>`;
+      }
+      return b+`</div>`}).join("");
+  }
+  if(S.phase!=="stations")return `<p class="note">Waiting for the helm. Your station acts after it.</p>`;
+  const p=S.pending[key];
+  if(p){const w=s.weapons[p.wi],t=ship(p.tgt);
+    return `<div class="big">Hit${t?` on ${esc(t.name)}`:""}!</div><p class="note" style="margin:4px 0 8px">Roll ${esc(dmgText(w,p))} and enter the total.</p>
+      <div class="row">${pinBox("dmg","total",0)}<button class="btn pri sm" data-pact="damage">Deal damage</button></div>`;
+  }
+  if(S.acted[key])return `<p class="note">Done for this round.</p>`;
+  if(/^w\d+$/.test(st)){
+    const wi=+st.slice(1),w=s.weapons[wi];if(!w)return "";
+    const foes=S.ships.filter(x=>x.side==="enemy"&&present(x));
+    if(!foes.length)return `<p class="note">No targets.</p>`;
+    if(!foes.some(x=>x.id===UI.ptgt))UI.ptgt=(foes.find(live)||foes[0]).id;
+    const t=ship(UI.ptgt),why=canFire(s,w,t),m=attackMods(s,w,t);
+    return `<div class="row"><label class="f">Target<select data-pui="ptgt">${foes.map(x=>`<option value="${x.id}"${x.id===UI.ptgt?" selected":""}>${esc(x.name)} · ${BAND_NAME[x.band]}</option>`).join("")}</select></label></div>
+      <div class="mods">${esc(w.name)} · ${esc(w.dmg)}${w.ammo!=null?` · ${w.ammo} left`:""} · your bonus <b>${sgn(gunBonus(s,wi))}</b>
+       ${m.adv.length?`<br><span class="adv">▲ ${esc(m.adv.join(", "))}</span>`:""}${m.dis.length?`<br><span class="dis">▼ ${esc(m.dis.join(", "))}</span>`:""}
+       <br>Roll <b>${rollWord(m.mode)}</b>${S.mods.over===key?`<br><span class="adv">Overcharged: +1d8 on a hit</span>`:""}${S.mods.scan?`<br><span class="adv">Scan: +1d8 on a hit</span>`:""}</div>
+      ${why?`<div class="mods dis">${esc(why)}</div>`:""}
+      <div class="row">${pinBox("fire")}<button class="btn pri sm" data-pact="fire"${why?" disabled":""}>Fire</button></div>`;
+  }
+  if(st==="eng"){
+    const reactor=s.crits.includes("reactor"),close=S.ships.some(x=>x.side==="enemy"&&live(x)&&x.band==="C");
+    if(!s.weapons.some((w,i)=>"w"+i===UI.pover))UI.pover="w0";
+    return `<p class="note" style="margin:0 0 6px">One action per round.${reactor?` <span class="dis">Reactor scram: no Overcharge or Boost.</span>`:""}</p>
+     <div class="sub"><div class="row"><button class="btn sm" data-pact="shields"${s.sh>=s.maxSh?" disabled":""}>Shields +5</button><button class="btn sm" data-pact="boost"${reactor?" disabled":""}>Boost engines</button></div></div>
+     ${s.weapons.length?`<div class="sub"><div class="row"><label class="f">Overcharge a gunner (+1d8)<select data-pui="pover">${s.weapons.map((w,i)=>`<option value="w${i}"${UI.pover==="w"+i?" selected":""}>${esc(w.name)}</option>`).join("")}</select></label><button class="btn sm" data-pact="overcharge"${reactor?" disabled":""} style="align-self:flex-end">Overcharge</button></div></div>`:""}
+     <div class="sub"><div class="stats">Damage control · DC 12 · ${sgn(c.tech)}</div><div class="row"><select data-pui="pfix" style="flex:1;width:auto"><option value="-1">Repair 1d6 hull</option>${s.crits.map((k,i)=>`<option value="${i}"${UI.pfix===String(i)?" selected":""}>Fix: ${CRIT_BY[k].name}</option>`).join("")}</select>${pinBox("dc")}<button class="btn sm" data-pact="dc">Roll</button></div></div>
+     <div class="sub"><div class="stats">Spool drive · DC 13 · ${sgn(c.tech)} · ${S.spool.s} of 3 successes, ${S.spool.f} of 3 failures</div><div class="row">${pinBox("spool")}<button class="btn sm" data-pact="spool"${close?" disabled":""}>Roll</button>${close?`<span class="mods dis" style="margin:0">A hostile is at Close.</span>`:""}</div></div>`;
+  }
+  if(st==="sens"){
+    if(!es.some(e=>e.id===UI.pjam))UI.pjam=es.length?es[0].id:null;
+    return `<p class="note" style="margin:0 0 6px">One action per round.</p>
+     <div class="sub"><div class="stats">Scan · DC 13 · ${sgn(c.sensors)} · the party's next hit +1d8</div><div class="row">${pinBox("scan")}<button class="btn sm" data-pact="scan">Roll</button></div></div>
+     ${es.length?`<div class="sub"><div class="stats">Jam · DC 13 · ${sgn(c.sensors)} · their next attack at disadvantage</div><div class="row"><select data-pui="pjam" style="flex:1;width:auto">${es.map(e=>`<option value="${e.id}"${e.id===UI.pjam?" selected":""}>${esc(e.name)}</option>`).join("")}</select>${pinBox("jam")}<button class="btn sm" data-pact="jam">Roll</button></div></div>`:""}
+     <p class="note" style="margin:8px 0 0">Hail or Help: say it at the table.</p>`;
+  }
+  return "";
+}
+// Turn a button on the player's panel into an action for the GM's page.
+function playerSend(b){
+  const pin=k=>{const v=parseInt(UI.pin[k],10);return Number.isFinite(v)?v:null};
+  const need=(k,lo=1,hi=20)=>{const v=pin(k);if(v==null||v<lo||v>hi){UI.localMsg=lo===0?"Enter your damage total.":"Enter your d20 roll (1 to 20).";render();return null}return v};
+  const t=b.dataset.pact;let a=null,used=null;
+  if(t==="helm"){const k="h"+b.dataset.enemy,v=need(k);if(v==null)return;a={type:t,enemy:+b.dataset.enemy,d20:v};used=k}
+  else if(t==="helmfx")a={type:t,enemy:+b.dataset.enemy,fx:b.dataset.fx};
+  else if(t==="brace")a={type:t,enemy:+b.dataset.enemy};
+  else if(t==="fire"){const v=need("fire");if(v==null)return;a={type:t,target:UI.ptgt,d20:v};used="fire"}
+  else if(t==="damage"){const v=need("dmg",0,999);if(v==null)return;a={type:t,total:v};used="dmg"}
+  else if(t==="shields"||t==="boost")a={type:t};
+  else if(t==="overcharge")a={type:t,station:UI.pover};
+  else if(t==="dc"){const v=need("dc");if(v==null)return;a={type:t,d20:v,fix:+UI.pfix};used="dc"}
+  else if(t==="spool"||t==="scan"){const v=need(t);if(v==null)return;a={type:t,d20:v};used=t}
+  else if(t==="jam"){const v=need("jam");if(v==null)return;a={type:t,enemy:UI.pjam,d20:v};used="jam"}
+  if(!a)return;
+  if(used)delete UI.pin[used];
+  Live.act(a);
+}
+function render(){
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===UI.tab)));
+  const pane=$("#pane");const sc=pane.scrollTop;
+  // Live updates re-render the panel; keep focus and caret in whatever box was being typed in.
+  const ae=document.activeElement,fk=ae&&pane.contains(ae)&&ae.dataset?ae.dataset.k:null;let sel=null;
+  try{if(fk&&ae.selectionStart!=null)sel=[ae.selectionStart,ae.selectionEnd]}catch(e){}
+  pane.innerHTML=WATCH?renderWatch():UI.tab==="helm"?renderHelm():UI.tab==="stations"?renderStations():UI.tab==="crew"?renderCrew():renderFleet();
+  pane.scrollTop=sc;
+  if(fk){const el=pane.querySelector(`[data-k="${CSS.escape(fk)}"]`);if(el){el.focus({preventScroll:true});if(sel)try{el.setSelectionRange(sel[0],sel[1])}catch(e){}}}
+  $("#hudRound").textContent=`Round ${S.round}`;
+  document.querySelectorAll("#hudPhase span").forEach(s=>s.classList.toggle("cur",s.dataset.p===S.phase));
+  $("#nextBtn").textContent=S.phase==="helm"?"To stations ▸":"Upkeep & next round ▸";
+  const lg=$("#log");
+  lg.innerHTML=S.log.slice().reverse().map(e=>`<p class="${esc(e.c)}"><span class="r">R${e.r}</span> ${safeHtml(e.h)}</p>`).join("")||`<p class="r">Combat log is empty.</p>`;
+  FX.labels();
+  if(!WATCH)Live.push();
+}
+
+/* events */
+document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("button[data-tab]");if(b){UI.tab=b.dataset.tab;render()}});
+$("#nextBtn").addEventListener("click",nextPhase);
+$("#pane").addEventListener("submit",e=>{if(e.target.id!=="joinForm")return;e.preventDefault();
+  const c=e.target.code.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);if(c)location.search="?watch="+c});
+$("#pane").addEventListener("input",e=>{
+  const t=e.target;
+  if(t.dataset.hin){const [id,k]=t.dataset.hin.split(":");(UI.helmIn[id]=UI.helmIn[id]||{})[k]=t.value;return}
+  if(t.dataset.pin){UI.pin[t.dataset.pin]=t.value;return}
+  if(t.dataset.pd){UI.pd[t.dataset.pd]=t.value;return}
+  if(t.id==="adjN"){UI.adj=t.value;return}
+  if(t.dataset.crew){const [id,k]=t.dataset.crew.split(":");const c=crewById(+id);if(!c)return;
+    c[k]=k==="name"?t.value.slice(0,30):num(t.value,0,-20,30);save();Live.push();return}
+  const k=t.dataset.ui;if(!k)return;
+  if(t.type==="checkbox"){UI[k]=t.checked;render();return}
+  if(k==="bonus"||k==="nat"){UI[k]=t.value;return}
+});
+$("#pane").addEventListener("change",e=>{
+  const t=e.target,k=t.dataset.ui;
+  if(t.dataset.seat){const key=t.dataset.seat,v=t.value?+t.value:null;
+    for(const [sk,cid] of Object.entries(S.seats))if(cid===v)delete S.seats[sk];
+    if(v)S.seats[key]=v;else delete S.seats[key];
+    const c=v&&crewById(v);const sh=ship(+key.split(":")[0]);
+    if(sh)log(c?`${esc(c.name)} takes ${esc(stationLabel(sh,key.split(":")[1]))} on ${nm(sh)}.`:`${esc(stationLabel(sh,key.split(":")[1]))} on ${nm(sh)} is empty.`,"sys");
+    commit();return}
+  if(t.dataset.crew){ // update names in the seat lists without redrawing (a redraw would steal the next field's focus)
+    const [id,k]=t.dataset.crew.split(":");const c=crewById(+id);
+    if(c&&k==="name")document.querySelectorAll(`select[data-seat] option[value="${+id}"]`).forEach(o=>{o.textContent=c.name});
+    return}
+  if(t.dataset.pui){UI[t.dataset.pui]=t.dataset.pui==="ptgt"||t.dataset.pui==="pjam"?+t.value:t.value;render();return}
+  if(t.dataset.live==="pause"){Live.setPaused(t.checked);return}
+  if(!k||t.type==="checkbox")return;
+  if(k==="att"||k==="tgt"||k==="eng")UI[k]=+t.value;
+  if(k==="att"){UI.wpn=0;UI.bonus=""}
+  if(k==="wpn"){UI.wpn=+t.value;UI.bonus=""}
+  if(k==="adv")UI.adv=t.value;
+  if(k==="bonus"||k==="nat")return;
+  render();FX.sync();
+});
+$("#pane").addEventListener("click",e=>{
+  if(WATCH){
+    const pb=e.target.closest("[data-pact]");if(pb&&!pb.disabled){UI.localMsg="";playerSend(pb);return}
+    const b=e.target.closest("[data-act]");if(!b)return;
+    if(b.dataset.act==="claim"){UI.localMsg="";Live.claim(+b.dataset.cid)}
+    if(b.dataset.act==="unclaim")Live.unclaim();
+    if(b.dataset.act==="justwatch"){UI.watchOnly=true;render()}
+    if(b.dataset.act==="iam"){UI.watchOnly=false;render()}
+    return;
+  }
+  const b=e.target.closest("[data-act]");if(!b||b.disabled)return;
+  const s=b.dataset.id?ship(+b.dataset.id):null;
+  switch(b.dataset.act){
+    case "helm":resolveHelm(s);break;
+    case "hfx":helmEffect(s,b.dataset.fx);break;
+    case "hundo":undoHelm(s);break;
+    case "brace":brace(s);break;
+    case "fire":fire();break;
+    case "shields":{const g=Math.min(5,s.maxSh-s.sh);s.sh+=g;log(`${nm(s)}: engineer reroutes power, shields +${g}.`,"sys",forFoe(s,`${nm(s)}: engineer reroutes power to shields.`));commit();break}
+    case "dc":{const r=roll("1d6");const g=Math.min(r.total,s.maxHull-s.hull);s.hull+=g;if(s.hull>0&&s.status==="disabled")s.status="ok";log(`${nm(s)}: damage control, ${r.text}, hull +${g}.`,"sys",forFoe(s,`${nm(s)}: damage control.`));commit();break}
+    case "crit":rollCrit(s);commit();break;
+    case "fix":{const k=s.crits.splice(+b.dataset.i,1)[0];log(`${nm(s)}: ${CRIT_BY[k].name} fixed.`,"sys");commit();break}
+    case "dmg":case "heal":{const n=parseInt(UI.adj,10);if(!(n>0))return;UI.adj="";
+      if(b.dataset.act==="dmg")applyDamage(s,n);else{const g=Math.min(n,s.maxHull-s.hull);s.hull+=g;if(s.hull>0&&s.status==="disabled")s.status="ok";log(`${nm(s)}: hull +${g}.`,"sys",forFoe(s,`${nm(s)}: repairs.`))}
+      commit();break}
+    case "spool":{const k=b.dataset.k;if(k==="x")S.spool={s:0,f:0};else spool(k);commit();break}
+    case "pdmg":{const k=b.dataset.key,n=parseInt(UI.pd[k],10);if(!(n>=0))return;delete UI.pd[k];finishHit(k,n);break}
+    case "pauto":{const k=b.dataset.key;delete UI.pd[k];finishHit(k,null);break}
+    case "crewadd":{const c={id:S.cnid++,name:`Crew ${S.crew.length+1}`,pilot:0,gun:0,missile:0,tech:0,sensors:0};S.crew.push(c);UI.tab="crew";commit();break}
+    case "crewdel":{const c=crewById(+b.dataset.cid);if(!c||!confirm(`Remove ${c.name} from the crew?`))return;
+      S.crew=S.crew.filter(x=>x!==c);for(const [k,v] of Object.entries(S.seats))if(v===c.id)delete S.seats[k];commit();break}
+    case "release":Live.release(b.dataset.uid);break;
+    case "addp":{const p=PRESETS[+$("#presetSel").value];if(!p)return;const n=makeShip(p);
+      const same=S.ships.filter(x=>x.name===n.name||x.name.startsWith(n.name+" ")).length;if(same)n.name+=" "+(same+1);
+      S.ships.push(n);log(`${nm(n)} enters the plot${n.side==="enemy"?` at ${BAND_NAME[n.band]} range`:""}.`,"sys");commit();break}
+    case "new":openEditor(null);break;
+    case "edit":openEditor(s);break;
+    case "dup":{const n=makeShip(JSON.parse(JSON.stringify(s)));n.name=(s.name+" 2").slice(0,40);n.band=s.band;S.ships.push(n);commit();break}
+    case "restore":s.status="ok";if(s.hull<=0)s.hull=1;log(`${nm(s)} is back in the fight.`,"sys");commit();break;
+    case "del":if(confirm(`Remove ${s.name}?`)){S.ships=S.ships.filter(x=>x!==s);delete S.helm[s.id];dropSeats(s.id);commit()}break;
+    case "band":{const i=clamp(BANDS.indexOf(s.band)+ +b.dataset.d,0,2);s.band=BANDS[i];log(`${nm(s)} moves to ${BAND_NAME[s.band]}.`,"sys");commit();break}
+    case "refit":if(confirm("Restore every ship to full hull, shields and ammo, and clear crits?")){
+      for(const x of S.ships){const p=PRESETS.find(p=>p.name===x.name.replace(/ \d+$/,""));x.hull=x.maxHull;x.sh=x.maxSh;x.crits=[];x.status="ok";x.marks=0;x.brace=false;
+        if(p)x.weapons.forEach((w,i)=>{const pw=p.weapons[i]&&parseWeapon(p.weapons[i]);if(pw&&pw.ammo!=null&&w.name===pw.name)w.ammo=pw.ammo})}
+      log("Full refit.","sys");commit()}break;
+    case "clearlog":S.log=[];commit();break;
+  }
+});
+
+/* editor */
+let editing=null;
+$("#edForm").model.innerHTML=MODELS.map(m=>`<option>${m}</option>`).join("");
+function openEditor(s){
+  editing=s;const f=$("#edForm");const src=s||{name:"New ship",side:"enemy",model:"corvette",ac:13,maxHull:20,maxSh:10,regen:5,pilot:3,band:"M",pd:false,weapons:[parseWeapon("Lasers | +5 | 2d8 | CML | dis:L")]};
+  $("#edTitle").textContent=s?`Edit ${s.name}`:"New ship";
+  for(const k of ["name","side","model","ac","maxHull","maxSh","regen","pilot","band"])f[k].value=src[k];
+  f.pd.checked=!!src.pd;f.weapons.value=src.weapons.map(weaponLine).join("\n");
+  $("#editor").showModal();
+}
+$("#editor").addEventListener("close",()=>{
+  if($("#editor").returnValue!=="ok")return;
+  const f=$("#edForm");
+  const d={name:f.name.value.trim().slice(0,40)||"Ship",side:f.side.value,model:f.model.value,ac:+f.ac.value,maxHull:Math.max(1,+f.maxHull.value),maxSh:Math.max(0,+f.maxSh.value),
+    regen:Math.max(0,+f.regen.value),pilot:+f.pilot.value,band:f.band.value,pd:f.pd.checked,weapons:f.weapons.value.split("\n").map(parseWeapon).filter(Boolean)};
+  if(editing){const s=editing;const dh=d.maxHull-s.maxHull,ds=d.maxSh-s.maxSh;Object.assign(s,d);s.hull=clamp(s.hull+Math.max(0,dh),0,s.maxHull);s.sh=clamp(s.sh+Math.max(0,ds),0,s.maxSh);
+    dropSeats(s.id,st=>s.side==="party"&&(!/^w/.test(st)||+st.slice(1)<s.weapons.length))}
+  else{const n=makeShip(d);S.ships.push(n);log(`${nm(n)} enters the plot.`,"sys")}
+  editing=null;commit();
+});
+
+/* file save / load / new */
+$("#exportBtn").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(S,null,1)],{type:"application/json"});const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download=`tactical-round${S.round}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+});
+$("#importBtn").addEventListener("click",()=>$("#importFile").click());
+$("#importFile").addEventListener("change",async e=>{
+  const file=e.target.files[0];e.target.value="";if(!file)return;
+  try{const j=JSON.parse(await file.text());if(!Array.isArray(j.ships))throw 0;S=sanitizeState(j);FX.reset();log(`Loaded ${esc(file.name)}.`,"sys");commit()}
+  catch(err){alert("That file isn't a tactical-plot save.")}
+});
+$("#newBtn").addEventListener("click",()=>{
+  if(!confirm("Clear the plot and start a new encounter? (Save a file first if you want this one.)"))return;
+  S=blank();const keep=PRESETS.find(p=>p.side==="party");if(keep)S.ships.push(makeShip(keep));
+  FX.reset();log("New encounter.","sys");UI.tab="fleet";commit();
+});
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter")return;
+  if(e.target.matches("[data-hin]")){const id=+e.target.dataset.hin.split(":")[0];resolveHelm(ship(id));return}
+  if(e.target.matches("[data-pin]")){const b=e.target.closest(".row")&&e.target.closest(".row").querySelector("[data-pact]");if(b&&!b.disabled){e.preventDefault();b.click()}return}
+  if(e.target.matches("[data-pd]")){const b=e.target.parentNode.querySelector('[data-act="pdmg"]');if(b)b.click()}
+});
+
+/* ============================== 3D ============================== */
+const FX=(()=>{
+  const noop={sync(){},labels(){},shot(){},boom(){},reset(){},pick(){}};
+  const stage=$("#stage");
+  if(!window.THREE){stage.insertAdjacentHTML("beforeend",`<div class="offline">The 3D plot needs three.js from the CDN and couldn't load it.<br>The combat panel works without it.</div>`);return noop}
+  let renderer;
+  try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false})}catch(e){stage.insertAdjacentHTML("beforeend",`<div class="offline">WebGL is unavailable here. The combat panel works without it.</div>`);return noop}
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setClearColor(0x04050d);
+  stage.prepend(renderer.domElement);
+  const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x04050d,.006);
+  const cam=new THREE.PerspectiveCamera(48,1,.1,1200);
+  const HOME=new THREE.Vector3(0,26,34);cam.position.copy(HOME);
+  const ctl=THREE.OrbitControls?new THREE.OrbitControls(cam,renderer.domElement):null;
+  if(ctl){ctl.enableDamping=true;ctl.dampingFactor=.08;ctl.minDistance=8;ctl.maxDistance=90;ctl.maxPolarAngle=1.48;ctl.enablePan=true}
+  cam.lookAt(0,0,0);
+  scene.add(new THREE.AmbientLight(0x5a5f99,.75));
+  const sun=new THREE.DirectionalLight(0xfff3dd,1.1);sun.position.set(30,40,20);scene.add(sun);
+  const rim=new THREE.DirectionalLight(0xc9a6ff,.5);rim.position.set(-30,-10,-30);scene.add(rim);
+
+  // backdrop: stars, nebula glows, a planet
+  {const n=2200,p=new Float32Array(n*3),c=new Float32Array(n*3);
+   for(let i=0;i<n;i++){const u=Math.random()*2-1,th=Math.random()*Math.PI*2,r=380+Math.random()*120,q=Math.sqrt(1-u*u);
+     p.set([r*q*Math.cos(th),r*u,r*q*Math.sin(th)],i*3);const w=.55+Math.random()*.45,tint=Math.random();
+     c.set(tint<.15?[w,w*.85,w*.6]:tint<.3?[w*.8,w*.9,w]:[w,w,w],i*3)}
+   const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.BufferAttribute(p,3));g.setAttribute("color",new THREE.BufferAttribute(c,3));
+   scene.add(new THREE.Points(g,new THREE.PointsMaterial({size:1.6,sizeAttenuation:false,vertexColors:true,fog:false})))}
+  function glowTex(){const cv=document.createElement("canvas");cv.width=cv.height=128;const x=cv.getContext("2d");const gr=x.createRadialGradient(64,64,0,64,64,64);
+    gr.addColorStop(0,"rgba(255,255,255,1)");gr.addColorStop(.25,"rgba(255,255,255,.45)");gr.addColorStop(1,"rgba(255,255,255,0)");x.fillStyle=gr;x.fillRect(0,0,128,128);return new THREE.CanvasTexture(cv)}
+  const GLOW=glowTex();
+  for(const [col,pos,sc,op] of [[0xc9a6ff,[-220,40,-300],420,.16],[0x6ff3e0,[260,-60,-260],360,.10],[0xffb35c,[60,-120,320],380,.08]]){
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:col,transparent:true,opacity:op,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+    sp.position.set(...pos);sp.scale.set(sc,sc,1);scene.add(sp)}
+  {const pl=new THREE.Mesh(new THREE.SphereGeometry(60,48,32),new THREE.MeshStandardMaterial({color:0x2b2a5c,roughness:.9,metalness:0,fog:false}));
+   pl.position.set(-170,-70,-260);scene.add(pl);
+   const at=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:0x8fb4ff,transparent:true,opacity:.22,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+   at.position.copy(pl.position);at.scale.set(175,175,1);scene.add(at)}
+
+  // range bands
+  const bandLbl={};
+  for(const b of BANDS){
+    const r=BAND_R[b],pts=[];for(let i=0;i<=128;i++){const a=i/128*Math.PI*2;pts.push(new THREE.Vector3(Math.sin(a)*r,0,Math.cos(a)*r))}
+    const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineDashedMaterial({color:b==="C"?0xff6b7a:b==="M"?0xffb35c:0x6ff3e0,dashSize:.8,gapSize:.6,transparent:true,opacity:.45}));
+    ln.computeLineDistances();scene.add(ln);
+    const inner=b==="C"?0:BAND_R[BANDS[BANDS.indexOf(b)-1]];
+    const ring=new THREE.Mesh(new THREE.RingGeometry(inner,r,96),new THREE.MeshBasicMaterial({color:b==="C"?0xff6b7a:b==="M"?0xffb35c:0x6ff3e0,transparent:true,opacity:.025,side:THREE.DoubleSide,depthWrite:false}));
+    ring.rotation.x=-Math.PI/2;ring.position.y=-.02;scene.add(ring);
+    const el=document.createElement("div");el.className="band3d";el.textContent=BAND_NAME[b];stage.appendChild(el);
+    bandLbl[b]={el,pos:new THREE.Vector3(0,0,(inner+r)/2+ (b==="C"?2:0))};
+  }
+
+  // ship models: nose along +z
+  const hullMat=new THREE.MeshStandardMaterial({color:0x9097c4,metalness:.55,roughness:.42,flatShading:true});
+  const darkMat=new THREE.MeshStandardMaterial({color:0x3a3f66,metalness:.4,roughness:.6,flatShading:true});
+  function part(geo,mat,x=0,y=0,z=0,rx=0,ry=0,rz=0){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);return m}
+  function engine(g,x,y,z,r,col){
+    g.add(part(new THREE.CylinderGeometry(r,r*1.15,r*2.2,10),darkMat,x,y,z,Math.PI/2));
+    const fl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:col,transparent:true,opacity:.95,blending:THREE.AdditiveBlending,depthWrite:false}));
+    fl.position.set(x,y,z-r*1.4);fl.scale.set(r*4,r*4,1);fl.userData.flame=true;g.add(fl);
+  }
+  function buildModel(kind,col){
+    const g=new THREE.Group();const acc=new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.55,flatShading:true});let size=1.6;
+    if(kind==="dropship"){
+      g.add(part(new THREE.BoxGeometry(1.3,.7,2.4),hullMat));
+      g.add(part(new THREE.ConeGeometry(.62,1.1,4),hullMat,0,0,1.75,Math.PI/2,0,Math.PI/4));
+      g.add(part(new THREE.BoxGeometry(.7,.25,.6),acc,0,.42,.9));
+      g.add(part(new THREE.BoxGeometry(3.2,.12,.9),hullMat,0,-.1,-.4));
+      g.add(part(new THREE.BoxGeometry(.18,.5,.5),acc,1.55,.1,-.4));g.add(part(new THREE.BoxGeometry(.18,.5,.5),acc,-1.55,.1,-.4));
+      g.add(part(new THREE.CylinderGeometry(.18,.22,.4,8),darkMat,0,.5,-.3));
+      engine(g,.42,0,-1.4,.26,0x8fd8ff);engine(g,-.42,0,-1.4,.26,0x8fd8ff);size=2;
+    }else if(kind==="corsair"){
+      g.add(part(new THREE.CylinderGeometry(.35,.5,3,6),hullMat,0,0,0,Math.PI/2));
+      g.add(part(new THREE.ConeGeometry(.35,1.4,6),acc,0,0,2.2,Math.PI/2));
+      g.add(part(new THREE.BoxGeometry(2.6,.1,.9),hullMat,0,0,-.6,0,0,0));
+      g.add(part(new THREE.BoxGeometry(.1,1.1,.9),acc,0,.5,-.9));
+      g.add(part(new THREE.CylinderGeometry(.04,.04,1.2,4),acc,0,-.3,2.4,Math.PI/2));
+      engine(g,0,0,-1.6,.32,0xffa06b);size=1.9;
+    }else if(kind==="fighter"){
+      g.add(part(new THREE.ConeGeometry(.35,1.8,5),hullMat,0,0,.2,Math.PI/2));
+      g.add(part(new THREE.BoxGeometry(2,.08,.6),acc,0,0,-.3));
+      g.add(part(new THREE.BoxGeometry(.08,.6,.5),hullMat,.95,0,-.35));g.add(part(new THREE.BoxGeometry(.08,.6,.5),hullMat,-.95,0,-.35));
+      engine(g,0,0,-.8,.18,0xffc27a);size=1.2;
+    }else if(kind==="capital"){
+      g.add(part(new THREE.BoxGeometry(2.2,1.1,6.5),hullMat));
+      g.add(part(new THREE.ConeGeometry(1.2,2.2,4),hullMat,0,0,4.3,Math.PI/2,0,Math.PI/4));
+      g.add(part(new THREE.BoxGeometry(.9,1.2,1.4),darkMat,0,1.1,-1.6));g.add(part(new THREE.BoxGeometry(.5,.5,.8),acc,0,1.85,-1.6));
+      g.add(part(new THREE.BoxGeometry(3.4,.3,2.4),hullMat,0,-.2,-1.2));
+      for(const x of [-1.4,1.4])for(const z of [1,2.4])g.add(part(new THREE.BoxGeometry(.4,.3,.7),acc,x,.4,z));
+      for(const x of [-.7,.7])for(const y of [-.3,.3])engine(g,x,y,-3.4,.3,0x8fd8ff);size=4;
+    }else{ // corvette
+      g.add(part(new THREE.BoxGeometry(1.1,.7,3.2),hullMat));
+      g.add(part(new THREE.ConeGeometry(.55,1.3,4),hullMat,0,0,2.2,Math.PI/2,0,Math.PI/4));
+      g.add(part(new THREE.BoxGeometry(.6,.45,.9),acc,0,.55,-.2));
+      g.add(part(new THREE.BoxGeometry(2.2,.15,1),hullMat,0,0,-.9));
+      g.add(part(new THREE.CylinderGeometry(.12,.12,1.4,6),darkMat,0,.2,1.2,Math.PI/2));
+      engine(g,.35,0,-1.8,.25,0x8fd8ff);engine(g,-.35,0,-1.8,.25,0x8fd8ff);size=2.2;
+    }
+    g.userData.size=size;return g;
+  }
+
+  const meshes=new Map();
+  const selRing=new THREE.Mesh(new THREE.RingGeometry(1,1.12,48),new THREE.MeshBasicMaterial({color:0xffb35c,transparent:true,opacity:.9,side:THREE.DoubleSide,depthWrite:false}));
+  selRing.rotation.x=-Math.PI/2;scene.add(selRing);
+  const tgtRing=new THREE.Mesh(new THREE.RingGeometry(1,1.08,4),new THREE.MeshBasicMaterial({color:0xff6b7a,transparent:true,opacity:.95,side:THREE.DoubleSide,depthWrite:false}));
+  tgtRing.rotation.x=-Math.PI/2;scene.add(tgtRing);
+
+  function key(s){return s.model+"|"+s.side}
+  function sync(){
+    const ids=new Set(S.ships.map(s=>s.id));
+    for(const [id,m] of meshes)if(!ids.has(id)){scene.remove(m.root);m.label.remove();meshes.delete(id)}
+    for(const s of S.ships){
+      let m=meshes.get(s.id);
+      if(m&&m.key!==key(s)){scene.remove(m.root);m.label.remove();meshes.delete(s.id);m=null}
+      if(!m){
+        const root=new THREE.Group();const model=buildModel(s.model,SIDES[s.side].hex);root.add(model);root.userData.sid=s.id;
+        const shield=new THREE.Mesh(new THREE.SphereGeometry(model.userData.size*1.05,24,16),new THREE.MeshBasicMaterial({color:SIDES[s.side].hex,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));
+        root.add(shield);scene.add(root);
+        const label=document.createElement("div");label.className="lbl3d";stage.appendChild(label);
+        m={root,model,shield,label,key:key(s),flash:0,tumble:new THREE.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).multiplyScalar(.6),first:true};
+        meshes.set(s.id,m);
+      }
+    }
+    labels();
+  }
+  function labels(){
+    for(const s of S.ships){const m=meshes.get(s.id);if(!m)continue;
+      m.label.innerHTML=`<b style="color:${SIDES[s.side].css}">${esc(s.name)}</b>${s.status==="disabled"?`<div class="st" style="color:var(--haz)">DISABLED</div>`:s.brace?`<div class="st">BRACED</div>`:""}<div class="bars">${meters(s)}</div>`;}
+  }
+  // where each ship should be
+  const T0=performance.now();
+  function goal(s,t,out){
+    const f=flagship();
+    if(s.side==="enemy"){const r=s.status==="escaped"?90:BAND_R[s.band];const a=s.angle+t*.012;return out.set(Math.sin(a)*r,0,Math.cos(a)*r)}
+    if(f&&s.id===f.id&&s.status!=="escaped")return out.set(0,0,0);
+    const fr=S.ships.filter(x=>x.side!=="enemy"&&x!==f);const i=fr.indexOf(s),n=Math.max(1,fr.length);
+    if(s.status==="escaped")return out.set(-90,0,-90);
+    const a=Math.PI+(i-(n-1)/2)*.9;return out.set(Math.sin(a)*4.2,0,Math.cos(a)*4.2);
+  }
+  const effects=[];
+  function add(obj,life,update,done){scene.add(obj);effects.push({obj,life,t:0,update,done})}
+  function posOf(id){const m=meshes.get(id);return m?m.root.position.clone():new THREE.Vector3()}
+  function beam(a,b,col,width,life){
+    const d=b.clone().sub(a),len=d.length();const g=new THREE.Group();
+    const core=new THREE.Mesh(new THREE.CylinderGeometry(width*.35,width*.35,len,6,1,true),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+    const glow=new THREE.Mesh(new THREE.CylinderGeometry(width,width,len,8,1,true),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.6,blending:THREE.AdditiveBlending,depthWrite:false}));
+    g.add(core,glow);g.position.copy(a).addScaledVector(d,.5);g.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());
+    add(g,life,k=>{core.material.opacity=1-k;glow.material.opacity=.6*(1-k)});
+  }
+  function burst(p,col,n=40,speed=4,life=.9,size=.35){
+    const pos=new Float32Array(n*3),vel=[];for(let i=0;i<n;i++){pos.set([p.x,p.y,p.z],i*3);vel.push(new THREE.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize().multiplyScalar(speed*(.3+Math.random())))}
+    const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.BufferAttribute(pos,3));
+    const mat=new THREE.PointsMaterial({color:col,size,map:GLOW,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});
+    const pts=new THREE.Points(g,mat);let last=0;
+    add(pts,life,k=>{const dt=(k-last)*life;last=k;for(let i=0;i<n;i++){pos[i*3]+=vel[i].x*dt;pos[i*3+1]+=vel[i].y*dt;pos[i*3+2]+=vel[i].z*dt}g.attributes.position.needsUpdate=true;mat.opacity=1-k});
+  }
+  function flash(p,col,sc,life){
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:col,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+    sp.position.copy(p);add(sp,life,k=>{sp.scale.setScalar(sc*(.4+k));sp.material.opacity=1-k});
+  }
+  function impact(tid,hit,res){
+    const m=meshes.get(tid);if(!m||!hit)return;const p=m.root.position.clone();
+    if(res&&res.absorbed)m.flash=1;
+    if(res&&res.hullDmg){burst(p,0xffb35c,30,3.5,.8,.3);flash(p,0xffd8a0,3,.4)}
+  }
+  function shot(aid,tid,w,hit,res){
+    const a=posOf(aid),b=posOf(tid);const am=meshes.get(aid),tm=meshes.get(tid);if(!am||!tm)return;
+    const col=SIDES[ship(aid).side].hex;
+    let end=b.clone();
+    if(!hit){const d=b.clone().sub(a).normalize();const side=new THREE.Vector3(-d.z,0,d.x).multiplyScalar((Math.random()<.5?-1:1)*(1.8+Math.random()));end=b.clone().add(side).addScaledVector(d,10);end.y+=(Math.random()-.5)*2}
+    if(w.missile){
+      const ctrl=a.clone().lerp(end,.5).add(new THREE.Vector3((Math.random()-.5)*8,4+Math.random()*3,(Math.random()-.5)*8));
+      const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:0xffe0a0,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));sp.scale.setScalar(1.1);
+      const life=1.1;let lastTrail=0;
+      add(sp,life,k=>{const u=1-k;sp.position.set(u*u*a.x+2*u*k*ctrl.x+k*k*end.x,u*u*a.y+2*u*k*ctrl.y+k*k*end.y,u*u*a.z+2*u*k*ctrl.z+k*k*end.z);
+        if(k-lastTrail>.05){lastTrail=k;flash(sp.position.clone(),0xff9a5c,.9,.6)}},()=>{if(hit){flash(end,0xffd8a0,5,.5);impact(tid,hit,res)}});
+    }else{
+      const heavy=/rail|battery|lance|cannon/i.test(w.name);
+      const from=a.clone();from.y+=.2;
+      beam(from,end,col,heavy?.16:.09,heavy?.5:.35);flash(from,col,1.6,.25);
+      if(!heavy){setTimeout(()=>beam(from.clone().add(new THREE.Vector3(.2,0,.2)),end.clone().add(new THREE.Vector3((Math.random()-.5)*.4,0,(Math.random()-.5)*.4)),col,.07,.3),110)}
+      if(hit)impact(tid,hit,res);
+    }
+  }
+  function boom(id){const m=meshes.get(id);if(!m)return;const p=m.root.position.clone();
+    setTimeout(()=>{burst(p,0xffb35c,90,7,1.6,.6);burst(p,0xff6b7a,50,4,1.2,.45);flash(p,0xfff0c2,12,.9)},500)}
+  function reset(){for(const [,m] of meshes){scene.remove(m.root);m.label.remove()}meshes.clear()}
+
+  // picking
+  const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();let down=null;
+  renderer.domElement.addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY]});
+  renderer.domElement.addEventListener("pointerup",e=>{
+    if(WATCH||!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;down=null;
+    const r=renderer.domElement.getBoundingClientRect();ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);
+    ray.setFromCamera(ptr,cam);const roots=[...meshes.values()].map(m=>m.model);
+    const hit=ray.intersectObjects(roots,true)[0];if(!hit)return;
+    let o=hit.object;while(o&&o.userData.sid==null)o=o.parent;if(!o)return;
+    const s=ship(o.userData.sid);if(!s)return;
+    const a=ship(UI.att);
+    if(UI.tab!=="stations")UI.tab="stations";
+    if(a&&team(s)!==team(a)&&present(s))UI.tgt=s.id;
+    else if(live(s)){UI.att=s.id;UI.wpn=0;UI.bonus="";UI.eng=s.id}
+    render();
+  });
+  $("#viewBtn").addEventListener("click",()=>{cam.position.copy(HOME);if(ctl){ctl.target.set(0,0,0);ctl.update()}else cam.lookAt(0,0,0)});
+
+  // loop
+  const tmp=new THREE.Vector3(),proj=new THREE.Vector3();let last=performance.now();let W=0,H=0;
+  function size(){const w=stage.clientWidth,h=stage.clientHeight;if(w!==W||h!==H){W=w;H=h;renderer.setSize(w,h,false);cam.aspect=w/Math.max(1,h);cam.updateProjectionMatrix()}}
+  function place(el,v,dy){proj.copy(v);proj.y+=dy;proj.project(cam);
+    if(proj.z>1||proj.z<-1){el.style.display="none";return}
+    el.style.display="";el.style.transform=`translate(${(proj.x*.5+.5)*W}px,${(-proj.y*.5+.5)*H}px) translate(-50%,-100%)`}
+  function frame(now){
+    const dt=Math.min(.05,(now-last)/1000);last=now;const t=(now-T0)/1000;size();
+    const f=flagship();
+    for(const s of S.ships){const m=meshes.get(s.id);if(!m)continue;
+      goal(s,t,tmp);tmp.y=Math.sin(t*.8+s.id)*.25;
+      if(m.first){m.root.position.copy(tmp);m.first=false}else m.root.position.lerp(tmp,1-Math.exp(-dt*(s.status==="escaped"?.8:2.2)));
+      if(s.status==="disabled"){m.model.rotation.x+=m.tumble.x*dt;m.model.rotation.z+=m.tumble.z*dt}
+      else{
+        let look=null;
+        if(s.side==="enemy"&&f)look=meshes.get(f.id);
+        else{const tg=ship(UI.tgt);const e=tg&&tg.side==="enemy"&&present(tg)?tg:S.ships.find(x=>x.side==="enemy"&&live(x));if(e)look=meshes.get(e.id)}
+        if(look&&look!==m){const q=m.root.quaternion.clone();m.root.lookAt(look.root.position);const goalQ=m.root.quaternion.clone();m.root.quaternion.copy(q).slerp(goalQ,1-Math.exp(-dt*3))}
+        m.model.rotation.x*=.95;m.model.rotation.z=Math.sin(t*.6+s.id)*.06;
+      }
+      m.model.traverse(o=>{if(o.userData.flame){o.material.opacity=s.status==="ok"?.75+Math.random()*.25:0}});
+      m.flash=Math.max(0,m.flash-dt*2.2);
+      const idle=s.maxSh&&s.status==="ok"?.05*s.sh/s.maxSh:0;
+      m.shield.material.opacity=Math.max(idle,m.flash*.55);
+      m.root.visible=s.status!=="escaped"||m.root.position.length()<70;
+      if(m.root.visible)place(m.label,m.root.position,m.model.userData.size*.75+.6);else m.label.style.display="none";
+    }
+    const sel=meshes.get(WATCH||UI.tab==="stations"?UI.att:null);
+    selRing.visible=!!sel;if(sel){selRing.position.copy(sel.root.position);selRing.position.y-=.6;selRing.scale.setScalar(sel.model.userData.size*.9);selRing.rotation.z=t*.5}
+    const tg=meshes.get(WATCH||UI.tab==="stations"?UI.tgt:null);
+    tgtRing.visible=!!tg&&tg!==sel;if(tg){tgtRing.position.copy(tg.root.position);tgtRing.position.y-=.6;tgtRing.scale.setScalar(tg.model.userData.size*(1+.06*Math.sin(t*6)));tgtRing.rotation.z=-t}
+    for(let i=effects.length-1;i>=0;i--){const e=effects[i];e.t+=dt;const k=Math.min(1,e.t/e.life);e.update(k);
+      if(k>=1){scene.remove(e.obj);e.obj.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()});effects.splice(i,1);if(e.done)e.done()}}
+    for(const b of BANDS)place(bandLbl[b].el,bandLbl[b].pos,0);
+    if(ctl)ctl.update();
+    renderer.render(scene,cam);requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  return {sync,labels,shot,boom,reset};
+})();
+
+/* ============================== live (Firebase) ==============================
+   The GM page publishes a player-safe copy of the fight to Firebase Realtime Database
+   over its REST API; player pages (?watch=CODE) follow it with a server-sent-event stream.
+   Auth is anonymous. database.rules.json lets only the uid that created a room write the
+   fight; each player may write only their own claim (players/<uid>) and their own actions
+   (actions/<uid>). The GM page applies each action and answers in replies/<uid>. */
+const Live=(()=>{
+  const C=window.LIVE_CONFIG||{};
+  const base=String(C.databaseURL||"").replace(/\/+$/,"");
+  const configured=!!(C.apiKey&&/^https?:\/\//.test(base));
+  const LKEY=WATCH?"drift-tactical-player":"drift-tactical-live";
+  let st={};try{st=JSON.parse(localStorage.getItem(LKEY))||{}}catch(e){}
+  if(st.hide==null)st.hide=true;
+  const persist=()=>{try{localStorage.setItem(LKEY,JSON.stringify(st))}catch(e){}};
+  let status=WATCH?"connecting":"off",err="",idToken=null,exp=0,timer=null,busy=false,again=false,slot=0,seq=0;
+  const AB="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const newCode=()=>Array.from({length:6},()=>AB[die(AB.length)-1]).join("");
+  const room=()=>WATCH?ROOM_IN:st.room;
+
+  async function token(){
+    if(idToken&&Date.now()<exp-60000)return idToken;
+    const key=encodeURIComponent(C.apiKey);
+    if(st.refresh){
+      const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${key}`,{method:"POST",
+        headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(st.refresh)});
+      if(r.ok){const j=await r.json();idToken=j.id_token;st.refresh=j.refresh_token;st.uid=j.user_id;exp=Date.now()+1000*(+j.expires_in||3600);persist();return idToken}
+    }
+    const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`,{method:"POST",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify({returnSecureToken:true})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){const m=(j.error&&j.error.message)||`HTTP ${r.status}`;
+      throw new Error(/ADMIN_ONLY|OPERATION_NOT_ALLOWED/.test(m)?"Anonymous sign-in is off. Turn it on in Firebase: Authentication → Sign-in method → Anonymous.":`Sign-in failed: ${m}`)}
+    idToken=j.idToken;st.refresh=j.refreshToken;st.uid=j.localId;exp=Date.now()+1000*(+j.expiresIn||3600);persist();return idToken;
+  }
+  async function req(method,path,body){
+    const t=await token();
+    const r=await fetch(`${base}/rooms/${room()}${path}.json?auth=${encodeURIComponent(t)}`,{method,body:body===undefined?undefined:JSON.stringify(body)});
+    if(!r.ok){const j=await r.json().catch(()=>({}));const e=new Error(j.error||`HTTP ${r.status}`);e.code=r.status;throw e}
+    return r.json().catch(()=>null);
+  }
+  // Follow a database path with server-sent events, keeping a local copy. onChange(copy) after each event.
+  function stream(path,onChange,onCancel){
+    let copy=null;
+    const es=new EventSource(`${base}/rooms/${room()}${path}.json`);
+    const apply=(raw,merge)=>{
+      let m;try{m=JSON.parse(raw)}catch(e){return}if(!m||typeof m.path!=="string")return;
+      const parts=m.path.split("/").filter(Boolean);
+      if(!parts.length){copy=merge&&copy&&typeof copy==="object"?Object.assign(copy,m.data):m.data}
+      else{
+        if(!copy||typeof copy!=="object")copy={};
+        let o=copy;for(const p of parts.slice(0,-1)){if(!o[p]||typeof o[p]!=="object")o[p]={};o=o[p]}
+        const k=parts[parts.length-1];
+        if(merge){o[k]=Object.assign(o[k]&&typeof o[k]==="object"?o[k]:{},m.data);for(const [x,v] of Object.entries(o[k]))if(v===null)delete o[k][x]}
+        else if(m.data===null)delete o[k];else o[k]=m.data;
+      }
+      onChange(copy);
+    };
+    es.addEventListener("put",e=>apply(e.data,false));
+    es.addEventListener("patch",e=>apply(e.data,true));
+    es.addEventListener("cancel",()=>{es.close();if(onCancel)onCancel()});
+    return es;
+  }
+  function publicState(){
+    const hide=!!st.hide;
+    return {round:S.round,phase:S.phase,hide,nid:S.nid,cnid:S.cnid,
+      focus:{att:UI.tab==="stations"?UI.att:0,tgt:UI.tab==="stations"?UI.tgt:0},
+      ships:S.ships.map(s=>{
+        const o={id:s.id,name:s.name,side:s.side,model:s.model,band:s.band,angle:s.angle,status:s.status,brace:s.brace,crits:s.crits,
+          ac:s.ac,hull:s.hull,maxHull:s.maxHull,sh:s.sh,maxSh:s.maxSh,regen:s.regen,pilot:s.pilot,pd:s.pd,weapons:s.weapons};
+        if(hide&&s.side==="enemy")Object.assign(o,{ac:0,pilot:0,regen:0,pd:false,weapons:[],maxHull:100,hull:Math.ceil(100*s.hull/s.maxHull),
+          maxSh:s.maxSh?100:0,sh:s.maxSh?Math.ceil(100*s.sh/s.maxSh):0});
+        return o}),
+      helm:Object.fromEntries(Object.entries(S.helm).map(([k,h])=>[k,{winner:h.winner,effect:h.effect||"",brace:!!h.brace,auto:!!h.auto,p:h.p,q:h.q}])),
+      crew:S.crew,seats:S.seats,acted:S.acted,pending:S.pending,mods:S.mods,spool:S.spool,
+      log:S.log.slice(-60).map(e=>({r:e.r,c:e.c,h:hide&&e.p!=null?e.p:e.h}))};
+  }
+
+  // ---- GM side ----
+  let streams=[],players={},playersReady=false,queued=null;const done=new Set();
+  function listen(){
+    streams.forEach(x=>x.close());streams=[];players={};playersReady=false;
+    streams.push(stream("/players",m=>{players=m&&typeof m==="object"?m:{};playersReady=true;if(queued){const q=queued;queued=null;handle(q)}render()}));
+    streams.push(stream("/actions",m=>handle(m)));
+  }
+  function handle(m){
+    if(!m||typeof m!=="object")return;
+    if(!playersReady){queued=m;return}
+    for(const [uid,list] of Object.entries(m)){
+      if(!list||typeof list!=="object")continue;
+      for(const pid of Object.keys(list).sort()){
+        const id=uid+"/"+pid;if(done.has(id))continue;done.add(id);
+        const a=list[pid];let msg;
+        const p=players[uid];
+        if(!a||typeof a!=="object")msg="That action didn't make sense.";
+        else if(Date.now()-num(a.at,0,0,9e15)>10*60e3)msg="That action is more than 10 minutes old, so it was skipped.";
+        else if(st.paused)msg="The GM has paused player actions.";
+        else if(!p||!Number.isFinite(+p.crew))msg="Pick your character first.";
+        else msg=playerAction(+p.crew,a);
+        req("PUT",`/replies/${uid}`,{ref:String(a&&a.ref||"").slice(0,24),msg:msg||"Done.",ok:!msg,at:{".sv":"timestamp"}}).catch(()=>{});
+        req("DELETE",`/actions/${uid}/${pid}`).catch(()=>{});
+      }
+    }
+  }
+  async function start(){
+    if(!configured)return;
+    status="connecting";err="";ui();
+    try{
+      await token();
+      if(!st.room)st.room=newCode();
+      const body=()=>({owner:st.uid,updated:{".sv":"timestamp"},state:publicState()});
+      // PATCH keeps players' claims when the GM reconnects to the same room.
+      try{await req("PATCH","",body())}
+      catch(e){if(e.code===401||e.code===403||/permission/i.test(e.message)){st.room=newCode();await req("PATCH","",body())}else throw e}
+      persist();status="live";listen();
+    }catch(e){status="error";err=e.message||String(e)}
+    ui();render();
+  }
+  async function stop(){
+    streams.forEach(x=>x.close());streams=[];players={};
+    const had=st.room;status="off";ui();
+    if(had){try{await req("DELETE","")}catch(e){}}
+    st.room=null;persist();ui();render();
+  }
+  function push(){if(status!=="live")return;clearTimeout(timer);timer=setTimeout(flush,150)}
+  async function flush(){
+    if(busy){again=true;return}busy=true;
+    try{await req("PATCH","",{state:publicState(),updated:{".sv":"timestamp"}})}
+    catch(e){status="error";err=`Lost the live room: ${e.message}`;ui()}
+    busy=false;if(again){again=false;flush()}
+  }
+  // Effects go in a 16-slot ring so players can replay each shot in order.
+  function emit(kind,data){
+    if(WATCH||status!=="live")return;
+    seq=Math.max(seq+1,Date.now());slot=(slot+1)%16;
+    req("PUT",`/fx/${slot}`,Object.assign({seq,kind},data)).catch(()=>{});
+  }
+  function release(uid){if(!/^[A-Za-z0-9_-]{1,128}$/.test(uid))return;req("DELETE",`/players/${uid}`).catch(()=>{})}
+  const seatOnDevice=cid=>Object.values(players).some(p=>p&&+p.crew===cid);
+
+  // ---- player side ----
+  let mirror=null,lastSeq=null;
+  function watch(code){
+    if(!configured){status="error";err="The live view isn't set up on this site yet.";render();return}
+    const es=stream("",m=>{mirror=m;update()},()=>{status="error";err="This room can't be read. Check the room code.";ui();render()});
+    es.onerror=()=>{if(status==="live"){status="reconnecting";ui();render()}};
+  }
+  function update(){
+    if(!mirror||typeof mirror!=="object"||!mirror.state){status=mirror?"live":"ended";ui();render();return}
+    status="live";
+    const j=mirror.state;S=sanitizeState(j);S.hide=!!j.hide;
+    const fc=j.focus||{};UI.att=num(fc.att,0);UI.tgt=num(fc.tgt,0);
+    const r=me().reply;if(UI.sending&&r&&r.ref===UI.lastRef)UI.sending=false;
+    FX.sync();ui();render();
+    const evs=arr(mirror.fx).filter(e=>e&&typeof e==="object").sort((a,b)=>num(a.seq,0,0,9e15)-num(b.seq,0,0,9e15));
+    const top=evs.length?num(evs[evs.length-1].seq,0,0,9e15):0;
+    if(lastSeq===null){lastSeq=top;return}                    // joining: don't replay old shots
+    for(const e of evs){const sq=num(e.seq,0,0,9e15);if(sq<=lastSeq)continue;lastSeq=sq;
+      if(e.kind==="shot")FX.shot(num(e.aid),num(e.tid),{name:String(e.name||""),missile:!!e.missile},!!e.hit,
+        e.res?{absorbed:num(e.res.absorbed,0,0),hullDmg:num(e.res.hullDmg,0,0)}:null);
+      else if(e.kind==="boom")FX.boom(num(e.id));
+    }
+  }
+  function me(){
+    const uid=st.uid,pl=mirror&&mirror.players&&uid?mirror.players[uid]:null,r=mirror&&mirror.replies&&uid?mirror.replies[uid]:null;
+    return {ready:!!(mirror&&mirror.state),crew:pl&&Number.isFinite(+pl.crew)?+pl.crew:null,
+      reply:r&&typeof r==="object"?{ref:String(r.ref||""),msg:String(r.msg||"").slice(0,300),ok:!!r.ok}:null};
+  }
+  const fail=e=>{UI.sending=false;UI.localMsg=`Couldn't reach the room: ${e.message||e}`;render()};
+  async function claim(cid){try{await token();await req("PUT",`/players/${st.uid}`,{crew:cid,at:{".sv":"timestamp"}})}catch(e){fail(e)}}
+  async function unclaim(){if(!st.uid)return;try{await req("DELETE",`/players/${st.uid}`)}catch(e){fail(e)}}
+  async function act(a){
+    const ref=Math.random().toString(36).slice(2,12);UI.lastRef=ref;UI.sending=true;UI.localMsg="";render();
+    try{await token();await req("POST",`/actions/${st.uid}`,Object.assign({},a,{ref,at:{".sv":"timestamp"}}))}catch(e){fail(e);return}
+    setTimeout(()=>{if(UI.sending&&UI.lastRef===ref){UI.sending=false;UI.localMsg="No answer from the GM's screen. Is it still open?";render()}},12000);
+  }
+
+  // ---- UI ----
+  const tag=$("#liveTag");
+  function ui(){
+    const show=WATCH&&!!ROOM_IN;
+    tag.hidden=!show;
+    tag.classList.toggle("wait",status!=="live");
+    tag.lastElementChild.textContent=status==="live"?`Live · ${room()}`:status==="error"?"Live: error":status==="ended"?"Ended":status==="reconnecting"?"Reconnecting":"Connecting";
+    tag.title=err;
+    const lb=$("#liveBtn");
+    lb.textContent=status==="live"?`● Live · ${st.room}`:status==="connecting"?"Connecting…":status==="error"?"Live: error":"Go live";
+    lb.classList.toggle("warn",status==="live"||status==="error");lb.title=err||"Let players watch this fight and act from their own devices";
+    if($("#liveDlg").open)$("#liveBody").innerHTML=body();
+  }
+  function body(){
+    const hideChk=`<label class="chk"><input type="checkbox" data-live="hide"${st.hide?" checked":""}> Hide hostile AC, bonuses, weapons and exact hull from players</label>`;
+    if(!configured)return `<p class="note">The live view needs a free Firebase project. One-time setup:</p><ol class="note">
+      <li>At <a href="https://console.firebase.google.com" target="_blank" rel="noopener">console.firebase.google.com</a>, add a project (the free Spark plan is enough).</li>
+      <li><b>Authentication</b> → Get started → Sign-in method → turn on <b>Anonymous</b>.</li>
+      <li><b>Realtime Database</b> → Create database (start in locked mode). In its <b>Rules</b> tab, paste <code>database.rules.json</code> from this repo and publish.</li>
+      <li>Project settings → Your apps → add a <b>Web</b> app. Copy <code>apiKey</code> and <code>databaseURL</code> into <code>combat/live-config.js</code>, then commit and redeploy.</li></ol>`;
+    if(status==="live"){const link=`${location.origin}${location.pathname}?watch=${st.room}`;
+      return `<p class="note">You're live. Players open this link on their phone or laptop:</p><div class="code">${esc(st.room)}</div>
+        <div class="row"><input type="text" readonly value="${esc(link)}" id="liveLink"><button type="button" class="btn" data-live="copy">Copy</button></div>
+        <div class="row">${hideChk}</div><p class="note" style="margin-top:8px">They see the 3D plot, ship status and the log. Crew members pick their character and act from the station you gave them in the Crew tab.</p>
+        <div class="row"><button type="button" class="btn warn" data-live="stop">End live session</button></div>`}
+    if(status==="connecting")return `<p class="note">Connecting…</p>`;
+    return `${status==="error"?`<p class="note" style="color:var(--haz)">${esc(err)}</p>`:""}
+      <p class="note">Let players follow this fight on their own devices: the 3D plot, each ship's hull and shields, and the combat log. Crew members can act from their stations.</p>
+      <div class="row">${hideChk}</div><div class="row"><button type="button" class="btn pri" data-live="start">Go live</button></div>`;
+  }
+  if(!WATCH){
+    $("#liveBtn").addEventListener("click",()=>{$("#liveBody").innerHTML=body();$("#liveDlg").showModal()});
+    $("#liveBody").addEventListener("click",e=>{
+      const b=e.target.closest("button[data-live]");if(!b)return;
+      if(b.dataset.live==="start")start();
+      if(b.dataset.live==="stop")stop();
+      if(b.dataset.live==="copy"){const i=$("#liveLink");(navigator.clipboard?navigator.clipboard.writeText(i.value):Promise.reject()).then(()=>{b.textContent="Copied"},()=>{i.select()})}
+    });
+    $("#liveBody").addEventListener("change",e=>{if(e.target.dataset.live==="hide"){st.hide=e.target.checked;persist();push()}});
+  }
+  return {start,stop,push,emit,watch,ui,release,seatOnDevice,me,claim,unclaim,act,
+    players:()=>players,paused:()=>!!st.paused,setPaused(v){st.paused=!!v;persist()},
+    state:()=>({status,err}),resume(){if(configured&&st.room)start()}};
+})();
+// Mirror the GM's effects to players.
+{const shot=FX.shot,boom=FX.boom;
+ FX.shot=(aid,tid,w,hit,res)=>{shot(aid,tid,w,hit,res);Live.emit("shot",{aid,tid,name:w.name,missile:!!w.missile,hit:!!hit,res:res||null})};
+ FX.boom=id=>{boom(id);Live.emit("boom",{id})};}
+
+/* ============================== boot ============================== */
+if(WATCH){
+  document.body.classList.add("watch");document.title="Drift Tactical Plot · Live";
+  S=blank();FX.sync();render();Live.ui();
+  if(ROOM_IN)Live.watch(ROOM_IN);
+}else{
+  S=load();
+  if(!S){
+    S=blank();
+    const pat=PRESETS.find(p=>p.side==="party");if(pat)S.ships.push(makeShip(pat));
+    const foe=PRESETS.find(p=>p.name==="Pirate gunboat");if(foe)S.ships.push(makeShip(foe));
+    log("Sample encounter loaded. Add, edit or remove ships in the Fleet tab.","sys");
+    log("Round 1.","r");
+  }
+  FX.sync();render();Live.resume();
+}
+</script>
+</body></html>

@@ -172,6 +172,9 @@ window.GM_LIBRARY = [
   { title: "Session 1 run sheet + live combat tracker", type: "tool", url: "https://claude.ai/artifact/FFSMLoFnVnMhF6emFdZNh1",
     where: ["Tamsin", "Grave of Ash", "Arbiter's Due"], tags: ["session 1", "salvage rights", "tracker", "private"],
     notes: "Scene-by-scene plan, ship tracker with hull/shield bars and a crit roller. Private link: only opens for you." },
+  { title: "Tactical plot (3D ship-combat engine)", type: "tool", url: "../combat/",
+    where: ["Patience"], tags: ["ship combat", "3d", "helm", "tracker", "shared screen"],
+    notes: "Runs the stations rules: helm contest, range bands, shields then hull, crit table, drive spool. Share your screen with it. Presets in gm/ships.js." },
   { title: "Owlbear Rodeo", type: "tool", url: "https://www.owlbear.rodeo",
     tags: ["vtt", "online play"], notes: "Free VTT. Set each map's grid to the size listed on its library card." },
 

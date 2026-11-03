@@ -372,7 +372,9 @@ code{font-family:var(--f-data);color:var(--teal)}
    <h4>Escape by drive spool</h4>
    <p>3 successes before 3 failures (Int + tinker's tools, DC 13). Not at Close. Fail by 5+: roll a crit on your own ship.</p>
    <h4>At 0 hull</h4>
-   <p>Disabled, 1 hour of emergency life support.</p>
+   <p>Disabled, 1 hour of emergency life support. A disabled ship can't contest the helm, spool the drive, or act from any station.</p>
+   <h4>Empty stations</h4>
+   <p>A station with nobody in it can't act. An empty helm loses the helm contest automatically, and its ship can't brace.</p>
   </div>
  </div>
  <div class="ship-fig">
@@ -427,7 +429,7 @@ code{font-family:var(--f-data);color:var(--teal)}
   <tr><td><strong>Sensors / Comms</strong></td><td style="white-space:nowrap"><span class="mk">S</span></td><td><em>Scan</em> (DC 13) next hit +1d8 · <em>Jam</em> (DC 13) enemy attack at disadvantage · <em>Hail</em> any Cha check · <em>Help</em>.</td></tr>
   <tr><td><strong>Anyone else</strong></td><td style="white-space:nowrap">Wherever it's burning</td><td>Fires (DC 12), boarders, breaches, spells.</td></tr>
  </table></div>
- <h3>Critical damage (d6, on a natural 20 or first drop below half hull)</h3>
+ <h3>Critical damage (d6, on a natural 20, and each time hull first drops below 75%, 50% and 25%)</h3>
  <div class="tbl"><table>
   <tr><th>d6</th><th>Result</th><th>Fix it in</th></tr>
   <tr><td class="n">1</td><td><strong>Cockpit hit:</strong> Helm and Sensors take 2d6 thunder (DC 12 Dex half); pilot disadvantage.</td><td>Cockpit</td></tr>
@@ -438,11 +440,11 @@ code{font-family:var(--f-data);color:var(--teal)}
   <tr><td class="n">6</td><td><strong>Fire in the bunks:</strong> 1d6 hull each round.</td><td>Bunks (DC 12)</td></tr>
  </table></div>
  <div class="grid">
-  <div class="stat"><h4>Patience</h4><div class="sub">K. Vash's dropship · map: PBMI DropShip</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 50 · <b>Shields</b> 10 · 8 bunks</div><div class="line"><b>Dorsal turret</b> lasers 2d8, any arc<br><b>Stern launcher</b> missiles 3d10, Medium/Long, rear arc: fires only when your pilot wins the helm. 6 loaded + 6 spare.</div><div class="line">Twin reactors · cargo bay with loader arms (2d6 slam or DC 13 pin) · KEEP CLEAR bay = airlock · 4 EVA hatches.</div><div class="line secret">Vash fitted a relic shard behind the cockpit panel years ago. It's why the Patience's luck is suspiciously good near Corinthian space.</div></div>
-  <div class="stat"><h4>Benediction</h4><div class="sub">Wandering Choir corsair</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 40 · <b>Shields</b> 5 (+5/rd) · <b>Pilot</b> +4</div><div class="line"><b>Lasers</b> +5 2d8 · <b>Harpoon</b> +5, Close: tethered, boarders next round (break DC 14 or cut: AC 12, 10 HP).</div></div>
-  <div class="stat"><h4>Due Diligence</h4><div class="sub">Sable corvette. Don't fight it.</div><div class="line"><b>AC</b> 16 · <b>Hull</b> 120 · <b>Shields</b> 20 (+10/rd) · <b>Pilot</b> +6 · faster</div><div class="line"><b>Railgun</b> +7 4d10, twice per round at Close · point defense: missiles at disadvantage.</div></div>
+  <div class="stat"><h4>Patience</h4><div class="sub">K. Vash's dropship · map: PBMI DropShip</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 25 · <b>Shields</b> 10 · 8 bunks</div><div class="line"><b>Dorsal turret</b> lasers 2d8, any arc<br><b>Stern launcher</b> missiles 3d10, Medium/Long, rear arc: fires only when your pilot wins the helm. 6 loaded + 6 spare.</div><div class="line">Twin reactors · cargo bay with loader arms (2d6 slam or DC 13 pin) · KEEP CLEAR bay = airlock · 4 EVA hatches.</div><div class="line secret">Vash fitted a relic shard behind the cockpit panel years ago. It's why the Patience's luck is suspiciously good near Corinthian space.</div></div>
+  <div class="stat"><h4>Benediction</h4><div class="sub">Wandering Choir corsair</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 20 · <b>Shields</b> 5 (+5/rd) · <b>Pilot</b> +4</div><div class="line"><b>Lasers</b> +5 2d8 · <b>Harpoon</b> +5, Close: tethered, boarders next round (break DC 14 or cut: AC 12, 10 HP).</div></div>
+  <div class="stat"><h4>Due Diligence</h4><div class="sub">Sable corvette. Don't fight it.</div><div class="line"><b>AC</b> 16 · <b>Hull</b> 60 · <b>Shields</b> 20 (+10/rd) · <b>Pilot</b> +6 · faster</div><div class="line"><b>Railgun</b> +7 4d10, twice per round at Close · point defense: missiles at disadvantage.</div></div>
  </div>
- <p class="dim" style="margin-top:14px">The session-1 run sheet and live combat tracker are in the Library (type: tool).</p>
+ <p class="dim" style="margin-top:14px"><a href="../combat/">Open the tactical plot</a>: a 3D engine that runs these rules (helm, stations, upkeep, crits). Players can act from their own phones at the station you give them. Campaign ship presets are in <code>gm/ships.js</code>. The session-1 run sheet and live combat tracker are in the Library (type: tool).</p>
 </section>
 
 <!-- ============================ LIBRARY ============================ -->

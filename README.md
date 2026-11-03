@@ -23,6 +23,48 @@ The handout is one self-contained web page dressed as an in-world object: a seco
 - **Offline:** everything works offline except the 3D chart, which loads three.js from a CDN. Without a connection, the chart shows an "offline" notice and the Gazetteer still lists every range and travel time.
 - **Mobile:** the layout adapts to phones (scrolling tab strip, collapsible chart card).
 
+## Tactical plot (ship combat)
+
+`combat/` is a 3D ship-combat engine that runs the GM partition's "Ship combat: stations" rules: helm contest, range bands (Close / Medium / Long), shields then hull, the d6 crit table, upkeep regen and fires, and the drive spool. The GM drives it on one screen (a TV, or screen-share on a call), and players call out their actions. Dice auto-roll, or type in what the players rolled at the table.
+
+- **Ships:** add them from presets in the Fleet tab, or build your own (Custom…). Campaign presets live in `gm/ships.js`.
+- **Saving:** the current fight stays in your browser between visits. Use **Save file** / **Load file** to keep encounters or move them to another computer.
+- **Live player view:** press **Go live** and players open the link (or `combat/?watch=CODE`) on their own phones and laptops. They watch the 3D plot, each ship's hull and shields, and the log update as you play. Only your browser can change the fight. By default, players don't see hostile ships' AC, bonuses, weapons or exact hull. This needs a free Firebase project, set up once (below).
+- **3D:** loads three.js from a CDN. Offline, the plot is hidden but the combat panel still works.
+
+## Hosting for free
+
+The whole site is static files with no build step, so any free static host works. The player handout ends up at `/`, the GM partition at `/gm/`, and the tactical plot at `/combat/`.
+
+**Cloudflare Pages (recommended):** in the Cloudflare dashboard, go to Workers & Pages → Create → Pages → Connect to Git, then pick this repo. Set the framework preset to *None*, leave the build command empty, and set the output directory to `/`. Every push to the branch you choose redeploys the site to `https://<project>.pages.dev`.
+
+**Firebase Hosting:** `firebase.json` is already set up. Install the CLI and log in once, then deploy from the repo root:
+
+```bash
+npm install -g firebase-tools
+```
+
+```bash
+firebase login
+```
+
+```bash
+firebase deploy --only hosting
+```
+
+`.firebaserc` points at the `drift-combat` project. If Firebase gave your project a different ID (check Project settings), change it there.
+
+## Setting up the live player view (once)
+
+The live view uses Firebase's free Realtime Database. It works whichever host serves the site.
+
+1. At [console.firebase.google.com](https://console.firebase.google.com), add a project. The free Spark plan is enough, and if you host on Firebase you can reuse that project.
+2. **Authentication** → Get started → Sign-in method → turn on **Anonymous**. Your browser signs in invisibly, and that identity is what owns your room.
+3. **Realtime Database** → Create database, starting in locked mode. In its **Rules** tab, paste the contents of [`database.rules.json`](database.rules.json) and publish. (Or deploy them with `firebase deploy --only database`.)
+4. **Project settings** → Your apps → add a **Web** app. Copy its `apiKey` and `databaseURL` into [`combat/live-config.js`](combat/live-config.js), then commit and redeploy.
+
+The rules let only the browser that opened a room write to it, and let anyone with the 6-letter room code watch it. Rooms are deleted when you press **End live session**. The `apiKey` is meant to be public; it identifies the project and isn't a password.
+
 ## GM partition
 
 `gm/` is the GM's page: the truths behind the handout, cast secrets, rules, ship combat, and a searchable library of maps and resources. It sits behind an access phrase (default: **the eye sees**). Players reach the lock screen from "Restricted partition" in the handout's sidebar.
