@@ -3,9 +3,9 @@
  * They're meant to be public (they identify the project; they aren't passwords).
  * What protects your data is database.rules.json at the repo root: only the GM's browser
  * that opened a room can write to it, and anyone with the room code can watch.
- * Leave them empty to turn the live view off.
+ * Project: drift-combat (web app "Drift tactical plot"). Empty both values to turn the live view off.
  */
 window.LIVE_CONFIG = {
-  apiKey: "",        // e.g. "AIzaSy..."
-  databaseURL: "",   // e.g. "https://your-project-default-rtdb.firebaseio.com"
+  apiKey: "AIzaSyDhRE8937ExrJ5wKEgRs0SFSICXw2K4-50",
+  databaseURL: "https://drift-combat-default-rtdb.firebaseio.com",
 };
