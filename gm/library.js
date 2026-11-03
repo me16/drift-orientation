@@ -4,7 +4,7 @@
  * Only `title` and `type` are required. Everything else is optional.
  *
  *   title   What you call it.
- *   type    One of: "map", "ship", "handout", "npc", "audio", "reference", "tool".
+ *   type    One of: "map", "ship", "handout", "npc", "tokens", "audio", "reference", "tool".
  *   file    A file inside the gm/ folder, e.g. "maps/my-map.jpg". Opens from the site.
  *   drive   A Google Drive FILE id (the long code in .../file/d/<id>/view).
  *   folder  A Google Drive FOLDER id (the long code in .../folders/<id>).
@@ -109,6 +109,44 @@ window.GM_LIBRARY = [
     where: ["Saint Vey", "Copperline"], tags: ["mine"] },
   { title: "Mine processing plant", type: "map", drive: "1qgmiGqATktR7ZjAJMctqTL3RjEIffTmd",
     where: ["Copperline", "Rigs 1-4"], tags: ["refinery", "mine"] },
+
+  // ---------- Token & icon packs (download, then upload to Owlbear) ----------
+  // Owlbear 2.0: drag the PNGs onto the room, or use the Image Importer ("New" tab).
+  // Pick Character for creatures/crew, Prop for furniture/hazards, Attachment for
+  // markers that ride on a token (conditions, targets). Use PNG, not SVG.
+  { title: "game-icons.net (4,000+ icons)", type: "tokens", url: "https://game-icons.net",
+    tags: ["icons", "markers", "conditions", "faction badges", "CC BY 3.0", "free"],
+    credit: "Lorc, Delapouite and others · CC BY 3.0",
+    notes: "Set colour and background on the site, then download PNG. Good for condition markers, objective pins, faction sigils (lilac Corinthia, teal STR). Credit the artist. Licence allows that, even for public use." },
+  { title: "Kenney: Sci-Fi RTS", type: "tokens", url: "https://kenney.nl/assets/sci-fi-rts",
+    where: ["Copperline", "Picket Line", "Brightwater"], tags: ["top-down", "vehicles", "turrets", "structures", "CC0", "free"],
+    credit: "Kenney · CC0",
+    notes: "~127 top-down PNGs: mechs, tanks, turrets, buildings. Planetside fights and outpost props. No credit needed." },
+  { title: "Kenney: Space Shooter Redux", type: "tokens", url: "https://kenney.nl/assets/space-shooter-redux",
+    tags: ["top-down", "starships", "ship combat", "missiles", "CC0", "free"],
+    credit: "Kenney · CC0",
+    notes: "~295 sprites: fighters, lasers, meteors, power-ups. Use as ship tokens on a starfield for ship-scale battles." },
+  { title: "Kenney: Space Kit (top-down renders)", type: "tokens", url: "https://opengameart.org/content/space-kit-remade",
+    where: ["Tamsin", "Low Dock"], tags: ["top-down", "spaceport", "crates", "turrets", "characters", "CC0", "free"],
+    credit: "Kenney · CC0",
+    notes: "3D kit that ships top-down PNG renders of every piece. Spaceport furniture, cargo, astronauts." },
+  { title: "Hard Light Argonauts: free sci-fi tokens", type: "tokens", url: "https://markgosbell.itch.io/science-fiction-tokens-free-hard-light-argonauts",
+    tags: ["characters", "crew", "npc tokens", "free"],
+    credit: "Mark Gosbell",
+    notes: "Ready-made round character tokens. Licence reported as CC0. Confirm on the page before using." },
+  { title: "Lazarus: Space tokens & markers", type: "tokens", url: "https://gm-lazarus.itch.io/space-tokens-and-markers",
+    tags: ["markers", "ship combat", "objectives", "free", "personal use"],
+    credit: "Lazarus (symbols from game-icons.net)",
+    notes: "Ready-framed markers. Personal use only: fine for the table, don't rehost the files." },
+  { title: "Lazarus: Sci-fi ship crew tokens", type: "tokens", url: "https://gm-lazarus.itch.io/ship-crew-tokens",
+    where: ["Patience"], tags: ["crew", "characters", "ship combat"],
+    credit: "Lazarus", notes: "Crew-station tokens for the ship-combat tracker. Check price and licence on the page." },
+  { title: "Lazarus: VTT Sci-Fi Tactical Map", type: "tokens", url: "https://gm-lazarus.itch.io/vtt-sci-fi-tactical-map",
+    tags: ["markers", "targets", "objectives", "landmine", "mecha", "pay what you want"],
+    credit: "Lazarus", notes: "17 tactical tokens (targets, objectives, units, landmine, radio signal) plus tiles. Pay what you want, $2 suggested." },
+  { title: "Tokenstamp (make your own tokens)", type: "tool", url: "https://tokenstamp.com",
+    tags: ["tokens", "frame", "npc tokens", "free"],
+    notes: "Drop any portrait in, get a round framed PNG out. Use for NPCs (Marra, Vash) when no pack fits." },
 
   // ---------- Tools ----------
   { title: "Session 1 run sheet + live combat tracker", type: "tool", url: "https://claude.ai/artifact/FFSMLoFnVnMhF6emFdZNh1",
