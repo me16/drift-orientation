@@ -23,7 +23,14 @@ The handout is one self-contained web page dressed as an in-world object: a seco
 - **Offline:** everything works offline except the 3D chart, which loads three.js from a CDN. Without a connection, the chart shows an "offline" notice and the Gazetteer still lists every range and travel time.
 - **Mobile:** the layout adapts to phones (scrolling tab strip, collapsible chart card).
 
-> ⚠️ **This file is player-facing.** Anyone can open view-source, so keep GM secrets (what the Lantern really is, who owns Commonweal, the truth behind any rumor) **out of this repo**, or at least out of anything deployed to Pages.
+## GM partition
+
+`gm/` is the GM's page: the truths behind the handout, cast secrets, rules, ship combat, and a searchable library of maps and resources. It sits behind an access phrase (default: **the eye sees**). Players reach the lock screen from "Restricted partition" in the handout's sidebar.
+
+> ⚠️ **The lock is a courtesy, not security.** Anyone who opens the page source (or `gm/library.js`) can read everything. It keeps honest players out, not curious ones.
+
+- **Add maps and resources:** edit `gm/library.js`. Copy an entry, paste it at the end and change the fields. The file explains each one. Put your own images in `gm/maps/`. Link other creators' maps by Google Drive ID or URL instead of copying them into this public repo.
+- **Change the access phrase:** open the GM page, run `gmHash("your phrase")` in the browser console, and paste the result into `PASS_HASH` near the bottom of `gm/index.html`.
 
 ## Editing
 

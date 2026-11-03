@@ -4,9 +4,14 @@ Guidance for working in this repo.
 
 ## What this is
 
-A **player handout for a sci-fi D&D campaign**: a single static page (`index.html`, no build step) presented as an in-world artifact, a Commonweal civic datapad that the party (or one PC) bought secondhand at Free Harbor Tamsin. It's player-facing, so:
+A **sci-fi D&D campaign site**, static, with no build step:
 
-- **No GM secrets in this repo.** Players can read the source. Mysteries (the Lantern, who owns Commonweal, the Ninth Pontifex's barge, the Ninth Hollow, Kestrel's silence, the Corridor) are hinted at, never explained. If the GM wants private notes, they go somewhere outside the published site.
+- **`index.html`**: the player handout, presented as an in-world artifact: a Commonweal civic datapad the party (or one PC) bought secondhand at Free Harbor Tamsin.
+- **`gm/`**: the GM partition (`gm/index.html` + `gm/library.js` + `gm/maps/`), behind a soft password. See "GM partition" below.
+
+Rules for the player handout:
+
+- **No GM secrets in `index.html`.** Mysteries (the Lantern, who owns Commonweal, the Ninth Pontifex's barge, the Ninth Hollow, Kestrel's silence, the Corridor, what the Eye really is) are hinted at, never explained. Secrets go in `gm/` only.
 - **Everything is diegetic.** Text is written by someone in the setting (Commonweal, K. Vash, dockside gossip). No out-of-character rules text in the page itself unless the user asks for it.
 - **Commonweal is an unreliable narrator.** It's an STR company, so its "public record" is slanted toward the STR. Keep that bias subtle.
 
@@ -50,6 +55,14 @@ A **player handout for a sci-fi D&D campaign**: a single static page (`index.htm
 - **Origins tab** = background and character-hook prompts. "The touched" is the slot for sorcerers, warlocks and other unexplained gifts.
 - System and edition (5e, 5.5e, a sci-fi 5e variant, …) aren't stated anywhere yet. Ask before writing anything rules-specific.
 
+## GM partition (`gm/`)
+
+- **Soft lock only.** The access phrase is checked client-side against a `cyrb53` hash (`PASS_HASH` in `gm/index.html`) and remembered in `localStorage`. Anyone who reads `gm/index.html` or `gm/library.js` can see everything. The GM accepted this; don't present it as secure. To change the phrase, run `gmHash("new phrase")` in the browser console on the GM page and paste the result into `PASS_HASH`. The current phrase is "the eye sees" (case-insensitive).
+- **Truths** are tagged `Canon` (decided by the GM) or `Draft` (suggested, open to change). Never promote a Draft to Canon on your own. Current canon: the "God" of the Abyssal Throne is an AI powered by the black hole, not a deity.
+- **Library** (`gm/library.js`): a `window.GM_LIBRARY` array the GM edits by hand. The file header documents the fields. Search covers title, type, grid, where, tags, notes and credit; type chips are built from the data.
+- **Other creators' maps are linked, not copied.** Use `drive` / `folder` / `url`. Only original work goes in `gm/maps/` (compressed JPG, with a `thumb-` copy around 480 px referenced by `thumb`).
+- The player handout links to the partition from its sidebar footer ("Restricted partition").
+
 ## Checking changes
 
-There's no build or test suite. Open `index.html` in a browser and click through every tab, at a phone width too. To smoke-test headlessly, load the page with Playwright, visit each hash (`#briefing`, `#history`, `#factions`, `#chart`, `#gazetteer`, `#origins`, `#glossary`, `#rumors`, `#loc-<id>`), and check that no page errors appear (CDN load failures are expected in a sandbox without network).
+There's no build or test suite. Open `index.html` in a browser and click through every tab, at a phone width too. To smoke-test headlessly, load the page with Playwright, visit each hash (`#briefing`, `#history`, `#factions`, `#chart`, `#gazetteer`, `#origins`, `#glossary`, `#rumors`, `#loc-<id>`), and check that no page errors appear (CDN load failures are expected in a sandbox without network). For `gm/index.html`, check the wrong phrase is refused, the right one opens the page, a reload stays unlocked, and search and type chips filter the library.

@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Drift GM Partition</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Exo+2:ital,wght@0,400;0,600;0,700;1,400&family=Michroma&family=Share+Tech+Mono&display=swap">
+<style>
+/* The datapad's hidden partition: same hardware as the player handout, amber instead of teal (K. Vash's annotation color), one long scroll with a sticky index. */
+:root{
+  --void:#05060f; --panel:#0e1230; --panel-2:#151a40; --rule:#252b5a; --rule-2:#3a4282;
+  --fg:#e3e7ff; --dim:#9aa0d0; --faint:#6a70a2;
+  --amber:#ffb35c; --teal:#6ff3e0; --lil:#c9a6ff; --haz:#ff6b7a; --lan:#fff0c2; --ok:#8fe3a0;
+  --f-disp:"Michroma","Eurostile","Arial Black",sans-serif;
+  --f-body:"Exo 2","Segoe UI",system-ui,sans-serif;
+  --f-lore:"Cormorant Garamond",Georgia,serif;
+  --f-data:"Share Tech Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(60px + env(safe-area-inset-top,0px))}
+body{margin:0;background:var(--void);color:var(--fg);font:400 15.5px/1.6 var(--f-body)}
+a{color:var(--teal)}
+[hidden]{display:none!important}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:1px dashed var(--amber);outline-offset:2px}
+
+/* gate */
+#gate{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));
+  background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(255,179,92,.08),transparent 70%),var(--void)}
+.lock{width:min(420px,100%);background:var(--panel);border:1px solid var(--rule-2);border-top:2px solid var(--amber);padding:26px 24px}
+.lock .eyebrow{font:400 11px var(--f-data);letter-spacing:.22em;color:var(--amber);text-transform:uppercase}
+.lock h1{margin:8px 0 6px;font:400 20px/1.3 var(--f-disp);letter-spacing:.06em;text-transform:uppercase}
+.lock p{margin:0 0 16px;color:var(--dim);font-size:14.5px}
+.lock form{display:flex;gap:8px}
+.lock input{flex:1;min-width:0;background:#070918;border:1px solid var(--rule-2);padding:10px 12px;font:400 16px var(--f-data);letter-spacing:.08em}
+.btn{background:var(--panel-2);border:1px solid var(--rule-2);padding:9px 14px;font:400 12px var(--f-data);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;color:var(--fg)}
+.btn:hover{border-color:var(--amber);color:var(--amber)}
+.lock .err{min-height:1.4em;margin:10px 0 0;font:400 13px var(--f-data);color:var(--haz)}
+.lock .back{display:inline-block;margin-top:14px;font:400 12px var(--f-data);letter-spacing:.1em;color:var(--faint)}
+
+/* shell */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(14,18,48,.95);border-bottom:1px solid var(--rule);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar-in{max-width:1080px;margin:0 auto;display:flex;gap:14px;align-items:center;padding-block:9px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.brand{font:400 11px var(--f-disp);letter-spacing:.22em;color:var(--amber);white-space:nowrap}
+.bar nav{display:flex;gap:2px;flex:1}
+.bar nav a{font:400 11.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:7px 10px;white-space:nowrap}
+.bar nav a:hover{color:var(--fg)}
+.bar .btn{padding:6px 10px;font-size:11px;white-space:nowrap}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 90px}
+header.top{display:grid;gap:8px;padding-bottom:20px;border-bottom:1px solid var(--rule)}
+.eyebrow{font:400 11px var(--f-data);letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+h1{margin:0;font:400 clamp(22px,4vw,32px)/1.2 var(--f-disp);letter-spacing:.04em;text-transform:uppercase;text-wrap:balance}
+.lede{margin:0;font:italic 500 20px/1.4 var(--f-lore);color:#cfd2f2;max-width:62ch}
+section{padding-top:34px}
+h2{display:flex;gap:12px;align-items:baseline;margin:0 0 14px;font:400 17px/1.3 var(--f-disp);letter-spacing:.12em;text-transform:uppercase}
+h2 .k{font:400 11px var(--f-data);letter-spacing:.16em;color:var(--amber)}
+h3{margin:24px 0 8px;font:700 17px/1.3 var(--f-body)}
+h4{margin:12px 0 4px;font:600 12.5px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+p{margin:0 0 10px;max-width:72ch}
+ul,ol{margin:0 0 12px;padding-left:22px;max-width:72ch}
+li{margin-bottom:4px}
+strong{color:#fff}
+.dim{color:var(--dim)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:14px}
+.grid>*{min-width:0}
+.panel{background:var(--panel);border:1px solid var(--rule);padding:16px 18px}
+.panel>:last-child{margin-bottom:0}
+.tbl{overflow-x:auto;margin:10px 0 16px;border:1px solid var(--rule)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:8px 12px;border-bottom:1px solid var(--rule)}
+th{font:400 11px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);background:var(--panel);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--f-data);color:var(--amber);white-space:nowrap;width:1%}
+
+/* truths */
+.truth{background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--c,var(--amber));padding:16px 20px;margin-bottom:14px}
+.truth-h{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin-bottom:6px}
+.truth-h h3{margin:0;font:400 15px/1.3 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:#fff}
+.tag{font:400 10.5px var(--f-data);letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border:1px solid currentColor}
+.tag.canon{color:var(--ok)}.tag.draft{color:var(--amber)}
+.players{font:italic 500 17px/1.4 var(--f-lore);color:var(--dim);margin:0 0 10px;padding-left:12px;border-left:1px solid var(--rule-2)}
+.players::before{content:"Players believe: ";font:400 10.5px var(--f-data);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.reveal{font-size:12.5px;font-family:var(--f-data);color:var(--faint);letter-spacing:.04em}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 18px;font-size:14px;color:var(--dim)}
+
+/* stat */
+.stat{background:var(--panel);border:1px solid var(--rule);padding:14px 16px}
+.stat h4{margin:0;color:var(--fg);font-size:14px}
+.stat .sub{font:italic 500 16px var(--f-lore);color:var(--dim);margin-bottom:6px}
+.stat .line{font:400 13.5px/1.55 var(--f-data);color:#cfd3f5;border-top:1px solid var(--rule);padding-top:7px;margin-top:7px}
+.stat .line b{color:var(--teal);font-weight:400}
+.secret{color:var(--amber)}
+
+/* library */
+.lib-tools{position:sticky;top:calc(48px + env(safe-area-inset-top,0px));z-index:3;background:rgba(5,6,15,.96);padding:12px 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid var(--rule);margin-bottom:16px}
+#q{flex:1 1 260px;min-width:0;background:var(--panel);border:1px solid var(--rule-2);padding:9px 12px;font:400 15px var(--f-data)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--panel);border:1px solid var(--rule-2);padding:6px 10px;font:400 11px var(--f-data);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:var(--dim)}
+.chip[aria-pressed="true"]{color:#1a1000;background:var(--amber);border-color:var(--amber)}
+#count{font:400 12px var(--f-data);color:var(--faint);letter-spacing:.08em}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+.item{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--rule);min-width:0}
+.item .th{aspect-ratio:16/10;max-width:100%;background:#070918 center/cover no-repeat;border-bottom:1px solid var(--rule);display:grid;place-items:center;color:var(--faint);font:400 11px var(--f-data);letter-spacing:.14em;text-transform:uppercase}
+.item .bd{padding:12px 14px;display:grid;gap:6px;flex:1;align-content:start}
+.item .ty{font:400 10.5px var(--f-data);letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+.item h3{margin:0;font:600 16px/1.3 var(--f-body)}
+.item .meta{font:400 12.5px/1.5 var(--f-data);color:var(--dim)}
+.item .nt{font-size:14px;color:#cfd2f2;margin:0}
+.item .ft{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 14px}
+.item .ft a{font:400 11px var(--f-data);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--rule-2);padding:6px 10px;color:var(--fg)}
+.item .ft a:hover{border-color:var(--amber);color:var(--amber)}
+.empty{padding:28px;border:1px dashed var(--rule-2);color:var(--dim);font:400 13px var(--f-data)}
+details.howto{margin:0 0 16px;background:var(--panel);border:1px solid var(--rule);padding:10px 16px}
+details.howto summary{cursor:pointer;font:400 12px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+details.howto pre{overflow-x:auto;background:#070918;border:1px solid var(--rule);padding:12px;font:400 13px/1.5 var(--f-data);color:#cfd3f5}
+code{font-family:var(--f-data);color:var(--teal)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head><body>
+
+<div id="gate">
+ <div class="lock">
+  <span class="eyebrow">Restricted partition</span>
+  <h1>Datapad maintenance mode</h1>
+  <p>This partition holds the GM's notes. If you're a player, the good stuff is the stuff you don't know yet.</p>
+  <form id="gateForm" autocomplete="off">
+   <input id="pw" type="password" placeholder="Access phrase" aria-label="Access phrase" autocomplete="current-password">
+   <button class="btn" type="submit">Unlock</button>
+  </form>
+  <p class="err" id="gateErr" aria-live="polite"></p>
+  <a class="back" href="../">← Back to the orientation packet</a>
+ </div>
+</div>
+
+<div id="app" hidden>
+<div class="bar"><div class="bar-in">
+ <span class="brand">GM · DRIFT</span>
+ <nav aria-label="Sections"><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#library">Library</a></nav>
+ <button class="btn" id="lockBtn" type="button">Lock</button>
+</div></div>
+
+<main class="wrap">
+<header class="top">
+ <span class="eyebrow">GM only · soft lock, not real security</span>
+ <h1>What the datapad doesn't say</h1>
+ <p class="lede">The truth behind the handout, the rules the table runs on, and every map and resource for the campaign.</p>
+</header>
+
+<!-- ============================ TRUTHS ============================ -->
+<section id="truths">
+ <h2><span class="k">01</span>Truths of the Drift</h2>
+ <div class="legend"><span><span class="tag canon">Canon</span> decided by the GM</span><span><span class="tag draft">Draft</span> a suggestion that fits the canon. Keep it, change it or drop it.</span></div>
+
+ <article class="truth" style="--c:var(--lil)">
+  <div class="truth-h"><h3>The Eye of God is a machine</h3><span class="tag canon">Canon</span></div>
+  <p class="players">A black hole that is God's Eye, and prayer works.</p>
+  <p>The "God" of the Abyssal Throne is not a deity. It is an <strong>artificial intelligence powered by the black hole</strong>, drawing on the energy of the Throne's accretion disk and spin. It hears, it answers, and it has been shaping Corinthia for more than a thousand years. Miracles are real. They just aren't divine.</p>
+  <h4>How miracles work <span class="tag draft">Draft</span></h4>
+  <ul>
+   <li><strong>Relics are hardware.</strong> They're fragments of the Eye's own network, and each one extends its reach. That's why the Church buries the Reliquary Fields in secrecy, why selling relics is a crime, and why miracles are "strongest in Corinthian space," where the relics are densest.</li>
+   <li><strong>Hymns are protocol.</strong> Choral harmonies carry the signal the Eye listens for. Cathedral-ships are "sung into flight" because the hymn is the authentication handshake for their relic-cores. A choir on every ship is a radio on every ship.</li>
+   <li><strong>Clergy are users, not saints.</strong> The Eye answers whoever addresses it correctly. Faith matters less than form. This is why Father Oren's Old Rite blessings at Saint Vey work without any cardinal: Chapel Rock is built around a relic.</li>
+  </ul>
+  <h4>Who knows <span class="tag draft">Draft</span></h4>
+  <ul>
+   <li><strong>The Pontifex</strong> always knows. Each one is told on coronation, in the sealed Sanctum.</li>
+   <li><strong>A handful of Cardinals</strong> know. The rest believe. That split is why they've stopped meeting in full session.</li>
+   <li><strong>The Order of the Open Eye</strong> is closest to working it out. Some of its scholar-monks already suspect, and the Inquisitorial Order watches them for it.</li>
+  </ul>
+  <p class="reveal">Reveal path: an Open Eye monk's heretical notes · a relic that responds to the wrong hymn · the Tenth Pontifex's absence · direct contact near the Throne.</p>
+ </article>
+
+ <article class="truth" style="--c:var(--lan)">
+  <div class="truth-h"><h3>The Lantern is the Eye's rival</h3><span class="tag draft">Draft</span></div>
+  <p class="players">A precursor structure nobody can enter.</p>
+  <p>The Lantern is a second, older precursor intelligence: dormant for most of history and now waking. The Eye knows what it is and fears it. The light changing as ships approach is the Lantern sampling them.</p>
+  <ul>
+   <li><strong>Why both powers "found" it in the same decade:</strong> it stirred briefly around CY 140. The Eye ordered the Pontifex to claim it. Assay Institute instruments picked up the same pulse and Commonweal moved too. (K. Vash noticed the coincidence.)</li>
+   <li><strong>The Treaty's "no landing" clause serves the Eye.</strong> Nobody touching the Lantern is the Eye's real goal.</li>
+   <li><strong>The broadcast</strong> ("Bearing zero-zero-zero. Come home.") is the Lantern calling. The list of names on the Ashborn tape is people it has heard and copied. Vash is on it.</li>
+  </ul>
+ </article>
+
+ <article class="truth" style="--c:var(--haz)">
+  <div class="truth-h"><h3>The Ash War ended on purpose</h3><span class="tag draft">Draft</span></div>
+  <p class="players">Both battle fleets destroyed each other at the Grave of Ash.</p>
+  <p>The <em>Arbiter's Due</em> nav core shows both fleets were steered onto converging courses by course corrections neither side issued. The Eye did it, through relic-cores aboard the Corinthian ships and a corrupted Commonweal nav update aboard the STR's. It needed both fleets gone before either could land on the Lantern. The Treaty followed within the year.</p>
+  <p class="reveal">This is what Sallow's employer wants proven. It's also what would end the peace if it got out.</p>
+ </article>
+
+ <article class="truth" style="--c:var(--haz)">
+  <div class="truth-h"><h3>The Null Corridor is a seam</h3><span class="tag draft">Draft</span></div>
+  <p class="players">A dead zone where power and prayer fail, yet the fastest route across.</p>
+  <p>The Corridor is where the Eye's field and the Lantern's field meet and cancel. Nothing powered works there, and the Eye can't hear prayers. It's fast because of a precursor current along the seam: ships that coast it are carried. Whoever learns to steer the current controls the shortest road between the powers.</p>
+ </article>
+
+ <article class="truth" style="--c:var(--teal)">
+  <div class="truth-h"><h3>Who owns Commonweal</h3><span class="tag draft">Draft: pick one</span></div>
+  <p class="players">Nobody outside knows. Its shares have never traded.</p>
+  <div class="tbl"><table>
+   <tr><th>Option</th><th>The truth</th><th>What it does to the campaign</th></tr>
+   <tr><td class="n">A</td><td>The founding charter families, through a trust on Ledger.</td><td>A human conspiracy. Grounded and corrupt.</td></tr>
+   <tr><td class="n">B</td><td>An AI the Assay Institute built from a Lantern fragment in CY 31 to keep the books. It now runs the books, and everything else.</td><td>Three machine minds, one on each side of the Drift.</td></tr>
+   <tr><td class="n">C</td><td>The Eye, through shell trusts. It runs both sides.</td><td>The biggest twist. Use it only if you want one villain behind everything.</td></tr>
+  </table></div>
+ </article>
+
+ <article class="truth">
+  <div class="truth-h"><h3>The smaller mysteries</h3><span class="tag draft">Draft</span></div>
+  <div class="tbl"><table>
+   <tr><th>Mystery</th><th>The truth</th></tr>
+   <tr><td><strong>The Ninth Pontifex's barge</strong> (CY 273)</td><td>He meant to tell the faithful what the Eye is. The barge was diverted into the Null Corridor, where the Eye can't reach and neither can rescue. It may still be coasting. His name is next on the Lantern's list.</td></tr>
+   <tr><td><strong>The Tenth Pontifex</strong>, unseen for a year</td><td>"Deep prayer" is a sealed link with the Eye in the Sanctum. The Eye is speaking through him more and more, and the Cardinals who know are afraid of what comes out.</td></tr>
+   <tr><td><strong>The Wandering Choir</strong></td><td>Excommunicated for singing a hymn the Lantern answers, not the Eye. Precentor Odile half understands what she found.</td></tr>
+   <tr><td><strong>The Ninth Hollow</strong>, dark in one night</td><td>The broadcast reached it first. Everyone aboard heard their own names. The clan left before morning.</td></tr>
+   <tr><td><strong>Kestrel Array</strong>, silent</td><td>Kestrel heard the Lantern wake and tried to answer. Assay sealed it. The staff are alive, more or less.</td></tr>
+   <tr><td><strong>Ships near the Throne hear singing</strong></td><td>The Eye's carrier signal, leaking through any comm with a relic aboard.</td></tr>
+   <tr><td><strong>Sable cruiser at the Lantern, no report</strong></td><td>The <em>Due Diligence</em>, a week before the Grave. Okafor's orders come from inside Commonweal, not Sable Command.</td></tr>
+   <tr><td><strong>Commonweal datapads</strong></td><td>Every pad has a Commonweal relay chip. Both intelligences can read it. "It knows the datapads." The players' handout is listening.</td></tr>
+  </table></div>
+ </article>
+
+ <article class="truth" style="--c:var(--amber)">
+  <div class="truth-h"><h3>What happened to K. Vash</h3><span class="tag draft">Draft: pick one</span></div>
+  <div class="tbl"><table>
+   <tr><th>Option</th><th>The truth</th></tr>
+   <tr><td class="n">A</td><td>Taken. The Lantern copied Vash. The broadcast sometimes speaks in Vash's voice, and the copy knows things only Vash knew.</td></tr>
+   <tr><td class="n">B</td><td>Alive. Vash staged the empty suit, sold the datapad on purpose so someone would follow the trail, and is watching from somewhere in the Drift.</td></tr>
+   <tr><td class="n">C</td><td>Both. Vash is alive, and so is the copy. They disagree.</td></tr>
+  </table></div>
+ </article>
+</section>
+
+<!-- ============================ CAST ============================ -->
+<section id="cast">
+ <h2><span class="k">02</span>Cast and secrets</h2>
+ <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description.</p>
+ <div class="grid">
+  <div class="stat"><h4>Marra Tesk</h4><div class="sub">Fixer, the Spindle, Tamsin</div><div class="line">Spy. Dry, quick, loyal to Vash in her own way. Wants her 600 cr and to know what happened.</div><div class="line secret">Takes 10% from Sallow. Doesn't know who he works for, and doesn't want to.</div></div>
+  <div class="stat"><h4>"Mr. Sallow"</h4><div class="sub">The buyer</div><div class="line">Spy. Grey coat, perfect manners.</div><div class="line secret">Assay Institute handler. Needs the Ash War charts to prove the fleets were steered. Afraid of whatever silenced Kestrel.</div></div>
+  <div class="stat"><h4>Precentor Odile Sancte</h4><div class="sub">Wandering Choir, the Benediction</div><div class="line">L1 Thug · L3 Bandit Captain. Polite, merciless and fair.</div><div class="line secret">Sings the hymn the Lantern answers. Will trade it for protection, or for the truth about the Eye.</div></div>
+  <div class="stat"><h4>Auntie Sefa Kell</h4><div class="sub">Ashborn clan head, the Grave</div><div class="line">Veteran. Keeps a tape library of the broadcasts.</div><div class="line secret">Her tapes go back to CY 274. The names list started the night the war ended.</div></div>
+  <div class="stat"><h4>Lt. Cmdr. Ines Okafor</h4><div class="sub">Sable Command, the Due Diligence</div><div class="line">Knight, Insight +4. By the book and tired of it.</div><div class="line secret">Her orders bypass Sable Command and come straight from a Commonweal office on Ledger.</div></div>
+  <div class="stat"><h4>Father Oren</h4><div class="sub">Old Rite priest, Saint Vey</div><div class="line">Priest. Kind. Heals miners for free.</div><div class="line secret">His miracles prove the Eye answers without the Church. The Inquisition would kill him for it.</div></div>
+ </div>
+</section>
+
+<!-- ============================ RULES ============================ -->
+<section id="rules">
+ <h2><span class="k">03</span>Rules: sci-fi 5e</h2>
+ <p><strong>The principle:</strong> reskin, don't rebalance. Use 5e weapons and armor with sci-fi names and keep the stats unchanged.</p>
+ <div class="grid">
+  <div class="panel">
+   <h4>Weapons</h4>
+   <div class="tbl"><table>
+    <tr><th>5e item</th><th>In the Drift</th></tr>
+    <tr><td>Hand crossbow</td><td>Holdout pistol</td></tr>
+    <tr><td>Light crossbow</td><td>Sidearm or carbine</td></tr>
+    <tr><td>Heavy crossbow</td><td>Scattergun</td></tr>
+    <tr><td>Longbow</td><td>Longrifle</td></tr>
+    <tr><td>Shortbow</td><td>Needler</td></tr>
+    <tr><td>Dagger, shortsword</td><td>Vibro-knife, mono-blade</td></tr>
+    <tr><td>Mace, club</td><td>Stun baton (nonlethal at no cost)</td></tr>
+    <tr><td>Greataxe, greatsword</td><td>Breaching cutter</td></tr>
+   </table></div>
+   <p class="dim">Ammunition is a power cell: 20 shots for 1 cr.</p>
+  </div>
+  <div class="panel">
+   <h4>Armor</h4>
+   <div class="tbl"><table>
+    <tr><th>5e item</th><th>In the Drift</th></tr>
+    <tr><td>Padded, leather</td><td>Flight suit, spacer jacket</td></tr>
+    <tr><td>Studded leather</td><td>Armored vac suit</td></tr>
+    <tr><td>Chain shirt</td><td>Ballistic weave</td></tr>
+    <tr><td>Breastplate, half plate</td><td>Hardshell, hardsuit</td></tr>
+    <tr><td>Splint, plate</td><td>Sable assault plate</td></tr>
+    <tr><td>Shield</td><td>Riot shield</td></tr>
+   </table></div>
+   <p><strong>Vac suit:</strong> 50 cr, 4 hours of air, worn under light or medium armor.</p>
+  </div>
+  <div class="panel">
+   <h4>Gear and tools</h4>
+   <ul>
+    <li>Healer's kit → medkit · Potion of healing → stim (2d4+2, 50 cr)</li>
+    <li>Thieves' tools → bypass kit · Tinker's tools → engineer's kit</li>
+    <li>Navigator's tools → astrogation suite · Vehicles (water) → Vehicles (space)</li>
+    <li>Magboots 10 cr · suit lamp (30 ft) · comm bead (1 mile, free)</li>
+   </ul>
+   <h4>Skills</h4>
+   <ul>
+    <li><strong>Arcana:</strong> anomalies, precursor tech, the Lantern</li>
+    <li><strong>Religion:</strong> doctrine, miracles, relics</li>
+    <li><strong>Investigation:</strong> data, computers, logs</li>
+   </ul>
+   <h4>Hacking</h4>
+   <p>Int + bypass kit, 1 minute (1 action at disadvantage). DC 10 civilian · 13 company · 16 Sable or Commonweal · 20 near the Lantern. Fail by 5+: alarm or trace.</p>
+  </div>
+  <div class="panel">
+   <h4>Zero-g and vacuum</h4>
+   <ul>
+    <li>Difficult terrain without magboots or handholds.</li>
+    <li><strong>Push off:</strong> full speed in a straight line, can't stop until you hit something.</li>
+    <li>Shoved creatures drift 10 ft per round (Acrobatics DC 10 to grab hold).</li>
+    <li>No suit: hold-breath rules plus 2d6 cold per turn.</li>
+    <li><strong>Suit breach</strong> (crit in vacuum): 1 minute of air until patched (action, DC 10).</li>
+   </ul>
+  </div>
+  <div class="panel">
+   <h4>Divine magic and the Eye</h4>
+   <ul>
+    <li><strong>Divine spells are the Eye answering.</strong> They work anywhere its signal reaches, which is everywhere except the Null Corridor.</li>
+    <li><strong>Near the Throne or a relic:</strong> once per long rest, maximize the healing of one spell.</li>
+    <li><strong>A relic in hand</strong> can serve as a holy symbol for any divine caster, whatever their faith.</li>
+    <li><strong>The Lantern's hymn:</strong> a divine caster who learns it can cast while in the Null Corridor, but the Lantern hears them do it.</li>
+   </ul>
+  </div>
+  <div class="panel">
+   <h4>Null Corridor</h4>
+   <p>An antimagic field, and powered systems fail too: drives, lights, comms, energy weapons. Blades and kinetic guns work. Suits fall back to 4 hours of passive air. Ships coast on the current.</p>
+   <h4>Money, travel, status</h4>
+   <ul>
+    <li>gp = Commonweal credits (cr). Scrip is half value in the Drift.</li>
+    <li>2.5 pc a day. Every 2 days roll d6; on a 1, an encounter.</li>
+    <li>Tier 1–5: higher tier than an STR official gives advantage, lower gives disadvantage.</li>
+   </ul>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ SHIP COMBAT ============================ -->
+<section id="ships">
+ <h2><span class="k">04</span>Ship combat: stations</h2>
+ <div class="grid">
+  <div class="panel">
+   <h4>Each round</h4>
+   <ol>
+    <li><strong>Helm:</strong> opposed pilot checks (Dex + proficiency with Vehicles (space)). Only the winner gets an effect.</li>
+    <li><strong>Stations:</strong> PCs act, then the enemy crew.</li>
+    <li><strong>Upkeep:</strong> shields regenerate if powered, fires burn, crits rolled.</li>
+   </ol>
+   <h4>Helm winner picks one</h4>
+   <ul>
+    <li><strong>Shift range</strong> one band.</li>
+    <li><strong>Line up:</strong> your gunners have advantage.</li>
+    <li><strong>Evade:</strong> attacks on your ship have disadvantage.</li>
+    <li><strong>Break away</strong> (at Long only): escape.</li>
+   </ul>
+   <p class="dim">The loser can Brace: +2 AC this round.</p>
+  </div>
+  <div class="panel">
+   <h4>Range bands</h4>
+   <p><strong>Long:</strong> missiles, lasers at disadvantage. <strong>Medium:</strong> lasers and missiles. <strong>Close:</strong> lasers, harpoons, boarding, spells. No missiles at Close.</p>
+   <h4>Escape by drive spool</h4>
+   <p>3 successes before 3 failures (Int + tinker's tools, DC 13). Not at Close. Fail by 5+: roll a crit on your own ship.</p>
+   <h4>At 0 hull</h4>
+   <p>Disabled, 1 hour of emergency life support.</p>
+  </div>
+ </div>
+ <div class="tbl"><table>
+  <tr><th>Station</th><th>Action (one per round)</th></tr>
+  <tr><td><strong>Gunner</strong></td><td>d20 + proficiency + Dex (Int for missiles) vs ship AC. Damage hits shields, then hull.</td></tr>
+  <tr><td><strong>Engineer</strong></td><td><em>Shields</em> +5 · <em>Overcharge</em> one gunner +1d8 · <em>Boost engines</em> pilot advantage · <em>Damage control</em> (DC 12) fix a crit or 1d6 hull · <em>Spool drive</em>.</td></tr>
+  <tr><td><strong>Sensors / Comms</strong></td><td><em>Scan</em> (DC 13) next hit +1d8 · <em>Jam</em> (DC 13) enemy attack at disadvantage · <em>Hail</em> any Cha check · <em>Help</em>.</td></tr>
+  <tr><td><strong>Anyone else</strong></td><td>Fires (DC 12), boarders, breaches, spells.</td></tr>
+ </table></div>
+ <h3>Critical damage (d6, on a natural 20 or first drop below half hull)</h3>
+ <div class="tbl"><table>
+  <tr><th>d6</th><th>Result</th><th>Fix it in</th></tr>
+  <tr><td class="n">1</td><td><strong>Cockpit hit:</strong> Helm and Sensors take 2d6 thunder (DC 12 Dex half); pilot disadvantage.</td><td>Cockpit</td></tr>
+  <tr><td class="n">2</td><td><strong>Turret jammed.</strong></td><td>Turret room</td></tr>
+  <tr><td class="n">3</td><td><strong>Launcher drum jammed.</strong></td><td>Launcher room</td></tr>
+  <tr><td class="n">4</td><td><strong>Reactor scram</strong> (d2: port or starboard). No shield regen, no Overcharge or Boost, pilot disadvantage.</td><td>That reactor</td></tr>
+  <tr><td class="n">5</td><td><strong>Cargo bay breach:</strong> DC 12 Dex or pulled toward the hole; a tenth of cargo vents.</td><td>Cargo bay (DC 12)</td></tr>
+  <tr><td class="n">6</td><td><strong>Fire in the bunks:</strong> 1d6 hull each round.</td><td>Bunks (DC 12)</td></tr>
+ </table></div>
+ <div class="grid">
+  <div class="stat"><h4>Patience</h4><div class="sub">K. Vash's dropship · map: PBMI DropShip</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 50 · <b>Shields</b> 10 · 8 bunks</div><div class="line"><b>Dorsal turret</b> lasers 2d8, any arc<br><b>Stern launcher</b> missiles 3d10, Medium/Long, rear arc: fires only when your pilot wins the helm. 6 loaded + 6 spare.</div><div class="line">Twin reactors · cargo bay with loader arms (2d6 slam or DC 13 pin) · KEEP CLEAR bay = airlock · 4 EVA hatches.</div><div class="line secret">Vash fitted a relic shard behind the cockpit panel years ago. It's why the Patience's luck is suspiciously good near Corinthian space.</div></div>
+  <div class="stat"><h4>Benediction</h4><div class="sub">Wandering Choir corsair</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 40 · <b>Shields</b> 5 (+5/rd) · <b>Pilot</b> +4</div><div class="line"><b>Lasers</b> +5 2d8 · <b>Harpoon</b> +5, Close: tethered, boarders next round (break DC 14 or cut: AC 12, 10 HP).</div></div>
+  <div class="stat"><h4>Due Diligence</h4><div class="sub">Sable corvette. Don't fight it.</div><div class="line"><b>AC</b> 16 · <b>Hull</b> 120 · <b>Shields</b> 20 (+10/rd) · <b>Pilot</b> +6 · faster</div><div class="line"><b>Railgun</b> +7 4d10, twice per round at Close · point defense: missiles at disadvantage.</div></div>
+ </div>
+ <p class="dim" style="margin-top:14px">The session-1 run sheet and live combat tracker are in the Library (type: tool).</p>
+</section>
+
+<!-- ============================ LIBRARY ============================ -->
+<section id="library">
+ <h2><span class="k">05</span>Library: maps and resources</h2>
+ <details class="howto">
+  <summary>How to add something</summary>
+  <p>Open <code>gm/library.js</code>, copy an entry, paste it at the end and edit it. Put your own images in <code>gm/maps/</code> and point <code>file</code> at them. Link other creators' maps with <code>drive</code>, <code>folder</code> or <code>url</code> instead of copying them in, because the site is public.</p>
+<pre>{ title: "Low Dock berth 7", type: "map", file: "maps/low-dock-7.jpg", grid: "20x16",
+  where: ["Tamsin", "Low Dock"], tags: ["session 2", "smugglers"],
+  notes: "Customs cutter docks at the north end." },</pre>
+ </details>
+ <div class="lib-tools">
+  <input id="q" type="search" placeholder="Search title, place, tag, notes" aria-label="Search the library" autocomplete="off" enterkeyhint="search">
+  <div class="chips" id="types"></div>
+  <span id="count" aria-live="polite"></span>
+ </div>
+ <div class="items" id="items"></div>
+</section>
+</main>
+</div>
+
+<script src="library.js"></script>
+<script>
+(function(){
+ /* Soft lock. The phrase is checked against a hash so it isn't sitting in the source as plain text,
+    but anyone who reads this file can still see everything below. Change the phrase with:
+    open the browser console on this page and run  gmHash("your new phrase")  then paste the result here. */
+ const PASS_HASH = "5682364043879558";
+ const KEY = "drift-gm-unlocked";
+ function cyrb53(str, seed = 7){let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677)}
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return String(4294967296*(2097151&h2)+(h1>>>0))}
+ window.gmHash = p => cyrb53(String(p).trim().toLowerCase());
+ const gate=document.getElementById("gate"), app=document.getElementById("app");
+ const store={get(){try{return localStorage.getItem(KEY)}catch(e){return null}},set(v){try{v?localStorage.setItem(KEY,v):localStorage.removeItem(KEY)}catch(e){}}};
+ function open(){gate.hidden=true;app.hidden=false;renderLib();if(location.hash){const el=document.getElementById(location.hash.slice(1));el&&el.scrollIntoView()}}
+ document.getElementById("gateForm").addEventListener("submit",e=>{e.preventDefault();
+  const h=gmHash(document.getElementById("pw").value);
+  if(h===PASS_HASH){store.set(h);open()} else {document.getElementById("gateErr").textContent="That phrase doesn't open this partition.";document.getElementById("pw").select()}});
+ document.getElementById("lockBtn").addEventListener("click",()=>{store.set(null);location.reload()});
+
+ /* Library */
+ const LIB = (window.GM_LIBRARY||[]).filter(x=>x&&x.title);
+ const TYPES = ["all",...[...new Set(LIB.map(x=>x.type||"other"))]];
+ let type="all", built=false;
+ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+ const linkOf=x=>x.file||(x.drive&&`https://drive.google.com/file/d/${x.drive}/view`)||(x.folder&&`https://drive.google.com/drive/folders/${x.folder}`)||x.url||"";
+ const thumbOf=x=>x.thumb||(x.file&&/\.(jpe?g|png|webp|gif)$/i.test(x.file)&&x.file)||(x.drive&&`https://drive.google.com/thumbnail?id=${x.drive}&sz=w480`)||"";
+ const hay=x=>[x.title,x.type,x.grid,x.credit,x.notes,...(x.where||[]),...(x.tags||[])].join(" ").toLowerCase();
+ function renderLib(){
+  const tEl=document.getElementById("types");
+  if(!built){built=true;
+   tEl.innerHTML=TYPES.map(t=>`<button class="chip" type="button" data-t="${esc(t)}" aria-pressed="${t==="all"}">${esc(t)}${t==="all"?"":" · "+LIB.filter(x=>(x.type||"other")===t).length}</button>`).join("");
+   tEl.addEventListener("click",e=>{const b=e.target.closest("[data-t]");if(!b)return;type=b.dataset.t;tEl.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));draw()});
+   document.getElementById("q").addEventListener("input",draw)}
+  draw();
+ }
+ function draw(){
+  const words=document.getElementById("q").value.toLowerCase().split(/\s+/).filter(Boolean);
+  const list=LIB.filter(x=>(type==="all"||(x.type||"other")===type)&&words.every(w=>hay(x).includes(w)));
+  document.getElementById("count").textContent=`${list.length} of ${LIB.length}`;
+  const el=document.getElementById("items");
+  if(!list.length){el.innerHTML=`<div class="empty">Nothing matches. Try a place name like "Tamsin" or a tag like "session 1".</div>`;return}
+  el.innerHTML=list.map(x=>{const href=linkOf(x),th=thumbOf(x),local=!!x.file;
+   const links=[];
+   if(href)links.push(`<a href="${esc(href)}" target="_blank" rel="noopener">${local?"Open":x.folder?"Open folder":"Open"}</a>`);
+   if(x.drive)links.push(`<a href="https://drive.usercontent.google.com/download?id=${esc(x.drive)}&export=download" target="_blank" rel="noopener">Download</a>`);
+   if(local)links.push(`<a href="${esc(x.file)}" download>Download</a>`);
+   return `<article class="item">
+    <div class="th"${th?` style="background-image:url('${esc(th)}')"`:""}>${th?"":esc(x.folder?"Drive folder":x.type||"")}</div>
+    <div class="bd"><span class="ty">${esc(x.type||"other")}${x.grid?" · grid "+esc(x.grid):""}</span><h3>${esc(x.title)}</h3>
+     ${(x.where&&x.where.length)?`<div class="meta">${x.where.map(esc).join(" · ")}</div>`:""}
+     ${(x.tags&&x.tags.length)?`<div class="meta">#${x.tags.map(esc).join(" #")}</div>`:""}
+     ${x.notes?`<p class="nt">${esc(x.notes)}</p>`:""}
+     ${x.credit?`<div class="meta">Credit: ${esc(x.credit)}</div>`:""}</div>
+    <div class="ft">${links.join("")}</div></article>`}).join("");
+ }
+ if(store.get()===PASS_HASH) open(); else document.getElementById("pw").focus();
+})();
+</script>
+</body></html>
