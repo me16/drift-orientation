@@ -35,7 +35,7 @@ window.GM_LIBRARY = [
     where: ["Patience"], tags: ["mood", "original"] },
 
   // ---------- Ships (Drive) ----------
-  { title: "PBMI DropShip (the Patience)", type: "ship", drive: "10cyC8p54V4cfw1oLrhK8pgWhNVbQcows", grid: "19x26",
+  { title: "PBMI DropShip (the Patience)", type: "ship", drive: "10cyC8p54V4cfw1oLrhK8pgWhNVbQcows", thumb: "maps/thumb-pbmi-dropship-patience.jpg", grid: "19x26",
     where: ["Patience"], tags: ["party ship", "session 1", "boarding"],
     notes: "Cockpit = helm + sensors. Dorsal turret top left. Stern launcher. Twin reactors. KEEP CLEAR bay = main airlock. Crop the Reddit banner; grid ~112 px." },
   { title: "PBMI SquadShip", type: "ship", drive: "1xZhMsHMp2GsPLGCCUzdtrkNnwvGcSTOX", grid: "20x33",

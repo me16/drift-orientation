@@ -60,7 +60,7 @@ Rules for the player handout:
 - **Soft lock only.** The access phrase is checked client-side against a `cyrb53` hash (`PASS_HASH` in `gm/index.html`) and remembered in `localStorage`. Anyone who reads `gm/index.html` or `gm/library.js` can see everything. The GM accepted this; don't present it as secure. To change the phrase, run `gmHash("new phrase")` in the browser console on the GM page and paste the result into `PASS_HASH`. The current phrase is "the eye sees" (case-insensitive).
 - **Truths** are tagged `Canon` (decided by the GM) or `Draft` (suggested, open to change). Never promote a Draft to Canon on your own. Current canon: the "God" of the Abyssal Throne is an AI powered by the black hole, not a deity.
 - **Library** (`gm/library.js`): a `window.GM_LIBRARY` array the GM edits by hand. The file header documents the fields. Search covers title, type, grid, where, tags, notes and credit; type chips are built from the data.
-- **Other creators' maps are linked, not copied.** Use `drive` / `folder` / `url`. Only original work goes in `gm/maps/` (compressed JPG, with a `thumb-` copy around 480 px referenced by `thumb`).
+- **Other creators' maps are linked, not copied.** Use `drive` / `folder` / `url`. Only original work goes in `gm/maps/` (compressed JPG, with a `thumb-` copy around 480 px referenced by `thumb`). One exception, approved by the GM: `gm/maps/pbmi-dropship-patience.jpg` (PBMI DropShip art, the Patience) is copied in so the ship-combat station markers line up with it. Markers are SVG overlays in image pixels (viewBox 1428×2000), so don't recrop or resize that file without moving them.
 - The player handout links to the partition from its sidebar footer ("Restricted partition").
 
 ## Checking changes
