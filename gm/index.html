@@ -403,7 +403,9 @@ code{font-family:var(--f-data);color:var(--teal)}
 </main>
 </div>
 
-<script src="library.js"></script>
+<!-- Load library.js with a fresh URL every time so edits show up right after a deploy
+     (GitHub Pages lets browsers cache it for ~10 minutes otherwise). -->
+<script>document.write('<script src="library.js?v=' + Date.now() + '"><\/script>')</script>
 <script>
 (function(){
  /* Soft lock. The phrase is checked against a hash so it isn't sitting in the source as plain text,
