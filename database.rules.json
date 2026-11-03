@@ -11,6 +11,22 @@
         "updated": { ".validate": "newData.isNumber()" },
         "state": { ".validate": "newData.hasChildren()" },
         "fx": { "$slot": { ".validate": "$slot.matches(/^([0-9]|1[0-5])$/)" } },
+        "players": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && root.child('rooms').child($room).child('owner').exists()",
+            ".validate": "newData.hasChildren(['crew'])",
+            "crew": { ".validate": "newData.isNumber()" },
+            "at": { ".validate": "newData.isNumber()" },
+            "$other": { ".validate": false }
+          }
+        },
+        "actions": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && root.child('rooms').child($room).child('owner').exists()",
+            "$id": { ".validate": "newData.hasChildren(['type', 'ref']) && newData.child('type').isString() && newData.child('type').val().length < 16" }
+          }
+        },
+        "replies": { "$uid": { ".validate": "newData.hasChildren(['msg'])" } },
         "$other": { ".validate": false }
       }
     }
