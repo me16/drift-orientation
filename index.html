@@ -23,17 +23,15 @@
 html,body{height:100%;height:100dvh;margin:0}
 html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
 body{background:var(--void);color:var(--fg);font:400 15.5px/1.62 var(--f-body);display:grid;grid-template:minmax(0,1fr)/minmax(0,1fr);place-items:center;overflow:hidden}
-.pad{max-height:calc(100% - 48px)}
-.pad-in{min-height:0}
 button,input{font:inherit;color:inherit}
 a{color:var(--teal)}
 #stars{position:fixed;inset:0;width:100%;height:100%;z-index:0}
 .chamfer{clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut))}
 
-.pad{position:relative;z-index:1;width:min(1240px,calc(100% - 48px));height:calc(100% - 48px);padding:1px;--cut:28px;
+.pad{position:relative;z-index:1;width:min(1240px,calc(100% - 48px));height:calc(100% - 48px);max-height:calc(100% - 48px);padding:1px;--cut:28px;
   clip-path:polygon(var(--cut) 0,calc(100% - 160px) 0,calc(100% - 148px) 10px,100% 10px,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,160px 100%,148px calc(100% - 10px),0 calc(100% - 10px),0 var(--cut));
   background:var(--holo)}
-.pad-in{height:100%;background:linear-gradient(160deg,#121634,#0a0c1e 60%,#100c22);display:flex;flex-direction:column;gap:8px;padding:12px 14px 22px;
+.pad-in{height:100%;min-height:0;background:linear-gradient(160deg,#121634,#0a0c1e 60%,#100c22);display:flex;flex-direction:column;gap:8px;padding:12px 14px 22px;
   clip-path:inherit}
 .pad-top{display:flex;justify-content:space-between;align-items:center;padding:0 26px;font:400 10px var(--f-data);letter-spacing:.32em;color:#5d64a0;text-transform:uppercase}
 .pad-top .cam{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#6a74c4,#0a0c1e 70%);box-shadow:0 0 0 2px #1c2148}
@@ -360,7 +358,7 @@ body.mapfs .screen::after{display:none}
     <a href="#gazetteer" data-r="gazetteer"><span class="ic">05</span><span class="t">Gazetteer</span><span class="s" id="gazCount">Systems</span></a>
     <a href="#origins" data-r="origins"><span class="ic">06</span><span class="t">Origins</span><span class="s">Registry profiles</span></a>
     <a href="#glossary" data-r="glossary"><span class="ic">07</span><span class="t">Glossary</span><span class="s">Terms</span></a>
-    <div class="foot">Registered to:<br>K. VASH (TIER 3)<br>Transfer: unfiled<br><span style="color:var(--amber)">User annotations: 20</span></div>
+    <div class="foot">Registered to:<br>K. VASH (TIER 3)<br>Transfer: unfiled<br><span style="color:var(--amber)">User annotations: <span id="annCount">—</span></span></div>
    </nav>
    <main class="view" id="view">
 
@@ -592,7 +590,7 @@ body.mapfs .screen::after{display:none}
  </div>
 </div></div>
 <div id="err" hidden></div>
-<script>addEventListener("error",e=>{if(e.target&&e.target.tagName==="LINK")return;const d=document.getElementById("err");d.hidden=false;d.textContent="Datapad error: "+(e.message||"a script could not be loaded")},true)</script>
+<script>addEventListener("error",e=>{if(e.target&&(e.target.tagName==="LINK"||e.target.tagName==="SCRIPT"))return;const d=document.getElementById("err");d.hidden=false;d.textContent="Datapad error: "+(e.message||"a script could not be loaded")},true)</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
@@ -710,6 +708,7 @@ function navText(from,id){
 }
 $("#sysCount").textContent=DATA.length;
 $("#gazCount").textContent=DATA.length+" entries";
+$("#annCount").textContent=$$(".note").length+Object.keys(NOTES).length;
 
 let gFilter="all";
 function renderGaz(){
@@ -753,6 +752,7 @@ addEventListener("hashchange",route);
 let mapReady=false;
 function initMap(){
  if(mapReady)return;mapReady=true;
+ if(typeof THREE==="undefined"||!THREE.OrbitControls){document.getElementById("chartWrap").insertAdjacentHTML("beforeend",'<div class="empty" style="position:absolute;left:14px;right:14px;bottom:14px;background:var(--panel)">Chart offline: the 3D renderer could not be loaded (it needs an internet connection). Ranges and travel times are still listed in the Gazetteer.</div>');return}
 /* ---------- scene ---------- */
 const stage=document.getElementById("chartWrap");
 const LITE=COMPACT.matches;
@@ -1012,7 +1012,7 @@ const BUILD={
  renderer.domElement.addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY]});
  renderer.domElement.addEventListener("pointerup",e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;toNdc(e);ray.setFromCamera(mv,camera);
   const h=ray.intersectObjects(pickables.filter(p=>p.parent.parent.visible));if(h.length)select(h[0].object.userData.id)});
- renderer.domElement.addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;toNdc(e);ray.setFromCamera(mv,camera);renderer.domElement.style.cursor=ray.intersectObjects(pickables).length?"pointer":""});
+ renderer.domElement.addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;toNdc(e);ray.setFromCamera(mv,camera);renderer.domElement.style.cursor=ray.intersectObjects(pickables.filter(p=>p.parent.parent.visible)).length?"pointer":""});
  let sw=0,sh=0,glLost=false;
  function rs(){const w=wrap.clientWidth,h=wrap.clientHeight;if(!w||!h||(w===sw&&h===sh))return;sw=w;sh=h;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}
  if(window.ResizeObserver)new ResizeObserver(()=>rs()).observe(wrap);
