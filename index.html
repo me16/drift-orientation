@@ -1,0 +1,988 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Drift Orientation Packet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Exo+2:ital,wght@0,400;0,600;1,400&family=Michroma&family=Share+Tech+Mono&display=swap">
+<style>
+/* Layout: a holographic relic-tech datapad floating over a live starfield. Chamfered hardware frame, glowing file index left (scroll strip on phones), one document at a time. Wide futurist display type for titles, old-world serif italics for scripture and mottos. */
+:root{
+  --void:#04050d; --bezel:#0d1022; --screen:#080a19; --panel:rgba(15,19,42,.86); --panel-2:rgba(28,34,70,.9);
+  --rule:#222852; --rule-2:#343c74;
+  --fg:#e3e7ff; --dim:#9298c8; --faint:#5e6496;
+  --teal:#6ff3e0; --teal-ink:#03211d; --amber:#ffb35c; --lil:#c9a6ff;
+  --dom:#c9a6ff; --str:#6ff3e0; --drift:#ffb35c; --haz:#ff6b7a; --lan:#fff0c2;
+  --holo:linear-gradient(115deg,#6ff3e0,#8fb4ff 35%,#c9a6ff 60%,#ffb35c 90%);
+  --f-disp:"Michroma","Eurostile","Arial Black",sans-serif;
+  --f-body:"Exo 2","Segoe UI",system-ui,sans-serif;
+  --f-lore:"Cormorant Garamond",Georgia,serif;
+  --f-data:"Share Tech Mono",ui-monospace,Menlo,monospace;
+  --cut:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--void);color:var(--fg);font:400 15.5px/1.62 var(--f-body);display:grid;grid-template:minmax(0,1fr)/minmax(0,1fr);place-items:center;overflow:hidden}
+.pad{max-height:calc(100% - 48px)}
+.pad-in{min-height:0}
+button,input{font:inherit;color:inherit}
+a{color:var(--teal)}
+#stars{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.chamfer{clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut))}
+
+.pad{position:relative;z-index:1;width:min(1240px,calc(100% - 48px));height:calc(100% - 48px);padding:1px;--cut:28px;
+  clip-path:polygon(var(--cut) 0,calc(100% - 160px) 0,calc(100% - 148px) 10px,100% 10px,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,160px 100%,148px calc(100% - 10px),0 calc(100% - 10px),0 var(--cut));
+  background:var(--holo)}
+.pad-in{height:100%;background:linear-gradient(160deg,#121634,#0a0c1e 60%,#100c22);display:flex;flex-direction:column;gap:8px;padding:12px 14px 22px;
+  clip-path:inherit}
+.pad-top{display:flex;justify-content:space-between;align-items:center;padding:0 26px;font:400 10px var(--f-data);letter-spacing:.32em;color:#5d64a0;text-transform:uppercase}
+.pad-top .cam{width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#6a74c4,#0a0c1e 70%);box-shadow:0 0 0 2px #1c2148}
+.screen{flex:1;min-height:0;position:relative;background:var(--screen);display:grid;grid-template-rows:auto 1fr;overflow:hidden;--cut:18px;
+  clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));
+  background-image:
+   radial-gradient(ellipse 60% 50% at 85% 0%,rgba(201,166,255,.10),transparent 70%),
+   radial-gradient(ellipse 50% 50% at 0% 100%,rgba(111,243,224,.08),transparent 70%),
+   url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='48' viewBox='0 0 56 48'%3E%3Cpath d='M14 0l14 8v16l-14 8L0 24V8zM42 24l14 8v16M28 24l14 8v16' fill='none' stroke='%23181d42' stroke-width='1'/%3E%3C/svg%3E")}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0 1px,transparent 1px 3px);z-index:3}
+.status{display:flex;align-items:center;gap:16px;padding:8px 20px 8px 26px;border-bottom:1px solid var(--rule);font:400 11px var(--f-data);letter-spacing:.14em;color:var(--dim);white-space:nowrap;overflow:hidden;text-transform:uppercase;background:linear-gradient(90deg,rgba(111,243,224,.06),transparent 40%)}
+.status .brand{font:400 11px var(--f-disp);letter-spacing:.2em;background:var(--holo);-webkit-background-clip:text;background-clip:text;color:transparent}
+.status .sp{flex:1}
+.status .pulse{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:pulse 2.4s infinite}
+.sig{display:inline-flex;gap:2px;align-items:flex-end;height:11px}
+.sig i{width:3px;background:var(--teal);box-shadow:0 0 4px var(--teal)}.sig i:nth-child(1){height:4px}.sig i:nth-child(2){height:7px}.sig i:nth-child(3){height:11px;background:var(--rule-2);box-shadow:none}
+@keyframes pulse{50%{opacity:.25}}
+
+.main{display:grid;grid-template-columns:232px minmax(0,1fr);grid-template-rows:minmax(0,1fr);min-height:0;overflow:hidden}
+.screen{grid-template-rows:auto minmax(0,1fr)}
+nav.files{min-height:0}
+nav.files{border-right:1px solid var(--rule);overflow:auto;padding:18px 0;background:linear-gradient(180deg,rgba(16,20,46,.7),rgba(10,12,28,.4));scrollbar-width:none}
+.files h2{margin:0 20px 12px;font:400 9.5px var(--f-disp);letter-spacing:.3em;color:var(--faint);text-transform:uppercase}
+.files a{position:relative;display:grid;grid-template-columns:auto 1fr;gap:1px 12px;padding:10px 20px;text-decoration:none;color:var(--fg);align-items:center}
+.files a .ic{grid-row:span 2;width:28px;height:30px;display:grid;place-items:center;font:400 10px var(--f-data);color:var(--dim);
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--rule)}
+.files a .ic::before{content:"";position:absolute}
+.files a .t{font:600 15px/1.2 var(--f-body);letter-spacing:.06em;text-transform:uppercase}
+.files a .s{font:400 10.5px var(--f-data);color:var(--faint);letter-spacing:.08em}
+.files a:hover .t{color:var(--teal)}
+.files a[aria-current="page"]{background:linear-gradient(90deg,rgba(111,243,224,.13),transparent)}
+.files a[aria-current="page"]::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:2px;background:var(--teal);box-shadow:0 0 10px var(--teal)}
+.files a[aria-current="page"] .ic{background:var(--teal);color:var(--teal-ink);filter:drop-shadow(0 0 6px var(--teal))}
+.files a[aria-current="page"] .t{color:#fff;text-shadow:0 0 12px rgba(111,243,224,.5)}
+.files a:focus-visible{outline:1px dashed var(--teal);outline-offset:-3px}
+.files .foot{margin:22px 20px 0;padding-top:14px;border-top:1px solid var(--rule);font:400 10.5px/1.7 var(--f-data);color:var(--faint);letter-spacing:.06em}
+
+.view{overflow:auto;min-width:0;min-height:0;height:100%;position:relative;scrollbar-width:thin;scrollbar-color:var(--rule-2) transparent}
+.doc{padding:34px 44px 70px;max-width:860px;animation:docin .5s ease-out}
+@keyframes docin{from{opacity:.4;transform:translateY(6px)}}
+.doc[hidden]{display:none}
+.dochead{position:relative;padding-bottom:18px;margin-bottom:26px}
+.dochead::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,var(--teal),rgba(201,166,255,.6) 40%,transparent)}
+.docid{font:400 11px var(--f-data);letter-spacing:.14em;color:var(--faint);display:flex;flex-wrap:wrap;gap:6px 18px;text-transform:uppercase}
+.docid b{color:var(--teal);font-weight:400;text-shadow:0 0 8px rgba(111,243,224,.5)}
+.dochead h1{margin:12px 0 8px;font:400 30px/1.2 var(--f-disp);letter-spacing:.04em;text-transform:uppercase;text-wrap:balance;
+  background:linear-gradient(100deg,#f3f5ff 10%,#9ff6ea 55%,#c9a6ff 90%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(111,243,224,.18))}
+.dochead .lede{margin:0;font:italic 500 20px/1.4 var(--f-lore);color:#c4c8ec;max-width:56ch}
+.doc h2{display:flex;align-items:center;gap:12px;font:400 14px/1.3 var(--f-disp);letter-spacing:.14em;text-transform:uppercase;margin:34px 0 12px;color:#f0f2ff}
+.doc h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--rule-2),transparent)}
+.doc h2::before{content:"";width:7px;height:7px;transform:rotate(45deg);border:1px solid var(--teal);box-shadow:0 0 6px var(--teal)}
+.doc h3{font:600 17px/1.25 var(--f-body);letter-spacing:.03em;margin:20px 0 6px}
+.doc p{margin:0 0 12px;max-width:66ch}
+.doc strong{color:#fff;font-weight:600}
+.doc ul{margin:0 0 12px;padding-left:0;list-style:none;max-width:64ch}
+.doc ul li{position:relative;padding-left:18px;margin-bottom:6px}
+.doc ul li::before{content:"";position:absolute;left:2px;top:.62em;width:5px;height:5px;transform:rotate(45deg);background:var(--c,var(--teal))}
+.lbl{font:400 10.5px var(--f-data);letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+
+.hero{display:grid;grid-template-columns:1fr 240px;gap:28px;align-items:center}
+.orrery{width:100%;max-width:240px;aspect-ratio:1;justify-self:center}
+.orrery .ring{fill:none;stroke:#2c3368;stroke-width:.6}
+.orrery .spin{transform-origin:120px 120px;animation:spin linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.notice{position:relative;padding:14px 18px 14px 22px;margin:20px 0;max-width:66ch;background:linear-gradient(90deg,rgba(111,243,224,.09),rgba(111,243,224,.02));--cut:10px;clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),100% 100%,0 100%)}
+.notice::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--teal);box-shadow:0 0 10px var(--teal)}
+.notice .lbl{color:var(--teal);display:block;margin-bottom:4px}
+.notice p{margin:0}
+.note{position:relative;padding:11px 16px 11px 16px;margin:16px 0;max-width:62ch;font:400 14px/1.55 var(--f-data);color:var(--amber);
+  background:repeating-linear-gradient(-45deg,rgba(255,179,92,.04) 0 6px,transparent 6px 12px);border:1px solid rgba(255,179,92,.35);text-shadow:0 0 10px rgba(255,179,92,.25)}
+.note .lbl{color:var(--amber);display:block;margin-bottom:3px;opacity:.75}
+.note .lbl::before{content:"✎ "}
+.note p{margin:0}
+.note p::after{content:"▌";margin-left:3px;animation:pulse 1.1s steps(1) infinite;opacity:.8}
+
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:var(--rule);margin:22px 0;--cut:12px;clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut))}
+.facts div{padding:12px 16px;background:var(--panel)}
+.facts dt{font:400 9.5px var(--f-data);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+.facts dd{margin:4px 0 0;font:400 15px var(--f-disp);letter-spacing:.04em;color:var(--teal);text-shadow:0 0 10px rgba(111,243,224,.35)}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:18px 0}
+.links a{position:relative;display:block;text-decoration:none;color:var(--fg);padding:14px 16px;background:linear-gradient(var(--panel),var(--panel)) padding-box,linear-gradient(135deg,var(--rule-2),transparent 50%,var(--rule-2)) border-box;border:1px solid transparent;--cut:12px;clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),100% 100%,var(--cut) 100%,0 calc(100% - var(--cut)));transition:background .2s}
+.links a:hover{background:linear-gradient(var(--panel-2),var(--panel-2)) padding-box,var(--holo) border-box}
+.links a b{display:block;font:400 12.5px var(--f-disp);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.links a span{font-size:14px;color:var(--dim)}
+
+.tl{list-style:none;padding:0 0 0 2px;margin:18px 0;position:relative;max-width:70ch}
+.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:1px;background:linear-gradient(var(--teal),var(--lil),var(--amber))}
+.tl li{position:relative;display:grid;grid-template-columns:96px 1fr;gap:14px;padding:0 0 14px 28px}
+.tl li::before{content:"";position:absolute;left:1px;top:5px;width:11px;height:11px;border-radius:50%;border:1px solid var(--teal);background:var(--screen);box-shadow:0 0 8px rgba(111,243,224,.5)}
+.tl li::after{content:"";position:absolute;left:5px;top:9px;width:3px;height:3px;border-radius:50%;background:var(--teal)}
+.tl .when{font:400 12px var(--f-data);color:var(--teal);padding-top:2px;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.tl b{font-weight:600;color:#fff}
+
+.fac{position:relative;margin:26px 0;background:linear-gradient(var(--panel),var(--panel)) padding-box,linear-gradient(135deg,var(--c),transparent 30%,transparent 70%,var(--c)) border-box;border:1px solid transparent;--cut:20px;
+  clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut))}
+.fac-h{display:grid;grid-template-columns:64px 1fr;gap:4px 18px;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--rule);background:radial-gradient(ellipse 50% 120% at 0% 0%,color-mix(in srgb,var(--c) 16%,transparent),transparent)}
+.fac-h .sigil{grid-row:span 3;width:64px;height:64px;color:var(--c);filter:drop-shadow(0 0 10px var(--c))}
+.fac-h .lbl{color:var(--c)}
+.fac-h h2{margin:2px 0;font-size:17px}
+.fac-h h2::before,.fac-h h2::after{display:none}
+.fac-h .motto{font:italic 500 19px var(--f-lore);color:#cfd2f2;margin:0}
+.fac-b{padding:8px 24px 20px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 18px;margin:12px 0}
+.kv dt{font:400 10.5px var(--f-data);letter-spacing:.16em;text-transform:uppercase;color:var(--c);opacity:.85;padding-top:3px}
+.kv dd{margin:0}
+.subs{margin:14px 0 6px;display:grid;gap:1px;background:var(--rule)}
+.subs > div{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:9px 14px;background:rgba(8,10,25,.85);font-size:14.5px}
+.subs b{font-weight:600;color:#fff;display:flex;gap:9px;align-items:center}
+.subs b::before{content:"";width:6px;height:6px;transform:rotate(45deg);border:1px solid var(--c);flex:none}
+.subs span{color:var(--dim)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0}
+.card{position:relative;padding:16px 18px;min-width:0;background:linear-gradient(var(--panel),var(--panel)) padding-box,linear-gradient(160deg,var(--c,var(--rule-2)),transparent 55%) border-box;border:1px solid transparent;--cut:12px;clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),100% 100%,0 100%)}
+.card h3{margin:0 0 4px}
+.card .lbl{display:block;margin-bottom:6px;color:var(--c,var(--dim))}
+.card p{margin:0;font-size:14.5px;color:#c8cbea}
+.card ul{margin:0;font-size:14.5px}
+.classes{margin:16px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--rule)}
+.classes > div{display:flex;flex-direction:column;padding:10px 14px;background:var(--panel)}
+.classes b{font:400 11.5px var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.classes span{font-size:14px;color:#c8cbea}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 18px;position:sticky;top:0;background:rgba(8,10,25,.94);padding:12px 0;z-index:2;border-bottom:1px solid var(--rule)}
+.chip{background:rgba(15,19,42,.9);border:1px solid var(--rule-2);padding:7px 12px;font:400 11px var(--f-data);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:var(--dim);display:inline-flex;gap:8px;align-items:center;--cut:7px;clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut))}
+.chip i{width:7px;height:7px;transform:rotate(45deg);background:var(--c);box-shadow:0 0 6px var(--c)}
+.chip[aria-pressed="true"]{color:#fff;border-color:var(--c,var(--teal));background:color-mix(in srgb,var(--c,var(--teal)) 16%,#0b0e22)}
+.chip[aria-pressed="false"] i{background:transparent;border:1px solid var(--c);box-shadow:none}
+.chip:hover{color:#fff}
+.chip:focus-visible,.btn:focus-visible,.search:focus-visible{outline:1px dashed var(--teal);outline-offset:2px}
+.search{flex:1;min-width:170px;background:rgba(15,19,42,.9);border:1px solid var(--rule-2);padding:8px 12px;font:400 13px var(--f-data);letter-spacing:.04em}
+.search::placeholder{color:var(--faint)}
+.locs{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.loc{position:relative;display:flex;flex-direction:column;min-width:0;scroll-margin-top:80px;background:linear-gradient(var(--panel),var(--panel)) padding-box,linear-gradient(170deg,var(--c),transparent 35%,transparent 80%,color-mix(in srgb,var(--c) 50%,transparent)) border-box;border:1px solid transparent;--cut:16px;clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),100% 100%,var(--cut) 100%,0 calc(100% - var(--cut)));transition:transform .2s}
+.loc.flash{animation:flash 1.4s}
+@keyframes flash{30%{box-shadow:inset 0 0 40px color-mix(in srgb,var(--c) 40%,transparent)}}
+.loc-h{position:relative;padding:14px 16px 12px 70px;border-bottom:1px solid var(--rule);background:radial-gradient(ellipse 70% 140% at 0% 0%,color-mix(in srgb,var(--c) 14%,transparent),transparent)}
+.loc-h .sigil{position:absolute;left:16px;top:16px;width:40px;height:40px;color:var(--c);filter:drop-shadow(0 0 6px var(--c));opacity:.9}
+.loc-h .code{font:400 10.5px var(--f-data);letter-spacing:.16em;color:var(--c)}
+.loc-h h3{margin:4px 0 2px;font:400 15px/1.3 var(--f-disp);letter-spacing:.06em;text-transform:uppercase;color:#fff}
+.loc-h .cls{font:italic 500 16px var(--f-lore);color:var(--dim)}
+.loc .mini{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border-bottom:1px solid var(--rule)}
+.loc .mini div{padding:8px 12px;background:rgba(8,10,25,.9)}
+.loc .mini dt,#chartCard .mini dt{font:400 9px var(--f-data);letter-spacing:.16em;color:var(--faint);text-transform:uppercase}
+.loc .mini dd,#chartCard .mini dd{margin:2px 0 0;font:400 13px var(--f-data);color:var(--fg);font-variant-numeric:tabular-nums}
+.loc-b{padding:14px 16px 6px;flex:1}
+.loc-b p{font-size:14.5px;margin:0 0 10px}
+.loc-b .sum{font-size:15px;color:#dfe2ff}
+.loc-b .talk{font:italic 500 17px/1.4 var(--f-lore);color:#d9d2f2;padding-left:12px;border-left:1px solid var(--c)}
+.loc-b .svc{font:400 12px/1.5 var(--f-data);color:var(--dim);letter-spacing:.04em}
+.bodies{list-style:none;margin:0 0 12px!important;padding:0!important}
+.bodies li{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:5px 0 5px 0!important;border-bottom:1px dashed var(--rule);font-size:13.5px;margin:0!important}
+.bodies li::before{display:none}
+.bodies li b{font:400 12.5px var(--f-data);color:var(--fg);white-space:nowrap}
+.bodies li b::before{content:"◈ ";color:var(--c)}
+.bodies li span{color:var(--dim)}
+.loc .note{margin:4px 16px 12px;font-size:12.5px}
+.loc-f{padding:0 16px 16px}
+.btn{background:transparent;border:1px solid var(--rule-2);padding:8px 13px;font:400 11px var(--f-data);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;color:var(--fg);--cut:7px;clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));transition:all .15s}
+.btn:hover{border-color:var(--teal);color:var(--teal-ink);background:var(--teal)}
+.btn[disabled]{opacity:.35;cursor:default;background:transparent;color:var(--fg);border-color:var(--rule-2)}
+.empty{padding:30px;border:1px dashed var(--rule-2);color:var(--dim);font:400 13px var(--f-data)}
+.rumors{list-style:none;padding:0!important;margin:16px 0;max-width:none!important}
+.rumors li{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:14px 0!important;border-bottom:1px solid var(--rule);max-width:76ch;margin:0!important}
+.rumors li::before{display:none}
+.rumors .src{font:400 11px var(--f-data);letter-spacing:.1em;color:var(--c);padding-top:5px;text-shadow:0 0 8px var(--c)}
+.rumors q{font:italic 500 19px/1.4 var(--f-lore);quotes:"\201C" "\201D";color:#e4e2fa}
+.rumors .where{display:block;font:400 11px var(--f-data);color:var(--faint);margin-top:4px;letter-spacing:.06em}
+.gloss{display:grid;grid-template-columns:220px 1fr;margin:16px 0;max-width:80ch}
+.gloss dt,.gloss dd{padding:11px 0;border-bottom:1px solid var(--rule);margin:0}
+.gloss dt{font:400 11.5px/1.6 var(--f-disp);letter-spacing:.1em;text-transform:uppercase;color:var(--teal);padding-right:14px}
+.gloss dd{font-size:15px}
+
+/* chart */
+#doc-chart{max-width:none;padding:0;height:100%;position:relative;animation:none}
+#chartWrap{position:absolute;inset:0;background:#060716;overflow:hidden}
+#chartWrap canvas{display:block;touch-action:none}
+#chartWrap.fs{position:fixed;inset:0;z-index:50}
+body.mapfs .pad,body.mapfs .pad-in,body.mapfs .screen{clip-path:none}
+body.mapfs .screen::after{display:none}
+.loc-b a.talk{display:block;text-decoration:none;margin:0 0 10px}
+.loc-b a.talk .more{display:block;margin-top:5px;font:400 10.5px var(--f-data);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--c);opacity:.75}
+.loc-b a.talk:hover .more,.loc-b a.talk:focus-visible .more{opacity:1;text-shadow:0 0 8px var(--c)}
+.loc-b a.talk:focus-visible{outline:1px dashed var(--c);outline-offset:3px}
+.rumors li{scroll-margin-top:16px}
+.rumors li.flash{animation:rflash 1.6s}
+@keyframes rflash{30%{background:color-mix(in srgb,var(--c) 14%,transparent)}}
+#chartLabels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ml{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;background:none;border:0;padding:0 0 13px;display:flex;flex-direction:column;align-items:center;white-space:nowrap}
+.ml[hidden],.mreg[hidden]{display:none}
+.ml::after{content:"";position:absolute;bottom:0;left:50%;width:1px;height:10px;background:linear-gradient(var(--c),transparent)}
+.ml .c{font:400 9.5px/1 var(--f-data);letter-spacing:.12em;color:var(--c);text-shadow:0 0 6px var(--c)}
+.ml .n{font:600 13px/1.2 var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--fg);text-shadow:0 0 6px #000,0 0 3px #000}
+.ml.on .n{color:#fff;text-shadow:0 0 10px var(--c),0 0 3px #000}
+.ml:focus-visible{outline:1px dashed var(--c)}
+.mreg{position:absolute;left:0;top:0;font:400 13px var(--f-disp);letter-spacing:.5em;text-transform:uppercase;color:var(--c);opacity:.35;white-space:nowrap;pointer-events:none;text-shadow:0 0 14px var(--c)}
+.chud{position:absolute;top:14px;left:14px;padding:9px 14px;font:400 11px/1.7 var(--f-data);color:var(--dim);letter-spacing:.1em;background:rgba(10,12,30,.85);border-left:2px solid var(--teal);box-shadow:-4px 0 14px -6px var(--teal)}
+.chud b{color:var(--teal);font-weight:400}
+#chartCard{position:absolute;right:14px;bottom:14px;width:340px;max-width:calc(100% - 28px);background:linear-gradient(rgba(12,15,36,.95),rgba(12,15,36,.95)) padding-box,linear-gradient(160deg,var(--c),transparent 45%,transparent 75%,var(--c)) border-box;border:1px solid transparent;--cut:16px;clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut))}
+#chartCard .cc-h{padding:14px 16px 10px;position:relative}
+#chartCard .code{font:400 10.5px var(--f-data);letter-spacing:.14em;color:var(--c);text-shadow:0 0 6px var(--c)}
+#chartCard h3{margin:4px 0 2px;font:400 15px/1.3 var(--f-disp);letter-spacing:.06em;text-transform:uppercase;padding-right:28px}
+#chartCard .cls{font:italic 500 16px var(--f-lore);color:var(--dim)}
+#chartCard .x{position:absolute;top:8px;right:8px;background:none;border:0;color:var(--dim);font:400 18px var(--f-data);cursor:pointer;width:28px;height:28px}
+#chartCard .x:hover{color:#fff}
+#chartCard .mini{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+#chartCard .mini div{padding:7px 12px;background:rgba(8,10,25,.95)}
+#chartCard{max-height:calc(100% - 28px);overflow-y:auto;scrollbar-width:thin}
+#chartCard .cs{margin:0;padding:11px 16px 0;font-size:14px;line-height:1.5;color:#dfe2ff}
+#chartCard .bl{padding:9px 16px 0;font:400 11.5px/1.5 var(--f-data);color:var(--dim)}
+#chartCard .cc-f{display:flex;gap:8px;padding:12px 16px 14px;flex-wrap:wrap}
+.ctools{position:absolute;left:14px;bottom:14px;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 380px)}
+#err{position:fixed;left:16px;right:16px;top:40%;background:#120a14;border:1px solid var(--haz);padding:12px;font:400 13px var(--f-data);z-index:10}
+
+@media (max-width:760px){
+  body{display:block}
+  .pad{width:100%;height:100%;max-height:none;clip-path:none;padding:0}
+  .pad-in{clip-path:none;padding:0;gap:0}
+  .pad-top{display:none}
+  .screen{clip-path:none}
+  .status{padding:8px 14px}
+  .status .hide-sm{display:none}
+  .main{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  nav.files{display:flex;overflow-x:auto;padding:0;border-right:0;border-bottom:1px solid var(--rule)}
+  .files h2,.files .foot{display:none}
+  .files a{display:flex;gap:8px;padding:10px 13px;white-space:nowrap}
+  .files a .ic{width:20px;height:22px;font-size:9px}
+  .files a .s{display:none}
+  .files a .t{font-size:13px}
+  .files a[aria-current="page"]::before{left:8px;right:8px;top:auto;bottom:0;width:auto;height:2px}
+  .doc{padding:22px 16px 54px}
+  .dochead h1{font-size:22px}
+  .dochead .lede{font-size:18px}
+  .hero{grid-template-columns:1fr}
+  .orrery{max-width:190px;order:-1}
+  .fac-h{grid-template-columns:44px 1fr;padding:16px}
+  .fac-h .sigil{width:44px;height:44px}
+  .fac-b{padding:6px 16px 16px}
+  .kv{grid-template-columns:1fr;gap:0}
+  .kv dd{margin-bottom:10px}
+  .subs > div,.tl li{grid-template-columns:1fr;gap:2px}
+  .gloss{grid-template-columns:1fr}
+  .gloss dt{border-bottom:0;padding-bottom:0}
+  .rumors li{grid-template-columns:1fr;gap:2px}
+  .locs{grid-template-columns:1fr}
+  #chartCard{left:8px;right:8px;bottom:8px;width:auto;max-width:none}
+  .ctools{top:62px;bottom:auto;left:8px;max-width:calc(100% - 16px)}
+  .chud{top:8px;left:8px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+
+
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="pad"><div class="pad-in">
+ <div class="pad-top"><span>COMMONWEAL CIVIC SERVICES</span><span class="cam"></span><span>DATAPAD MK-IV</span></div>
+ <div class="screen">
+  <div class="status">
+   <span class="pulse"></span><span class="brand">COMMONWEAL</span><span class="hide-sm">CITIZEN DATAPAD</span><span id="crumb">ORIENTATION / BRIEFING</span>
+   <span class="sp"></span>
+   <span class="hide-sm">RELAY DRIFT-07</span><span class="sig"><i></i><i></i><i></i></span><span>CY 312.041</span>
+  </div>
+  <div class="main">
+   <nav class="files" aria-label="Files">
+    <h2>Orientation packet</h2>
+    <a href="#briefing" data-r="briefing"><span class="ic">01</span><span class="t">Briefing</span><span class="s">Start here</span></a>
+    <a href="#history" data-r="history"><span class="ic">02</span><span class="t">History</span><span class="s">Public record</span></a>
+    <a href="#factions" data-r="factions"><span class="ic">03</span><span class="t">Powers</span><span class="s">Factions · sub-factions</span></a>
+    <a href="#chart" data-r="chart"><span class="ic">04</span><span class="t">Astrogation</span><span class="s">3D chart</span></a>
+    <a href="#gazetteer" data-r="gazetteer"><span class="ic">05</span><span class="t">Gazetteer</span><span class="s" id="gazCount">Systems</span></a>
+    <a href="#origins" data-r="origins"><span class="ic">06</span><span class="t">Origins</span><span class="s">Registry profiles</span></a>
+    <a href="#glossary" data-r="glossary"><span class="ic">07</span><span class="t">Glossary</span><span class="s">Terms</span></a>
+    <div class="foot">Registered to:<br>K. VASH (TIER 3)<br>Transfer: unfiled<br><span style="color:var(--amber)">User annotations: 20</span></div>
+   </nav>
+   <main class="view" id="view">
+
+<section class="doc" id="doc-briefing" data-r="briefing">
+ <div class="hero"><div class="dochead">
+  <div class="docid"><span>DOC <b>CW-DRF-0001</b></span><span>CLEARANCE: PUBLIC</span><span>REV 42</span></div>
+  <h1>Orientation to the Drift</h1>
+  <p class="lede">Commonweal civic guidance for citizens of the Syndicated Technocratic Republic beyond the frontier. Unit purchased secondhand at Free Harbor Tamsin.</p>
+ </div><svg class="orrery" viewBox="0 0 240 240" aria-hidden="true"><defs><radialGradient id="og"><stop offset="0" stop-color="#fff0c2" stop-opacity=".95"/><stop offset=".35" stop-color="#ffb35c" stop-opacity=".3"/><stop offset="1" stop-color="#ffb35c" stop-opacity="0"/></radialGradient></defs>
+<circle cx="120" cy="120" r="46" fill="url(#og)"/>
+<g class="ring"><circle cx="120" cy="120" r="34"/><circle cx="120" cy="120" r="58"/><circle cx="120" cy="120" r="82"/><circle cx="120" cy="120" r="104" stroke-dasharray="2 5"/></g>
+<g stroke="#3a4386" stroke-width=".8"><line x1="232.0" y1="120.0" x2="237.0" y2="120.0"/><line x1="231.0" y1="134.6" x2="233.0" y2="134.9"/><line x1="228.2" y1="149.0" x2="230.1" y2="149.5"/><line x1="223.5" y1="162.9" x2="228.1" y2="164.8"/><line x1="217.0" y1="176.0" x2="218.7" y2="177.0"/><line x1="208.9" y1="188.2" x2="210.4" y2="189.4"/><line x1="199.2" y1="199.2" x2="202.7" y2="202.7"/><line x1="188.2" y1="208.9" x2="189.4" y2="210.4"/><line x1="176.0" y1="217.0" x2="177.0" y2="218.7"/><line x1="162.9" y1="223.5" x2="164.8" y2="228.1"/><line x1="149.0" y1="228.2" x2="149.5" y2="230.1"/><line x1="134.6" y1="231.0" x2="134.9" y2="233.0"/><line x1="120.0" y1="232.0" x2="120.0" y2="237.0"/><line x1="105.4" y1="231.0" x2="105.1" y2="233.0"/><line x1="91.0" y1="228.2" x2="90.5" y2="230.1"/><line x1="77.1" y1="223.5" x2="75.2" y2="228.1"/><line x1="64.0" y1="217.0" x2="63.0" y2="218.7"/><line x1="51.8" y1="208.9" x2="50.6" y2="210.4"/><line x1="40.8" y1="199.2" x2="37.3" y2="202.7"/><line x1="31.1" y1="188.2" x2="29.6" y2="189.4"/><line x1="23.0" y1="176.0" x2="21.3" y2="177.0"/><line x1="16.5" y1="162.9" x2="11.9" y2="164.8"/><line x1="11.8" y1="149.0" x2="9.9" y2="149.5"/><line x1="9.0" y1="134.6" x2="7.0" y2="134.9"/><line x1="8.0" y1="120.0" x2="3.0" y2="120.0"/><line x1="9.0" y1="105.4" x2="7.0" y2="105.1"/><line x1="11.8" y1="91.0" x2="9.9" y2="90.5"/><line x1="16.5" y1="77.1" x2="11.9" y2="75.2"/><line x1="23.0" y1="64.0" x2="21.3" y2="63.0"/><line x1="31.1" y1="51.8" x2="29.6" y2="50.6"/><line x1="40.8" y1="40.8" x2="37.3" y2="37.3"/><line x1="51.8" y1="31.1" x2="50.6" y2="29.6"/><line x1="64.0" y1="23.0" x2="63.0" y2="21.3"/><line x1="77.1" y1="16.5" x2="75.2" y2="11.9"/><line x1="91.0" y1="11.8" x2="90.5" y2="9.9"/><line x1="105.4" y1="9.0" x2="105.1" y2="7.0"/><line x1="120.0" y1="8.0" x2="120.0" y2="3.0"/><line x1="134.6" y1="9.0" x2="134.9" y2="7.0"/><line x1="149.0" y1="11.8" x2="149.5" y2="9.9"/><line x1="162.9" y1="16.5" x2="164.8" y2="11.9"/><line x1="176.0" y1="23.0" x2="177.0" y2="21.3"/><line x1="188.2" y1="31.1" x2="189.4" y2="29.6"/><line x1="199.2" y1="40.8" x2="202.7" y2="37.3"/><line x1="208.9" y1="51.8" x2="210.4" y2="50.6"/><line x1="217.0" y1="64.0" x2="218.7" y2="63.0"/><line x1="223.5" y1="77.1" x2="228.1" y2="75.2"/><line x1="228.2" y1="91.0" x2="230.1" y2="90.5"/><line x1="231.0" y1="105.4" x2="233.0" y2="105.1"/></g>
+<g class="spin" style="animation-duration:60s"><path d="M120 106l9 14-9 14-9-14z" fill="#0a0c1e" stroke="#fff0c2" stroke-width="1.2"/><path d="M111 120h18" stroke="#fff0c2" stroke-width=".6"/></g>
+<g class="spin" style="animation-duration:16s"><circle cx="154" cy="120" r="3.5" fill="#ffb35c"/></g>
+<g class="spin" style="animation-duration:30s;animation-direction:reverse"><circle cx="120" cy="62" r="5" fill="#c9a6ff"/><circle cx="120" cy="53" r="1.6" fill="#c9a6ff"/></g>
+<g class="spin" style="animation-duration:48s"><circle cx="38" cy="120" r="5.5" fill="#6ff3e0"/><circle cx="29" cy="116" r="1.8" fill="#6ff3e0"/></g>
+<g class="spin" style="animation-duration:80s;animation-direction:reverse"><circle cx="120" cy="16" r="2.6" fill="#ff6b7a"/></g>
+</svg></div>
+ <p>Known space is a long lane of stars, about a hundred parsecs end to end. The <strong>Hallowed Dominion of Corinthia</strong> holds the west, gathered around the black hole it worships as the Eye of God, and its prayers are answered. The <strong>Syndicated Technocratic Republic</strong> (STR) holds the east: dozens of systems, each owned by a different corporation, held together by contract and by Commonweal. Between them, in a belt some 26 parsecs wide, lies <strong>the Drift</strong>, independent systems that the Treaty of the Lantern keeps out of either power's hands.</p>
+ <p>At the Drift's heart is <strong>the Lantern</strong>, a precursor structure both powers claimed in the same decade and nearly destroyed each other over. Fortress pickets watch it from both borders: Vigil's Reach on the Corinthian side, Sable Station on the STR's. North, the <strong>Null Corridor</strong> runs border to border, a dead zone that is also the shortest route between the powers. South, the <strong>Grave of Ash</strong> marks where the last war ended.</p>
+ <p>There has been no open war since CY 274. The powers now compete through trade contracts, missionaries, and bribes.</p>
+ <div class="notice"><span class="lbl">Commonweal notice</span><p><strong>Free Harbor Tamsin</strong>, just south of the Lantern, is the Drift's open port. Charter law does not apply there, though Commonweal keeps every visiting citizen's tier on record.</p></div>
+ <dl class="facts">
+  <div><dt>Date</dt><dd>CY 312</dd></div>
+  <div><dt>Charted systems</dt><dd id="sysCount">—</dd></div>
+  <div><dt>Last war</dt><dd>CY 272–274</dd></div>
+  <div><dt>Standard drive</dt><dd>2.5 pc/day</dd></div>
+  <div><dt>Tamsin → Seraphis</dt><dd>≈ 13 d west</dd></div>
+  <div><dt>Tamsin → Meridian</dt><dd>≈ 15 d east</dd></div>
+ </dl>
+ <div class="note"><span class="lbl">User annotation · K. Vash</span><p>Read everything. Trust half.</p></div>
+ <div class="links">
+  <a href="#factions"><b>Powers</b><span>Twenty factions and who answers to whom.</span></a>
+  <a href="#chart"><b>Astrogation</b><span>The navigable chart.</span></a>
+  <a href="#gazetteer"><b>Gazetteer</b><span>Every system, planet, and moon.</span></a>
+  <a href="#origins"><b>Origins</b><span>Who ends up in the Drift.</span></a>
+ </div>
+</section>
+
+<section class="doc" id="doc-history" data-r="history" hidden>
+ <div class="dochead">
+  <div class="docid"><span>DOC <b>CW-HIS-0212</b></span><span>CLEARANCE: PUBLIC</span><span>CHARTER YEARS (CY)</span></div>
+  <h1>Public record</h1>
+  <p class="lede">Corinthian dates run about 730 years ahead of the Syndicated Technocratic Republic's.</p>
+ </div>
+ <ol class="tl">
+  <li><span class="when">−730</span><div><b>Out of the dark.</b> Corinthian scripture says the faithful followed the Eye's call to the Throne.</div></li>
+  <li><span class="when">CY 0</span><div><b>Charter of Meridian.</b> Settler companies sign a compact to honor each other's contracts. The Syndicated Technocratic Republic dates its calendar from the signing.</div></li>
+  <li><span class="when">CY 31</span><div><b>Commonweal incorporated.</b> Hired to keep the Charter's records. Within a century it also runs customs.</div></li>
+  <li><span class="when">CY 58</span><div><b>The Combine.</b> Three charter companies merge into the Halvorsen Combine.</div></li>
+  <li><span class="when">CY 140</span><div><b>First contact.</b> Surveyors and pilgrims meet in the Drift, and both lay claim to the Lantern.</div></li>
+  <li><span class="when">141–190</span><div><b>The Border Wars.</b> Vigil's Reach and Halcyon Exchange are built to win them.</div></li>
+  <li><span class="when">CY 196</span><div><b>Tamsin hollowed.</b> Smugglers carve a port into an asteroid.</div></li>
+  <li><span class="when">CY 233</span><div><b>The Arbitration Clause.</b> Every charter company accepts Commonweal's courts as binding. Holdouts lose their trade licenses within the year.</div></li>
+  <li><span class="when">CY 251</span><div><b>Copperline rush.</b> Money from the Syndicated Technocratic Republic floods the Drift.</div></li>
+  <li><span class="when">272–274</span><div><b>The Ash War.</b> The two battle fleets destroy each other at the Grave of Ash.</div></li>
+  <li><span class="when">CY 273</span><div><b>The Ninth Pontifex dies.</b> His funeral barge vanishes. The Tenth is crowned.</div></li>
+  <li><span class="when">CY 274</span><div><b>Treaty of the Lantern.</b> No annexing the Drift. No landing on the Lantern. Commonweal signs for every charter company.</div></li>
+  <li><span class="when">CY 281</span><div><b>Council of Captains.</b> Tamsin's captains begin settling the Drift's disputes.</div></li>
+  <li><span class="when">CY 298</span><div><b>Free Labor League.</b> Founded at Varga. Banned by every charter company the same year.</div></li>
+  <li><span class="when">310–311</span><div><b>Lean years.</b> Psalter's harvests fail. Bread prices double across Corinthia.</div></li>
+ </ol>
+ <div class="note"><span class="lbl">User annotation · K. Vash</span><p>Both sides "found" the Lantern the same decade. Funny, that.</p></div>
+</section>
+
+<section class="doc" id="doc-factions" data-r="factions" hidden>
+ <div class="dochead">
+  <div class="docid"><span>DOC <b>CW-POL-0057</b></span><span>COMMONWEAL ASSESSMENT</span></div>
+  <h1>Powers of known space</h1>
+  <p class="lede">Three blocs, and the people inside them who don't agree.</p>
+ </div>
+ <article class="fac" style="--c:var(--dom)">
+  <div class="fac-h"><svg class="sigil" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 24c6-10 13-14 20-14s14 4 20 14c-6 10-13 14-20 14S10 34 4 24z"/><circle cx="24" cy="24" r="7"/><circle cx="24" cy="24" r="2.2" fill="currentColor"/><path d="M24 1v6M24 41v6M7 7l4 4M41 7l-4 4M7 41l4-4M41 41l-4-4"/></svg><span class="lbl">West · Theocracy</span><h2>The Hallowed Dominion of Corinthia</h2><p class="motto">"The Eye sees. The Eye answers."</p></div>
+  <div class="fac-b">
+   <dl class="kv"><dt>Rule</dt><dd>The Pontifex, from Seraphis</dd><dt>Creed</dt><dd>The black hole is God's Eye; prayer works</dd><dt>Life</dt><dd>Ritual, relics, choirs on every ship</dd><dt>On the STR</dt><dd>"They would sell God if they could find a buyer."</dd></dl>
+   <div class="subs" style="--c:var(--dom)">
+    <div><b>College of Cardinals</b><span>Rules beside the Pontifex. Already arguing over his successor.</span></div>
+    <div><b>Inquisitorial Order</b><span>Enforces doctrine and guards the border. Holds Vigil's Reach.</span></div>
+    <div><b>Choral Orders</b><span>Crew and sing the cathedral-ships. Proud and insular.</span></div>
+    <div><b>Reliquarians</b><span>Dig, bless, and guard relics. Answer only to the Pontifex.</span></div>
+    <div><b>Order of the Open Eye</b><span>Scholar-monks who study the Throne itself.</span></div>
+    <div><b>Lay Brotherhood</b><span>Farmers and laborers. Hungry since Psalter failed.</span></div>
+   </div>
+   <div class="note"><span class="lbl">User annotation · K. Vash</span><p>Not all zealots. A Psalter family fed me for a winter and never asked what I believed.</p></div>
+  </div>
+ </article>
+ <article class="fac" style="--c:var(--str)">
+  <div class="fac-h"><svg class="sigil" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M24 3l18 10.5v21L24 45 6 34.5v-21z"/><path d="M24 14l8.7 5v10L24 34l-8.7-5V19z"/><path d="M24 3v11M42 13.5L32.7 19M42 34.5L32.7 29M24 45V34M6 34.5l9.3-5.5M6 13.5l9.3 5.5"/><circle cx="24" cy="24" r="2.2" fill="currentColor"/></svg><span class="lbl">East · Corporate syndicate</span><h2>The Syndicated Technocratic Republic</h2><p class="motto">"Measure. Contract. Improve."</p></div>
+  <div class="fac-b">
+   <dl class="kv"><dt>Rule</dt><dd>No one. Each system belongs to its charter company</dd><dt>Held together by</dt><dd>The Charter of Meridian, and Commonweal</dd><dt>Creed</dt><dd>Contract, measurement, return on investment</dd><dt>Life</dt><dd>Comfortable for shareholders; company towns for everyone else</dd><dt>On Corinthia</dt><dd>"Fanatics sitting on a black hole."</dd></dl>
+   <h3>How the charter system works</h3>
+   <ul style="--c:var(--str)"><li>Each system is owned outright by a charter company. Its laws are the company handbook; its police are company security.</li><li>Companies trade, sue, poach, and undercut each other constantly. Open fighting between charters is rare, because Commonweal fines it into ruin.</li><li>Commonweal owns no worlds but Meridian. It keeps the citizenship ledger, sets your tier, runs the courts, and clears every transaction. A company it blacklists cannot do business.</li><li>No one outside knows who owns Commonweal. Its shares have never traded.</li></ul>
+   <div class="subs" style="--c:var(--str)">
+    <div><b>Commonweal</b><span>Runs the registry, tiers, courts, customs, and scrip clearing. Officially a records contractor; every charter company pays its fees.</span></div>
+    <div><b>Halvorsen Combine</b><span>Largest charter company. Owns Brightwater and a dozen smaller worlds.</span></div>
+    <div><b>Ostrava Heavy Industries</b><span>Owns Varga. Builds most warships, sells to whoever pays.</span></div>
+    <div><b>Assay Institute</b><span>Research charter. Studies "anomalies." Runs Kestrel.</span></div>
+    <div><b>Longreach Survey</b><span>Maps the frontier for any buyer. Hires freelancers, asks few questions.</span></div>
+    <div><b>Sable Command</b><span>Private navy on a joint defense contract. Wants the treaty torn up.</span></div>
+    <div><b>Free Labor League</b><span>Banned union. Growing in Varga and Brightwater.</span></div>
+   </div>
+   <div class="note"><span class="lbl">User annotation · K. Vash</span><p>Half of Copperline owes the same three companies. All of them owe Commonweal.</p></div>
+  </div>
+ </article>
+ <article class="fac" style="--c:var(--drift)">
+  <div class="fac-h"><svg class="sigil" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="24" cy="24" r="14"/><ellipse cx="24" cy="24" rx="22" ry="7.5" transform="rotate(-24 24 24)"/><circle cx="24" cy="24" r="3" fill="currentColor"/><circle cx="43" cy="16" r="2" fill="currentColor"/><path d="M24 2v5M24 41v5"/></svg><span class="lbl">Center · Independent</span><h2>The Drift</h2><p class="motto">"Pay your docking fee."</p></div>
+  <div class="fac-b">
+   <dl class="kv"><dt>Rule</dt><dd>Each system its own; Tamsin's Council mediates</dd><dt>Creed</dt><dd>Whatever works</dd><dt>Protected by</dt><dd>Treaty of the Lantern</dd><dt>On both powers</dt><dd>"Good customers. Bad neighbors."</dd></dl>
+   <div class="subs" style="--c:var(--drift)">
+    <div><b>Council of Captains</b><span>Tamsin's assembly. No army, but most listen.</span></div>
+    <div><b>Skimmer Guild</b><span>Pulls fuel from Marrow and sells it to anyone at the same price.</span></div>
+    <div><b>Ashborn Clans</b><span>Salvagers of the Grave and the Hollows.</span></div>
+    <div><b>Claims Syndicate</b><span>Runs Copperline. A Halvorsen and Ostrava front in all but name.</span></div>
+    <div><b>The Old Rite</b><span>Faithful who reject the Cardinals. Strong at Saint Vey.</span></div>
+    <div><b>Treaty Watch</b><span>Joint observers at the Lantern. Trust no one, including each other.</span></div>
+    <div><b>The Wandering Choir</b><span>Excommunicated priests turned pirates.</span></div>
+   </div>
+   <div class="note"><span class="lbl">User annotation · K. Vash</span><p>Tamsin dockmaster never asked my name. Asked my tonnage twice.</p></div>
+  </div>
+ </article>
+ <h2>How things work</h2>
+ <div class="grid2">
+  <div class="card" style="--c:var(--dom)"><span class="lbl">Faith</span><h3>Miracles</h3><p>Real and repeatable. Strongest in Corinthian space.</p></div>
+  <div class="card" style="--c:var(--str)"><span class="lbl">Technology</span><h3>Machines</h3><p>Drives, implants, firearms, AI. STR-made is best, and licensed.</p></div>
+  <div class="card" style="--c:var(--drift)"><span class="lbl">Travel</span><h3>Standard drive</h3><p>2.5 pc a day. About ten days across the Drift; six weeks end to end.</p></div>
+  <div class="card" style="--c:var(--haz)"><span class="lbl">Exception</span><h3>Null Corridor</h3><p>Prayer and power both fail. Also the fastest way across.</p></div>
+ </div>
+</section>
+
+<section class="doc" id="doc-chart" data-r="chart" hidden>
+ <div id="chartWrap">
+  <div id="chartLabels"></div>
+  <div class="chud">ASTROGATION · FROM <b id="originName">TAMSIN</b><br>RING = 10 PC · DRAG TO ORBIT</div>
+  <div class="ctools" id="ctools">
+   <button class="chip" data-f="dom" aria-pressed="true" style="--c:var(--dom)"><i></i>Corinthia</button>
+   <button class="chip" data-f="drift" aria-pressed="true" style="--c:var(--drift)"><i></i>Drift</button>
+   <button class="chip" data-f="str" aria-pressed="true" style="--c:var(--str)"><i></i>STR</button>
+   <button class="chip" data-f="haz" aria-pressed="true" style="--c:var(--haz)"><i></i>Hazards</button>
+   <button class="chip" id="chartReset" style="--c:var(--teal)">Full chart</button>
+   <button class="chip" id="chartFs" aria-pressed="false" style="--c:var(--teal)">⛶ Full screen</button>
+  </div>
+  <div id="chartCard" hidden></div>
+ </div>
+</section>
+
+<section class="doc" id="doc-gazetteer" data-r="gazetteer" hidden style="max-width:1100px">
+ <div class="dochead">
+  <div class="docid"><span>DOC <b>CW-GAZ-0411</b></span><span>RANGES FROM TAMSIN</span><span>HAZARDS UNVERIFIED</span></div>
+  <h1>Gazetteer</h1>
+ </div>
+ <div class="toolbar">
+  <button class="chip" data-gf="all" aria-pressed="true" style="--c:var(--teal)">All</button>
+  <button class="chip" data-gf="drift" aria-pressed="false" style="--c:var(--drift)"><i></i>Drift</button>
+  <button class="chip" data-gf="dom" aria-pressed="false" style="--c:var(--dom)"><i></i>Corinthia</button>
+  <button class="chip" data-gf="str" aria-pressed="false" style="--c:var(--str)"><i></i>STR</button>
+  <button class="chip" data-gf="haz" aria-pressed="false" style="--c:var(--haz)"><i></i>Hazards</button>
+  <input class="search" id="gsearch" type="search" placeholder="Search systems, planets, moons" aria-label="Search entries">
+ </div>
+ <div class="locs" id="locs"></div>
+</section>
+
+<section class="doc" id="doc-origins" data-r="origins" hidden>
+ <div class="dochead">
+  <div class="docid"><span>DOC <b>CW-CIT-0099</b></span><span>REGISTRY PROFILES</span></div>
+  <h1>Potential Origins</h1>
+  <p class="lede">Commonweal profiles of the people most often found in the Drift, and where they came from.</p>
+ </div>
+ <p class="lbl" style="display:flex;flex-wrap:wrap;gap:6px 18px"><span style="color:var(--dom)">◆ Corinthia</span><span style="color:var(--str)">◆ Syndicated Technocratic Republic</span><span style="color:var(--drift)">◆ The Drift</span><span style="color:var(--haz)">◆ Hazard</span></p>
+ <div class="grid2">
+  <div class="card" style="--c:var(--teal)"><span class="lbl">The faithful</span><p>Clergy, pilgrims, and lapsed believers. Courtesy and distance are advised.</p><ul style="margin-top:10px"><li style="--c:var(--dom)">Choral Order singer who lost the faith</li><li style="--c:var(--dom)">Open Eye novice with too many questions</li><li style="--c:var(--drift)">Old Rite hedge-priest from Saint Vey</li><li style="--c:var(--drift)">Deserter from the Wandering Choir</li></ul></div>
+  <div class="card" style="--c:var(--teal)"><span class="lbl">Enforcers</span><p>Persons trained to violence by an institution, now without one.</p><ul style="margin-top:10px"><li style="--c:var(--dom)">Inquisitor who walked away</li><li style="--c:var(--str)">Sable Command deserter</li><li style="--c:var(--str)">Company security, contract terminated</li></ul></div>
+  <div class="card" style="--c:var(--teal)"><span class="lbl">Debtors and runaways</span><p>Persons with unresolved obligations. Most will lie about them.</p><ul style="margin-top:10px"><li style="--c:var(--str)">Halvorsen debtor who skipped out</li><li style="--c:var(--dom)">Psalter farmhand fleeing famine</li><li style="--c:var(--str)">Disowned heir to a charter family</li><li style="--c:var(--dom)">Vespers monk who broke the silence</li></ul></div>
+  <div class="card" style="--c:var(--teal)"><span class="lbl">Spacers</span><p>Pilots and crews who live between ports.</p><ul style="margin-top:10px"><li style="--c:var(--drift)">Marrow skimmer pilot</li><li style="--c:var(--drift)">Null Corridor smuggler</li><li style="--c:var(--str)">Longreach scout, last of the crew</li><li style="--c:var(--str)">Halcyon freight hauler with a bad manifest</li></ul></div>
+  <div class="card" style="--c:var(--teal)"><span class="lbl">Salvagers and diggers</span><p>Persons who take things out of the ground or out of wrecks.</p><ul style="margin-top:10px"><li style="--c:var(--drift)">Ashborn salvager from the Grave</li><li style="--c:var(--drift)">Old Rite miner from Saint Vey</li><li style="--c:var(--dom)">Reliquary digger with something in a pocket</li></ul></div>
+  <div class="card" style="--c:var(--teal)"><span class="lbl">Agitators and insiders</span><p>Persons who know how institutions work, and resent it.</p><ul style="margin-top:10px"><li style="--c:var(--str)">Free Labor League organizer on the run</li><li style="--c:var(--str)">Commonweal clerk who read the wrong file</li><li style="--c:var(--str)">Halcyon broker with a grudge</li><li style="--c:var(--dom)">Lay Brother who spoke at the bread riots</li></ul></div>
+  <div class="card" style="--c:var(--teal)"><span class="lbl">Scholars and engineers</span><p>Persons whose training is valuable to every party. Expect recruitment offers.</p><ul style="margin-top:10px"><li style="--c:var(--str)">Assay Institute researcher</li><li style="--c:var(--dom)">Open Eye scholar-monk</li><li style="--c:var(--str)">Ostrava engineer</li><li style="--c:var(--drift)">Former Treaty Watch observer</li></ul></div>
+  <div class="card" style="--c:var(--teal)"><span class="lbl">The touched</span><p>Persons showing phenomena no one can explain. Commonweal requests all sightings be reported.</p><ul style="margin-top:10px"><li style="--c:var(--dom)">Born too close to the Eye</li><li style="--c:var(--drift)">Raised in sight of the Lantern</li><li style="--c:var(--drift)">Hears a voice in the static</li><li style="--c:var(--haz)">Survived a Null Corridor crossing that should have killed them</li></ul></div>
+ </div>
+ <div class="note"><span class="lbl">User annotation · K. Vash</span><p>I fit three of these. Commonweal only has me down for one.</p></div>
+</section>
+
+<section class="doc" id="doc-rumors" data-r="rumors" hidden>
+ <div class="dochead">
+  <div class="docid"><span>DOC <b>USR-ANN-0019</b></span><span>SOURCE: UNVERIFIED</span></div>
+  <h1>Dockside talk</h1>
+  <p class="lede">Collected by the previous owner. Commonweal vouches for none of it.</p>
+ </div>
+ <a class="btn" href="#gazetteer" style="display:inline-block;text-decoration:none;margin-bottom:6px">← Back to gazetteer</a>
+ <ul class="rumors" id="rumorList"></ul>
+</section>
+
+<section class="doc" id="doc-glossary" data-r="glossary" hidden>
+ <div class="dochead">
+  <div class="docid"><span>DOC <b>CW-REF-0003</b></span></div>
+  <h1>Glossary</h1>
+ </div>
+ <dl class="gloss">
+  <dt>Abyssal Throne</dt><dd>Corinthia's black hole. "The Eye."</dd>
+  <dt>Ash War</dt><dd>Last open war, CY 272–274.</dd>
+  <dt>Ashborn</dt><dd>Drift salvage clans.</dd>
+  <dt>Cathedral-ship</dt><dd>Consecrated Corinthian vessel with a choir crew.</dd>
+  <dt>Charter company</dt><dd>A corporation that owns one or more systems in the Syndicated Technocratic Republic.</dd>
+  <dt>Charter Year (CY)</dt><dd>Syndicated Technocratic Republic calendar. Now CY 312.</dd>
+  <dt>Commonweal</dt><dd>The company that runs the Syndicated Technocratic Republic's registry, courts, and customs. The nearest thing it has to a government.</dd>
+  <dt>Corinthia</dt><dd>Short for the Hallowed Dominion of Corinthia.</dd>
+  <dt>Council of Captains</dt><dd>Tamsin's governing assembly.</dd>
+  <dt>The Drift</dt><dd>Neutral belt between the powers.</dd>
+  <dt>Halvorsen Combine</dt><dd>The Syndicated Technocratic Republic's largest charter company.</dd>
+  <dt>Inquisitor</dt><dd>Corinthian enforcer of doctrine.</dd>
+  <dt>The Lantern</dt><dd>Precursor megastructure. No landing.</dd>
+  <dt>Null Corridor</dt><dd>Dead zone where power and prayer fail.</dd>
+  <dt>Old Rite</dt><dd>Faith practiced without the Cardinals.</dd>
+  <dt>Parsec (pc)</dt><dd>Chart distance. Drive speed: 2.5 a day.</dd>
+  <dt>Pontifex</dt><dd>Corinthian ruler. The Tenth reigns.</dd>
+  <dt>Relic</dt><dd>Sacred dig find. Illegal to sell.</dd>
+  <dt>Scrip</dt><dd>Company money.</dd>
+  <dt>Skimmers</dt><dd>Fuel crews of Marrow.</dd>
+  <dt>STR</dt><dd>The Syndicated Technocratic Republic: corporations bound together by the Charter of Meridian.</dd>
+  <dt>Tier</dt><dd>Citizenship rank in the Syndicated Technocratic Republic, kept on Commonweal's ledger. Companies can raise it or strip it.</dd>
+  <dt>Treaty of the Lantern</dt><dd>The CY 274 peace.</dd>
+  <dt>The unlit</dt><dd>Corinthian slang for outsiders.</dd>
+ </dl>
+</section>
+
+   </main>
+  </div>
+ </div>
+</div></div>
+<div id="err" hidden></div>
+<script>addEventListener("error",e=>{if(e.target&&e.target.tagName==="LINK")return;const d=document.getElementById("err");d.hidden=false;d.textContent="Datapad error: "+(e.message||"a script could not be loaded")},true)</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+const SIG={"dom": "<svg class=\"sigil\" viewBox=\"0 0 48 48\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" aria-hidden=\"true\"><path d=\"M4 24c6-10 13-14 20-14s14 4 20 14c-6 10-13 14-20 14S10 34 4 24z\"/><circle cx=\"24\" cy=\"24\" r=\"7\"/><circle cx=\"24\" cy=\"24\" r=\"2.2\" fill=\"currentColor\"/><path d=\"M24 1v6M24 41v6M7 7l4 4M41 7l-4 4M7 41l4-4M41 41l-4-4\"/></svg>", "str": "<svg class=\"sigil\" viewBox=\"0 0 48 48\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" aria-hidden=\"true\"><path d=\"M24 3l18 10.5v21L24 45 6 34.5v-21z\"/><path d=\"M24 14l8.7 5v10L24 34l-8.7-5V19z\"/><path d=\"M24 3v11M42 13.5L32.7 19M42 34.5L32.7 29M24 45V34M6 34.5l9.3-5.5M6 13.5l9.3 5.5\"/><circle cx=\"24\" cy=\"24\" r=\"2.2\" fill=\"currentColor\"/></svg>", "drift": "<svg class=\"sigil\" viewBox=\"0 0 48 48\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" aria-hidden=\"true\"><circle cx=\"24\" cy=\"24\" r=\"14\"/><ellipse cx=\"24\" cy=\"24\" rx=\"22\" ry=\"7.5\" transform=\"rotate(-24 24 24)\"/><circle cx=\"24\" cy=\"24\" r=\"3\" fill=\"currentColor\"/><circle cx=\"43\" cy=\"16\" r=\"2\" fill=\"currentColor\"/><path d=\"M24 2v5M24 41v5\"/></svg>", "haz": "<svg class=\"sigil\" viewBox=\"0 0 48 48\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" aria-hidden=\"true\"><path d=\"M24 4L45 42H3z\"/><path d=\"M24 17v13M24 35v3\"/><path d=\"M14 30l-6 2M34 30l6 2\" stroke-dasharray=\"2 2\"/></svg>", "lan": "<svg class=\"sigil\" viewBox=\"0 0 48 48\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" aria-hidden=\"true\"><path d=\"M24 2l18 22-18 22L6 24z\"/><path d=\"M24 12l9 12-9 12-9-12z\"/><path d=\"M6 24h36M24 2v44\" opacity=\".5\"/></svg>"};
+const sig=d=>d.id==="lantern"?SIG.lan:SIG[d.f];
+(function(){const c=document.getElementById("stars"),x=c.getContext("2d");let W,H,S=[];const rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function init(){const dpr=Math.min(devicePixelRatio,2);W=c.width=innerWidth*dpr;H=c.height=innerHeight*dpr;S=[];const n=Math.round(innerWidth*innerHeight/2600);
+ for(let i=0;i<n;i++)S.push({x:Math.random()*W,y:Math.random()*H,r:(Math.random()<.92?.5+Math.random()*.8:1.3+Math.random())*dpr,p:Math.random()*6.3,s:.4+Math.random()*1.6,h:Math.random()<.15?(Math.random()<.5?"201,166,255":"111,243,224"):(Math.random()<.2?"255,210,160":"225,230,255")})}
+function draw(t){x.clearRect(0,0,W,H);
+ const g1=x.createRadialGradient(W*.82,H*.18,0,W*.82,H*.18,W*.45);g1.addColorStop(0,"rgba(120,70,200,.20)");g1.addColorStop(1,"rgba(120,70,200,0)");x.fillStyle=g1;x.fillRect(0,0,W,H);
+ const g2=x.createRadialGradient(W*.12,H*.85,0,W*.12,H*.85,W*.4);g2.addColorStop(0,"rgba(40,170,170,.16)");g2.addColorStop(1,"rgba(40,170,170,0)");x.fillStyle=g2;x.fillRect(0,0,W,H);
+ const g3=x.createRadialGradient(W*.5,H*.55,0,W*.5,H*.55,W*.3);g3.addColorStop(0,"rgba(255,150,80,.06)");g3.addColorStop(1,"rgba(255,150,80,0)");x.fillStyle=g3;x.fillRect(0,0,W,H);
+ for(const s of S){const a=rm?.7:.35+.65*Math.abs(Math.sin(s.p+t*.001*s.s));x.fillStyle=`rgba(${s.h},${a})`;x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill()}}
+let last=0;function loop(t){requestAnimationFrame(loop);if(window.mapActive||document.hidden||t-last<60)return;last=t;draw(t)}
+addEventListener("resize",()=>{init();draw(performance.now())});init();draw(0);if(!rm)requestAnimationFrame(loop)})();
+const FAC={
+ dom:{name:"Hallowed Dominion of Corinthia",css:"var(--dom)",hex:0xc9a6e4,group:"Corinthia"},
+ str:{name:"Syndicated Technocratic Republic",css:"var(--str)",hex:0x86cbc4,group:"Syndicated Technocratic Republic"},
+ drift:{name:"The Drift",css:"var(--drift)",hex:0xe2a65f,group:"The Drift"},
+ haz:{name:"Hazard",css:"var(--haz)",hex:0xe07762,group:"Hazards"}
+};
+const DATA=[
+ {id:"eye",code:"COR-01",f:"dom",name:"The Abyssal Throne",cls:"Black hole · holy site",model:"blackhole",pos:[-38,0,0],pop:"None",
+  sum:"The Eye of God. Pilgrims wait months for a permit to pass it. Trespassers are fired on.",
+  bodies:[["The Throne","Black hole"],["The Veil","Permit checkpoint ring"]],talk:"Pray at the closest approach and you'll hear an answer.",svc:"Permit only"},
+ {id:"seraphis",code:"COR-02",f:"dom",name:"Seraphis",cls:"Holy city-station",model:"station",pos:[-30,1.5,7],pop:"≈ 40M",
+  sum:"Moon-sized cathedral in orbit of the Throne. Seat of the Pontifex.",
+  bodies:[["Pilgrim Decks","Open to outsiders"],["The College","Cardinals' halls"],["Sanctum","Pontifex's residence, sealed"]],talk:"The Pontifex hasn't been seen in a year. \"Deep prayer,\" they say.",svc:"Pilgrim berths · Archives by petition"},
+ {id:"candlemoor",code:"COR-03",f:"dom",name:"Candlemoor",cls:"Shipyard system",model:"shipyard",pos:[-30,0,-17],pop:"≈ 900M",
+  sum:"Where cathedral-ships are built and sung into flight.",
+  bodies:[["Candlemoor","Forge world"],["Wick","Ice moon, coolant mines"],["Choir Yards","Orbital slips"]],talk:"The new flagship has been \"awaiting blessing\" for four months.",svc:"Shipwrights (faithful only) · Fuel"},
+ {id:"vigil",code:"COR-04",f:"dom",name:"Vigil's Reach",cls:"Border fortress",model:"fortress",pos:[-17,0,5],pop:"≈ 60k garrison",
+  sum:"The Inquisitorial wall facing the Drift. Every ship is boarded.",
+  bodies:[["The Reach","Fortress station"],["Gallows","Dead moon, prison"]],talk:"They write down every answer. Make sure it matches next time.",svc:"Customs · Repairs"},
+ {id:"reliquary",code:"COR-05",f:"dom",name:"Reliquary Fields",cls:"Sealed asteroid field",model:"relics",pos:[-45,0,19],pop:"Restricted",
+  sum:"Reliquarians dig sacred relics from the rock. Closed to outsiders.",
+  bodies:[["Dig Sites","40+, numbered, not named"],["Ossuary","Relic processing station"]],talk:"The Church pays more for a smuggler's name than for the relic.",svc:"Closed"},
+ {id:"psalter",code:"COR-06",f:"dom",name:"Psalter",cls:"Agricultural system",model:"farm",pos:[-24,0,22],pop:"≈ 2.1B",
+  sum:"Corinthia's breadbasket, farmed in hymn-shifts by the Lay Brotherhood.",
+  bodies:[["Psalter","Garden world"],["Antiphon","Moon, granaries"],["Response","Moon, seminary"]],talk:"Two harvests failed. The bishops are preaching that Psalter sinned.",svc:"Food trade · Fuel"},
+ {id:"cloister",code:"COR-07",f:"dom",name:"The Cloister Moons",cls:"Monastic system",model:"gasgiant",colors:["#4e3f63","#7a6696","#3a2f4a","#a493b8"],moons:4,pos:[-51,0,-12],pop:"≈ 300k",
+  sum:"Each moon of the gas giant Cantor houses a different holy order.",
+  bodies:[["Cantor","Gas giant"],["Mattins","Order of the Open Eye"],["Lauds","Choral Order seat"],["Vespers","Silent order, no visitors"]],talk:"A Vespers monk spoke aloud last month. The moon is locked down.",svc:"Retreats · Libraries by petition"},
+
+ {id:"meridian",code:"STR-01",f:"str",name:"Meridian Prime",cls:"Commonweal seat",model:"cityplanet",pos:[38,0,-2],pop:"≈ 6B",
+  sum:"Where the Charter was signed. The only world Commonweal owns, and the closest thing the Syndicated Technocratic Republic has to a capital.",
+  bodies:[["Meridian Prime","City-planet, Commonweal towers"],["Ledger","Moon, citizenship vaults"],["Assay","Moon, Assay Institute campus"]],talk:"Ask a Commonweal clerk who owns the company and you'll get a form to fill out.",svc:"Full services · Licensing · Arbitration"},
+ {id:"halcyon",code:"STR-02",f:"str",name:"Halcyon Exchange",cls:"Trade station",model:"exchange",pos:[29,0,13],pop:"≈ 2M",
+  sum:"Neutral ground for the charter companies. Every contract in the Syndicated Technocratic Republic is filed here, and Commonweal watches every filing.",
+  bodies:[["Notary Ring","Contract filing"],["Bond Yards","Impound docks"]],talk:"If it isn't filed at Halcyon, it didn't happen.",svc:"Brokerage · Freight · Repairs"},
+ {id:"kestrel",code:"STR-03",f:"str",name:"Kestrel Array",cls:"Observatory",model:"array",pos:[45,2,-24],pop:"≈ 400",
+  sum:"Assay Institute listening post on the outer edge.",
+  bodies:[["The Array","Primary dish"],["Perch","Staff habitat"]],talk:"Kestrel stopped taking supply runs last month. The Assay Institute calls it maintenance.",svc:"Closed"},
+ {id:"brightwater",code:"STR-04",f:"str",name:"Brightwater",cls:"Company colony",model:"colony",pos:[23,0,-11],pop:"≈ 12M",
+  sum:"A green world owned outright by the Halvorsen Combine.",
+  bodies:[["Brightwater","Company towns"],["Tally","Moon, Combine offices"]],talk:"Wages come in scrip. Strike talk is getting louder.",svc:"Company stores · Shuttle port"},
+ {id:"varga",code:"STR-05",f:"str",name:"Varga",cls:"Industrial system",model:"foundry",pos:[48,0,14],pop:"≈ 800M",
+  sum:"Ostrava Heavy Industries' forge world. Most of the Syndicated Technocratic Republic's warships and power cells come from here.",
+  bodies:[["Varga","Foundry world"],["Slag","Moon, waste processing"],["Ostrava Yards","Naval shipyard"]],talk:"Join the Free Labor League and Ostrava has Commonweal strip your tier.",svc:"Licensed shipyards"},
+ {id:"sable",code:"STR-06",f:"str",name:"Sable Station",cls:"Naval base",model:"fortress",tint:0x86cbc4,pos:[18,0,2],pop:"≈ 40k crew",
+  sum:"Sable Command's forward base, parked just outside the Drift. Paid for by a dozen charter companies.",
+  bodies:[["Sable Station","Fleet headquarters"],["Picket Line","Border sensor buoys"]],talk:"Sable's admirals keep asking the charter companies to fund another fleet.",svc:"Military only"},
+
+ {id:"tamsin",code:"DRF-01",f:"drift",name:"Free Harbor Tamsin",cls:"Neutral port · home",model:"port",pos:[3,0,11],pop:"≈ 300k",
+  sum:"A hollow asteroid run by the Council of Captains. Anyone can dock.",
+  bodies:[["The Spindle","Hiring hall and market"],["Low Dock","No questions asked"],["Council Hall","Meets monthly"]],talk:"Any captain can speak at the monthly Council.",svc:"Fuel · Repairs · Market · Hiring"},
+ {id:"vey",code:"DRF-02",f:"drift",name:"Saint Vey",cls:"Mining system",model:"mining",pos:[-8,0,-14],pop:"≈ 80k",
+  sum:"Old Rite miners who keep the faith but answer to no cardinal.",
+  bodies:[["Vey","Cratered planet"],["Chapel Rock","Carved church"],["Shale Belt","Active claims"]],talk:"Father Oren blessed my brother's lungs. He breathes fine now.",svc:"Fuel · Ore · Chapel"},
+ {id:"copperline",code:"DRF-03",f:"drift",name:"Copperline",cls:"Boom-town system",model:"boomtown",pos:[10,0,-5],pop:"≈ 1.5M",
+  sum:"A mining rush bankrolled by companies of the Syndicated Technocratic Republic. The Claims Syndicate pays the sheriffs.",
+  bodies:[["Copperline","Strip-mined planet"],["Bonanza","Moon, saloon town"],["Rigs 1–4","Orbital refineries"]],talk:"Survey crews are hiring Null Corridor guides.",svc:"Fuel · Repairs · Claims office"},
+ {id:"ash",code:"DRF-04",f:"drift",name:"The Grave of Ash",cls:"Old battlefield",model:"deadstar",pos:[-5,0,25],pop:"Ashborn camps",
+  sum:"Where both fleets died in CY 274. Never cleared.",
+  bodies:[["Ember","Dying red dwarf"],["The Field","200+ wrecks"],["Ashborn camps","Salvager towns"]],talk:"Some wrecks still broadcast. The Ashborn record them and won't sell the tapes.",svc:"Salvage at your own risk"},
+ {id:"hollows",code:"DRF-05",f:"drift",name:"The Nine Hollows",cls:"Habitat cluster",model:"habitats",pos:[-9,0,8],pop:"≈ 45k",
+  sum:"Nine linked asteroid habitats, each held by a different Ashborn clan.",
+  bodies:[["First Hollow","Clan moot hall"],["Fifth Hollow","Black market"],["Ninth Hollow","Abandoned"]],talk:"The Ninth Hollow went dark in one night. The clan moved out the next morning and won't go back.",svc:"Salvage market · Black market"},
+ {id:"marrow",code:"DRF-06",f:"drift",name:"Marrow",cls:"Fuel depot",model:"gasgiant",colors:["#8a5a2e","#c08a52","#5e3a1c","#d8b07a"],moons:2,pos:[11,0,26],pop:"≈ 20k",
+  sum:"Skimmer Guild crews pull fuel from its clouds. Half the Drift runs on it.",
+  bodies:[["Marrow","Gas giant"],["Skim Station","Refinery"],["Pith","Moon, crew town"]],talk:"Corinthia and Commonweal both sent the Guild offers last year. The Guildmaster framed the letters.",svc:"Cheapest fuel in the Drift"},
+ {id:"lantern",code:"DRF-00",f:"drift",name:"The Lantern",cls:"Precursor structure",model:"lantern",pos:[0,0,0],pop:"Outposts",
+  sum:"A planet-sized structure that gives off its own light. No one has found a way inside, and the Treaty bars landing.",
+  bodies:[["The Lantern","Megastructure"],["Watch Corinthia","Church outpost"],["Watch STR","Commonweal outpost"]],talk:"A friend on the STR watch says the light changes when ships get close.",svc:"Treaty zone · No landing"},
+
+ {id:"corridor",code:"HAZ-01",f:"haz",name:"The Null Corridor",cls:"Dead zone",model:"corridor",pos:[0,0,-31],pop:"—",
+  sum:"Drives, power, and prayer all fail. Ships coast through.",
+  bodies:[["West Buoy","Entry"],["East Buoy","Exit"]],talk:"My insurer cancelled the policy the day I filed a Corridor route.",svc:"No power · No rescue"},
+ {id:"choir",code:"HAZ-02",f:"haz",name:"The Wandering Choir",cls:"Pirate fleet · moving",model:"fleet",pos:[0,0,0],pop:"≈ 30 ships",
+  sum:"Excommunicated priests turned raiders. They board singing.",
+  bodies:[["The Cantata","Flagship, ex-cathedral-ship"]],talk:"They took a tenth of our hold and left the rest. Sang the whole time.",svc:"Avoid"},
+ {id:"barge",code:"HAZ-03",f:"haz",name:"The Lost Barge",cls:"Missing vessel",model:"barge",pos:[-13,0,33],pop:"Unknown",
+  sum:"The Ninth Pontifex's funeral barge vanished here in CY 273.",
+  bodies:[],talk:"The Church pays for any credible sighting.",svc:"Bounty at Vigil's Reach"}
+];
+const REGIONS=[{t:"Corinthia",p:[-40,0,-36],c:"var(--dom)"},{t:"The STR",p:[38,0,-36],c:"var(--str)"},{t:"The Drift",p:[0,0,44],c:"var(--drift)"}];
+const PC_PER_DAY=2.5;
+const NOTES={
+ tamsin:"Ask for Marra at the Spindle.",vey:"Father Oren is kind. Don't let anyone hurt him.",copperline:"The sheriff takes scrip.",
+ ash:"Went once. Not going back.",vigil:"Bring a story. Stick to it.",corridor:"Cut engines before you enter.",
+ halcyon:"Someone at the Notary Ring sold my berth records. Still don't know who bought them.",hollows:"Clans race skiffs between hollows on rest-days. Don't bet against the Fifth.",marrow:"Skimmers drink free at Pith. Make friends.",
+ sable:"More ships every month I pass it.",meridian:"Clerk at Ledger knew my tier before I gave my name.",psalter:"Saw a Lay Brother preach against the bishops from a grain cart."
+};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const colorOf=d=>d.id==="lantern"?"var(--lan)":FAC[d.f].css;
+function navCalc(a,b){const A=DATA.find(d=>d.id===a).pos,B=DATA.find(d=>d.id===b).pos;const dx=B[0]-A[0],dy=B[1]-A[1],dz=B[2]-A[2],dist=Math.hypot(dx,dy,dz);
+ return{dist,brg:String(Math.round((Math.atan2(dx,-dz)*180/Math.PI+360)%360)).padStart(3,"0")+"°",days:Math.max(1,Math.round(dist/PC_PER_DAY))}}
+function navText(from,id){
+ if(id===from)return{range:"Origin",brg:"—",travel:"Here"};
+ const n=navCalc(from,id);
+ if(id==="choir")return{range:`≈ ${n.dist.toFixed(0)} pc`,brg:n.brg,travel:"Varies"};
+ return{range:`${n.dist.toFixed(1)} pc`,brg:n.brg,travel:`≈ ${n.days} d`};
+}
+$("#sysCount").textContent=DATA.length;
+$("#gazCount").textContent=DATA.length+" entries";
+
+let gFilter="all";
+function renderGaz(){
+ const q=$("#gsearch").value.trim().toLowerCase();
+ const order={drift:0,dom:1,str:2,haz:3};
+ const list=DATA.filter(d=>(gFilter==="all"||d.f===gFilter)&&(!q||(d.name+d.cls+d.sum+d.code+d.bodies.flat().join(" ")).toLowerCase().includes(q))).sort((a,b)=>order[a.f]-order[b.f]||a.code.localeCompare(b.code));
+ $("#locs").innerHTML=list.length?list.map(d=>{const n=navText("tamsin",d.id);return `<article class="loc" id="loc-${d.id}" style="--c:${colorOf(d)}">
+  <div class="loc-h">${sig(d)}<div class="code">${d.code} · ${esc(FAC[d.f].group)}</div><h3>${esc(d.name)}</h3><div class="cls">${esc(d.cls)}</div></div>
+  <dl class="mini"><div><dt>Range</dt><dd>${n.range}</dd></div><div><dt>Travel</dt><dd>${n.travel}</dd></div><div><dt>Pop.</dt><dd>${esc(d.pop)}</dd></div></dl>
+  <div class="loc-b"><p class="sum">${esc(d.sum)}</p>${d.bodies.length?`<ul class="bodies">${d.bodies.map(([a,b])=>`<li><b>${esc(a)}</b><span>${esc(b)}</span></li>`).join("")}</ul>`:""}<a class="talk" href="#rumor-${d.id}">${esc(d.talk)}<span class="more">Dockside talk ›</span></a><p class="svc">${esc(d.svc)}</p></div>
+  ${NOTES[d.id]?`<div class="note"><span class="lbl">K. Vash</span><p>${esc(NOTES[d.id])}</p></div>`:""}
+  <div class="loc-f"><button class="btn" data-locate="${d.id}">Locate on chart</button></div></article>`}).join(""):`<div class="empty">No entries match "${esc(q)}".</div>`;
+ $$("[data-locate]").forEach(b=>b.onclick=()=>{location.hash="chart";setTimeout(()=>window.mapSelect&&window.mapSelect(b.dataset.locate),60)});
+}
+$$("[data-gf]").forEach(b=>b.onclick=()=>{gFilter=b.dataset.gf;$$("[data-gf]").forEach(x=>x.setAttribute("aria-pressed",x===b));renderGaz()});
+$("#gsearch").addEventListener("input",renderGaz);
+renderGaz();
+
+$("#rumorList").innerHTML=DATA.map(d=>`<li id="rumor-${d.id}" style="--c:${colorOf(d)}"><span class="src">${d.code}</span><div><q>${esc(d.talk)}</q><span class="where">Re: <a href="#loc-${d.id}">${esc(d.name)}</a></span></div></li>`).join("")+
+ [["GEN-01","Ships near the Throne hear singing on their comms."],["GEN-02","Someone at Tamsin is buying old Ash War charts. Paying well."],["GEN-03","A Sable cruiser visited the Lantern off-schedule. Commonweal filed no report."],["GEN-04","The Cardinals have stopped meeting in full session."]].map(([c,t])=>`<li style="--c:var(--amber)"><span class="src">${c}</span><div><q>${esc(t)}</q><span class="where">General</span></div></li>`).join("");
+
+const CRUMBS={briefing:"ORIENTATION / BRIEFING",history:"ARCHIVE / HISTORY",factions:"POLITICS / POWERS",chart:"NAV / ASTROGATION",gazetteer:"NAV / GAZETTEER",origins:"CITIZENS / ORIGINS",rumors:"GAZETTEER / DOCKSIDE TALK",glossary:"REFERENCE / GLOSSARY"};
+function route(){
+ let h=location.hash.slice(1)||"briefing",loc=null;
+ if(h.startsWith("loc-")){loc=h;h="gazetteer"}
+ else if(h.startsWith("rumor-")){loc=h;h="rumors"}
+ if(!CRUMBS[h])h="briefing";
+ $$(".doc").forEach(s=>s.hidden=s.dataset.r!==h);
+ $$(".files a").forEach(a=>a.setAttribute("aria-current",a.dataset.r===(h==="rumors"?"gazetteer":h)?"page":"false"));
+ $("#crumb").textContent=CRUMBS[h];
+ const view=$("#view");view.style.overflow=h==="chart"?"hidden":"auto";
+ if(h==="chart"){initMap();window.mapResize&&window.mapResize();window.mapActive=true}else{window.mapActive=false;window.mapExitFs&&window.mapExitFs()}
+ if(loc){if(h==="gazetteer"&&(gFilter!=="all"||$("#gsearch").value)){gFilter="all";$$("[data-gf]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.gf==="all"));$("#gsearch").value="";renderGaz()}
+  const el=document.getElementById(loc);if(el){el.scrollIntoView({block:"start"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),1600)}}
+ else view.scrollTop=0;
+ const cur=$(".files a[aria-current='page']");if(cur&&innerWidth<=760)cur.scrollIntoView({inline:"center",block:"nearest"});
+}
+addEventListener("hashchange",route);
+
+let mapReady=false;
+function initMap(){
+ if(mapReady)return;mapReady=true;
+/* ---------- scene ---------- */
+const stage=document.getElementById("chartWrap");
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+stage.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x060716);
+scene.fog=new THREE.Fog(0x060716,140,320);
+const camera=new THREE.PerspectiveCamera(48,1,0.1,900);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.dampingFactor=.08;controls.minDistance=6;controls.maxDistance=260;controls.maxPolarAngle=Math.PI*.47;controls.screenSpacePanning=false;
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+scene.add(new THREE.AmbientLight(0x9aa0b8,.55));
+const sun=new THREE.DirectionalLight(0xfff1dc,1.1);sun.position.set(-40,60,30);scene.add(sun);
+const rim=new THREE.DirectionalLight(0x6a7fb0,.35);rim.position.set(50,-10,-40);scene.add(rim);
+
+function rng(seed){let s=seed>>>0||1;return()=>((s=Math.imul(s^s>>>15,1|s)+0x6D2B79F5|0,(s^s>>>7)>>>0)/4294967296)}
+function soft(){const c=document.createElement("canvas");c.width=c.height=64;const g=c.getContext("2d");const r=g.createRadialGradient(32,32,0,32,32,32);r.addColorStop(0,"rgba(255,255,255,1)");r.addColorStop(.3,"rgba(255,255,255,.45)");r.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=r;g.fillRect(0,0,64,64);return new THREE.CanvasTexture(c)}
+const SOFT=soft();
+
+/* galaxy dust, desaturated */
+(function(){
+ const R=rng(7),N=reduce?7000:13000,pos=new Float32Array(N*3),col=new Float32Array(N*3);
+ const D=new THREE.Color(0x8c78a8),S=new THREE.Color(0x6a9a96),M=new THREE.Color(0xa88458),C=new THREE.Color(0xe8dcc0),t=new THREE.Color();
+ for(let i=0;i<N;i++){
+  const arm=i%2,r=Math.pow(R(),.7)*64,a=r*.085+arm*Math.PI+(R()-.5)*(.95-r/130),s=(R()-.5)*3*(1+r/28);
+  const x=Math.cos(a)*r+s,z=Math.sin(a)*r+s*.6,y=(R()+R()-1)*(1.8*(1-r/64)+.3);
+  pos.set([x,y,z],i*3);
+  if(x<-13)t.copy(D);else if(x>13)t.copy(S);else t.copy(M);
+  t.lerp(C,Math.max(0,1-r/12)*.7);const b=.25+R()*.45;col.set([t.r*b,t.g*b,t.b*b],i*3);
+ }
+ const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.BufferAttribute(pos,3));g.setAttribute("color",new THREE.BufferAttribute(col,3));
+ scene.add(new THREE.Points(g,new THREE.PointsMaterial({size:.45,map:SOFT,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending})));
+ const M2=1800,bp=new Float32Array(M2*3);
+ for(let i=0;i<M2;i++){const u=R()*2-1,th=R()*6.283,q=Math.sqrt(1-u*u),rr=300+R()*200;bp.set([q*Math.cos(th)*rr,u*rr,q*Math.sin(th)*rr],i*3)}
+ const bg=new THREE.BufferGeometry();bg.setAttribute("position",new THREE.BufferAttribute(bp,3));
+ scene.add(new THREE.Points(bg,new THREE.PointsMaterial({size:1.1,map:SOFT,color:0x6e7080,transparent:true,depthWrite:false,fog:false})));
+})();
+
+/* chart grid */
+const chart=new THREE.Group();scene.add(chart);
+const gridMat=new THREE.LineBasicMaterial({color:0x8f9cff,transparent:true,opacity:.07});
+for(let r=10;r<=60;r+=10){const p=[];for(let i=0;i<=128;i++){const a=i/128*Math.PI*2;p.push(new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r))}chart.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(p),r===60?new THREE.LineBasicMaterial({color:0x8f9cff,transparent:true,opacity:.16}):gridMat))}
+for(let d=0;d<360;d+=30){const a=d*Math.PI/180;chart.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(Math.cos(a)*10,0,Math.sin(a)*10),new THREE.Vector3(Math.cos(a)*60,0,Math.sin(a)*60)]),gridMat))}
+{const p=[];for(let d=0;d<360;d+=5){const a=d*Math.PI/180,l=d%30===0?2.2:1;p.push(new THREE.Vector3(Math.cos(a)*60,0,Math.sin(a)*60),new THREE.Vector3(Math.cos(a)*(60+l),0,Math.sin(a)*(60+l)))}chart.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(p),new THREE.LineBasicMaterial({color:0x8f9cff,transparent:true,opacity:.22})))}
+function dashed(pts,color,op=.4,ds=1,gs=.8){const l=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineDashedMaterial({color,dashSize:ds,gapSize:gs,transparent:true,opacity:op}));l.computeLineDistances();return l}
+[-13,13].forEach(x=>{const h=Math.sqrt(60*60-x*x);chart.add(dashed([new THREE.Vector3(x,0,-h),new THREE.Vector3(x,0,h)],0xe2a65f,.28,1.4,1.2))});
+
+/* ---------- models ---------- */
+const std=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.85,metalness:.05,flatShading:true},o));
+function planetTex(base,accents,seed,mode){
+ const c=document.createElement("canvas");c.width=256;c.height=128;const g=c.getContext("2d"),R=rng(seed);
+ g.fillStyle=base;g.fillRect(0,0,256,128);
+ if(mode==="bands"){for(let i=0;i<26;i++){g.fillStyle=accents[i%accents.length];g.globalAlpha=.25+R()*.4;const y=R()*128;g.fillRect(0,y,256,2+R()*9)}}
+ if(mode==="land"){for(let i=0;i<60;i++){g.fillStyle=accents[i%accents.length];g.globalAlpha=.55+R()*.4;g.beginPath();g.ellipse(R()*256,20+R()*88,6+R()*26,3+R()*12,R()*3,0,7);g.fill()}}
+ if(mode==="city"){g.globalAlpha=1;for(let y=6;y<128;y+=7){for(let x=0;x<256;x+=3){if(R()<.32){g.fillStyle=R()<.8?accents[0]:accents[1];g.globalAlpha=.4+R()*.6;g.fillRect(x,y,2,1)}}}for(let x=0;x<256;x+=16){g.fillStyle=accents[0];g.globalAlpha=.35;g.fillRect(x,0,1,128)}}
+ if(mode==="crater"){for(let i=0;i<70;i++){g.fillStyle=accents[i%accents.length];g.globalAlpha=.3+R()*.4;g.beginPath();g.arc(R()*256,R()*128,1+R()*6,0,7);g.fill()}}
+ g.globalAlpha=1;return new THREE.CanvasTexture(c);
+}
+function orbit(r,color,op=.25){const p=[];for(let i=0;i<=72;i++){const a=i/72*Math.PI*2;p.push(new THREE.Vector3(Math.cos(a)*r,0,Math.sin(a)*r))}return new THREE.Line(new THREE.BufferGeometry().setFromPoints(p),new THREE.LineBasicMaterial({color,transparent:true,opacity:op}))}
+function rocks(n,rad,inner,thick,color,seed,size=.16){
+ const R=rng(seed),m=new THREE.InstancedMesh(new THREE.DodecahedronGeometry(size,0),std(color),n),o=new THREE.Object3D();
+ for(let i=0;i<n;i++){const a=R()*6.283,r=inner+R()*(rad-inner);o.position.set(Math.cos(a)*r,(R()-.5)*thick,Math.sin(a)*r);o.rotation.set(R()*3,R()*3,R()*3);const s=.4+R()*1.3;o.scale.set(s,s*(.6+R()*.6),s);o.updateMatrix();m.setMatrixAt(i,o.matrix)}
+ return m;
+}
+const BUILD={
+ blackhole(){const g=new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(1.5,40,40),new THREE.MeshBasicMaterial({color:0x000000})));
+  const c=document.createElement("canvas");c.width=c.height=256;const x=c.getContext("2d"),R=rng(3);
+  for(let i=0;i<220;i++){const r=40+Math.pow(R(),1.6)*86;x.strokeStyle=`rgba(${230+R()*25|0},${150+R()*80|0},${90+R()*60|0},${(.05+R()*.22)*(1-(r-40)/100)})`;x.lineWidth=.5+R()*2;x.beginPath();const s=R()*6.3;x.arc(128,128,r,s,s+.6+R()*2.5);x.stroke()}
+  const disk=new THREE.Mesh(new THREE.RingGeometry(1.8,5.2,128),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(c),transparent:true,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));
+  const tilt=new THREE.Group();tilt.rotation.x=.32;tilt.rotation.z=.12;disk.rotation.x=-Math.PI/2;tilt.add(disk);g.add(tilt);
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(1.62,.035,8,96),new THREE.MeshBasicMaterial({color:0xffe6c0}));g.add(ring);
+  g.userData={r:5.2,tick:(t,cam)=>{disk.rotation.z=-t*.35;ring.quaternion.copy(cam.quaternion)}};return g},
+ station(){const g=new THREE.Group(),m=std(0xe6dccb,{metalness:.35,roughness:.5});
+  const spin=new THREE.Group();g.add(spin);
+  spin.add(new THREE.Mesh(new THREE.TorusGeometry(1.5,.16,8,48),m));
+  for(let i=0;i<4;i++){const s=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,1.5,6),m);s.rotation.z=Math.PI/2;s.rotation.y=i*Math.PI/2;s.position.set(Math.cos(i*Math.PI/2)*.75,0,-Math.sin(i*Math.PI/2)*.75);spin.add(s)}
+  spin.add(new THREE.Mesh(new THREE.SphereGeometry(.42,16,12),std(0xc9a6e4,{metalness:.2})));
+  const sp=new THREE.Mesh(new THREE.ConeGeometry(.2,1.8,6),m);sp.position.y=1.1;spin.add(sp);
+  const sp2=new THREE.Mesh(new THREE.ConeGeometry(.14,.9,6),m);sp2.position.y=-.65;sp2.rotation.x=Math.PI;spin.add(sp2);
+  g.userData={r:2,tick:t=>{spin.rotation.y=t*.2}};return g},
+ shipyard(){const g=new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(1.1,32,24),std(0xffffff,{map:planetTex("#4a3f5c",["#6f5e86","#2f2840","#8a7a96"],11,"bands"),flatShading:false})));
+  const yard=new THREE.Group();g.add(yard);g.add(orbit(2.1,0xc9a6e4,.25));
+  for(let i=0;i<3;i++){const a=i/3*Math.PI*2,f=new THREE.Group();f.position.set(Math.cos(a)*2.1,0,Math.sin(a)*2.1);f.rotation.y=-a;
+   f.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(.9,.42,.42)),new THREE.LineBasicMaterial({color:0xd9cfe6})));
+   const hull=new THREE.Mesh(new THREE.ConeGeometry(.13,.75,5),std(0xcfc6b8,{metalness:.4}));hull.rotation.z=Math.PI/2;f.add(hull);yard.add(f)}
+  g.userData={r:2.5,tick:t=>{yard.rotation.y=t*.12}};return g},
+ fortress(){const g=new THREE.Group(),core=new THREE.Group();g.add(core);
+  const geo=new THREE.OctahedronGeometry(1,0);core.add(new THREE.Mesh(geo,std(0x2c2836,{metalness:.5,roughness:.45})));
+  core.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo),new THREE.LineBasicMaterial({color:0xc9a6e4})));
+  for(let i=0;i<8;i++){const a=i/8*Math.PI*2,c=new THREE.Mesh(new THREE.ConeGeometry(.12,.7,4),std(0x6a5f78,{metalness:.4}));c.position.set(Math.cos(a)*1.55,0,Math.sin(a)*1.55);c.rotation.z=-Math.PI/2;c.rotation.y=-a;core.add(c)}
+  g.add(orbit(2,0xc9a6e4,.18));
+  g.userData={r:2,tick:t=>{core.rotation.y=t*.15}};return g},
+ relics(){const g=new THREE.Group(),f=rocks(90,2.8,.3,.9,0x7d7685,21);g.add(f);
+  const b=[];const R=rng(4);for(let i=0;i<5;i++){const s=new THREE.Mesh(new THREE.OctahedronGeometry(.11,0),new THREE.MeshBasicMaterial({color:0xe9d9ff}));const a=R()*6.3,r=.8+R()*1.8;s.position.set(Math.cos(a)*r,(R()-.5)*.6,Math.sin(a)*r);g.add(s);b.push(s)}
+  g.userData={r:2.8,tick:t=>{f.rotation.y=t*.04;b.forEach((s,i)=>s.scale.setScalar(.7+.5*Math.abs(Math.sin(t*1.3+i))))}};return g},
+ cityplanet(){const g=new THREE.Group(),tex=planetTex("#0d1622",["#f2d9a2","#86cbc4"],5,"city");
+  const p=new THREE.Mesh(new THREE.SphereGeometry(1.4,48,32),new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:.55,roughness:.7}));g.add(p);
+  const ring=new THREE.Mesh(new THREE.RingGeometry(1.95,2.35,96),new THREE.MeshBasicMaterial({color:0x86cbc4,transparent:true,opacity:.28,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2+.2;g.add(ring);
+  const sats=new THREE.Group();g.add(sats);for(let i=0;i<3;i++){const s=new THREE.Mesh(new THREE.BoxGeometry(.12,.12,.28),std(0xd8e8e6,{metalness:.5}));const a=i*2.1;s.position.set(Math.cos(a)*2.8,(i-1)*.3,Math.sin(a)*2.8);sats.add(s)}
+  g.userData={r:2.6,tick:t=>{p.rotation.y=t*.05;sats.rotation.y=t*.3}};return g},
+ exchange(){const g=new THREE.Group(),m=std(0x9fb6b4,{metalness:.55,roughness:.4});
+  g.add(new THREE.Mesh(new THREE.CylinderGeometry(.16,.16,3,10),m));
+  const rings=[[-.65,1.3],[0,1.0],[.65,.72]].map(([y,r],i)=>{const t=new THREE.Mesh(new THREE.TorusGeometry(r,.11,6,40),i===1?std(0x86cbc4,{metalness:.4}):m);t.rotation.x=Math.PI/2;t.position.y=y;g.add(t);return t});
+  for(let i=0;i<10;i++){const c=new THREE.Mesh(new THREE.BoxGeometry(.18,.12,.12),std(0xe2a65f));const a=i/10*Math.PI*2;c.position.set(Math.cos(a)*1.3,-.65,Math.sin(a)*1.3);rings[0].attach(c)}
+  g.userData={r:1.9,tick:t=>{rings[0].rotation.z=t*.25;rings[1].rotation.z=-t*.18;rings[2].rotation.z=t*.3}};return g},
+ array(){const g=new THREE.Group(),head=new THREE.Group();g.add(head);
+  const dish=new THREE.Mesh(new THREE.SphereGeometry(1.25,32,12,0,Math.PI*2,0,Math.PI*.27),std(0xd6dedd,{side:THREE.DoubleSide,metalness:.3,flatShading:false}));dish.rotation.x=Math.PI;dish.position.y=1.25;head.add(dish);
+  const feed=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,1,6),std(0x86cbc4));feed.position.y=.5;head.add(feed);
+  const rx=new THREE.Mesh(new THREE.ConeGeometry(.09,.25,6),std(0x86cbc4));rx.position.y=1.05;rx.rotation.x=Math.PI;head.add(rx);
+  head.rotation.x=-.7;
+  const truss=new THREE.Mesh(new THREE.CylinderGeometry(.08,.14,1.4,6),std(0x5a6466));truss.position.y=-.7;g.add(truss);
+  const pan=new THREE.Mesh(new THREE.BoxGeometry(2.2,.03,.5),std(0x2e4a58,{metalness:.5}));pan.position.y=-1.1;g.add(pan);
+  g.userData={r:1.8,tick:t=>{head.rotation.y=Math.sin(t*.2)*.6}};return g},
+ colony(){const g=new THREE.Group();
+  const p=new THREE.Mesh(new THREE.SphereGeometry(1.1,40,28),std(0xffffff,{map:planetTex("#2d5c6e",["#5f8f55","#7aa86a","#cfe0c8"],8,"land"),flatShading:false}));g.add(p);
+  const moon=new THREE.Mesh(new THREE.SphereGeometry(.28,16,12),std(0xb5b0a6));const mo=new THREE.Group();moon.position.x=2;mo.add(moon);mo.rotation.z=.2;g.add(mo);g.add(orbit(2,0x86cbc4,.15));
+  g.userData={r:2.2,tick:t=>{p.rotation.y=t*.08;mo.rotation.y=t*.25}};return g},
+ port(){const g=new THREE.Group(),R=rng(17),geo=new THREE.IcosahedronGeometry(1.3,2),pa=geo.attributes.position,v=new THREE.Vector3(),map={};
+  for(let i=0;i<pa.count;i++){v.fromBufferAttribute(pa,i);const k=v.toArray().map(n=>n.toFixed(3)).join();if(!(k in map))map[k]=.78+R()*.42;v.multiplyScalar(map[k]);v.y*=.8;pa.setXYZ(i,v.x,v.y,v.z)}
+  geo.computeVertexNormals();const rock=new THREE.Mesh(geo,std(0x7a6450));g.add(rock);
+  const dock=new THREE.Mesh(new THREE.TorusGeometry(1.95,.06,6,64),std(0xe2a65f,{metalness:.4,roughness:.5}));dock.rotation.x=Math.PI/2;g.add(dock);
+  for(let i=0;i<6;i++){const a=i/6*Math.PI*2,arm=new THREE.Mesh(new THREE.BoxGeometry(.7,.05,.05),std(0x9a8670));arm.position.set(Math.cos(a)*1.6,0,Math.sin(a)*1.6);arm.rotation.y=-a;g.add(arm)}
+  const lp=[];for(let i=0;i<26;i++){const a=R()*6.3,b=(R()-.5)*1.6;lp.push(Math.cos(a)*1.05*Math.cos(b),Math.sin(b)*.85,Math.sin(a)*1.05*Math.cos(b))}
+  const lg=new THREE.BufferGeometry();lg.setAttribute("position",new THREE.Float32BufferAttribute(lp,3));
+  rock.add(new THREE.Points(lg,new THREE.PointsMaterial({color:0xffd08a,size:.16,map:SOFT,transparent:true,depthWrite:false})));
+  g.userData={r:2.2,tick:t=>{rock.rotation.y=t*.07;dock.rotation.z=t*.1}};return g},
+ mining(){const g=new THREE.Group();
+  const p=new THREE.Mesh(new THREE.SphereGeometry(.8,28,20),std(0xffffff,{map:planetTex("#5b5562",["#3e3946","#7d7486"],9,"crater"),flatShading:false}));g.add(p);
+  const belt=rocks(40,2,1.4,.25,0x8a7f72,13,.13);g.add(belt);
+  const chap=new THREE.Mesh(new THREE.DodecahedronGeometry(.32,0),std(0x8a7f72));chap.position.set(1.7,0,0);belt.add(chap);
+  const glow=new THREE.Mesh(new THREE.OctahedronGeometry(.08,0),new THREE.MeshBasicMaterial({color:0xffe0a8}));glow.position.set(1.7,.33,0);belt.add(glow);
+  g.userData={r:2,tick:t=>{belt.rotation.y=t*.06}};return g},
+ boomtown(){const g=new THREE.Group();
+  const p=new THREE.Mesh(new THREE.SphereGeometry(.95,32,24),std(0xffffff,{map:planetTex("#7a3e26",["#a8603a","#5a2c1c","#c9895a"],12,"bands"),flatShading:false}));g.add(p);
+  const rigs=new THREE.Group();g.add(rigs);g.add(orbit(1.7,0xe2a65f,.25));
+  for(let i=0;i<4;i++){const a=i/4*Math.PI*2,r=new THREE.Group();r.position.set(Math.cos(a)*1.7,0,Math.sin(a)*1.7);
+   const b=new THREE.Mesh(new THREE.BoxGeometry(.28,.1,.18),std(0xc9b9a0,{metalness:.4}));r.add(b);
+   const tw=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.5,4),std(0xe2a65f));tw.position.y=.25;r.add(tw);rigs.add(r)}
+  g.userData={r:2,tick:t=>{p.rotation.y=t*.06;rigs.rotation.y=-t*.18}};return g},
+ deadstar(){const g=new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(.55,24,16),new THREE.MeshBasicMaterial({color:0x6e2a20})));
+  const h=new THREE.Sprite(new THREE.SpriteMaterial({map:SOFT,color:0x8a3a2a,transparent:true,opacity:.6,depthWrite:false}));h.scale.set(3.2,3.2,1);g.add(h);
+  const d=rocks(70,3,1,.6,0x3f3a3a,31,.12);g.add(d);
+  const R=rng(9);for(let i=0;i<4;i++){const w=new THREE.Mesh(new THREE.CylinderGeometry(.14,.18,.9+R()*.5,6,1,true,0,Math.PI*(1+R()*.6)),std(i%2?0x6a5f78:0x5f7472,{side:THREE.DoubleSide,metalness:.5}));const a=R()*6.3,r=1.4+R()*1.4;w.position.set(Math.cos(a)*r,(R()-.5)*.5,Math.sin(a)*r);w.rotation.set(R()*3,R()*3,R()*3);d.add(w)}
+  g.userData={r:3,tick:t=>{d.rotation.y=t*.025}};return g},
+ lantern(){const g=new THREE.Group();
+  const outer=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(2.7,1)),new THREE.LineBasicMaterial({color:0xefe2b8,transparent:true,opacity:.55}));g.add(outer);
+  const mid=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.DodecahedronGeometry(1.9,0)),new THREE.LineBasicMaterial({color:0xefe2b8,transparent:true,opacity:.8}));g.add(mid);
+  const core=new THREE.Mesh(new THREE.OctahedronGeometry(1.05,0),std(0xf3e6c0,{emissive:0xb39a5a,emissiveIntensity:.6,metalness:.2,roughness:.4}));g.add(core);
+  const h=new THREE.Sprite(new THREE.SpriteMaterial({map:SOFT,color:0xefe2b8,transparent:true,opacity:.35,depthWrite:false,blending:THREE.AdditiveBlending}));h.scale.set(9,9,1);g.add(h);
+  g.add(orbit(4.2,0xefe2b8,.15));
+  g.userData={r:3.2,tick:t=>{outer.rotation.y=t*.06;outer.rotation.x=t*.02;mid.rotation.y=-t*.1;core.rotation.y=t*.15;h.material.opacity=.28+.08*Math.sin(t*.8)}};return g},
+ fleet(){const g=new THREE.Group(),m=std(0xd7c9b8,{metalness:.4}),acc=std(0xe07762);
+  [[0,0],[-.6,.55],[.6,.55],[-1.2,1.1],[1.2,1.1],[0,1.25]].forEach(([x,z],i)=>{const s=new THREE.Group();s.position.set(x,0,z);
+   const hull=new THREE.Mesh(new THREE.ConeGeometry(.16,.7,5),i===0?acc:m);hull.rotation.x=-Math.PI/2;s.add(hull);
+   const w=new THREE.Mesh(new THREE.BoxGeometry(.5,.03,.14),m);w.position.z=.15;s.add(w);g.add(s)});
+  g.userData={r:1.6};return g},
+ corridor(){const g=new THREE.Group(),pts=[];
+  for(let i=0;i<=40;i++){const t=i/40;pts.push(new THREE.Vector3(-17+34*t,0,3-Math.sin(t*Math.PI)*6))}
+  g.add(dashed(pts,0xe07762,.8,.7,.6));
+  const band=[];for(let i=0;i<=40;i++){const t=i/40;band.push(new THREE.Vector3(-17+34*t,0,3-Math.sin(t*Math.PI)*6+1.5))}
+  g.add(dashed(band,0xe07762,.25,.3,.6));const band2=band.map(p=>p.clone().setZ(p.z-3));g.add(dashed(band2,0xe07762,.25,.3,.6));
+  [pts[0],pts[40]].forEach(p=>{const b=new THREE.Mesh(new THREE.OctahedronGeometry(.3,0),std(0xe07762,{emissive:0x5a2018}));b.position.copy(p);g.add(b)});
+  g.userData={r:3,tick:t=>{}};return g},
+ barge(){const g=new THREE.Group();
+  const ring=[];for(let i=0;i<=80;i++){const a=i/80*Math.PI*2;ring.push(new THREE.Vector3(Math.cos(a)*3,0,Math.sin(a)*3))}
+  const rl=dashed(ring,0xe07762,.6,.5,.5);g.add(rl);
+  const ring2=ring.map(p=>p.clone().multiplyScalar(.55));g.add(dashed(ring2,0xe07762,.25,.3,.5));
+  const hull=new THREE.Mesh(new THREE.CylinderGeometry(.18,.28,1.4,6),std(0xc9a6e4,{transparent:true,opacity:.35}));hull.rotation.z=Math.PI/2;hull.rotation.y=.6;g.add(hull);
+  g.userData={r:3,tick:t=>{rl.rotation.y=t*.05;hull.position.y=Math.sin(t*.7)*.15}};return g}
+};
+
+
+ Object.assign(BUILD,{
+  gasgiant(d){const g=new THREE.Group();
+   const p=new THREE.Mesh(new THREE.SphereGeometry(1.8,48,32),std(0xffffff,{map:planetTex(d.colors[0],d.colors.slice(1),d.pos[0]*7|0,"bands"),flatShading:false}));p.rotation.z=.15;g.add(p);
+   const ring=new THREE.Mesh(new THREE.RingGeometry(2.3,2.9,96),new THREE.MeshBasicMaterial({color:new THREE.Color(d.colors[3]),transparent:true,opacity:.25,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2+.25;g.add(ring);
+   const ms=[];for(let i=0;i<d.moons;i++){const r=3.3+i*.6,o=new THREE.Group();const m=new THREE.Mesh(new THREE.SphereGeometry(.18+(i%2)*.08,12,10),std(0xc8c2b8));m.position.x=r;o.add(m);o.rotation.y=i*1.7;g.add(o);g.add(orbit(r,0xddd5c2,.08));ms.push(o)}
+   g.userData={r:3.4+d.moons*.4,tick:t=>{p.rotation.y=t*.07;ms.forEach((o,i)=>o.rotation.y=i*1.7+t*(.3-i*.05))}};return g},
+  habitats(){const g=new THREE.Group(),R=rng(41),pts=[],hubs=[];
+   for(let i=0;i<9;i++){const a=i/9*Math.PI*2+R()*.4,r=1+R()*1.3;const p=new THREE.Vector3(Math.cos(a)*r,(R()-.5)*.6,Math.sin(a)*r);
+    const rock=new THREE.Mesh(new THREE.IcosahedronGeometry(.22+R()*.18,0),std(i===8?0x3e3a38:0x8a7a68));rock.position.copy(p);rock.rotation.set(R()*3,R()*3,0);g.add(rock);
+    if(i!==8){const lt=new THREE.Mesh(new THREE.OctahedronGeometry(.06,0),new THREE.MeshBasicMaterial({color:0xffcf8a}));lt.position.copy(p).add(new THREE.Vector3(0,.3,0));g.add(lt)}
+    hubs.push(p)}
+   for(let i=0;i<8;i++)pts.push(hubs[i],hubs[(i+1)%8]);
+   g.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0xe2a65f,transparent:true,opacity:.45})));
+   g.userData={r:2.4,tick:t=>{g.rotation.y=t*.04}};return g},
+  foundry(){const g=new THREE.Group(),c=document.createElement("canvas");c.width=256;c.height=128;const x=c.getContext("2d"),R=rng(77);
+   x.fillStyle="#1a1614";x.fillRect(0,0,256,128);for(let i=0;i<60;i++){x.strokeStyle=`rgba(255,${120+R()*80|0},40,${.4+R()*.5})`;x.lineWidth=.6+R()*1.4;x.beginPath();let px=R()*256,py=R()*128;x.moveTo(px,py);for(let k=0;k<4;k++){px+=(R()-.5)*40;py+=(R()-.5)*20;x.lineTo(px,py)}x.stroke()}
+   const tex=new THREE.CanvasTexture(c);const p=new THREE.Mesh(new THREE.SphereGeometry(1.2,40,28),new THREE.MeshStandardMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:.8,roughness:.9}));g.add(p);
+   const yard=new THREE.Mesh(new THREE.TorusGeometry(2,.07,6,48),std(0x9fb6b4,{metalness:.5}));yard.rotation.x=Math.PI/2+.2;g.add(yard);
+   const mo=new THREE.Group(),m=new THREE.Mesh(new THREE.SphereGeometry(.25,12,10),std(0x6a6460));m.position.x=2.8;mo.add(m);g.add(mo);
+   g.userData={r:2.6,tick:t=>{p.rotation.y=t*.05;mo.rotation.y=t*.2;yard.rotation.z=t*.1}};return g},
+  farm(){const g=new THREE.Group();
+   const p=new THREE.Mesh(new THREE.SphereGeometry(1.15,40,28),std(0xffffff,{map:planetTex("#6f7a3a",["#b59a4a","#8c9a52","#d6c27a","#4f6a3a"],23,"land"),flatShading:false}));g.add(p);
+   const twin=new THREE.Group();[1,-1].forEach(s=>{const m=new THREE.Mesh(new THREE.SphereGeometry(.24,12,10),std(0xcfc6b0));m.position.x=2.1*s;twin.add(m)});g.add(twin);g.add(orbit(2.1,0xc9a6e4,.15));
+   g.userData={r:2.4,tick:t=>{p.rotation.y=t*.06;twin.rotation.y=t*.15}};return g}
+ });
+ const wrap=document.getElementById("chartWrap"),labelLayer=document.getElementById("chartLabels");
+ const groups={dom:new THREE.Group(),str:new THREE.Group(),drift:new THREE.Group(),haz:new THREE.Group()};
+ Object.values(groups).forEach(g=>scene.add(g));
+ const items={},pickables=[],labels=[];
+ DATA.forEach(d=>{
+  const node=BUILD[d.model](d);node.position.set(...d.pos);groups[d.f].add(node);
+  if(d.tint)node.traverse(o=>{if(o.material&&o.material.color&&o.material.color.getHex()===0xc9a6e4)o.material=o.material.clone(),o.material.color.setHex(d.tint)});
+  const hit=new THREE.Mesh(new THREE.SphereGeometry(Math.max(2.4,node.userData.r),10,8),new THREE.MeshBasicMaterial({visible:false}));hit.userData.id=d.id;node.add(hit);pickables.push(hit);
+  const b=document.createElement("button");b.className="ml";b.style.setProperty("--c",colorOf(d));
+  b.innerHTML=`<span class="c">${d.code}</span><span class="n">${esc(d.name)}</span>`;b.setAttribute("aria-label",d.name);b.hidden=true;
+  b.addEventListener("click",e=>{e.stopPropagation();select(d.id)});labelLayer.appendChild(b);
+  labels.push({el:b,node,d,off:node.userData.r});items[d.id]={d,node};
+ });
+ REGIONS.forEach(r=>{const el=document.createElement("div");el.className="mreg";el.textContent=r.t;el.style.setProperty("--c",r.c);labelLayer.appendChild(el);labels.push({el,region:true,p:new THREE.Vector3(...r.p)})});
+ const CH_C=new THREE.Vector3(1,0,1);
+ const selRing=new THREE.Group();scene.add(selRing);selRing.visible=false;
+ {const pts=[];for(let i=0;i<64;i++){const a=i/64*Math.PI*2,b=(i+.6)/64*Math.PI*2;if(i%4<3)pts.push(new THREE.Vector3(Math.cos(a),0,Math.sin(a)),new THREE.Vector3(Math.cos(b),0,Math.sin(b)))}
+  selRing.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:0x7fd1c7,transparent:true,opacity:.8})))}
+ const route3=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineDashedMaterial({color:0x7fd1c7,dashSize:.9,gapSize:.6,transparent:true,opacity:.75}));route3.visible=false;scene.add(route3);
+ let origin="tamsin",selected=null;
+ const card=$("#chartCard");
+ function wpos(id){const v=new THREE.Vector3();items[id].node.getWorldPosition(v);return v}
+ function select(id){
+  const it=items[id];if(!it)return;selected=id;const d=it.d,n=navText(origin,id);
+  if(!it.node.parent.visible){it.node.parent.visible=true;const c=$(`#ctools [data-f="${d.f}"]`);c&&c.setAttribute("aria-pressed","true")}
+  card.style.setProperty("--c",colorOf(d));
+  card.innerHTML=`<div class="cc-h"><div class="code">${d.code} · ${esc(FAC[d.f].group)}</div><h3>${esc(d.name)}</h3><div class="cls">${esc(d.cls)}</div><button class="x" aria-label="Close">×</button></div>
+   <dl class="mini"><div><dt>Bearing</dt><dd>${n.brg}</dd></div><div><dt>Range</dt><dd>${n.range}</dd></div><div><dt>Travel</dt><dd>${n.travel}</dd></div></dl>
+   <p class="cs">${esc(d.sum)}</p>
+   ${d.bodies.length?`<div class="bl">${d.bodies.map(b=>esc(b[0])).join(" · ")}</div>`:""}
+   <div class="cc-f"><a class="btn" href="#loc-${d.id}" style="text-decoration:none">Open entry</a><button class="btn" id="setO" ${id===origin||d.f==="haz"?"disabled":""}>${id===origin?"Current origin":"Set as origin"}</button></div>`;
+  card.hidden=false;
+  card.querySelector(".x").onclick=clear;
+  card.querySelector("#setO").onclick=()=>{origin=id;$("#originName").textContent=d.name.replace(/^(The |Free Harbor )/,"").toUpperCase();select(id)};
+  labels.forEach(L=>L.d&&L.el.classList.toggle("on",L.d.id===id));
+  flyTo(wpos(id),Math.max(14,it.node.userData.r*5));
+ }
+ function clear(){selected=null;card.hidden=true;selRing.visible=false;route3.visible=false;labels.forEach(L=>L.el.classList.remove("on"))}
+ window.mapSelect=select;
+ $$("#ctools [data-f]").forEach(b=>b.onclick=()=>{const on=b.getAttribute("aria-pressed")!=="true";b.setAttribute("aria-pressed",on);groups[b.dataset.f].visible=on;if(!on&&selected&&items[selected].d.f===b.dataset.f)clear()});
+ $("#chartReset").onclick=()=>{clear();flyHome()};
+ const fT=new THREE.Vector3(),fP=new THREE.Vector3();let flying=false;
+ function homeDist(){const a=camera.aspect;return a<1?Math.min(240,108/a*.62):100}
+ function flyHome(){fT.set(0,0,4);const d=homeDist();fP.set(0,d*.72,d*.7);flying=true}
+ function flyTo(p,d){fT.copy(p);const dir=camera.position.clone().sub(controls.target).setY(0);if(dir.lengthSq()<1)dir.set(0,0,1);dir.normalize();fP.copy(p).addScaledVector(dir,d*.8);fP.y=p.y+d*.62;if(wrap.clientWidth<=760)fT.z+=d*.2;flying=true}
+ controls.addEventListener("start",()=>{flying=false});
+ const ray=new THREE.Raycaster(),mv=new THREE.Vector2();let down=null;
+ const toNdc=e=>{const r=renderer.domElement.getBoundingClientRect();mv.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1)};
+ renderer.domElement.addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY]});
+ renderer.domElement.addEventListener("pointerup",e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;toNdc(e);ray.setFromCamera(mv,camera);
+  const h=ray.intersectObjects(pickables.filter(p=>p.parent.parent.visible));if(h.length)select(h[0].object.userData.id)});
+ renderer.domElement.addEventListener("pointermove",e=>{if(e.pointerType!=="mouse")return;toNdc(e);ray.setFromCamera(mv,camera);renderer.domElement.style.cursor=ray.intersectObjects(pickables).length?"pointer":""});
+ let sw=0,sh=0,glLost=false;
+ function rs(){const w=wrap.clientWidth,h=wrap.clientHeight;if(!w||!h||(w===sw&&h===sh))return;sw=w;sh=h;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix()}
+ if(window.ResizeObserver)new ResizeObserver(()=>rs()).observe(wrap);
+ renderer.domElement.addEventListener("webglcontextlost",()=>{glLost=true;labelLayer.style.visibility="hidden"});
+ renderer.domElement.addEventListener("webglcontextrestored",()=>{glLost=false;sw=sh=0;rs();labelLayer.style.visibility=""});
+ window.mapResize=rs;addEventListener("resize",rs);rs();
+ const fsBtn=$("#chartFs");
+ const isFs=()=>document.fullscreenElement===wrap||wrap.classList.contains("fs");
+ function fsSync(){const on=isFs();fsBtn.textContent=on?"✕ Exit full screen":"⛶ Full screen";fsBtn.setAttribute("aria-pressed",on);requestAnimationFrame(rs)}
+ function fakeFs(on){wrap.classList.toggle("fs",on);document.body.classList.toggle("mapfs",on);fsSync()}
+ window.mapExitFs=()=>{if(document.fullscreenElement===wrap)document.exitFullscreen().catch(()=>{});if(wrap.classList.contains("fs"))fakeFs(false)};
+ fsBtn.onclick=()=>{if(isFs()){window.mapExitFs();return}
+  if(wrap.requestFullscreen)wrap.requestFullscreen().then(fsSync).catch(()=>fakeFs(true));else fakeFs(true)};
+ document.addEventListener("fullscreenchange",fsSync);
+ addEventListener("keydown",e=>{if(e.key==="Escape"&&wrap.classList.contains("fs"))fakeFs(false)});
+ {const d=homeDist();camera.position.set(0,d*.72,d*.7);controls.target.set(0,0,4)}
+ const v=new THREE.Vector3(),clock=new THREE.Clock();let T=0;
+ function frame(){
+  requestAnimationFrame(frame);
+  const dt=Math.min(clock.getDelta(),.05);if(!window.mapActive||glLost)return;rs();if(!reduce)T+=dt;
+  if(flying){controls.target.lerp(fT,.07);camera.position.lerp(fP,.07);if(camera.position.distanceTo(fP)<.15)flying=false}
+  controls.update();
+  const ch=items.choir.node,a=T*.05+1.2;ch.position.set(CH_C.x+Math.cos(a)*9.5,0,CH_C.z+Math.sin(a)*22);ch.rotation.y=-Math.atan2(Math.cos(a)*22,-Math.sin(a)*9.5)+Math.PI;
+  Object.values(items).forEach(it=>it.node.userData.tick&&it.node.userData.tick(T,camera));
+  if(selected){const p=wpos(selected);selRing.visible=items[selected].node.parent.visible;selRing.position.copy(p);selRing.scale.setScalar(items[selected].node.userData.r*1.35);selRing.rotation.y=T*.2;
+   if(selected!==origin&&selected!=="corridor"&&selected!=="barge"){route3.geometry.dispose();route3.geometry=new THREE.BufferGeometry().setFromPoints([wpos(origin),p]);route3.computeLineDistances();route3.visible=true}else route3.visible=false}
+  renderer.render(scene,camera);
+  const W=sw,H=sh,camD=camera.position.distanceTo(controls.target);
+  for(const L of labels){
+   if(L.region){v.copy(L.p).project(camera);const s=v.z<1&&camD>45;L.el.hidden=!s;if(s)L.el.style.transform=`translate(${(v.x+1)/2*W}px,${(1-v.y)/2*H}px) translate(-50%,-50%)`;continue}
+   if(!L.node.parent.visible){L.el.hidden=true;continue}
+   L.node.getWorldPosition(v);v.y+=L.off*.75;v.project(camera);
+   const s=v.z<1&&Math.abs(v.x)<1.05&&Math.abs(v.y)<1.05;L.el.hidden=!s;if(s)L.el.style.transform=`translate(${(v.x+1)/2*W}px,${(1-v.y)/2*H}px) translate(-50%,-100%)`;
+  }
+ }
+ frame();
+}
+route();
+</script>
+</html>
