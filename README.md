@@ -25,9 +25,11 @@ The handout is one self-contained web page dressed as an in-world object: a seco
 
 ## Tactical plot (ship combat)
 
-`combat/` is a 3D ship-combat engine that runs the GM partition's "Ship combat: stations" rules: helm contest, range bands (Close / Medium / Long), shields then hull, the d6 crit table, upkeep regen and fires, and the drive spool. The GM drives it on one screen (a TV, or screen-share on a call), and players call out their actions. Dice auto-roll, or type in what the players rolled at the table.
+`combat/` is a 3D ship-combat engine that runs the GM partition's "Ship combat: stations" rules: helm contest, range bands (Close / Medium / Long, measured from real positions), shields then hull, the d6 crit table, upkeep regen and fires, and the drive spool. The GM drives it on one screen (a TV, or screen-share on a call), and players call out their actions. Dice auto-roll, or type in what the players rolled at the table.
 
-- **Ships:** add them from presets in the Fleet tab, or build your own (Custom…). Campaign presets live in `gm/ships.js`.
+- **Ships:** add them from templates in the Fleet tab (raiders, mining-droid swarms, jet ravagers, warships, allies, faction ships), or build your own (Custom…). Generic templates live in `combat/templates.js`, campaign ones in `gm/ships.js`.
+- **Positions:** every ship has a real position, altitude and speed. Range bands come from measured distance, ships fly standing orders (close, board, hold at Long, circle, escort, waypoint, run) at upkeep, and the plot shows flight trails, altitude stalks, each ship's planned move and live range lines.
+- **Battlefields and hazards:** the Field tab picks a battlefield (deep space, a star, binary stars, a nebula, a black hole, an asteroid belt… plus every system on the chart) and places its hazards: drifting asteroids, wrecks, debris, mines, explosives, nebulae, ion storms, gravity wells, currents and the null zone. Some battlefields roll events each round (flares, surges, falling rocks).
 - **Saving:** the current fight stays in your browser between visits. Use **Save file** / **Load file** to keep encounters or move them to another computer.
 - **Live player view:** press **Go live** and players open the link (or `combat/?watch=CODE`) on their own phones and laptops. They watch the 3D plot, each ship's hull and shields, and the log update as you play. Only your browser can change the fight. By default, players don't see hostile ships' AC, bonuses, weapons or exact hull. This needs a free Firebase project, set up once (below).
 - **3D:** loads three.js from a CDN. Offline, the plot is hidden but the combat panel still works.

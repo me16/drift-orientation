@@ -369,6 +369,7 @@ code{font-family:var(--f-data);color:var(--teal)}
   <div class="panel">
    <h4>Range bands</h4>
    <p><strong>Long:</strong> missiles, lasers at disadvantage. <strong>Medium:</strong> lasers and missiles. <strong>Close:</strong> lasers, harpoons, boarding, spells. No missiles at Close.</p>
+   <p class="dim">On the tactical plot, range is measured: Close under 10 units, Medium under 20, Long under 32. Beyond 32 nothing reaches. A helm win that shifts range moves the winner's ship to the middle of the next band (6, 15 or 26 units).</p>
    <h4>Escape by drive spool</h4>
    <p>3 successes before 3 failures (Int + tinker's tools, DC 13). Not at Close. Fail by 5+: roll a crit on your own ship.</p>
    <h4>At 0 hull</h4>
@@ -444,7 +445,35 @@ code{font-family:var(--f-data);color:var(--teal)}
   <div class="stat"><h4>Benediction</h4><div class="sub">Wandering Choir corsair</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 20 · <b>Shields</b> 5 (+5/rd) · <b>Pilot</b> +4</div><div class="line"><b>Lasers</b> +5 2d8 · <b>Harpoon</b> +5, Close: tethered, boarders next round (break DC 14 or cut: AC 12, 10 HP).</div></div>
   <div class="stat"><h4>Due Diligence</h4><div class="sub">Sable corvette. Don't fight it.</div><div class="line"><b>AC</b> 16 · <b>Hull</b> 60 · <b>Shields</b> 20 (+10/rd) · <b>Pilot</b> +6 · faster</div><div class="line"><b>Railgun</b> +7 4d10, twice per round at Close · point defense: missiles at disadvantage.</div></div>
  </div>
- <p class="dim" style="margin-top:14px"><a href="../combat/">Open the tactical plot</a>: a 3D engine that runs these rules (helm, stations, upkeep, crits). Players can act from their own phones at the station you give them. Campaign ship presets are in <code>gm/ships.js</code>. The session-1 run sheet and live combat tracker are in the Library (type: tool).</p>
+ <h3>Positioning, swarms and hazards (the tactical plot)</h3>
+ <div class="grid">
+  <div class="panel">
+   <h4>Movement</h4>
+   <p>Every ship has a position, an altitude and a speed (units per round), and flies a standing order at upkeep: hold, close on a target, close to board, ram, hold at a band, circle, escort, fly to a waypoint, or run. Hostiles start with their template's order; the GM can change any order or drag a ship to a new spot. A reactor scram halves speed. Disabled ships drift. Ships steer around rocks they can see coming.</p>
+   <p>Line of fire: a solid hazard (asteroid, wreck, station) between shooter and target gives disadvantage. Explosives, flares and the plot's own range readout all use the same distances.</p>
+   <h4>Swarms</h4>
+   <p>Several small units share one hull (drone swarms, jet ravagers, fighter wings); each lost share is one unit gone. Weapons marked <em>per</em> roll once per unit still flying. Area weapons do double damage to them. No crits, no helm contest: they just fly their order.</p>
+   <h4>Boarders</h4>
+   <p>A hit from a <em>board</em> weapon puts a squad aboard (a swarm spends a unit doing it). Each squad does 1d6 hull at upkeep, ignoring shields, until the crew repels it on the deck.</p>
+  </div>
+  <div class="panel">
+   <h4>Hazards</h4>
+   <ul>
+    <li><strong>Asteroid, wreck, structure:</strong> block fire; hitting one does 2d10 / 2d8 / 4d10. Some drift.</li>
+    <li><strong>Debris field:</strong> +2 AC inside; moving through it does 1d6.</li>
+    <li><strong>Mine:</strong> goes off when a ship ends within 3 units or when shot (AC 12, 4 HP): 4d6 within 8.</li>
+    <li><strong>Explosives:</strong> fuel, charges, ordnance. Shot (AC 10, 8 HP): 5d6 within 9. Chains.</li>
+    <li><strong>Nebula:</strong> beyond Close, fire into or out of it at disadvantage.</li>
+    <li><strong>Ion storm:</strong> no shield regen, −1d6 shields each upkeep. <strong>Heat:</strong> 1d6 each upkeep.</li>
+    <li><strong>Gravity well:</strong> pulls up to 5 units a round, harder near the core; the core does 4d10.</li>
+    <li><strong>Current:</strong> carries ships along its flow. <strong>Null zone:</strong> no shields, no engineering, no thrust; ships coast.</li>
+   </ul>
+   <h4>Traits and weapon options</h4>
+   <p><em>armor:N</em> hull damage −N a hit · <em>small</em> heavy weapons at disadvantage · <em>stealth</em> beyond Close, disadvantage unless scanned · <em>volatile</em> explodes when disabled (8 units) · <em>repair:N</em> friends within Close regain N hull at upkeep · <em>screen</em> missiles at friends within 6 units at disadvantage. Weapons: <em>heavy</em>, <em>area</em>, <em>ion</em> (double, shields only), <em>pierce</em> (ignores shields), <em>ram</em> (a ship takes half back; a swarm spends a unit).</p>
+   <p class="dim">Battlefields (Field tab) cover every system on the chart plus generic ones. Some roll an event each upkeep: flares that hit anyone not sheltered behind rock, surges, falling rocks.</p>
+  </div>
+ </div>
+ <p class="dim" style="margin-top:14px"><a href="../combat/">Open the tactical plot</a>: a 3D engine that runs these rules (helm, stations, upkeep, crits) with positions, movement, hazards and a battlefield for every system. Players can act from their own phones at the station you give them. Campaign ship presets are in <code>gm/ships.js</code>. The session-1 run sheet and live combat tracker are in the Library (type: tool).</p>
 </section>
 
 <!-- ============================ LIBRARY ============================ -->
