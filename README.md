@@ -49,10 +49,10 @@ firebase login
 ```
 
 ```bash
-firebase deploy --only hosting --project <your-firebase-project-id>
+firebase deploy --only hosting
 ```
 
-Create the project at console.firebase.google.com first (the free Spark plan is enough).
+`.firebaserc` points at the `drift-combat` project. If Firebase gave your project a different ID (check Project settings), change it there.
 
 ## Setting up the live player view (once)
 
