@@ -104,7 +104,17 @@ dialog h2{margin:0;font:400 13px var(--f-disp);letter-spacing:.16em;text-transfo
 .help{font:400 11.5px/1.5 var(--f-data);color:var(--faint);margin:0}
 .help code{color:var(--dim)}
 
+.livetag{display:inline-flex;align-items:center;gap:7px;font:400 11px var(--f-data);letter-spacing:.14em;color:var(--haz);border:1px solid var(--haz);padding:5px 9px;text-transform:uppercase}
+.livetag i{width:7px;height:7px;border-radius:50%;background:var(--haz);box-shadow:0 0 8px var(--haz);animation:blink 1.6s infinite}
+.livetag.wait{color:var(--amber);border-color:var(--amber)}.livetag.wait i{background:var(--amber);box-shadow:none;animation:none}
+@keyframes blink{50%{opacity:.25}}
+.code{font:400 30px var(--f-disp);letter-spacing:.3em;color:var(--teal);margin:2px 0 10px}
+ol.note{padding-left:20px}ol.note li{margin-bottom:4px}
+code{font-family:var(--f-data);color:var(--fg)}
+body.watch .gm-only{display:none!important}
+body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
 @media (max-width:860px){
+  body.watch aside{grid-template-rows:auto 260px}
   html,body{height:auto}
   body{overflow:auto;display:block}
   main{grid-template-columns:1fr;grid-template-rows:56vh auto}
@@ -118,9 +128,11 @@ dialog h2{margin:0;font:400 13px var(--f-disp);letter-spacing:.16em;text-transfo
 <body>
 <header class="bar">
  <span class="brand">Drift · Tactical plot</span>
- <button class="btn" id="newBtn" type="button" title="Clear the board and start a new encounter">New encounter</button>
- <button class="btn" id="exportBtn" type="button" title="Download this encounter as a file">Save file</button>
- <button class="btn" id="importBtn" type="button" title="Load an encounter file">Load file</button>
+ <span class="livetag" id="liveTag" hidden><i></i><span></span></span>
+ <button class="btn gm-only" id="liveBtn" type="button" title="Let players watch this fight live on their own devices">Go live</button>
+ <button class="btn gm-only" id="newBtn" type="button" title="Clear the board and start a new encounter">New encounter</button>
+ <button class="btn gm-only" id="exportBtn" type="button" title="Download this encounter as a file">Save file</button>
+ <button class="btn gm-only" id="importBtn" type="button" title="Load an encounter file">Load file</button>
  <input type="file" id="importFile" accept=".json,application/json" hidden>
 </header>
 <main>
@@ -128,13 +140,13 @@ dialog h2{margin:0;font:400 13px var(--f-disp);letter-spacing:.16em;text-transfo
   <div class="hud">
    <span class="round" id="hudRound">Round 1</span>
    <span class="phase" id="hudPhase"><span data-p="helm">Helm</span><span data-p="stations">Stations</span><span data-p="upkeep">Upkeep</span></span>
-   <button class="btn pri" id="nextBtn" type="button">Next phase ▸</button>
+   <button class="btn pri gm-only" id="nextBtn" type="button">Next phase ▸</button>
    <button class="btn" id="viewBtn" type="button" title="Reset the camera">View</button>
   </div>
-  <div class="hint">Drag to orbit · scroll or pinch to zoom · click a ship to pick it</div>
+  <div class="hint gm-only">Drag to orbit · scroll or pinch to zoom · click a ship to pick it</div>
  </div>
  <aside>
-  <div class="tabs" role="tablist">
+  <div class="tabs gm-only" role="tablist">
    <button role="tab" data-tab="helm">Helm</button>
    <button role="tab" data-tab="stations">Stations</button>
    <button role="tab" data-tab="fleet">Fleet</button>
@@ -171,8 +183,18 @@ dialog h2{margin:0;font:400 13px var(--f-disp);letter-spacing:.16em;text-transfo
  </form>
 </dialog>
 
+<dialog id="liveDlg">
+ <form method="dialog">
+  <h2>Live player view</h2>
+  <div id="liveBody"></div>
+  <div class="row spread"><span></span><button class="btn" value="close" type="submit">Close</button></div>
+ </form>
+</dialog>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<!-- Firebase settings for the live player view (window.LIVE_CONFIG). -->
+<script src="live-config.js"></script>
 <!-- Optional campaign presets (window.GM_SHIPS). Lives in the GM partition; missing file is fine. -->
 <script src="../gm/ships.js" onerror="void 0"></script>
 <script>
@@ -258,11 +280,15 @@ function weaponLine(w){
 
 /* ============================== state ============================== */
 const KEY="drift-tactical-v1";
+// ?watch=CODE turns this page into a read-only player view of a live room.
+const PARAMS=new URLSearchParams(location.search);
+const WATCH=PARAMS.has("watch");
+const ROOM_IN=(PARAMS.get("watch")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
 let S;
 const UI={tab:"helm",att:null,wpn:0,tgt:null,bonus:"",nat:"",over:false,scan:false,jam:false,adv:"auto",eng:null,helmIn:{}};
 function blank(){return {v:1,nid:1,round:1,phase:"helm",ships:[],helm:{},spool:{s:0,f:0},log:[]}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&Array.isArray(j.ships))return Object.assign(blank(),j)}catch(e){}return null}
+function save(){if(WATCH)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&Array.isArray(j.ships))return sanitizeState(j)}catch(e){}return null}
 
 const ship=id=>S.ships.find(s=>s.id===id);
 const team=s=>s.side==="enemy"?"enemy":"party";
@@ -282,7 +308,51 @@ function makeShip(p){
   s.hull=s.maxHull;s.sh=s.maxSh;
   return s;
 }
-function log(html,cls=""){S.log.push({r:S.round,h:html,c:cls});if(S.log.length>200)S.log.splice(0,S.log.length-200)}
+// pub: the version players see when hostile stats are hidden (omit when it's the same).
+function log(html,cls="",pub){const e={r:S.round,h:html,c:cls};if(pub!=null&&pub!==html)e.p=pub;S.log.push(e);if(S.log.length>200)S.log.splice(0,S.log.length-200)}
+const forFoe=(s,pub)=>s.side==="enemy"?pub:undefined;
+// Files and live data come from outside: coerce everything to known shapes.
+const num=(v,d=0,lo=-1e6,hi=1e6)=>{v=Number(v);return Number.isFinite(v)?clamp(Math.round(v),lo,hi):d};
+const arr=v=>Array.isArray(v)?v:v&&typeof v==="object"?Object.values(v):[];
+const bandStr=v=>String(v||"").toUpperCase().replace(/[^CML]/g,"");
+function cleanShip(s){
+  const o={id:num(s.id,0,0),name:String(s.name||"Ship").slice(0,40),side:SIDES[s.side]?s.side:"enemy",model:MODELS.includes(s.model)?s.model:"corvette",
+    ac:num(s.ac,12,0,99),maxHull:num(s.maxHull,30,1,99999),maxSh:num(s.maxSh,0,0,99999),regen:num(s.regen,0,0,9999),pilot:num(s.pilot,0,-50,50),pd:!!s.pd,
+    weapons:arr(s.weapons).filter(w=>w&&typeof w==="object").map(w=>({name:String(w.name||"Weapon").slice(0,48),atk:num(w.atk,0,-50,50),
+      dmg:String(w.dmg||"0").replace(/[^0-9dD+-]/g,"").slice(0,24)||"0",bands:bandStr(w.bands)||"CML",dis:bandStr(w.dis),missile:!!w.missile,helm:!!w.helm,
+      ammo:w.ammo==null?null:num(w.ammo,0,0,9999),note:String(w.note||"").slice(0,160)})),
+    band:BANDS.includes(s.band)?s.band:"M",angle:Number.isFinite(+s.angle)?+s.angle:0,crits:arr(s.crits).filter(k=>CRIT_BY[k]),
+    status:["ok","disabled","escaped"].includes(s.status)?s.status:"ok",halfCrit:!!s.halfCrit,brace:!!s.brace};
+  o.hull=num(s.hull,o.maxHull,0,o.maxHull);o.sh=num(s.sh,o.maxSh,0,o.maxSh);
+  return o;
+}
+function sanitizeState(j){
+  const o=blank();j=j&&typeof j==="object"?j:{};
+  o.round=num(j.round,1,1);o.phase=j.phase==="stations"?"stations":"helm";
+  const seen=new Set();
+  o.ships=arr(j.ships).filter(x=>x&&typeof x==="object").map(cleanShip).map(s=>{if(!s.id||seen.has(s.id))s.id=0;else seen.add(s.id);return s});
+  let next=Math.max(num(j.nid,1,1),...o.ships.map(s=>s.id+1));for(const s of o.ships)if(!s.id){s.id=next++}o.nid=next;
+  for(const [k,h] of Object.entries(j.helm&&typeof j.helm==="object"?j.helm:{})){
+    if(!h||!o.ships.some(s=>String(s.id)===k))continue;
+    o.helm[k]={p:num(h.p),q:num(h.q),winner:["party","enemy","tie"].includes(h.winner)?h.winner:"tie",effect:HELM_FX[h.effect]?h.effect:null,
+      prev:BANDS.includes(h.prev)?h.prev:null,brace:!!h.brace};
+  }
+  o.spool={s:num(j.spool&&j.spool.s,0,0,3),f:num(j.spool&&j.spool.f,0,0,3)};
+  o.log=arr(j.log).filter(e=>e&&typeof e==="object").slice(-200).map(e=>{const x={r:num(e.r,1,1),h:String(e.h||"").slice(0,2000),c:/^[a-z]{0,8}$/.test(e.c)?e.c:""};if(e.p!=null)x.p=String(e.p).slice(0,2000);return x});
+  return o;
+}
+// Log lines are stored as HTML. Keep only text and <b> with a palette color.
+function safeHtml(h){
+  const t=document.createElement("template");t.innerHTML=String(h);
+  const walk=n=>[...n.childNodes].map(c=>{
+    if(c.nodeType===3)return esc(c.textContent);
+    if(c.nodeType!==1)return "";
+    const inner=walk(c);
+    if(c.tagName==="B"){const m=/^color:\s*var\(--[a-z]+\)$/.exec(c.getAttribute("style")||"");return `<b${m?` style="${m[0]}"`:""}>${inner}</b>`}
+    return inner;
+  }).join("");
+  return walk(t.content);
+}
 function nm(s){return `<b style="color:${SIDES[s.side].css}">${esc(s.name)}</b>`}
 
 /* ============================== rules engine ============================== */
@@ -292,7 +362,8 @@ function applyDamage(t,dmg,{nat20=false,bypassShields=false}={}){
   if(!bypassShields){absorbed=Math.min(t.sh,dmg);t.sh-=absorbed}
   const hullDmg=Math.min(t.hull,dmg-absorbed);t.hull-=hullDmg;
   const parts=[];if(absorbed)parts.push(`shields −${absorbed}`);if(hullDmg)parts.push(`hull −${hullDmg}`);
-  log(`${nm(t)}: ${parts.join(", ")||"no damage"} (hull ${t.hull}/${t.maxHull}, shields ${t.sh}/${t.maxSh}).`,"hit");
+  log(`${nm(t)}: ${parts.join(", ")||"no damage"} (hull ${t.hull}/${t.maxHull}, shields ${t.sh}/${t.maxSh}).`,"hit",
+    forFoe(t,`${nm(t)}: ${[absorbed&&"shields hit",hullDmg&&"hull hit"].filter(Boolean).join(", ")||"no damage"}.`));
   if(t.hull<=0&&t.status==="ok"){
     t.status="disabled";
     log(`${nm(t)} is <b>disabled</b>.${t.side!=="enemy"?" One hour of emergency life support.":""}`,"dead");
@@ -343,7 +414,10 @@ function fire(){
   const hit=r.nat===20||(r.nat!==1&&total>=ac);
   if(w.ammo!=null)w.ammo--;
   const tag=m.mode==="adv"?" with advantage":m.mode==="dis"?" with disadvantage":"";
-  log(`${nm(a)} fires <b>${esc(w.name)}</b> at ${nm(t)}${tag}: ${r.text}${sgn(bonus)} = <b>${total}</b> vs AC ${ac}${t.brace?" (braced)":""}. ${r.nat===20?"<b>Natural 20!</b>":r.nat===1?"Natural 1.":""} ${hit?"Hit.":"Miss."}`,hit?"hit":"miss");
+  const natTxt=r.nat===20?"<b>Natural 20!</b> ":r.nat===1?"Natural 1. ":"";
+  log(`${nm(a)} fires <b>${esc(w.name)}</b> at ${nm(t)}${tag}: ${r.text}${sgn(bonus)} = <b>${total}</b> vs AC ${ac}${t.brace?" (braced)":""}. ${natTxt}${hit?"Hit.":"Miss."}`,hit?"hit":"miss",
+    a.side==="enemy"?`${nm(a)} fires <b>${esc(w.name)}</b> at ${nm(t)}${tag}. ${natTxt}${hit?"Hit.":"Miss."}`
+    :t.side==="enemy"?`${nm(a)} fires <b>${esc(w.name)}</b> at ${nm(t)}${tag}: ${r.text}${sgn(bonus)} = <b>${total}</b>. ${natTxt}${hit?"Hit.":"Miss."}`:undefined);
   let res=null;
   if(hit){
     let dmg=roll(w.dmg);let total=dmg.total;const extra=[];
@@ -366,7 +440,8 @@ function resolveHelm(e){
   const winner=p>q?"party":q>p?"enemy":"tie";
   S.helm[e.id]={p,q,winner,effect:null,prev:null,brace:false};
   UI.helmIn[e.id]={};
-  log(`Helm vs ${nm(e)}: ${nm(f)} ${pr.text}${Number.isFinite(inP)?"":sgn(f.pilot)} = <b>${p}</b>, ${nm(e)} ${er.text}${Number.isFinite(inE)?"":sgn(e.pilot)} = <b>${q}</b>. ${winner==="tie"?"Tie: no effect.":`${winner==="party"?nm(f):nm(e)} wins the helm.`}`,"sys");
+  log(`Helm vs ${nm(e)}: ${nm(f)} ${pr.text}${Number.isFinite(inP)?"":sgn(f.pilot)} = <b>${p}</b>, ${nm(e)} ${er.text}${Number.isFinite(inE)?"":sgn(e.pilot)} = <b>${q}</b>. ${winner==="tie"?"Tie: no effect.":`${winner==="party"?nm(f):nm(e)} wins the helm.`}`,"sys",
+    `Helm vs ${nm(e)}: ${nm(f)} <b>${p}</b>, ${nm(e)} <b>${q}</b>. ${winner==="tie"?"Tie: no effect.":`${winner==="party"?nm(f):nm(e)} wins the helm.`}`);
   commit();
 }
 function helmEffect(e,fx){
@@ -399,7 +474,7 @@ function upkeep(){
     if(!live(s))continue;
     if(s.regen&&s.sh<s.maxSh){
       if(s.crits.includes("reactor"))log(`${nm(s)}: reactor scram, no shield regen.`,"miss");
-      else{const g=Math.min(s.regen,s.maxSh-s.sh);s.sh+=g;log(`${nm(s)}: shields +${g} (${s.sh}/${s.maxSh}).`,"sys")}
+      else{const g=Math.min(s.regen,s.maxSh-s.sh);s.sh+=g;log(`${nm(s)}: shields +${g} (${s.sh}/${s.maxSh}).`,"sys",forFoe(s,`${nm(s)}: shields regenerate.`))}
     }
     const fires=s.crits.filter(k=>k==="fire").length;
     for(let i=0;i<fires;i++){const r=roll("1d6");log(`${nm(s)}: fire burns, ${r.text} = ${r.total}.`,"crit");applyDamage(s,r.total,{bypassShields:true})}
@@ -533,22 +608,49 @@ function renderFleet(){
   h+=`<h3>Encounter</h3><div class="row"><button class="btn sm" data-act="refit">Full refit (all ships)</button><button class="btn sm" data-act="clearlog">Clear log</button></div>`;
   return h;
 }
+function renderWatch(){
+  if(!ROOM_IN)return `<h3>Join a live fight</h3><p class="note">Enter the room code your GM gave you.</p>
+    <form class="row" id="joinForm"><input type="text" name="code" maxlength="6" placeholder="ABC123" autocomplete="off" style="flex:1;text-transform:uppercase"><button class="btn pri">Watch</button></form>`;
+  const L=Live.state();
+  const msg={connecting:"Connecting…",live:"Watching live. The GM runs the fight; this screen follows along.",reconnecting:"Connection lost. Reconnecting…",
+    ended:"The GM ended this live session.",error:L.err||"Couldn't connect."}[L.status]||"";
+  let h=`<h3>Room ${esc(ROOM_IN)} · round ${S.round}</h3><p class="note"${L.status==="error"||L.status==="ended"?' style="color:var(--haz)"':""}>${esc(msg)}</p>`;
+  const f=flagship();
+  const helm=Object.entries(S.helm).map(([id,r])=>{const e=ship(+id);if(!e||!f)return "";
+    const who=r.winner==="party"?f:r.winner==="enemy"?e:null;
+    return `<div class="mods">Helm vs ${nm(e)}: ${who?`${nm(who)} wins${r.effect?`, ${esc(HELM_FX[r.effect].split(" (")[0].toLowerCase())}`:""}`:"tie"}${r.brace?", loser braces":""}.</div>`}).join("");
+  if(helm)h+=`<div class="box">${helm}</div>`;
+  for(const s of S.ships){
+    const hidden=S.hide&&s.side==="enemy";
+    h+=`<div class="box ${s.status!=="ok"?"status-dis":""}" style="--c:${SIDES[s.side].css}">
+     <div class="row spread"><span><span class="name">${esc(s.name)}</span> <span class="side" style="--c:${SIDES[s.side].css}">${SIDES[s.side].label}</span></span>${statusChip(s)}</div>
+     ${hidden?"":`<div class="stats">AC <b>${s.ac}</b>${s.brace?" (+2)":""} · Hull <b>${s.hull}/${s.maxHull}</b> · Shields <b>${s.sh}/${s.maxSh}</b></div>`}
+     <div style="max-width:220px">${meters(s)}</div>
+     <div class="row">${s.side==="enemy"&&s.status!=="escaped"?`<span class="chip" style="--c:var(--amber)">${BAND_NAME[s.band]}</span>`:""}${hidden&&s.brace?`<span class="chip" style="--c:var(--ally)">Braced</span>`:""}
+      ${s.crits.map(k=>`<span class="chip" style="--c:var(--amber)">${CRIT_BY[k].name}</span>`).join("")}</div></div>`;
+  }
+  if(!S.ships.length&&L.status==="live")h+=`<p class="note">No ships on the plot yet.</p>`;
+  return h;
+}
 function render(){
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===UI.tab)));
   const pane=$("#pane");const sc=pane.scrollTop;
-  pane.innerHTML=UI.tab==="helm"?renderHelm():UI.tab==="stations"?renderStations():renderFleet();
+  pane.innerHTML=WATCH?renderWatch():UI.tab==="helm"?renderHelm():UI.tab==="stations"?renderStations():renderFleet();
   pane.scrollTop=sc;
   $("#hudRound").textContent=`Round ${S.round}`;
   document.querySelectorAll("#hudPhase span").forEach(s=>s.classList.toggle("cur",s.dataset.p===S.phase));
   $("#nextBtn").textContent=S.phase==="helm"?"To stations ▸":"Upkeep & next round ▸";
   const lg=$("#log");
-  lg.innerHTML=S.log.slice().reverse().map(e=>`<p class="${e.c}"><span class="r">R${e.r}</span> ${e.h}</p>`).join("")||`<p class="r">Combat log is empty.</p>`;
+  lg.innerHTML=S.log.slice().reverse().map(e=>`<p class="${esc(e.c)}"><span class="r">R${e.r}</span> ${safeHtml(e.h)}</p>`).join("")||`<p class="r">Combat log is empty.</p>`;
   FX.labels();
+  if(!WATCH)Live.push();
 }
 
 /* events */
 document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("button[data-tab]");if(b){UI.tab=b.dataset.tab;render()}});
 $("#nextBtn").addEventListener("click",nextPhase);
+$("#pane").addEventListener("submit",e=>{if(e.target.id!=="joinForm")return;e.preventDefault();
+  const c=e.target.code.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);if(c)location.search="?watch="+c});
 $("#pane").addEventListener("input",e=>{
   const t=e.target;
   if(t.dataset.hin){const [id,k]=t.dataset.hin.split(":");(UI.helmIn[id]=UI.helmIn[id]||{})[k]=t.value;return}
@@ -574,12 +676,12 @@ $("#pane").addEventListener("click",e=>{
     case "hundo":undoHelm(s);break;
     case "brace":brace(s);break;
     case "fire":fire();break;
-    case "shields":{const g=Math.min(5,s.maxSh-s.sh);s.sh+=g;log(`${nm(s)}: engineer reroutes power, shields +${g}.`,"sys");commit();break}
-    case "dc":{const r=roll("1d6");const g=Math.min(r.total,s.maxHull-s.hull);s.hull+=g;if(s.hull>0&&s.status==="disabled")s.status="ok";log(`${nm(s)}: damage control, ${r.text}, hull +${g}.`,"sys");commit();break}
+    case "shields":{const g=Math.min(5,s.maxSh-s.sh);s.sh+=g;log(`${nm(s)}: engineer reroutes power, shields +${g}.`,"sys",forFoe(s,`${nm(s)}: engineer reroutes power to shields.`));commit();break}
+    case "dc":{const r=roll("1d6");const g=Math.min(r.total,s.maxHull-s.hull);s.hull+=g;if(s.hull>0&&s.status==="disabled")s.status="ok";log(`${nm(s)}: damage control, ${r.text}, hull +${g}.`,"sys",forFoe(s,`${nm(s)}: damage control.`));commit();break}
     case "crit":rollCrit(s);commit();break;
     case "fix":{const k=s.crits.splice(+b.dataset.i,1)[0];log(`${nm(s)}: ${CRIT_BY[k].name} fixed.`,"sys");commit();break}
     case "dmg":case "heal":{const n=parseInt($("#adjN").value,10);if(!(n>0))return;
-      if(b.dataset.act==="dmg")applyDamage(s,n);else{const g=Math.min(n,s.maxHull-s.hull);s.hull+=g;if(s.hull>0&&s.status==="disabled")s.status="ok";log(`${nm(s)}: hull +${g}.`,"sys")}
+      if(b.dataset.act==="dmg")applyDamage(s,n);else{const g=Math.min(n,s.maxHull-s.hull);s.hull+=g;if(s.hull>0&&s.status==="disabled")s.status="ok";log(`${nm(s)}: hull +${g}.`,"sys",forFoe(s,`${nm(s)}: repairs.`))}
       commit();break}
     case "spool":{const k=b.dataset.k;if(k==="x")S.spool={s:0,f:0};else{S.spool[k]=Math.min(3,S.spool[k]+1);
       if(S.spool.s>=3){log(`Drive spooled. ${flagship()?nm(flagship()):"The party"} jumps clear.`,"sys");const f=flagship();if(f)f.status="escaped";S.spool={s:0,f:0}}
@@ -631,7 +733,7 @@ $("#exportBtn").addEventListener("click",()=>{
 $("#importBtn").addEventListener("click",()=>$("#importFile").click());
 $("#importFile").addEventListener("change",async e=>{
   const file=e.target.files[0];e.target.value="";if(!file)return;
-  try{const j=JSON.parse(await file.text());if(!Array.isArray(j.ships))throw 0;S=Object.assign(blank(),j);FX.reset();log(`Loaded ${esc(file.name)}.`,"sys");commit()}
+  try{const j=JSON.parse(await file.text());if(!Array.isArray(j.ships))throw 0;S=sanitizeState(j);FX.reset();log(`Loaded ${esc(file.name)}.`,"sys");commit()}
   catch(err){alert("That file isn't a tactical-plot save.")}
 });
 $("#newBtn").addEventListener("click",()=>{
@@ -831,7 +933,7 @@ const FX=(()=>{
   const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();let down=null;
   renderer.domElement.addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY]});
   renderer.domElement.addEventListener("pointerup",e=>{
-    if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;down=null;
+    if(WATCH||!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;down=null;
     const r=renderer.domElement.getBoundingClientRect();ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);
     ray.setFromCamera(ptr,cam);const roots=[...meshes.values()].map(m=>m.model);
     const hit=ray.intersectObjects(roots,true)[0];if(!hit)return;
@@ -872,9 +974,9 @@ const FX=(()=>{
       m.root.visible=s.status!=="escaped"||m.root.position.length()<70;
       if(m.root.visible)place(m.label,m.root.position,m.model.userData.size*.75+.6);else m.label.style.display="none";
     }
-    const sel=meshes.get(UI.tab==="stations"?UI.att:null);
+    const sel=meshes.get(WATCH||UI.tab==="stations"?UI.att:null);
     selRing.visible=!!sel;if(sel){selRing.position.copy(sel.root.position);selRing.position.y-=.6;selRing.scale.setScalar(sel.model.userData.size*.9);selRing.rotation.z=t*.5}
-    const tg=meshes.get(UI.tab==="stations"?UI.tgt:null);
+    const tg=meshes.get(WATCH||UI.tab==="stations"?UI.tgt:null);
     tgtRing.visible=!!tg&&tg!==sel;if(tg){tgtRing.position.copy(tg.root.position);tgtRing.position.y-=.6;tgtRing.scale.setScalar(tg.model.userData.size*(1+.06*Math.sin(t*6)));tgtRing.rotation.z=-t}
     for(let i=effects.length-1;i>=0;i--){const e=effects[i];e.t+=dt;const k=Math.min(1,e.t/e.life);e.update(k);
       if(k>=1){scene.remove(e.obj);e.obj.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()});effects.splice(i,1);if(e.done)e.done()}}
@@ -886,15 +988,189 @@ const FX=(()=>{
   return {sync,labels,shot,boom,reset};
 })();
 
+/* ============================== live (Firebase) ==============================
+   The GM page publishes a player-safe copy of the fight to Firebase Realtime Database
+   over its REST API; player pages (?watch=CODE) follow it with a server-sent-event stream.
+   Auth is anonymous: the GM's browser gets a uid, and database.rules.json lets only the
+   uid that created a room write to it. Anyone with the room code can read it. */
+const Live=(()=>{
+  const C=window.LIVE_CONFIG||{};
+  const base=String(C.databaseURL||"").replace(/\/+$/,"");
+  const configured=!!(C.apiKey&&/^https?:\/\//.test(base));
+  const LKEY="drift-tactical-live";
+  let st={};try{st=JSON.parse(localStorage.getItem(LKEY))||{}}catch(e){}
+  if(st.hide==null)st.hide=true;
+  const persist=()=>{if(WATCH)return;try{localStorage.setItem(LKEY,JSON.stringify(st))}catch(e){}};
+  let status=WATCH?"connecting":"off",err="",idToken=null,exp=0,timer=null,busy=false,again=false,slot=0,seq=0;
+  const AB="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const newCode=()=>Array.from({length:6},()=>AB[die(AB.length)-1]).join("");
+
+  async function token(){
+    if(idToken&&Date.now()<exp-60000)return idToken;
+    const key=encodeURIComponent(C.apiKey);
+    if(st.refresh){
+      const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${key}`,{method:"POST",
+        headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(st.refresh)});
+      if(r.ok){const j=await r.json();idToken=j.id_token;st.refresh=j.refresh_token;st.uid=j.user_id;exp=Date.now()+1000*(+j.expires_in||3600);persist();return idToken}
+    }
+    const r=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`,{method:"POST",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify({returnSecureToken:true})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){const m=(j.error&&j.error.message)||`HTTP ${r.status}`;
+      throw new Error(/ADMIN_ONLY|OPERATION_NOT_ALLOWED/.test(m)?"Anonymous sign-in is off. Turn it on in Firebase: Authentication → Sign-in method → Anonymous.":`Sign-in failed: ${m}`)}
+    idToken=j.idToken;st.refresh=j.refreshToken;st.uid=j.localId;exp=Date.now()+1000*(+j.expiresIn||3600);persist();return idToken;
+  }
+  async function req(method,path,body){
+    const t=await token();
+    const r=await fetch(`${base}/rooms/${st.room}${path}.json?auth=${encodeURIComponent(t)}`,{method,body:body===undefined?undefined:JSON.stringify(body)});
+    if(!r.ok){const j=await r.json().catch(()=>({}));const e=new Error(j.error||`HTTP ${r.status}`);e.code=r.status;throw e}
+  }
+  function publicState(){
+    const hide=!!st.hide;
+    return {round:S.round,phase:S.phase,hide,nid:S.nid,
+      focus:{att:UI.tab==="stations"?UI.att:0,tgt:UI.tab==="stations"?UI.tgt:0},
+      ships:S.ships.map(s=>{
+        const o={id:s.id,name:s.name,side:s.side,model:s.model,band:s.band,angle:s.angle,status:s.status,brace:s.brace,crits:s.crits,
+          ac:s.ac,hull:s.hull,maxHull:s.maxHull,sh:s.sh,maxSh:s.maxSh,regen:s.regen,pilot:s.pilot,pd:s.pd,weapons:s.weapons};
+        if(hide&&s.side==="enemy")Object.assign(o,{ac:0,pilot:0,regen:0,pd:false,weapons:[],maxHull:100,hull:Math.ceil(100*s.hull/s.maxHull),
+          maxSh:s.maxSh?100:0,sh:s.maxSh?Math.ceil(100*s.sh/s.maxSh):0});
+        return o}),
+      helm:Object.fromEntries(Object.entries(S.helm).map(([k,h])=>[k,{winner:h.winner,effect:h.effect||"",brace:!!h.brace,p:h.p,q:h.q}])),
+      log:S.log.slice(-60).map(e=>({r:e.r,c:e.c,h:hide&&e.p!=null?e.p:e.h}))};
+  }
+  async function start(){
+    if(!configured)return;
+    status="connecting";err="";ui();
+    try{
+      await token();
+      if(!st.room)st.room=newCode();
+      const room=()=>({owner:st.uid,updated:{".sv":"timestamp"},state:publicState()});
+      try{await req("PUT","",room())}
+      catch(e){if(e.code===401||e.code===403||/permission/i.test(e.message)){st.room=newCode();await req("PUT","",room())}else throw e}
+      persist();status="live";
+    }catch(e){status="error";err=e.message||String(e)}
+    ui();
+  }
+  async function stop(){
+    const room=st.room;status="off";ui();
+    if(room){try{await req("DELETE","")}catch(e){}}
+    st.room=null;persist();ui();
+  }
+  function push(){if(status!=="live")return;clearTimeout(timer);timer=setTimeout(flush,150)}
+  async function flush(){
+    if(busy){again=true;return}busy=true;
+    try{await req("PATCH","",{state:publicState(),updated:{".sv":"timestamp"}})}
+    catch(e){status="error";err=`Lost the live room: ${e.message}`;ui()}
+    busy=false;if(again){again=false;flush()}
+  }
+  // Effects go in a 16-slot ring so players can replay each shot in order.
+  function emit(kind,data){
+    if(WATCH||status!=="live")return;
+    seq=Math.max(seq+1,Date.now());slot=(slot+1)%16;
+    req("PUT",`/fx/${slot}`,Object.assign({seq,kind},data)).catch(()=>{});
+  }
+
+  // ---- player side ----
+  let mirror=null,lastSeq=null;
+  function watch(code){
+    if(!configured){status="error";err="The live view isn't set up on this site yet.";render();return}
+    const es=new EventSource(`${base}/rooms/${code}.json`);
+    const apply=(raw,merge)=>{
+      let m;try{m=JSON.parse(raw)}catch(e){return}if(!m||typeof m.path!=="string")return;
+      const parts=m.path.split("/").filter(Boolean);
+      if(!parts.length){mirror=merge&&mirror?Object.assign(mirror,m.data):m.data}
+      else{
+        if(!mirror||typeof mirror!=="object")mirror={};
+        let o=mirror;for(const p of parts.slice(0,-1)){if(!o[p]||typeof o[p]!=="object")o[p]={};o=o[p]}
+        const k=parts[parts.length-1];
+        if(merge){o[k]=Object.assign(o[k]&&typeof o[k]==="object"?o[k]:{},m.data)}else if(m.data===null)delete o[k];else o[k]=m.data;
+      }
+      update();
+    };
+    es.addEventListener("put",e=>apply(e.data,false));
+    es.addEventListener("patch",e=>apply(e.data,true));
+    es.addEventListener("cancel",()=>{status="error";err="This room can't be read. Check the room code.";es.close();ui();render()});
+    es.onerror=()=>{if(status==="live"){status="reconnecting";ui();render()}};
+  }
+  function update(){
+    if(!mirror||typeof mirror!=="object"||!mirror.state){status=mirror?"live":"ended";ui();render();return}
+    status="live";
+    const j=mirror.state;S=sanitizeState(j);S.hide=!!j.hide;
+    const fc=j.focus||{};UI.att=num(fc.att,0);UI.tgt=num(fc.tgt,0);
+    FX.sync();ui();render();
+    const evs=arr(mirror.fx).filter(e=>e&&typeof e==="object").sort((a,b)=>num(a.seq,0,0,9e15)-num(b.seq,0,0,9e15));
+    const top=evs.length?num(evs[evs.length-1].seq,0,0,9e15):0;
+    if(lastSeq===null){lastSeq=top;return}                    // joining: don't replay old shots
+    for(const e of evs){const sq=num(e.seq,0,0,9e15);if(sq<=lastSeq)continue;lastSeq=sq;
+      if(e.kind==="shot")FX.shot(num(e.aid),num(e.tid),{name:String(e.name||""),missile:!!e.missile},!!e.hit,
+        e.res?{absorbed:num(e.res.absorbed,0,0),hullDmg:num(e.res.hullDmg,0,0)}:null);
+      else if(e.kind==="boom")FX.boom(num(e.id));
+    }
+  }
+
+  // ---- UI ----
+  const tag=$("#liveTag");
+  function ui(){
+    const room=WATCH?ROOM_IN:st.room;
+    const show=WATCH&&!!ROOM_IN;
+    tag.hidden=!show;
+    tag.classList.toggle("wait",status!=="live");
+    tag.lastElementChild.textContent=status==="live"?`Live · ${room}`:status==="error"?"Live: error":status==="ended"?"Ended":status==="reconnecting"?"Reconnecting":"Connecting";
+    tag.title=err;
+    const lb=$("#liveBtn");
+    lb.textContent=status==="live"?`● Live · ${st.room}`:status==="connecting"?"Connecting…":status==="error"?"Live: error":"Go live";
+    lb.classList.toggle("warn",status==="live"||status==="error");lb.title=err||"Let players watch this fight live on their own devices";
+    if($("#liveDlg").open)$("#liveBody").innerHTML=body();
+  }
+  function body(){
+    const hideChk=`<label class="chk"><input type="checkbox" data-live="hide"${st.hide?" checked":""}> Hide hostile AC, bonuses, weapons and exact hull from players</label>`;
+    if(!configured)return `<p class="note">The live view needs a free Firebase project. One-time setup:</p><ol class="note">
+      <li>At <a href="https://console.firebase.google.com" target="_blank" rel="noopener">console.firebase.google.com</a>, add a project (the free Spark plan is enough).</li>
+      <li><b>Authentication</b> → Get started → Sign-in method → turn on <b>Anonymous</b>.</li>
+      <li><b>Realtime Database</b> → Create database (start in locked mode). In its <b>Rules</b> tab, paste <code>database.rules.json</code> from this repo and publish.</li>
+      <li>Project settings → Your apps → add a <b>Web</b> app. Copy <code>apiKey</code> and <code>databaseURL</code> into <code>combat/live-config.js</code>, then commit and redeploy.</li></ol>`;
+    if(status==="live"){const link=`${location.origin}${location.pathname}?watch=${st.room}`;
+      return `<p class="note">You're live. Players open this link on their phone or laptop:</p><div class="code">${esc(st.room)}</div>
+        <div class="row"><input type="text" readonly value="${esc(link)}" id="liveLink"><button type="button" class="btn" data-live="copy">Copy</button></div>
+        <div class="row">${hideChk}</div><p class="note" style="margin-top:8px">They see the 3D plot, ship status and the log, live. Only this browser can change the fight.</p>
+        <div class="row"><button type="button" class="btn warn" data-live="stop">End live session</button></div>`}
+    if(status==="connecting")return `<p class="note">Connecting…</p>`;
+    return `${status==="error"?`<p class="note" style="color:var(--haz)">${esc(err)}</p>`:""}
+      <p class="note">Let players watch this fight on their own devices: the 3D plot, each ship's hull and shields, and the combat log. Only you can change anything.</p>
+      <div class="row">${hideChk}</div><div class="row"><button type="button" class="btn pri" data-live="start">Go live</button></div>`;
+  }
+  if(!WATCH){
+    $("#liveBtn").addEventListener("click",()=>{$("#liveBody").innerHTML=body();$("#liveDlg").showModal()});
+    $("#liveBody").addEventListener("click",e=>{
+      const b=e.target.closest("button[data-live]");if(!b)return;
+      if(b.dataset.live==="start")start();
+      if(b.dataset.live==="stop")stop();
+      if(b.dataset.live==="copy"){const i=$("#liveLink");(navigator.clipboard?navigator.clipboard.writeText(i.value):Promise.reject()).then(()=>{b.textContent="Copied"},()=>{i.select()})}
+    });
+    $("#liveBody").addEventListener("change",e=>{if(e.target.dataset.live==="hide"){st.hide=e.target.checked;persist();push()}});
+  }
+  return {start,stop,push,emit,watch,ui,state:()=>({status,err}),resume(){if(configured&&st.room)start()}};
+})();
+// Mirror the GM's effects to players.
+{const shot=FX.shot,boom=FX.boom;
+ FX.shot=(aid,tid,w,hit,res)=>{shot(aid,tid,w,hit,res);Live.emit("shot",{aid,tid,name:w.name,missile:!!w.missile,hit:!!hit,res:res||null})};
+ FX.boom=id=>{boom(id);Live.emit("boom",{id})};}
+
 /* ============================== boot ============================== */
-S=load();
-if(!S){
-  S=blank();
-  const pat=PRESETS.find(p=>p.side==="party");if(pat)S.ships.push(makeShip(pat));
-  const foe=PRESETS.find(p=>p.name==="Pirate gunboat");if(foe)S.ships.push(makeShip(foe));
-  log("Sample encounter loaded. Add, edit or remove ships in the Fleet tab.","sys");
-  log("Round 1.","r");
+if(WATCH){
+  document.body.classList.add("watch");document.title="Drift Tactical Plot · Live";
+  S=blank();FX.sync();render();Live.ui();
+  if(ROOM_IN)Live.watch(ROOM_IN);
+}else{
+  S=load();
+  if(!S){
+    S=blank();
+    const pat=PRESETS.find(p=>p.side==="party");if(pat)S.ships.push(makeShip(pat));
+    const foe=PRESETS.find(p=>p.name==="Pirate gunboat");if(foe)S.ships.push(makeShip(foe));
+    log("Sample encounter loaded. Add, edit or remove ships in the Fleet tab.","sys");
+    log("Round 1.","r");
+  }
+  FX.sync();render();Live.resume();
 }
-FX.sync();render();
 </script>
 </body></html>

@@ -63,6 +63,12 @@ Rules for the player handout:
 - **Other creators' maps are linked, not copied.** Use `drive` / `folder` / `url`. Only original work goes in `gm/maps/` (compressed JPG, with a `thumb-` copy around 480 px referenced by `thumb`).
 - The player handout links to the partition from its sidebar footer ("Restricted partition").
 
+## Tactical plot (`combat/`)
+
+- `combat/index.html` runs the GM page's "Ship combat: stations" rules in a three.js r128 view. Keep the rules in sync with `gm/index.html#ships`. Campaign presets are in `gm/ships.js`.
+- **Live player view:** the GM page publishes a player-safe copy of the fight to Firebase Realtime Database over REST, using anonymous auth. Players open `combat/?watch=CODE`, which follows the room with an `EventSource` stream. Settings are in `combat/live-config.js`, and `database.rules.json` makes only a room's creator able to write to it. When "hide hostile stats" is on, give any new log line that reveals enemy numbers a player version: `log(html, cls, pub)`.
+- Anything loaded from a file or from Firebase goes through `sanitizeState()`, and log HTML goes through `safeHtml()`.
+
 ## Checking changes
 
 There's no build or test suite. Open `index.html` in a browser and click through every tab, at a phone width too. To smoke-test headlessly, load the page with Playwright, visit each hash (`#briefing`, `#history`, `#factions`, `#chart`, `#gazetteer`, `#origins`, `#glossary`, `#rumors`, `#loc-<id>`), and check that no page errors appear (CDN load failures are expected in a sandbox without network). For `gm/index.html`, check the wrong phrase is refused, the right one opens the page, a reload stays unlocked, and search and type chips filter the library.

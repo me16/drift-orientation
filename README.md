@@ -29,6 +29,7 @@ The handout is one self-contained web page dressed as an in-world object: a seco
 
 - **Ships:** add them from presets in the Fleet tab, or build your own (Custom…). Campaign presets live in `gm/ships.js`.
 - **Saving:** the current fight stays in your browser between visits. Use **Save file** / **Load file** to keep encounters or move them to another computer.
+- **Live player view:** press **Go live** and players open the link (or `combat/?watch=CODE`) on their own phones and laptops. They watch the 3D plot, each ship's hull and shields, and the log update as you play. Only your browser can change the fight. By default, players don't see hostile ships' AC, bonuses, weapons or exact hull. This needs a free Firebase project, set up once (below).
 - **3D:** loads three.js from a CDN. Offline, the plot is hidden but the combat panel still works.
 
 ## Hosting for free
@@ -52,6 +53,17 @@ firebase deploy --only hosting --project <your-firebase-project-id>
 ```
 
 Create the project at console.firebase.google.com first (the free Spark plan is enough).
+
+## Setting up the live player view (once)
+
+The live view uses Firebase's free Realtime Database. It works whichever host serves the site.
+
+1. At [console.firebase.google.com](https://console.firebase.google.com), add a project. The free Spark plan is enough, and if you host on Firebase you can reuse that project.
+2. **Authentication** → Get started → Sign-in method → turn on **Anonymous**. Your browser signs in invisibly, and that identity is what owns your room.
+3. **Realtime Database** → Create database, starting in locked mode. In its **Rules** tab, paste the contents of [`database.rules.json`](database.rules.json) and publish. (Or deploy them with `firebase deploy --only database`.)
+4. **Project settings** → Your apps → add a **Web** app. Copy its `apiKey` and `databaseURL` into [`combat/live-config.js`](combat/live-config.js), then commit and redeploy.
+
+The rules let only the browser that opened a room write to it, and let anyone with the 6-letter room code watch it. Rooms are deleted when you press **End live session**. The `apiKey` is meant to be public; it identifies the project and isn't a password.
 
 ## GM partition
 
