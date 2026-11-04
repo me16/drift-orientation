@@ -22,7 +22,7 @@
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{background:var(--void);color:var(--fg);font:400 14.5px/1.5 var(--f-body);display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+body{background:var(--void);color:var(--fg);font:400 14.5px/1.5 var(--f-body);display:grid;grid-template-rows:auto auto minmax(0,1fr);overflow:hidden}
 button,input,select,textarea{font:inherit;color:inherit}
 [hidden]{display:none!important}
 :focus-visible{outline:1px dashed var(--teal);outline-offset:2px}
@@ -39,7 +39,8 @@ header.bar{display:flex;align-items:center;gap:8px;padding:8px max(14px,env(safe
 .btn.sm{padding:4px 8px;font-size:10.5px;letter-spacing:.08em}
 .btn.on{border-color:var(--amber);color:var(--amber)}
 
-main{display:grid;grid-template-columns:minmax(0,1fr) 400px;min-height:0}
+main{display:grid;grid-template-columns:minmax(0,1fr) 420px;min-height:0}
+#plotCol{position:relative;min-height:0;display:grid}
 #stage{position:relative;min-height:0;overflow:hidden;background:radial-gradient(ellipse 70% 60% at 50% 45%,#0d1030,var(--void))}
 #stage canvas{display:block;width:100%;height:100%;touch-action:none}
 .hud{position:absolute;left:12px;top:12px;right:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;pointer-events:none;z-index:2}
@@ -49,7 +50,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 400px;min-height:0}
 .phase span{padding:6px 10px;color:var(--faint)}
 .phase span.cur{color:#1b1206;background:var(--amber)}
 .hud .btn:not(.pri){background:rgba(21,26,64,.9)}
-.hint{position:absolute;left:12px;bottom:10px;font:400 11px var(--f-data);color:var(--faint);letter-spacing:.08em;pointer-events:none;z-index:2}
+.hint{position:absolute;left:12px;top:52px;font:400 11px var(--f-data);color:var(--faint);letter-spacing:.08em;pointer-events:none;z-index:2}
 .lbl3d{position:absolute;left:0;top:0;pointer-events:none;font:400 11px var(--f-data);white-space:nowrap;text-align:center;text-shadow:0 0 4px #000,0 0 2px #000;z-index:1;will-change:transform}
 .lbl3d b{font-weight:400;letter-spacing:.06em}
 .lbl3d .st{font-size:10px;color:var(--dim)}
@@ -62,7 +63,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 400px;min-height:0}
 .lbl3d.hz b{color:var(--c,var(--dim))}
 .rng3d{position:absolute;left:0;top:0;pointer-events:none;font:400 10px var(--f-data);white-space:nowrap;color:var(--c);text-shadow:0 0 4px #000,0 0 2px #000;z-index:1;letter-spacing:.04em}
 .placing{position:absolute;left:50%;top:56px;transform:translateX(-50%);z-index:3;display:flex;gap:10px;align-items:center;background:rgba(8,10,25,.92);border:1px solid var(--amber);color:var(--amber);padding:6px 10px;font:400 11.5px var(--f-data);letter-spacing:.06em}
-.bgname{position:absolute;right:12px;bottom:10px;font:400 10px var(--f-disp);letter-spacing:.22em;text-transform:uppercase;color:var(--faint);pointer-events:none;z-index:2;text-align:right}
+.bgname{position:absolute;right:12px;top:14px;font:400 10px var(--f-disp);letter-spacing:.22em;text-transform:uppercase;color:var(--faint);pointer-events:none;z-index:2;text-align:right}
 .bgname i{display:block;font:400 11px var(--f-data);letter-spacing:.04em;text-transform:none;color:var(--dim);margin-top:2px;max-width:380px;font-style:normal}
 table.dist{width:100%;border-collapse:collapse;font:400 12px var(--f-data);color:var(--dim)}
 table.dist td,table.dist th{padding:3px 4px;border-top:1px solid var(--rule);text-align:left;font-weight:400}
@@ -75,9 +76,11 @@ details.more[open] summary{color:var(--teal)}
 .tr{font:400 10px var(--f-data);letter-spacing:.06em;padding:1px 6px;border:1px solid var(--rule-2);color:var(--dim);text-transform:uppercase}
 .offline{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--dim);padding:24px;font:400 13px var(--f-data)}
 
-aside{border-left:1px solid var(--rule);background:#0a0c1e;display:grid;grid-template-rows:auto minmax(0,1fr) minmax(120px,26%);min-height:0}
+aside{border-left:1px solid var(--rule);background:#0a0c1e;display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0}
 .tabs{display:flex;border-bottom:1px solid var(--rule)}
-.tabs button{flex:1;background:none;border:0;border-bottom:2px solid transparent;padding:11px 2px;font:400 10.5px var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);cursor:pointer}
+.tabs button{flex:1;background:none;border:0;border-bottom:2px solid transparent;padding:11px 2px;font:400 10.5px var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;position:relative;display:grid;gap:1px;justify-items:center}
+.tabs button .dot{position:absolute;top:6px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 6px var(--amber)}
+.intro{font-size:12.5px;color:var(--faint);margin:0 0 10px;padding-bottom:8px;border-bottom:1px dashed var(--rule)}
 .tabs button[aria-selected=true]{color:var(--teal);border-bottom-color:var(--teal)}
 .pane{overflow:auto;padding:12px 14px 18px;min-height:0}
 h3{font:400 10.5px var(--f-disp);letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin:16px 0 8px}
@@ -108,7 +111,11 @@ button.chip{background:none;cursor:pointer}
 .track.s i.on{background:var(--ok);border-color:var(--ok)}
 .track.f i.on{background:var(--haz);border-color:var(--haz)}
 .status-dis{opacity:.6}
-#log{border-top:1px solid var(--rule);overflow:auto;padding:8px 14px 12px;font:400 12px/1.5 var(--f-data);color:var(--dim);background:#080a19}
+#logBox{position:absolute;right:12px;bottom:12px;z-index:3;width:min(380px,calc(100% - 24px));background:rgba(8,10,25,.92);border:1px solid var(--rule-2);display:grid;grid-template-rows:auto minmax(0,1fr);max-height:min(46%,420px)}
+#logBox:not(.open){max-height:none}
+#logBox:not(.open) #log{max-height:4.9em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+.logh{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 8px 5px 12px;border-bottom:1px solid var(--rule);font:400 10px var(--f-disp);letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+#log{overflow:auto;padding:6px 12px 8px;font:400 12px/1.5 var(--f-data);color:var(--dim)}
 #log p{margin:0 0 5px}
 #log .r{color:var(--faint)}
 #log .hit{color:var(--ok)} #log .miss{color:var(--faint)} #log .crit{color:var(--amber)} #log .dead{color:var(--haz)} #log .sys{color:var(--lil)}
@@ -136,18 +143,95 @@ body.watch .gm-only{display:none!important}
 .sub{padding:8px 0;border-top:1px solid var(--rule)}
 .sub:first-child{border-top:0;padding-top:2px}
 .mine{--c:var(--teal);border:1px solid var(--teal);border-left-width:3px}
-body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
+body.watch aside{grid-template-rows:minmax(0,1fr)}
 @media (max-width:860px){
-  body.watch aside{grid-template-rows:auto 260px}
+  body.watch aside{grid-template-rows:auto}
   html,body{height:auto}
   body{overflow:auto;display:block}
-  main{grid-template-columns:1fr;grid-template-rows:56vh auto}
-  aside{border-left:0;border-top:1px solid var(--rule);grid-template-rows:auto auto 240px}
+  main{grid-template-columns:1fr;grid-template-rows:auto auto}
+  aside{border-left:0;border-top:1px solid var(--rule);grid-template-rows:auto auto}
   .pane{overflow:visible}
   .grid4{grid-template-columns:repeat(2,1fr)}
   .grid5{grid-template-columns:repeat(3,minmax(0,1fr))}
   .hint{display:none}
   .bgname i{display:none}
+}
+/* Turn-order tracker: every ship, in initiative order, with its hull, shields and Edge at a glance. */
+.tracker{display:flex;gap:6px;align-items:stretch;padding:6px max(10px,env(safe-area-inset-right)) 6px max(10px,env(safe-area-inset-left));border-bottom:1px solid var(--rule);background:#070918;overflow-x:auto;scrollbar-width:thin}
+.tk-round{display:grid;align-content:center;padding:2px 12px 2px 4px;border-right:1px solid var(--rule);margin-right:4px;flex:none;min-width:116px}
+.tk-round b{font:400 12px var(--f-disp);letter-spacing:.16em;font-weight:400;color:var(--fg)}
+.tk-round span{font:400 11px var(--f-data);color:var(--amber);letter-spacing:.04em;white-space:nowrap}
+.tk{flex:none;width:176px;text-align:left;background:var(--panel);border:1px solid var(--rule);border-top:2px solid var(--c);padding:5px 8px 6px;cursor:pointer;display:grid;gap:3px;color:var(--fg)}
+.tk:hover{border-color:var(--rule-2);border-top-color:var(--c)}
+.tk.cur{background:#1d1a2c;border-color:var(--amber);border-top-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset,0 0 14px #ffb35c33}
+.tk.done{opacity:.72}
+.tk.out{opacity:.45}
+.tk.out .tk-n{text-decoration:line-through}
+.tk-top{display:flex;align-items:baseline;gap:6px;min-width:0}
+.tk-i{font:400 11px var(--f-data);color:var(--faint);min-width:16px}
+.tk.cur .tk-i{color:var(--amber)}
+.tk-n{font:600 13px var(--f-body);color:var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.tk-tag{font:400 9.5px var(--f-data);letter-spacing:.08em;text-transform:uppercase;color:var(--amber)}
+.bar{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:5px;align-items:center;font:400 10.5px var(--f-data);color:var(--dim)}
+.bar>em{font-style:normal;color:var(--faint);font-size:9.5px;letter-spacing:.08em}
+.bar>b{font-weight:400;color:var(--fg);min-width:38px;text-align:right}
+.bar .meter{margin:0;height:6px}
+.pips{display:inline-flex;gap:2px;letter-spacing:0;color:var(--amber);font:400 12px var(--f-data)}
+.pips i{font-style:normal}.pips i.off{color:var(--rule-2)}
+.tk-foot{display:flex;gap:6px;align-items:center;justify-content:space-between;font:400 10.5px var(--f-data);color:var(--dim);min-height:15px}
+.tk-foot .warn{color:var(--haz)}
+/* The dock: the active ship's resources, over the plot. */
+#dock{position:absolute;left:12px;bottom:12px;z-index:3;width:min(370px,calc(100% - 24px));max-height:calc(100% - 70px);overflow:auto;background:rgba(10,13,34,.94);border:1px solid var(--rule-2);border-left:3px solid var(--c,var(--teal));padding:9px 12px 10px;box-shadow:0 8px 30px #0008}
+#dock:empty{display:none}
+.dk-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.dk-h .name{font-size:16px}
+.dk-sub{font:400 10.5px var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--c)}
+.dk-bars{display:grid;gap:5px;margin:8px 0 6px}
+.dk-bars .bar{grid-template-columns:58px minmax(0,1fr) auto;font-size:12px}
+.dk-bars .bar>em{font-size:10px}
+.dk-bars .meter{height:9px}
+.meter.mv i{background:var(--amber)}
+.dk-row{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font:400 12px var(--f-data);color:var(--dim);margin-top:4px}
+.dk-row b{color:var(--fg);font-weight:400}
+.slot{display:inline-flex;align-items:center;gap:5px;font:400 10.5px var(--f-data);letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border:1px solid var(--ok);color:var(--ok)}
+.slot::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.slot.used{border-color:var(--rule-2);color:var(--faint)}
+.slot.used::before{background:none;border:1px solid currentColor}
+.slot.empty{border-style:dashed;text-decoration:line-through}
+.next{margin-top:8px;padding:6px 8px;background:#ffb35c14;border:1px solid #ffb35c55;font-size:12.5px;color:var(--fg)}
+.next b{color:var(--amber);font:400 10px var(--f-disp);letter-spacing:.16em;text-transform:uppercase;margin-right:6px}
+.yourturn{font:400 12px var(--f-disp);letter-spacing:.18em;text-transform:uppercase;color:#1b1206;background:var(--amber);padding:4px 8px;margin:-2px 0 6px;text-align:center;animation:glow 1.8s ease-in-out infinite}
+@keyframes glow{50%{filter:brightness(1.2)}}
+/* Step sections in the Turn tab (same look as the turn card). */
+.step .note{margin-bottom:6px}
+.step>.sub{border-top:0;padding-top:0}
+.step-h .num{display:inline-grid;place-items:center;width:18px;height:18px;border:1px solid currentColor;border-radius:50%;margin-right:6px;font:400 10px var(--f-data);letter-spacing:0}
+.step.done .step-h .num{background:var(--ok);color:#03211d;border-color:var(--ok)}
+.step.now{border-top-color:var(--amber)}
+.step.now .step-h>span:first-child{color:var(--amber)}
+.check{list-style:none;padding:0;margin:0 0 10px;display:grid;gap:6px}
+.check li{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--rule);background:var(--panel)}
+.check li>i{flex:none;font-style:normal;width:20px;height:20px;border:1px solid var(--rule-2);display:grid;place-items:center;font:400 11px var(--f-data);color:var(--faint)}
+.check li.ok>i{background:var(--ok);border-color:var(--ok);color:#03211d}
+.check li div{flex:1;font-size:13px;color:var(--dim)}
+.check li div b{display:block;color:var(--fg);font-weight:600}
+.guide h3{margin-top:14px}
+.guide ol,.guide ul{margin:0;padding-left:20px;color:var(--dim);font-size:13.5px}
+.guide li{margin-bottom:5px}
+.guide li b{color:var(--fg)}
+@media (max-width:860px){
+  .tracker{position:sticky;top:0;z-index:15}
+  #plotCol{display:block}
+  #stage{height:56vh}
+  #dock,#logBox{position:static;width:auto;max-height:none;box-shadow:none;border-left-width:3px}
+  #dock{border-width:1px 0;border-left:3px solid var(--c,var(--teal))}
+  #logBox{border-width:1px 0 0;max-height:none}
+  #logBox.open #log{max-height:50vh}
+  .tk{width:150px}
+  header.bar{gap:6px}
+  header.bar .btn{padding:5px 7px;font-size:10px;letter-spacing:.06em}
+  .brand{flex-basis:100%}
+  .tk-round{min-width:92px}
 }
 /* Rules popups: hover (or long-press on touch) any action for what it does. Text comes from TIPS below. */
 #tip{position:fixed;z-index:60;max-width:min(300px,calc(100vw - 24px));padding:8px 10px;background:var(--panel-2);border:1px solid var(--rule-2);border-left:2px solid var(--teal);
@@ -157,9 +241,9 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
 #tip .tk{display:block;font:400 10.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:3px}
 #tip .tk i{font-style:normal;color:var(--amber)}
 /* The GM's turn card: pops up over the plot on each hostile or allied turn (unless automatic enemy AI is on). */
-#npcCard{position:absolute;right:12px;top:96px;z-index:4;width:min(390px,calc(100% - 24px));max-height:calc(100% - 108px);overflow:auto;
+#npcCard{position:absolute;right:12px;top:56px;z-index:4;width:min(390px,calc(100% - 24px));max-height:calc(100% - 68px);overflow:auto;
   background:rgba(14,18,48,.97);border:1px solid var(--rule-2);border-top:2px solid var(--c,var(--haz));box-shadow:0 8px 30px #000b;padding:10px 12px 12px}
-#npcPill{position:absolute;right:12px;top:96px;z-index:4;border-color:var(--c,var(--haz));color:var(--c,var(--haz))}
+#npcPill{position:absolute;right:12px;top:56px;z-index:4;border-color:var(--c,var(--haz));color:var(--c,var(--haz))}
 .card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .card-h .name{font-size:16px;line-height:1.25}
 .step{border-top:1px solid var(--rule);padding:8px 0 4px;margin-top:8px}
@@ -185,17 +269,18 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
 <header class="bar">
  <span class="brand">Drift · Tactical plot</span>
  <span class="livetag" id="liveTag" hidden><i></i><span></span></span>
+ <button class="btn" id="helpBtn" type="button" title="How a fight works, and what's on this screen">? Guide</button>
  <button class="btn gm-only" id="liveBtn" type="button" title="Let players watch this fight live on their own devices">Go live</button>
  <button class="btn gm-only" id="newBtn" type="button" title="Clear the board and start a new encounter">New encounter</button>
  <button class="btn gm-only" id="exportBtn" type="button" title="Download this encounter as a file">Save file</button>
  <button class="btn gm-only" id="importBtn" type="button" title="Load an encounter file">Load file</button>
  <input type="file" id="importFile" accept=".json,application/json" hidden>
 </header>
+<nav class="tracker" id="tracker" aria-label="Turn order"></nav>
 <main>
+ <div id="plotCol">
  <div id="stage">
   <div class="hud">
-   <span class="round" id="hudRound">Round 1</span>
-   <span class="phase" id="hudPhase"><span class="cur" id="hudTurn">Initiative</span></span>
    <button class="btn pri gm-only" id="nextBtn" type="button">Next phase ▸</button>
    <button class="btn" id="viewBtn" type="button" title="Reset the camera">View</button>
   </div>
@@ -206,16 +291,18 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
   <div id="npcCard" class="gm-only" hidden role="dialog" aria-label="Hostile or allied turn"></div>
   <button class="btn gm-only" id="npcPill" type="button" data-act="cardopen" hidden></button>
  </div>
+ <section id="dock" aria-label="Active ship"></section>
+ <section id="logBox" aria-label="Combat log"><div class="logh"><span>Combat log</span><button class="btn sm" type="button" data-act="logtog" id="logTog">Show all ▴</button></div><div id="log" aria-live="polite"></div></section>
+ </div>
  <aside>
   <div class="tabs gm-only" role="tablist">
-   <button role="tab" data-tab="turn">Turn</button>
-   <button role="tab" data-tab="stations">Stations</button>
-   <button role="tab" data-tab="crew">Crew</button>
-   <button role="tab" data-tab="fleet">Fleet</button>
-   <button role="tab" data-tab="field">Field</button>
+   <button role="tab" data-tab="turn" data-tip="Whose turn it is and what they can still do">Turn</button>
+   <button role="tab" data-tab="stations" data-tip="Guns, engineering, sensors and the spool drive">Stations</button>
+   <button role="tab" data-tab="crew" data-tip="The characters and which station each one sits at">Crew</button>
+   <button role="tab" data-tab="fleet" data-tip="Add, edit and give orders to ships">Ships</button>
+   <button role="tab" data-tab="field" data-tip="The backdrop, hazards and ranges">Battlefield</button>
   </div>
   <div class="pane" id="pane"></div>
-  <div id="log" aria-live="polite"></div>
  </aside>
 </main>
 
@@ -249,6 +336,14 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
    <button class="btn" value="cancel" formnovalidate type="submit">Cancel</button>
    <button class="btn pri" value="ok" type="submit">Save ship</button>
   </div>
+ </form>
+</dialog>
+
+<dialog id="helpDlg">
+ <form method="dialog">
+  <div class="row spread"><h2>Quick guide</h2><button class="btn sm" value="close" type="submit">Close</button></div>
+  <div class="guide" id="helpBody"></div>
+  <div class="row spread"><span></span><button class="btn pri" value="close" type="submit">Got it</button></div>
  </form>
 </dialog>
 
@@ -594,7 +689,7 @@ let S;
 const UI={tab:"turn",att:null,wpn:0,tgt:null,bonus:"",nat:"",over:false,scan:false,jam:false,adv:"auto",eng:null,initIn:{},adj:"",pd:{},
   pin:{},ptgt:null,pover:"w0",pfix:"-1",pjam:null,lastRef:"",sending:false,localMsg:"",watchOnly:false,
   place:null,hsel:null,fsel:null,addSide:"",npcBusy:false,openShip:{},openSb:{},cardKey:"",cardMin:false,cardTraits:false,
-  mv:false,lock:null,noShells:false,malt:"",mhard:false,mthread:false,mtgt:0,press:false,hover:null,pmv:false,pdest:null,running:false};
+  mv:false,lock:null,noShells:false,logOpen:false,malt:"",mhard:false,mthread:false,mtgt:0,press:false,hover:null,pmv:false,pdest:null,running:false};
 // fight: initiative rolled. init: [{id, v}] highest first; turn: index of the ship whose turn it is.
 // react: reactions used this round, by seat key. wait: a decision that blocks play (jink, reaction fire, hard brake, follow).
 // rmove: a reaction move in progress (follow, readied move). tact: the current pilot's action and bonus action.
@@ -899,7 +994,7 @@ function canFire(a,w,t,react=false){
   if(!live(a))return `${a.name} is not in the fight.`;
   if(!present(t)||t.hull<=0&&t.status!=="ok")return `${t.name} is out of the fight.`;
   if(team(a)===team(t))return "That's a friendly ship.";
-  if(!react&&S.wait)return "Waiting on a decision (see the Turn tab).";
+  if(!react&&S.wait)return "Waiting on a decision (see the ship card on the plot).";
   if(!react&&!myTurn(a))return `It's not ${a.name}'s turn.`;
   const wi=a.weapons.indexOf(w);
   if(!manned(a,"w"+wi))return `Nobody is manning ${w.name}.`;
@@ -1022,7 +1117,7 @@ const npcDmg=(a,ex)=>S.avgDmg&&npcSide(a)?{total:avgOf(ex),text:`${ex} (average)
 function canFireHaz(a,w,h){
   if(!a||!w||!h)return "Pick a weapon and a target.";
   if(!live(a))return `${a.name} is not in the fight.`;
-  if(S.wait)return "Waiting on a decision (see the Turn tab).";
+  if(S.wait)return "Waiting on a decision (see the ship card on the plot).";
   if(!myTurn(a))return `It's not ${a.name}'s turn.`;
   const wi=a.weapons.indexOf(w);
   if(!manned(a,"w"+wi))return `Nobody is manning ${w.name}.`;
@@ -1563,7 +1658,7 @@ function beginTurn(){
 }
 function endTurn(){
   if(!S.fight)return "Roll initiative first.";
-  if(S.wait)return "Settle the decision first (see the Turn tab).";
+  if(S.wait)return "Settle the decision first (see the ship card on the plot).";
   const s=cur();S.rmove=null;
   if(s){
     s.vx=s.mx||0;s.vy=s.my||0;s.vz=s.mz||0;s.mx=s.my=s.mz=0;
@@ -1805,38 +1900,52 @@ function waitHtml(){
     <div class="row"><button class="btn pri sm" data-act="wait" data-use="1">${ww[1]}</button><button class="btn sm" data-act="wait" data-use="0">${ww[2]}</button>${who&&Live.seatOnDevice(who.id)?`<span class="mods" style="margin:0">${esc(who.name)} can answer from their device.</span>`:""}</div></div>`;
 }
 function renderTurn(){
-  let h=waitHtml();
+  let h=`<p class="intro">Whose turn it is and what they can still do. Hover any button (long-press on a phone) for its rule.</p>`;
   if(!S.fight){
+    const ps=S.ships.filter(x=>x.side==="party"&&present(x)),fs=S.ships.filter(x=>x.side==="enemy"&&present(x)),bg=bgById(S.bg);
+    const li=(ok,n,t,body,tab)=>`<li class="${ok?"ok":""}"><i>${ok?"✓":n}</i><div><b>${t}</b>${body}</div>${tab?`<button class="btn sm" data-act="totab" data-tab="${tab[0]}">${tab[1]}</button>`:""}</li>`;
+    h+=`<h3>Get ready</h3><ol class="check">
+      ${li(ps.length,1,"The party's ship",ps.length?esc(ps.map(x=>x.name).join(", ")):"Add one in the Ships tab.",["fleet","Ships"])}
+      ${li(fs.length,2,"The opposition",fs.length?esc(fs.map(x=>x.name).join(", ")):"Add hostiles in the Ships tab.",["fleet","Ships"])}
+      ${li(crewOn(),3,"Crew <span style=\"color:var(--faint);font-weight:400\">(optional)</span>",crewOn()?`${S.crew.length} character${S.crew.length>1?"s":""}, ${Object.keys(S.seats).length} seated.`:"Add the characters and seat them, so their bonuses are used and players can act from their phones. Without crew, you roll for the ship.",["crew","Crew"])}
+      ${li(S.bg!=="deep"||S.haz.length,4,"Battlefield <span style=\"color:var(--faint);font-weight:400\">(optional)</span>",`${esc(bg.name)}${S.haz.length?`, ${S.haz.length} hazard${S.haz.length>1?"s":""}`:""}.`,["field","Battlefield"])}
+    </ol>`;
     const ships=S.ships.filter(live);
-    h+=`<h3>Initiative</h3><p class="note">Every ship rolls once: d20 + its pilot's bonus (agile +2). Leave a box empty to roll here, or type the d20 from the table. Ships then act from highest to lowest, every round: the pilot spends the ship's Speed in 3D and the crew act.</p>`;
-    if(!ships.length)return h+`<p class="note">No ships. Add some in the Fleet tab.</p>`;
+    if(!ships.length)return h;
+    h+=`<h3>5 · Roll initiative</h3><p class="note">Every ship rolls once: d20 + its pilot's bonus. Leave a box empty to roll here, or type the d20 rolled at the table.</p>`;
     h+=`<div class="box">${ships.map(s=>`<div class="row spread seat"><span class="stats"><b style="color:${SIDES[s.side].css}">${esc(s.name)}</b> ${sgn(pilotBonus(s))} · Speed ${speedOf(s)}</span><input type="number" class="mini" min="1" max="20" data-k="init:${s.id}" data-init="${s.id}" value="${esc(S.initIn[s.id]??"")}" placeholder="auto"></div>`).join("")}
-      <div class="row"><button class="btn pri" data-act="init">Roll initiative</button></div></div>
+      <div class="row"><button class="btn pri" data-act="init">Roll initiative ▸</button></div></div>
       <label class="chk"><input type="checkbox" data-act="autonpc"${S.autoNpc?" checked":""}> Automatic enemy AI (otherwise you run hostile and allied turns from a turn card)</label>`;
     return h;
   }
   const s=cur();
-  h+=`<h3>Round ${S.round} · initiative</h3><div class="box">`+S.init.map((e,i)=>{const x=ship(e.id);if(!x)return "";const tg=shipTags(x),ed=edgeOf(x);
-    return `<div class="row spread seat"><span class="stats" style="${i===S.turn?"color:var(--amber)":""}">${i===S.turn?"▶ ":""}<b style="color:${SIDES[x.side].css}">${esc(x.name)}</b> ${e.v}${!live(x)?" · out":""}${ed.max?` · Edge ${ed.n}`:""}${tg?` · ${esc(tg)}`:""}</span>
-      <span class="row" style="gap:4px;margin:0">${live(x)&&x!==s&&!x.brace&&reactFree(x)&&!pilotBlock(x)?`<button class="btn sm" data-act="brace" data-id="${x.id}" title="Reaction: +2 AC until the end of this turn">Brace</button>`:""}${x.ready&&x!==s&&reactFree(x)?`<button class="btn sm" data-act="readymv" data-id="${x.id}" title="Reaction: move up to half its Speed">Readied move</button>`:""}</span></div>`}).join("")+`</div>`;
+  const reacts=S.init.map(e=>ship(e.id)).filter(x=>x&&live(x)&&x!==s&&reactFree(x)&&!pilotBlock(x)&&(!x.brace||x.ready));
+  if(reacts.length)h+=`<h3>Reactions · out of turn</h3><div class="box">${reacts.map(x=>`<div class="row spread seat"><span class="stats"><b style="color:${SIDES[x.side].css}">${esc(x.name)}</b></span>
+      <span class="row" style="gap:4px;margin:0">${!x.brace?`<button class="btn sm" data-act="brace" data-id="${x.id}" title="Reaction: +2 AC until the end of this turn">Brace</button>`:""}${x.ready?`<button class="btn sm" data-act="readymv" data-id="${x.id}" title="Reaction: move up to half its Speed">Readied move</button>`:""}</span></div>`).join("")}</div>`;
   if(!s)return h;
   const rm=S.rmove?ship(S.rmove.sid):null;
   if(rm)h+=`<div class="box" style="--c:var(--amber)"><div class="name">${esc(rm.name)}: ${S.rmove.why==="ready"?"readied move":"following"}</div><div class="stats">${r1(S.rmove.left)} units left.</div>${moveControls(rm)}<div class="row"><button class="btn sm" data-act="rmdone">Done moving</button></div></div>`;
-  const e=edgeOf(s),npc=npcSide(s);
-  h+=`<h3>${esc(s.name)}'s turn</h3><div class="box" style="--c:${SIDES[s.side].css}">
-    <div class="stats">Movement <b>${r1(s.moveLeft)}</b> of ${speedOf(s)} · Edge <b>${e.n}</b>/${e.max}${e.max?` d${e.die}`:""} · Action ${S.tact.a?"used":"<b>ready</b>"} · Bonus ${S.tact.b?"used":"<b>ready</b>"}</div>`;
+  const npc=npcSide(s);
+  h+=`<h3>Round ${S.round} · ${esc(s.name)}'s turn</h3><div class="box" style="--c:${SIDES[s.side].css}">`;
   if(npc){
-    h+=`<p class="note" style="margin:8px 0 0">A stat-block ship: run its turn from the turn card on the plot (move, one maneuver, attack), or let its AI do it.</p>
+    h+=`<p class="note" style="margin:0">A stat-block ship: run its turn from the turn card on the plot (move, one maneuver, attack), or let its AI do it.</p>
      <div class="row"><button class="btn sm${UI.cardMin?" pri":""}" data-act="cardopen"${live(s)?"":" disabled"}>${UI.cardMin?"Show turn card":"Turn card is open"}</button><button class="btn sm" data-act="npcturn"${UI.running||S.wait||S.rmove?" disabled":""}>${UI.running?"Running…":"Run its turn with AI"}</button></div>`;
   }else{
-    if(!rm)h+=moveControls(s);
-    h+=pilotControls(s);
+    const moved=s.spent>.05||s.moveLeft<=.05||!!moveBlock(s),acted=S.tact.a||!!pilotBlock(s);
+    const crew=swarmN(s)?[]:stationsOf(s).filter(x=>x.st!=="helm"&&manned(s,x.st)),done=crew.filter(x=>S.acted[seatKey(s.id,x.st)]).length;
+    const stage=!moved?1:!acted?2:3;
+    const step=(n,t,ok,right,body)=>`<div class="step${ok?" done":""}${stage===n&&!ok?" now":""}"><div class="step-h"><span><span class="num">${ok?"✓":n}</span>${t}</span><span class="ok">${right}</span></div>${body}</div>`;
+    h+=step(1,"Move",moved&&s.spent>.05,`${r1(s.moveLeft)} of ${speedOf(s)} left`,rm?`<div class="mods">Finish the reaction move above first.</div>`:moveControls(s));
+    h+=step(2,"Pilot action",S.tact.a,`action ${S.tact.a?"used":"ready"} · bonus ${S.tact.b?"used":"ready"}`,pilotControls(s));
+    if(!swarmN(s))h+=step(3,"Crew",crew.length&&done===crew.length,crew.length?`${done} of ${crew.length} acted`:"",
+      `<p class="note">Each station acts once this turn. Gunners fire, engineering repairs or reroutes power, sensors scan or jam: all from the Stations tab.</p>
+      <div class="row"><button class="btn sm pri" data-act="totab" data-tab="stations">Stations ▸</button><button class="btn sm" data-act="boost" data-id="${s.id}"${boostOk(s)?"":" disabled"} title="Engineering action: +half Speed this turn">Boost engines</button><button class="btn sm" data-act="callline" data-id="${s.id}"${S.acted[seatKey(s.id,"sens")]||!manned(s,"sens")?" disabled":""} title="Sensors action: advantage on the pilot's next hazard check">Call the line</button></div>`);
   }
-  if(!swarmN(s)&&!npc)h+=`<div class="sub"><div class="stats">Crew on this turn</div><div class="row"><button class="btn sm" data-act="boost" data-id="${s.id}"${boostOk(s)?"":" disabled"} title="Engineering action: +half Speed this turn">Boost engines</button><button class="btn sm" data-act="callline" data-id="${s.id}"${S.acted[seatKey(s.id,"sens")]||!manned(s,"sens")?" disabled":""} title="Sensors action: advantage on the pilot's next hazard check">Call the line</button><button class="btn sm" data-act="totab" data-tab="stations">Gunnery & engineering ▸</button></div></div>`;
   h+=`<div class="row" style="margin-top:10px"><button class="btn pri" data-act="endturn"${S.wait?" disabled":""}>End turn ▸</button></div></div>`;
-  h+=`<label class="chk"><input type="checkbox" data-act="autonpc"${S.autoNpc?" checked":""}> Automatic enemy AI (hostile and allied turns run themselves)</label>
+  h+=`<details class="more"${UI.openSb.opts?" open":""} data-sb="opts"><summary>Options</summary>
+    <label class="chk"><input type="checkbox" data-act="autonpc"${S.autoNpc?" checked":""}> Automatic enemy AI (hostile and allied turns run themselves)</label>
     <label class="chk"><input type="checkbox" data-act="shells"${UI.noShells?"":" checked"}> Show the focused ship's weapon reach (green: normal range, amber: long)</label>
-    <div class="row"><button class="btn sm warn" data-act="clearinit">Clear initiative</button></div>`;
+    <div class="row"><button class="btn sm warn" data-act="clearinit">Clear initiative</button></div></details>`;
   return h;
 }
 /* ---- stat blocks: hostile and allied ships, written up like 5e monsters ---- */
@@ -2028,7 +2137,7 @@ function tgtOpts(a,list,haz,sel){
 const shootable=()=>S.haz.filter(h=>HAZ[h.kind].hp&&h.hp>0);
 function renderStations(){
   const fighters=S.ships.filter(live);
-  if(!fighters.length)return `<h3>Stations</h3><p class="note">No ships yet. Add some in the Fleet tab.</p>`;
+  if(!fighters.length)return `<h3>Stations</h3><p class="note">No ships yet. Add some in the Ships tab.</p>`;
   if(!ship(UI.att)||!live(ship(UI.att)))UI.att=(flagship()&&live(flagship())?flagship():fighters[0]).id;
   const a=ship(UI.att);
   if(UI.wpn>=a.weapons.length)UI.wpn=0;
@@ -2036,10 +2145,10 @@ function renderStations(){
   const hzs=shootable().sort((x,y)=>dist(a,x)-dist(a,y));
   if(!(UI.tgt<0?hzs.some(h=>-h.id===UI.tgt):foes.some(s=>s.id===UI.tgt)))UI.tgt=(foes.find(live)||foes[0]||{}).id??null;
   const isH=UI.tgt<0,t=isH?null:ship(UI.tgt),th=isH?hz(-UI.tgt):null,w=a.weapons[UI.wpn];
-  let h=waitHtml()+crewRound();
+  let h=`<p class="intro">The crew's jobs. Gunners fire, the engineer repairs and reroutes power, the drive spools to escape. Each station acts once per round, on its ship's turn.</p>`+crewRound();
   const c0=cur();
   if(c0&&npcSide(c0)&&live(c0)&&c0.weapons.length)h+=`<h3>${esc(c0.name)}'s guns · round ${S.round}</h3><div class="row"><button class="btn sm" data-act="npcfire"${UI.running||S.wait?" disabled":""}>Fire its weapons</button><span class="mods" style="margin:0">Every weapon that hasn't fired shoots its order's target, or the nearest thing in reach.</span></div>`;
-  if(S.fight&&c0)h+=`<p class="note">${esc(c0.name)}'s turn: only its crew act. Reaction fire comes from the Turn tab when a ship pulls out of a close-in zone (${CLOSE_IN} units).</p>`;
+  if(S.fight&&c0)h+=`<p class="note">${esc(c0.name)}'s turn: only its crew act. Reaction fire is asked on the ship card when a ship pulls out of a close-in zone (${CLOSE_IN} units).</p>`;
   h+=`<h3>Gunner · round ${S.round}</h3>
   <div class="box" style="--c:${SIDES[a.side].css}">
    <div class="row"><label class="f">Attacker<select data-ui="att">${shipOpts(fighters,UI.att)}</select></label>
@@ -2125,7 +2234,7 @@ function crewRound(){
 }
 const CREW_STATS=[["pilot","Pilot"],["gun","Gunnery"],["missile","Missiles"],["tech","Tech"],["sensors","Sensors"],["lvl","Level"]];
 function renderCrew(){
-  let h=`<h3>Crew</h3><p class="note">The characters aboard. Their bonuses are used at their station, so players only roll dice. Once anyone is on this list, a station with nobody in it can't act.</p>`;
+  let h=`<p class="intro">The player characters and where they sit. Optional, but it lets players act from their phones.</p><h3>Crew</h3><p class="note">The characters aboard. Their bonuses are used at their station, so players only roll dice. Once anyone is on this list, a station with nobody in it can't act.</p>`;
   for(const c of S.crew){
     const seat=seatOf(c.id),dev=Live.seatOnDevice(c.id);
     h+=`<div class="box" style="--c:var(--teal)">
@@ -2137,7 +2246,7 @@ function renderCrew(){
    <p class="note" style="margin-top:10px"><b>Pilot</b> Dex + proficiency (vehicles, space) · <b>Gunnery</b> proficiency + Dex · <b>Missiles</b> proficiency + Int · <b>Tech</b> Int + tinker's tools (damage control, drive spool) · <b>Sensors</b> the check you use for Scan and Jam · <b>Level</b> sets the pilot's Edge dice (proficiency bonus; d10 from level 11).</p>`;
   const ps=S.ships.filter(s=>s.side==="party"&&present(s));
   h+=`<h3>Stations</h3>`;
-  if(!ps.length)h+=`<p class="note">Add a party ship in the Fleet tab.</p>`;
+  if(!ps.length)h+=`<p class="note">Add a party ship in the Ships tab.</p>`;
   for(const s of ps){
     h+=`<div class="box" style="--c:var(--teal)"><div class="name">${esc(s.name)}${s===flagship()?` <span class="side" style="--c:var(--teal)">Flagship</span>`:""}</div>`;
     for(const x of stationsOf(s)){const k=seatKey(s.id,x.st),cur=S.seats[k];
@@ -2175,7 +2284,7 @@ function orderBox(s){
 function renderFleet(){
   if(UI.preset==null||!PRESETS[UI.preset])UI.preset=Math.max(0,PRESETS.findIndex(p=>p.side!=="party"));
   const pr=PRESETS[UI.preset];
-  let h=`<h3>Add a ship</h3><div class="row"><select id="presetSel" data-ui="preset" style="flex:1">${presetOpts(UI.preset)}</select></div>
+  let h=`<p class="intro">Every ship on the plot. Add from the list, then give hostiles and allies a standing order.</p><h3>Add a ship</h3><div class="row"><select id="presetSel" data-ui="preset" style="flex:1">${presetOpts(UI.preset)}</select></div>
    ${pr&&pr.blurb?`<p class="blurb">${esc(pr.blurb)}</p>`:""}
    ${pr&&pr.side!=="party"?`<details class="more"${UI.openSb.pre?" open":""} data-sb="pre"><summary>Stat block</summary><div class="box" style="margin-top:6px;--c:${SIDES[pr.side||"enemy"].css}">${statBlock(previewShip(pr))}</div></details>`:""}
    ${pr?`<div class="stats" style="margin-top:4px">AC ${pr.ac} · hull ${pr.maxHull}${pr.maxSh?` · shields ${pr.maxSh}`:""} · speed ${pr.spd??MODEL_SPD[pr.model]??6} · ${esc(ORDERS[pr.ai]||ORDERS[defaultAi(pr.side)])}</div>${pr.traits?`<div class="row" style="margin-top:4px">${traitChips(parseTraits(pr.traits))}</div>`:""}`:""}
@@ -2222,7 +2331,7 @@ function rangeTable(){
 }
 function renderField(){
   const bg=bgById(S.bg);
-  let h=`<h3>Battlefield</h3><div class="box" style="--c:var(--lil)"><div class="row"><select data-ui="bgsel" style="flex:1">${bgOpts(UI.bgsel||S.bg)}</select></div>`;
+  let h=`<p class="intro">Where the fight happens: a backdrop, its hazards, and the distances between ships.</p><h3>Battlefield</h3><div class="box" style="--c:var(--lil)"><div class="row"><select data-ui="bgsel" style="flex:1">${bgOpts(UI.bgsel||S.bg)}</select></div>`;
   const pick=bgById(UI.bgsel||S.bg);
   h+=`<p class="blurb">${esc(pick.note||"")}</p>
    ${(pick.hazards||[]).length?`<div class="stats" style="margin-top:4px">Hazards: ${esc([...new Set(pick.hazards.map(x=>x.name||HAZ[x.k].label))].join(", "))}</div>`:""}
@@ -2407,6 +2516,136 @@ function playerSend(b){
   if(used)delete UI.pin[used];
   Live.act(a);
 }
+/* ---- at a glance: the turn tracker, the dock and the guide ---- */
+const hideStats=s=>WATCH&&S.hide&&s.side==="enemy";
+const hullCls=s=>{const k=s.hull/s.maxHull;return k<=.25?"hu crit":k<=.5?"hu low":"hu"};
+function bar(lbl,v,max,cls,hide,tip){
+  if(!max)return "";const k=clamp(v/max,0,1);
+  return `<div class="bar"${tip?` data-tip="${esc(tip)}"`:""}><em>${lbl}</em><div class="meter ${cls}"><i style="width:${100*k}%"></i></div><b>${hide?"":`${v}/${max}`}</b></div>`;
+}
+function pips(e){if(!e.max)return "";
+  return `<span class="pips" data-tip="Edge dice: ${e.n} of ${e.max} left (d${e.die}). Spent on ◆ stunts, Jink and Hard brake.">${Array.from({length:e.max},(_,i)=>`<i class="${i<e.n?"":"off"}">◆</i>`).join("")}</span>`}
+// Every ship in initiative order (or, before initiative, in the order they were added).
+function renderTracker(){
+  const c=cur();
+  const list=S.fight?S.init.map(e=>({s:ship(e.id),v:e.v})).filter(x=>x.s):S.ships.filter(present).map(s=>({s,v:null}));
+  let h=`<div class="tk-round"><b>${S.fight?`Round ${S.round}`:"Setup"}</b><span>${S.fight?(c?`${esc(c.name)}'s turn`:"…"):"Before initiative"}</span></div>`;
+  if(!list.length)h+=`<span class="note" style="align-self:center;margin:0">No ships on the plot yet.</span>`;
+  list.forEach(({s,v},i)=>{
+    const now=s===c,hid=hideStats(s),e=edgeOf(s),n=swarmN(s);
+    const st=s.status==="disabled"?`<span class="warn">${n?"wiped out":"disabled"}</span>`:s.status==="escaped"?`<span>gone</span>`
+      :[s.crits.length?`<span style="color:var(--amber)" data-tip="${esc(s.crits.map(k=>CRIT_BY[k].name).join(", "))}">⚠ ${s.crits.length} crit${s.crits.length>1?"s":""}</span>`:"",
+        s.boarders?`<span class="warn">boarded ×${s.boarders}</span>`:"",s.brace?`<span style="color:var(--ally)">braced</span>`:"",s.dodge?`<span style="color:var(--ally)">evasive</span>`:""].filter(Boolean).join(" ");
+    h+=`<button class="tk${now?" cur":""}${S.fight&&i<S.turn?" done":""}${live(s)?"":" out"}" type="button"${WATCH?"":` data-act="pick" data-id="${s.id}"`} style="--c:${SIDES[s.side].css}">
+      <span class="tk-top"><span class="tk-i" data-tip="Initiative">${v??""}</span><span class="tk-n">${esc(s.name)}</span>${now?`<span class="tk-tag">▶ now</span>`:""}</span>
+      ${bar("HP",s.hull,s.maxHull,hullCls(s),hid)}${s.maxSh?bar("SH",s.sh,s.maxSh,"sh",hid):""}
+      <span class="tk-foot"><span>${hid?"":pips(e)}${n?` <span data-tip="Units left in the swarm">×${unitsOf(s)}</span>`:""}</span><span>${st}</span></span></button>`;
+  });
+  $("#tracker").innerHTML=h;
+}
+// The ship the dock shows: on a player's device, their own; for the GM, the ship whose turn it is
+// (the flagship while a hostile turn card is open, or before initiative).
+function dockShip(){
+  if(WATCH){const me=Live.me(),st=me&&me.crew!=null?seatOf(me.crew):null;return st?st.ship:flagship()}
+  if(S.rmove&&ship(S.rmove.sid))return ship(S.rmove.sid);
+  const c=cur();if(c&&!(cardShip()===c&&!UI.cardMin))return c;
+  return flagship()||S.ships.find(present)||null;
+}
+// What the GM should do next on a party turn, in one line.
+function nextHint(s){
+  if(S.rmove)return `Finish ${esc(ship(S.rmove.sid).name)}'s reaction move (Turn tab), or press Done moving.`;
+  if(!live(s))return `${esc(s.name)} is out of the fight. End the turn.`;
+  const fired=s.weapons.filter((w,i)=>S.acted[seatKey(s.id,"w"+i)]).length;
+  if(s.spent<=.05&&s.moveLeft>.05&&!moveBlock(s))return `<b>1 · Move</b>Fly up to ${r1(s.moveLeft)} units: a quick move, or click the plot (Turn tab).`;
+  if(!S.tact.a&&!pilotBlock(s))return `<b>2 · Pilot</b>Take one pilot action (Turn tab). ◆ stunts cost an Edge die.`;
+  if(s.weapons.length&&fired<s.weapons.length)return `<b>3 · Crew</b>Gunners fire (${fired} of ${s.weapons.length} done), engineering and sensors act: Stations tab.`;
+  return `<b>Done?</b>Everything's spent. End the turn.`;
+}
+function renderDock(){
+  const el=$("#dock");
+  const s=dockShip();
+  if(!s||WATCH&&!ROOM_IN){el.innerHTML=WATCH?"":`<div class="dk-h"><span class="name">No ships yet</span></div><p class="note" style="margin:6px 0 8px">Add the party's ship and some opposition.</p><button class="btn sm pri" data-act="totab" data-tab="fleet">Ships tab ▸</button>`;return}
+  el.style.setProperty("--c",SIDES[s.side].css);
+  const now=S.fight&&cur()===s,hid=hideStats(s),e=edgeOf(s),n=swarmN(s),party=s.side==="party";
+  let h="";
+  if(WATCH){
+    const me=Live.me(),c=me&&me.crew!=null?crewById(me.crew):null,seat=c?seatOf(c.id):null;
+    if(seat&&now&&!S.acted[seat.key])h+=`<div class="yourturn">Your ship's turn: act now</div>`;
+    if(c)h+=`<div class="dk-row" style="margin:0 0 4px"><span>You: <b>${esc(c.name)}</b>${seat?` · ${esc(stationLabel(seat.ship,seat.st))}`:" · no station yet"}</span></div>`;
+  }else if(S.wait&&!(cardShip()&&!UI.cardMin))h+=waitHtml();
+  h+=`<div class="dk-h"><span><div class="dk-sub">${SIDES[s.side].label}${s===flagship()?" · flagship":""}${now?" · acting now":""}</div><div class="name">${esc(s.name)}</div></span>${statusChip(s)}</div>`;
+  h+=`<div class="dk-bars">${bar("Hull",s.hull,s.maxHull,hullCls(s),hid,"Hull: at 0 the ship is disabled. Crits at 75%, 50% and 25%.")}
+    ${s.maxSh?bar("Shields",s.sh,s.maxSh,"sh",hid,`Shields soak damage before hull${s.regen?`, and regain ${s.regen} at the end of each round`:""}.`):""}
+    ${now&&live(s)?bar("Move",r1(s.moveLeft),speedOf(s),"mv",false,"Movement left this turn, in plot units."):""}</div>`;
+  const facts=[];
+  if(!hid)facts.push(`AC <b>${s.ac}${s.brace?"+2":""}</b>`);
+  facts.push(`Speed <b>${speedOf(s)}</b>`);
+  if(n)facts.push(`Units <b>${unitsOf(s)}/${n}</b>`);
+  if(e.max&&!hid)facts.push(`Edge ${pips(e)} <span style="color:var(--faint)">d${e.die}</span>`);
+  facts.push(`alt <b>${sgn(Math.round(s.y))}</b>`);
+  h+=`<div class="dk-row">${facts.join(" ")}</div>`;
+  if(S.fight&&live(s)&&!hid){
+    const sl=(on,l,tip)=>`<span class="slot${on?"":" used"}" data-tip="${esc(tip)}">${l}</span>`;
+    h+=`<div class="dk-row">${now?sl(!S.tact.a,"Action","The pilot's action this turn: Burn, Evasive flying, Tail, Line up…")+sl(!S.tact.b,"Bonus","The pilot's bonus action this turn: Come about, Lead the shot, Cut the corner."):""}${!swarmN(s)?sl(reactFree(s),"Reaction","One reaction per crew member per round: Brace, Jink, Hard brake, reaction fire."):""}</div>`;
+    if(party&&crewOn())h+=`<div class="dk-row">${stationsOf(s).filter(x=>x.st!=="helm").map(x=>{const k=seatKey(s.id,x.st),c=seated(s.id,x.st);
+      return `<span class="slot${!c||S.acted[k]?" used":""}${c?"":" empty"}" data-tip="${esc(`${x.label}: ${c?c.name+(S.acted[k]?" has acted this round":" is ready"):"nobody seated, so it can't act"}`)}"${S.pending[k]?' style="color:var(--amber);border-color:var(--amber)"':""}>${esc(x.st[0]==="w"?x.label.slice(0,12):x.label.split(" ")[0])}</span>`}).join("")}</div>`;
+  }
+  if(!hid&&s.weapons.length)h+=`<div class="dk-row" style="font-size:11.5px">${s.weapons.map((w,i)=>{const f=S.fight&&S.acted[seatKey(s.id,"w"+i)];
+    return `<span${f||w.down?' style="color:var(--faint)"':""}>${esc(w.name)} <span style="color:var(--faint)">${rangeText(w)}u</span>${w.ammo!=null?` <b>${w.ammo}</b> left`:""}${w.down?" · recharging":f?" ✓":""}</span>`}).join(" · ")}</div>`;
+  if(s.crits.length||s.boarders)h+=`<div class="row" style="margin-top:6px">${s.crits.map(k=>`<span class="chip" style="--c:var(--amber)" data-tip="${esc(CRIT_BY[k].text||"")}">${CRIT_BY[k].name}</span>`).join("")}${s.boarders?`<span class="chip" style="--c:var(--haz)">Boarders × ${s.boarders}</span>`:""}</div>`;
+  if(party&&(S.spool.s||S.spool.f))h+=`<div class="dk-row">Spool drive <span class="track s">${[0,1,2].map(i=>`<i class="${i<S.spool.s?"on":""}"></i>`).join("")}</span><span class="track f">${[0,1,2].map(i=>`<i class="${i<S.spool.f?"on":""}"></i>`).join("")}</span></div>`;
+  if(!WATCH){
+    if(!S.fight)h+=`<div class="next"><b>Next</b>${S.ships.some(x=>x.side==="enemy"&&live(x))?"Roll initiative to start the fight.":"Add some opposition in the Ships tab, then roll initiative."}</div><div class="row"><button class="btn pri sm" data-act="init">Roll initiative ▸</button></div>`;
+    else if(now&&npcSide(s))h+=`<div class="next"><b>Next</b>${S.autoNpc?"Its AI is flying this turn.":"Run its turn from the turn card: move, one maneuver, attack."}</div>${S.autoNpc?"":`<div class="row"><button class="btn sm" data-act="cardopen">Show turn card</button><button class="btn pri sm" data-act="endturn"${S.wait?" disabled":""}>End turn ▸</button></div>`}`;
+    else if(now)h+=`<div class="next">${nextHint(s)}</div><div class="row"><button class="btn pri sm" data-act="endturn"${S.wait?" disabled":""}>End turn ▸</button></div>`;
+    else if(S.fight&&cur())h+=`<div class="next"><b>Now</b>${esc(cur().name)}'s turn.</div>`;
+  }else if(S.fight&&cur()&&!now)h+=`<div class="dk-row" style="margin-top:6px">Now: <b style="color:${SIDES[cur().side].css}">${esc(cur().name)}</b>'s turn.</div>`;
+  el.innerHTML=h;
+}
+function guideHtml(){
+  if(WATCH)return `<h3>What you're looking at</h3><ul>
+    <li><b>The bar along the top</b> is the turn order: every ship, its hull (HP), shields (SH) and Edge dice (◆). The one lit up is acting now.</li>
+    <li><b>The plot</b> is the battle in 3D. Drag to orbit, pinch or scroll to zoom. Each ship stands on a stalk down to the level grid, so you can read its altitude.</li>
+    <li><b>Your ship's card</b> (bottom left, or under the plot on a phone) tracks its hull, shields, movement, Edge and which stations have acted.</li>
+    <li><b>Your station</b> (the side panel) has your controls once you pick your character.</li></ul>
+    <h3>On your ship's turn</h3><ol>
+    <li>Roll the d20 at the table and type the number in. Your bonus is added for you.</li>
+    <li>Press the button. The GM's screen resolves it and the log shows what happened.</li>
+    <li>Each station acts once per round. Reactions (Brace, Jink, reaction fire) can come on anyone's turn, once per round.</li></ol>
+    <p class="note" style="margin-top:10px">Hover any button (long-press on a phone) to read its rule.</p>`;
+  return `<h3>How a fight runs</h3><ol>
+    <li><b>Set up.</b> Add the party's ship and the opposition in the <b>Ships</b> tab. Optional: add the characters and seat them in <b>Crew</b>, and pick a place in <b>Battlefield</b>.</li>
+    <li><b>Roll initiative.</b> Every ship rolls once; they act from highest to lowest, every round.</li>
+    <li><b>On a party ship's turn:</b> ① the pilot moves up to the ship's Speed, ② takes one pilot action (plus maybe a bonus action), ③ each crew station acts once: gunners fire, the engineer repairs or reroutes power, sensors scan or jam. Then <b>End turn</b>.</li>
+    <li><b>On a hostile turn</b>, a turn card pops up over the plot: move, one maneuver, attack. Or let its AI do it.</li>
+    <li>After the last ship, the round ends: hazards drift, shields recharge, fires and boarders bite.</li></ol>
+    <h3>Reading the screen</h3><ul>
+    <li><b>Turn order</b> (the bar along the top): every ship's hull (HP), shields (SH), Edge dice (◆), crits and status. Click one to target it or select it.</li>
+    <li><b>The ship card</b> (bottom left of the plot): the acting ship's hull, shields, movement left, action, bonus and reaction, which stations have acted, and what to do next.</li>
+    <li><b>The plot</b>: drag to orbit, scroll to zoom, click a ship or hazard to pick it. Green and amber spheres show the focused ship's normal and long weapon range.</li>
+    <li><b>The log</b> (bottom right): every roll. Open it for the full history.</li>
+    <li><b>Tabs</b>: Turn (what the acting ship can do), Stations (guns, repairs, drive), Crew, Ships, Battlefield.</li></ul>
+    <h3>Words worth knowing</h3><ul>
+    <li><b>Edge</b> ◆: the pilot's dice for stunts, Jink (add it to AC when hit) and Hard brake. Pilot level sets how many.</li>
+    <li><b>Close-in</b>: within ${CLOSE_IN} units. Leaving a foe's close-in zone draws reaction fire.</li>
+    <li><b>Range</b>: each weapon has a normal and a long range (e.g. 20/32). Past normal: disadvantage. Past long: no shot.</li></ul>
+    <p class="note" style="margin-top:10px">Hover any button (long-press on a phone) to read its rule.</p>`;
+}
+function openGuide(){$("#helpBody").innerHTML=guideHtml();$("#helpDlg").showModal()}
+// Clicking a ship, on the plot or in the turn order.
+function pickShip(s){
+  const cs=cardShip();if(cs&&!UI.cardMin&&s!==cs&&team(s)!==team(cs)&&live(s)){UI.mtgt=s.id;render();return}
+  const c=cur();
+  if(UI.tab==="turn"&&c&&team(s)!==team(c)&&present(s)){UI.mtgt=s.id;render();return}
+  const a=ship(UI.att);
+  if(UI.tab==="fleet"||UI.tab==="field"){UI.fsel=s.id;UI.openShip[s.id]=true;if(UI.tab==="field"){render();return}}
+  else if(UI.tab!=="stations")UI.tab="stations";
+  if(UI.tab==="stations"){
+    if(a&&team(s)!==team(a)&&present(s))UI.tgt=s.id;
+    else if(live(s)){UI.att=s.id;UI.wpn=0;UI.bonus="";UI.eng=s.id}
+  }
+  render();
+}
 function render(){
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===UI.tab)));
   const pane=$("#pane");const sc=pane.scrollTop;
@@ -2416,8 +2655,8 @@ function render(){
   pane.innerHTML=WATCH?renderWatch():UI.tab==="turn"?renderTurn():UI.tab==="stations"?renderStations():UI.tab==="crew"?renderCrew():UI.tab==="field"?renderField():renderFleet();
   pane.scrollTop=sc;Tip.sweep();
   if(fk){const el=pane.querySelector(`[data-k="${CSS.escape(fk)}"]`);if(el){el.focus({preventScroll:true});if(sel)try{el.setSelectionRange(sel[0],sel[1])}catch(e){}}}
-  $("#hudRound").textContent=`Round ${S.round}`;
-  const c=cur();$("#hudTurn").textContent=S.fight?(c?`${c.name}'s turn`:"…"):"Initiative";
+  document.querySelectorAll(".tabs button").forEach(b=>{const k=b.dataset.tab,due=k==="stations"&&Object.keys(S.pending).length||k==="turn"&&!!S.rmove;
+    let d=b.querySelector(".dot");if(due&&!d){d=document.createElement("i");d.className="dot";b.appendChild(d)}else if(!due&&d)d.remove()});
   $("#nextBtn").textContent=S.fight?"End turn ▸":"Roll initiative ▸";$("#nextBtn").disabled=!!S.wait;
   const mvr=moveTarget();if(!mvr){UI.mv=false;UI.pmv=false}
   const mh=$("#moveHint");mh.hidden=!(UI.mv||UI.pmv);
@@ -2427,7 +2666,9 @@ function render(){
     :`Click a point (at altitude ${UI.malt===""?Math.round(mvr.y):UI.malt}), then raise or lower it. Shift-click flies there level.`;
   const lg=$("#log");
   lg.innerHTML=S.log.slice().reverse().map(e=>`<p class="${esc(e.c)}"><span class="r">R${e.r}</span> ${safeHtml(e.h)}</p>`).join("")||`<p class="r">Combat log is empty.</p>`;
-  renderCard();
+  if(!UI.logOpen)lg.scrollTop=0;
+  $("#logBox").classList.toggle("open",!!UI.logOpen);$("#logTog").textContent=UI.logOpen?"Less ▾":"Show all ▴";
+  renderCard();renderTracker();renderDock();
   FX.labels();
   if(!WATCH)Live.push();
 }
@@ -2444,7 +2685,8 @@ function moveTarget(){
   return m&&live(m)&&!moveBlock(m)&&budgetOf(m)>.05?m:null;
 }
 // The side panel, the GM's turn card and its pill share the same controls.
-function onPanes(type,fn,cap){for(const id of ["#pane","#npcCard","#npcPill"])$(id).addEventListener(type,fn,cap)}
+function onPanes(type,fn,cap){for(const id of ["#pane","#npcCard","#npcPill","#tracker","#dock","#logBox"])$(id).addEventListener(type,fn,cap)}
+$("#helpBtn").addEventListener("click",openGuide);
 $("#pane").addEventListener("submit",e=>{if(e.target.id!=="joinForm")return;e.preventDefault();
   const c=e.target.code.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);if(c)location.search="?watch="+c});
 onPanes("input",e=>{
@@ -2498,6 +2740,7 @@ onPanes("change",e=>{
 });
 onPanes("toggle",e=>{const d=e.target;if(!d.dataset)return;if(d.dataset.ship)UI.openShip[d.dataset.ship]=d.open;if(d.dataset.cardtr)UI.cardTraits=d.open;if(d.dataset.sb)UI.openSb[d.dataset.sb]=d.open},true);
 onPanes("click",e=>{
+  const lt=e.target.closest("[data-act=logtog]");if(lt){UI.logOpen=!UI.logOpen;render();return}
   if(WATCH){
     const pb=e.target.closest("[data-pact]");if(pb&&!pb.disabled){UI.localMsg="";playerSend(pb);return}
     const b=e.target.closest("[data-act]");if(!b)return;
@@ -2514,6 +2757,7 @@ onPanes("click",e=>{
   const say=why=>{if(why){log(why,"miss");commit()}};
   switch(b.dataset.act){
     case "init":say(rollInit());break;
+    case "pick":if(s)pickShip(s);break;
     case "autonpc":S.autoNpc=b.checked;UI.cardMin=S.autoNpc;commit();if(S.autoNpc)continueAuto();break;
     case "shells":UI.noShells=!b.checked;render();break;
     case "clearinit":if(confirm("Clear initiative? Turns start over when you roll again."))clearInit();break;
@@ -3036,16 +3280,7 @@ const FX=(()=>{
       if(UI.tab==="stations"&&HAZ[h.kind].hp){UI.tgt=-h.id}else{UI.tab="field";UI.hsel=h.id}
       render();return;
     }
-    const s=ship(o.userData.sid);if(!s)return;
-    const cs=cardShip();if(cs&&!UI.cardMin&&s!==cs&&team(s)!==team(cs)&&live(s)){UI.mtgt=s.id;render();return}
-    const a=ship(UI.att);
-    if(UI.tab==="fleet"||UI.tab==="field"){UI.fsel=s.id;UI.openShip[s.id]=true;if(UI.tab==="field"){render();return}}
-    else if(UI.tab!=="stations")UI.tab="stations";
-    if(UI.tab==="stations"){
-      if(a&&team(s)!==team(a)&&present(s))UI.tgt=s.id;
-      else if(live(s)){UI.att=s.id;UI.wpn=0;UI.bonus="";UI.eng=s.id}
-    }
-    render();
+    const s=ship(o.userData.sid);if(s)pickShip(s);
   });
   const focus=V();
   $("#viewBtn").addEventListener("click",()=>{cam.position.copy(focus).add(HOME);if(ctl){ctl.target.copy(focus);ctl.update()}else cam.lookAt(focus)});
@@ -3381,10 +3616,12 @@ if(WATCH){
     const pat=PRESETS.find(p=>p.side==="party");if(pat)S.ships.push(makeShip(pat));
     const foe=PRESETS.find(p=>p.name==="Pirate gunboat");if(foe)S.ships.push(makeShip(foe));
     setBackdrop("belt",true);
-    log("Sample encounter loaded. Add ships in the Fleet tab; pick a battlefield and hazards in the Field tab.","sys");
+    log("Sample encounter loaded. Add ships in the Ships tab; pick a battlefield and hazards in the Battlefield tab.","sys");
     log("Round 1.","r");
   }
   FX.sync();render();Live.resume();
 }
+// The quick guide opens by itself the first time this browser opens the plot.
+try{if(!localStorage.getItem("drift-tactical-guide")){localStorage.setItem("drift-tactical-guide","1");if(!WATCH||ROOM_IN)openGuide()}}catch(e){}
 </script>
 </body></html>
