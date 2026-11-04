@@ -359,17 +359,17 @@ code{font-family:var(--f-data);color:var(--teal)}
    </ol>
    <h4>The pilot</h4>
    <ul>
-    <li><strong>Moves</strong> the ship up to its Speed, in 3D. Fast passes through hazards need pilot checks; leaving a hostile's Close range draws reaction fire.</li>
+    <li><strong>Moves</strong> the ship up to its Speed, in 3D. Fast passes through hazards need pilot checks; pulling out of a hostile's 10-unit close-in zone draws reaction fire.</li>
     <li><strong>Acts:</strong> Burn, Evasive flying, Break lock, Line up, Tail, Ready.</li>
     <li><strong>Edge stunts:</strong> Jink, Lead the shot, Thread the needle, Hard brake, Slingshot, Cut the drive.</li>
    </ul>
   </div>
   <div class="panel">
-   <h4>Range bands</h4>
-   <p><strong>Long:</strong> missiles, lasers at disadvantage. <strong>Medium:</strong> lasers and missiles. <strong>Close:</strong> lasers, harpoons, boarding, spells. No missiles at Close.</p>
-   <p class="dim">On the tactical plot, range is measured: Close under 10 units, Medium under 20, Long under 32. Beyond 32 nothing reaches. Altitude counts: every distance is measured in 3D.</p>
+   <h4>Ranges</h4>
+   <p>The battlefield is real 3D space, measured in units, altitude included. Every weapon has a <strong>normal and a long range</strong>, like a 5e ranged weapon: lasers 20/32 fire normally out to 20 units and at disadvantage out to 32. Harpoons, flak and boarding gear reach 10. Missiles and heavy mains reach 32 but can't fire inside 10 units.</p>
+   <p class="dim">The <strong>close-in zone</strong> is 10 units around a ship: pulling out of a hostile's draws reaction fire, and stealth, nebulae and running dark only protect you beyond it. Spells use their own ranges (1 unit ≈ 100 ft is a good start).</p>
    <h4>Escape by drive spool</h4>
-   <p>3 successes before 3 failures (Int + tinker's tools, DC 13). Not at Close. Fail by 5+: roll a crit on your own ship.</p>
+   <p>3 successes before 3 failures (Int + tinker's tools, DC 13). Not with a hostile within 10 units. Fail by 5+: roll a crit on your own ship.</p>
    <h4>At 0 hull</h4>
    <p>Disabled, 1 hour of emergency life support. A disabled ship takes no turns: it can't fly, spool the drive, or act from any station.</p>
    <h4>Empty stations</h4>
@@ -412,8 +412,8 @@ code{font-family:var(--f-data);color:var(--teal)}
    <dl>
     <dt><span class="mk">H</span></dt><dd><strong>Helm</strong> (cockpit, upper starboard: the pilot's chair). Rolls initiative, flies the ship on its turn, takes the pilot actions and spends the Edge dice.</dd>
     <dt><span class="mk">S</span></dt><dd><strong>Sensors / Comms</strong> (cockpit, port console). Scan, Jam, Hail, Help.</dd>
-    <dt><span class="mk">G1</span></dt><dd><strong>Gunner, dorsal turret</strong> (upper port, the chair by the gun). Lasers 2d8, any arc.</dd>
-    <dt><span class="mk">G2</span></dt><dd><strong>Gunner, stern launcher</strong> (aft of the airlock). Missiles 3d10, Medium/Long, rear arc: at a ship tailing you, or after your pilot comes about.</dd>
+    <dt><span class="mk">G1</span></dt><dd><strong>Gunner, dorsal turret</strong> (upper port, the chair by the gun). Lasers 2d8, 20/32 units, any arc.</dd>
+    <dt><span class="mk">G2</span></dt><dd><strong>Gunner, stern launcher</strong> (aft of the airlock). Missiles 3d10, 10–32 units, rear arc: at a ship tailing you, or after your pilot comes about.</dd>
     <dt><span class="mk">E</span></dt><dd><strong>Engineer</strong> (either reactor room; walk to the other to fix a scram there). Shields, Overcharge, Boost, Damage control, Spool drive.</dd>
     <dt><span class="mk crit">1</span></dt><dd>Red squares are the <strong>critical damage</strong> rooms (d6 table below). A PC has to be in that room to fix it.</dd>
    </dl>
@@ -439,15 +439,15 @@ code{font-family:var(--f-data);color:var(--teal)}
   <tr><td class="n">6</td><td><strong>Fire in the bunks:</strong> 1d6 hull each round.</td><td>Bunks (DC 12)</td></tr>
  </table></div>
  <div class="grid">
-  <div class="stat"><h4>Patience</h4><div class="sub">K. Vash's dropship · map: PBMI DropShip</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 25 · <b>Shields</b> 10 · 8 bunks</div><div class="line"><b>Dorsal turret</b> lasers 2d8, any arc<br><b>Stern launcher</b> missiles 3d10, Medium/Long, rear arc: fires at a ship tailing you, or after your pilot comes about. 6 loaded + 6 spare.</div><div class="line">Twin reactors · cargo bay with loader arms (2d6 slam or DC 13 pin) · KEEP CLEAR bay = airlock · 4 EVA hatches.</div><div class="line secret">Vash fitted a relic shard behind the cockpit panel years ago. It's why the Patience's luck is suspiciously good near Corinthian space.</div></div>
-  <div class="stat"><h4>Benediction</h4><div class="sub">Wandering Choir corsair</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 20 · <b>Shields</b> 5 (+5/rd) · <b>Pilot</b> +4</div><div class="line"><b>Lasers</b> +5 2d8 · <b>Harpoon</b> +5, Close: tethered, boarders next round (break DC 14 or cut: AC 12, 10 HP).</div></div>
-  <div class="stat"><h4>Due Diligence</h4><div class="sub">Sable corvette. Don't fight it.</div><div class="line"><b>AC</b> 16 · <b>Hull</b> 60 · <b>Shields</b> 20 (+10/rd) · <b>Pilot</b> +6 · faster</div><div class="line"><b>Railgun</b> +7 4d10, twice per round at Close · point defense: missiles at disadvantage.</div></div>
+  <div class="stat"><h4>Patience</h4><div class="sub">K. Vash's dropship · map: PBMI DropShip</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 25 · <b>Shields</b> 10 · 8 bunks</div><div class="line"><b>Dorsal turret</b> lasers 2d8, 20/32, any arc<br><b>Stern launcher</b> missiles 3d10, 10–32 units, rear arc: fires at a ship tailing you, or after your pilot comes about. 6 loaded + 6 spare.</div><div class="line">Twin reactors · cargo bay with loader arms (2d6 slam or DC 13 pin) · KEEP CLEAR bay = airlock · 4 EVA hatches.</div><div class="line secret">Vash fitted a relic shard behind the cockpit panel years ago. It's why the Patience's luck is suspiciously good near Corinthian space.</div></div>
+  <div class="stat"><h4>Benediction</h4><div class="sub">Wandering Choir corsair</div><div class="line"><b>AC</b> 13 · <b>Hull</b> 20 · <b>Shields</b> 5 (+5/rd) · <b>Pilot</b> +4</div><div class="line"><b>Lasers</b> +5 2d8 · <b>Harpoon</b> +5, 10 units: tethered, boarders next round (break DC 14 or cut: AC 12, 10 HP).</div></div>
+  <div class="stat"><h4>Due Diligence</h4><div class="sub">Sable corvette. Don't fight it.</div><div class="line"><b>AC</b> 16 · <b>Hull</b> 60 · <b>Shields</b> 20 (+10/rd) · <b>Pilot</b> +6 · faster</div><div class="line"><b>Railgun</b> +7 4d10, twice per round within 10 units · point defense: missiles at disadvantage.</div></div>
  </div>
  <h3>Positioning, swarms and hazards (the tactical plot)</h3>
  <div class="grid">
   <div class="panel">
    <h4>Movement</h4>
-   <p>Every ship has a position, an altitude and a Speed (units it can fly on its turn). The pilot flies the party's ship: click the plot (a player taps their phone) or use a quick move (close in, open range, climb, dive, flank, into cover). Hostile and allied ships fly a standing order on their turn: hold, close on a target, close to board, ram, hold at a band, circle, escort, fly to a waypoint, or run. The GM can change any order or drag a ship to a new spot. A reactor scram halves Speed. Disabled ships drift. Ships stop short of rocks.</p>
+   <p>Every ship has a position, an altitude and a Speed (units it can fly on its turn). The pilot flies the party's ship: click the plot (a player taps their phone) or use a quick move (close in, open range, climb, dive, flank, into cover). Hostile and allied ships fly a standing order on their turn: hold, close on a target, close to board, ram, hold at a distance, circle (climbing and diving as it goes), escort, fly to a waypoint, or run. The GM can change any order or drag a ship to a new spot. A reactor scram halves Speed. Disabled ships drift. Ships stop short of rocks.</p>
    <p>Line of fire: a solid hazard (asteroid, wreck, station) between shooter and target gives disadvantage. Explosives, flares and the plot's own range readout all use the same distances.</p>
    <h4>Swarms</h4>
    <p>Several small units share one hull (drone swarms, jet ravagers, fighter wings); each lost share is one unit gone. Weapons marked <em>per</em> roll once per unit still flying. Area weapons do double damage to them. No crits, no pilot actions: they just fly their order.</p>
@@ -462,13 +462,13 @@ code{font-family:var(--f-data);color:var(--teal)}
     <li><strong>Debris field:</strong> +2 AC inside, difficult space; a fast pass is DC 12 or 1d6. <strong>Ring plane:</strong> the same, DC 13 or 2d6.</li>
     <li><strong>Mine:</strong> goes off when a ship ends within 3 units or when shot (AC 12, 4 HP): 4d6 within 8.</li>
     <li><strong>Explosives:</strong> fuel, charges, ordnance. Shot (AC 10, 8 HP): 5d6 within 9. Chains.</li>
-    <li><strong>Nebula:</strong> difficult space; beyond Close, fire into or out of it at disadvantage.</li>
+    <li><strong>Nebula:</strong> difficult space; from more than 10 units away, fire into or out of it at disadvantage.</li>
     <li><strong>Ion storm:</strong> no shield regen, −1d6 shields at the end of each round. <strong>Heat:</strong> 1d6 at the end of each round.</li>
     <li><strong>Gravity well:</strong> pulls up to 5 units at the end of each round, harder near the core; flying through the core is DC 15 or 4d10. Slingshot spends Edge for Speed.</li>
     <li><strong>Current:</strong> carries ships along its flow; crossing against it is DC 12 or be carried off. <strong>Null zone:</strong> no shields, no engineering, no thrust; ships coast.</li>
    </ul>
    <h4>Traits and weapon options</h4>
-   <p><em>armor:N</em> hull damage −N a hit · <em>small</em> heavy weapons at disadvantage · <em>stealth</em> beyond Close, disadvantage unless scanned · <em>volatile</em> explodes when disabled (8 units) · <em>repair:N</em> friends within Close regain N hull at upkeep · <em>screen</em> missiles at friends within 6 units at disadvantage · <em>edge:N</em> the pilot's Edge dice · <em>agile</em> +2 to pilot checks · <em>ponderous</em> disadvantage on hazard checks and Tail, Burn adds half Speed. Weapons: <em>rear</em> (rear arc), <em>heavy</em>, <em>area</em>, <em>ion</em> (double, shields only), <em>pierce</em> (ignores shields), <em>ram</em> (a ship takes half back; a swarm spends a unit).</p>
+   <p><em>armor:N</em> hull damage −N a hit · <em>small</em> heavy weapons at disadvantage · <em>stealth</em> from more than 10 units, disadvantage unless scanned · <em>volatile</em> explodes when disabled (8 units) · <em>repair:N</em> friends within 10 units regain N hull at the end of each round · <em>screen</em> missiles at friends within 6 units at disadvantage · <em>edge:N</em> the pilot's Edge dice · <em>agile</em> +2 to pilot checks · <em>ponderous</em> disadvantage on hazard checks and Tail, Burn adds half Speed. Weapons: <em>rear</em> (rear arc), <em>heavy</em>, <em>area</em>, <em>ion</em> (double, shields only), <em>pierce</em> (ignores shields), <em>ram</em> (a ship takes half back; a swarm spends a unit).</p>
    <p class="dim">Battlefields (Field tab) cover every system on the chart plus generic ones. Some roll an event at the end of each round: flares that hit anyone not sheltered behind rock, surges, falling rocks.</p>
   </div>
  </div>
@@ -535,9 +535,9 @@ code{font-family:var(--f-data);color:var(--teal)}
   </div>
   <div class="panel">
    <h4>Reaction fire</h4>
-   <p>When a ship <strong>leaves the Close range</strong> (10 units) of a hostile ship, a gunner on that hostile can use their reaction to fire one weapon that reaches at Close (not a rear-arc one), at the moving ship, at the point it leaves. A swarm fires one unit's worth. Break lock prevents it.</p>
+   <p>When a ship <strong>pulls out of a hostile's close-in zone</strong> (10 units), a gunner on that hostile can use their reaction to fire one weapon that can reach (not a rear-arc one), at the moving ship, at the point it leaves. A swarm fires one unit's worth. Break lock prevents it.</p>
    <h4>Breaking away</h4>
-   <p>End your turn Beyond (more than 32 units from every hostile ship) with nobody tailing you. If no hostile ends its turn within Long of you before your next turn, you're gone. This replaces Break away from 04; the drive spool still works as written.</p>
+   <p>End your turn out of reach of every hostile ship's weapons (farther than its longest long range) with nobody tailing you. If no hostile ends its turn with you in its reach before your next turn, you're gone. This replaces Break away from 04; the drive spool still works as written.</p>
    <h4>Reactor strain</h4>
    <p>Burning on two turns in a row: the engineer makes a DC 12 check on the second (Int + tinker's tools). Failure, or nobody in Engineering: reactor scram (crit 4).</p>
   </div>
@@ -548,9 +548,9 @@ code{font-family:var(--f-data);color:var(--teal)}
   <tr><th>Pilot option</th><th>Cost</th><th>Effect</th></tr>
   <tr><td><strong>Burn</strong> (Dash)</td><td>Action</td><td>Extra movement equal to your Speed this turn. See reactor strain.</td></tr>
   <tr><td><strong>Evasive flying</strong> (Dodge)</td><td>Action</td><td>Attacks on your ship have disadvantage until the start of your next turn. Replaces Evade.</td></tr>
-  <tr><td><strong>Break lock</strong> (Disengage)</td><td>Action</td><td>Leaving Close range doesn't provoke reaction fire this turn.</td></tr>
+  <tr><td><strong>Break lock</strong> (Disengage)</td><td>Action</td><td>Pulling out of close-in zones doesn't draw reaction fire this turn.</td></tr>
   <tr><td><strong>Line up</strong> (Help)</td><td>Action</td><td>One gunner on your ship has advantage on their next attack this turn. Replaces Line up.</td></tr>
-  <tr><td><strong>Tail</strong></td><td>Action</td><td>Contested pilot checks against a ship within Medium (see Tailing).</td></tr>
+  <tr><td><strong>Tail</strong></td><td>Action</td><td>Contested pilot checks against a ship within 20 units (see Tailing).</td></tr>
   <tr><td><strong>Ready</strong></td><td>Action</td><td>Name a trigger. When it happens, use your reaction to move up to half your Speed.</td></tr>
   <tr><td><strong>Come about</strong></td><td>Bonus action</td><td>Swing the stern toward one target: rear-arc weapons can fire at it this turn.</td></tr>
   <tr><td><strong>Brace</strong></td><td>Reaction</td><td>+2 AC until the end of the current turn.</td></tr>
@@ -580,13 +580,13 @@ code{font-family:var(--f-data);color:var(--teal)}
     <tr><td><strong>Slingshot</strong></td><td>During your move</td><td>When your path passes through a gravity well (not its core): extra Speed equal to twice the die this turn, and the well doesn't pull you at the end of the round.</td></tr>
     <tr><td><strong>Press</strong></td><td>On a Tail contest</td><td>Add the die to your pilot check, attacking or breaking free.</td></tr>
     <tr><td><strong>Hard brake</strong></td><td>Reaction</td><td>When a ship tailing you starts to move: its pilot makes a check against DC 10 + the die. On a failure it overshoots: its Tail ends, and you're now tailing it.</td></tr>
-    <tr><td><strong>Cut the drive</strong></td><td>Bonus action, after your move</td><td>Go dark: your ship counts as <em>stealth</em> to every ship beyond Close until you next move or fire. A successful Scan against you ends it.</td></tr>
+    <tr><td><strong>Cut the drive</strong></td><td>Bonus action, after your move</td><td>Go dark: your ship counts as <em>stealth</em> to every ship more than 10 units away until you next move or fire. A successful Scan against you ends it.</td></tr>
    </table></div>
 
  <h3>Tailing</h3>
  <div class="grid">
   <div class="panel">
-   <p><strong>To tail:</strong> use your action against a ship within Medium (under 20 units). Make contested pilot checks; you win ties. If you win, you're on its tail.</p>
+   <p><strong>To tail:</strong> use your action against a ship within 20 units. Make contested pilot checks; you win ties. If you win, you're on its tail.</p>
    <ul>
     <li>Your gunners have <strong>advantage</strong> against it, and its attacks against your ship have <strong>disadvantage</strong>.</li>
     <li>When it moves, you can use your reaction to follow, moving up to your Speed after its move.</li>
@@ -597,7 +597,7 @@ code{font-family:var(--f-data);color:var(--teal)}
    <p><strong>The tail ends</strong> when:</p>
    <ul>
     <li>the tailed ship uses its action to break free (contested pilot checks, and it wins ties);</li>
-    <li>the two ships end any turn more than Medium apart;</li>
+    <li>the two ships end any turn more than 20 units apart;</li>
     <li>it Hard brakes you;</li>
     <li>or your helm is empty or disabled.</li>
    </ul>
@@ -609,9 +609,9 @@ code{font-family:var(--f-data);color:var(--teal)}
  <div class="tbl"><table>
   <tr><th>Before</th><th>Now</th></tr>
   <tr><td>Helm contest every round</td><td>Initiative once, at the start. The opposed roll happens only in Tail.</td></tr>
-  <tr><td>Shift range</td><td>Fly there.</td></tr>
+  <tr><td>Range bands (Close, Medium, Long) and Shift range</td><td>Real distances in 3D: weapon ranges in units, and you fly where you want.</td></tr>
   <tr><td>Line up, Evade, Brace</td><td>Pilot actions (Line up, Evasive flying) and a reaction (Brace).</td></tr>
-  <tr><td>Break away (at Long)</td><td>Breaking away (end your turn Beyond with nobody tailing you).</td></tr>
+  <tr><td>Break away (at Long)</td><td>Breaking away (end your turn out of every hostile's reach, with nobody tailing you).</td></tr>
   <tr><td>Engineer: <em>Boost engines</em>, pilot advantage</td><td><em>Boost engines</em>: +half Speed this turn. Not during a reactor scram.</td></tr>
   <tr><td>Sensors: <em>Help</em></td><td>Also <em>Call the line</em>: the pilot has advantage on their next hazard check.</td></tr>
   <tr><td>Patience stern launcher: fires only when your pilot wins the helm</td><td>Rear arc: fires at a ship tailing you, or at any target after your pilot uses Come about.</td></tr>
@@ -621,14 +621,14 @@ code{font-family:var(--f-data);color:var(--teal)}
 
  <h3>An example turn</h3>
  <div class="panel">
-  <p>The Patience (Speed 8) wins initiative. Its pilot dives 4 units into the ring plane. That's difficult space, so it costs all 8, and it's more than half Speed through a hazard: a DC 13 check, passed. The pilot spends an Edge die on <strong>Lead the shot</strong>, and the turret gunner fires at the Benediction with +d8 and hits. The engineer <strong>Boosts</strong> (+4 Speed), so the pilot pulls up behind a rock. That leaves the Benediction's Close range, and its gunner takes reaction fire. The pilot answers with <strong>Jink</strong>: +5 AC, a miss.</p>
+  <p>The Patience (Speed 8) wins initiative. Its pilot dives 4 units into the ring plane. That's difficult space, so it costs all 8, and it's more than half Speed through a hazard: a DC 13 check, passed. The pilot spends an Edge die on <strong>Lead the shot</strong>, and the turret gunner fires at the Benediction with +d8 and hits. The engineer <strong>Boosts</strong> (+4 Speed), so the pilot pulls up behind a rock. That pulls it out of the Benediction's close-in zone, and its gunner takes reaction fire. The pilot answers with <strong>Jink</strong>: +5 AC, a miss.</p>
   <p style="margin:0">Then it's the Benediction's turn. It tries to <strong>Tail</strong> the Patience.</p>
  </div>
 
  <h3>Open questions for playtest</h3>
  <ul>
-  <li>Is proficiency bonus enough Edge for a whole fight, or should a short lull (no hostile within Long for a round) give one back?</li>
-  <li>Does reaction fire make Close too sticky for ships without Break lock?</li>
+  <li>Is proficiency bonus enough Edge for a whole fight, or should a short lull (no hostile in reach for a round) give one back?</li>
+  <li>Does reaction fire make the close-in zone too sticky for ships without Break lock?</li>
   <li>Should Tail's advantage and disadvantage apply only to forward weapons once ships have proper facing?</li>
  </ul>
 </section>

@@ -9,7 +9,7 @@
 <style>
 /* Ship-combat engine for the table. Runs the GM partition's flight rules (gm/index.html#flight) with its
    "Ship combat: stations" rules: initiative turns, free 3D movement with hazard checks and reaction fire,
-   pilot actions and Edge stunts, range bands (Close / Medium / Long), shields then hull, d6 crits.
+   pilot actions and Edge stunts, weapon ranges in plot units (measured in 3D), shields then hull, d6 crits.
    One screen, GM-driven (share it on a TV or a video call). State lives in this browser's localStorage. */
 :root{
   --void:#04050d; --panel:#0e1230; --panel-2:#151a40; --rule:#252b5a; --rule-2:#3a4282;
@@ -201,17 +201,17 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
    <label class="f">Shields<input type="number" name="maxSh" min="0" max="9999"></label>
    <label class="f">Regen / rd<input type="number" name="regen" min="0" max="999"></label>
    <label class="f">Pilot bonus<input type="number" name="pilot" min="-10" max="30"></label>
-   <label class="f">Enters at<select name="band"><option value="C">Close</option><option value="M">Medium</option><option value="L">Long</option></select></label>
+   <label class="f">Enters at (units)<input type="number" name="at" min="3" max="60"></label>
    <label class="f">Speed / rd<input type="number" name="spd" min="0" max="40"></label>
    <label class="f">Standing order<select name="ai"></select></label>
   </div>
   <label class="chk"><input type="checkbox" name="pd"> Point defense (missiles attack it at disadvantage)</label>
   <label class="f">Traits<input type="text" name="traits" maxlength="120" spellcheck="false" placeholder="armor:2 swarm:6 small volatile:3d6 stealth repair:3 screen edge:2 agile ponderous"></label>
   <label class="f">Weapons (one per line)<textarea name="weapons" rows="5" spellcheck="false"></textarea></label>
-  <p class="help">Format: <code>Name | +attack | damage | bands | options | note</code><br>
-   Bands: <code>C</code>lose (under 10 units), <code>M</code>edium (under 20), <code>L</code>ong (under 32), e.g. <code>CML</code>. Beyond 32 nothing can fire.<br>
-   Options: <code>dis:L</code> (disadvantage at Long), <code>missile</code>, <code>rear</code> (rear arc: fires only at a ship tailing you, or after the pilot's Come about), <code>ammo:6</code>, <code>heavy</code> (disadvantage against small targets), <code>area</code> (double damage to swarms), <code>ion</code> (double damage, shields only), <code>pierce</code> (ignores shields), <code>per</code> (damage once per swarm unit), <code>board</code> (a hit puts a boarding squad aboard), <code>ram</code> (a swarm spends a unit; a ship takes half the damage back). The note is shown on a hit.<br>
-   Traits: <code>armor:N</code> (hull damage −N per hit), <code>swarm:N</code> (N units share the hull; no crits, no pilot actions), <code>small</code>, <code>stealth</code> (beyond Close, attacks at disadvantage unless scanned), <code>volatile:3d6</code> (explodes when disabled, 8 units), <code>repair:N</code> (friends within Close regain N hull at the end of each round), <code>screen</code> (missiles at friends within 6 units at disadvantage), <code>edge:N</code> (the pilot's Edge dice, d8), <code>agile</code> (+2 to pilot checks), <code>ponderous</code> (disadvantage on hazard checks and Tail; Burn adds half Speed).</p>
+  <p class="help">Format: <code>Name | +attack | damage | range | options | note</code><br>
+   Range in plot units, normal/long: <code>20/32</code> fires normally out to 20 and at disadvantage out to 32; <code>10</code> reaches 10 and no farther.<br>
+   Options: <code>min:10</code> (can't fire inside 10 units, e.g. missiles), <code>missile</code>, <code>rear</code> (rear arc: fires only at a ship tailing you, or after the pilot's Come about), <code>ammo:6</code>, <code>heavy</code> (disadvantage against small targets), <code>area</code> (double damage to swarms), <code>ion</code> (double damage, shields only), <code>pierce</code> (ignores shields), <code>per</code> (damage once per swarm unit), <code>board</code> (a hit puts a boarding squad aboard), <code>ram</code> (a swarm spends a unit; a ship takes half the damage back). The note is shown on a hit.<br>
+   Traits: <code>armor:N</code> (hull damage −N per hit), <code>swarm:N</code> (N units share the hull; no crits, no pilot actions), <code>small</code>, <code>stealth</code> (from more than 10 units away, attacks at disadvantage unless scanned), <code>volatile:3d6</code> (explodes when disabled, 8 units), <code>repair:N</code> (friends within 10 units regain N hull at the end of each round), <code>screen</code> (missiles at friends within 6 units at disadvantage), <code>edge:N</code> (the pilot's Edge dice, d8), <code>agile</code> (+2 to pilot checks), <code>ponderous</code> (disadvantage on hazard checks and Tail; Burn adds half Speed).</p>
   <div class="row spread">
    <button class="btn" value="cancel" formnovalidate type="submit">Cancel</button>
    <button class="btn pri" value="ok" type="submit">Save ship</button>
@@ -238,14 +238,14 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
 <script>
 "use strict";
 /* ============================== rules data ============================== */
-const BANDS=["C","M","L"];
-const BAND_NAME={C:"Close",M:"Medium",L:"Long",X:"Beyond"};
-// Range is measured, not declared: Close under 10 units, Medium under 20, Long under 32. Beyond that, no weapon reaches.
-const EDGE={C:10,M:20,L:32};
-const BAND_MID={C:6,M:15,L:26,X:38};
-const BAND_HEX={C:0xff6b7a,M:0xffb35c,L:0x6ff3e0,X:0x6a70a2};
-const BAND_CSS={C:"var(--haz)",M:"var(--amber)",L:"var(--teal)",X:"var(--faint)"};
-const bandOf=d=>d<EDGE.C?"C":d<EDGE.M?"M":d<EDGE.L?"L":"X";
+// Everything is measured in plot units, in 3D. There are no range bands: each weapon has a normal and a long range
+// (beyond normal: disadvantage; beyond long: no shot) and maybe a minimum range.
+const CLOSE_IN=10;      // the close-in zone: leaving a foe's draws reaction fire; stealth, nebulae and running dark only work beyond it
+const TAIL_R=20;        // Tail needs the target within this; a tail breaks beyond it
+const START_AT={C:6,M:15,L:26};  // older templates' entry bands, as distances
+// Reach colours: in normal range of some weapon, only at long range, out of reach.
+const REACH_HEX={near:0x8fe3a0,long:0xffb35c,none:0x6a70a2},REACH_CSS={near:"var(--ok)",long:"var(--amber)",none:"var(--faint)"};
+const REACH_NAME={near:"in range",long:"long range",none:"out of range"};
 const BLAST=8;          // volatile ships explode out to this many units
 const SCREEN_R=6;       // a screen covers friends this close
 const WORLD=60;         // ships and hazards stay within this many units of the origin
@@ -255,13 +255,19 @@ const SIDES={
   enemy:{label:"Hostile",css:"var(--haz)",hex:0xff6b7a},
 };
 const MODELS=["dropship","corsair","corvette","fighter","capital","swarm","trooper","hauler","platform","bomber","tug","cathedral"];
-// Standing orders. Each ship flies its order at upkeep, up to its speed.
+// Standing orders. A hostile or allied ship flies its order on its turn, up to its speed.
+// keep and orbit hold a distance (order.d, in units) from the target.
 const ORDERS={
   hold:"Hold position", close:"Close on target", board:"Close to board", ram:"Ram",
-  "keep:C":"Hold at Close", "keep:M":"Hold at Medium", "keep:L":"Hold at Long",
-  orbit:"Circle target", escort:"Escort", goto:"Fly to waypoint", flee:"Run",
+  keep:"Hold at a distance", orbit:"Circle target", escort:"Escort", goto:"Fly to waypoint", flee:"Run",
 };
-const ORDER_NEEDS_TGT=new Set(["close","board","ram","keep:C","keep:M","keep:L","orbit","escort"]);
+const ORDER_NEEDS_TGT=new Set(["close","board","ram","keep","orbit","escort"]);
+// "keep:15" (or an older "keep:M") -> ["keep", 15]
+function parseAi(v,side){
+  const m=/^keep:(\w+)$/.exec(String(v||""));
+  if(m)return ["keep",START_AT[m[1].toUpperCase()]||clamp(parseFloat(m[1])||15,3,60)];
+  return [ORDERS[v]?v:defaultAi(side),v==="orbit"?12:15];
+}
 // Hazard kinds. r: default radius. solid: collides and blocks fire. cover: +AC to a ship inside.
 // A hazard with hh (half-height) is a flat disc r wide and 2·hh thick: a ring plane, a cloud deck, a mine layer.
 // slow: difficult space (each unit costs 2). check/fail: a ship that spends more than half its Speed and flies
@@ -274,7 +280,7 @@ const HAZ={
   rocks:{label:"Ring plane",col:0xb8a894,r:14,cover:2,slow:true,check:13,fail:"2d6",text:"Rock and ice. Difficult space. Inside: +2 AC. Flying through at more than half Speed: DC 13 or 2d6."},
   mine:{label:"Mine",col:0xff6b7a,r:.8,trigger:3,blast:8,boom:"4d6",hp:4,ac:12,text:"Goes off when a ship ends within 3 units, or when shot (AC 12, 4 HP): 4d6 within 8."},
   charge:{label:"Explosives",col:0xffb35c,r:1.2,blast:9,boom:"5d6",hp:8,ac:10,text:"Fuel, charges, ordnance. Shoot it (AC 10, 8 HP): 5d6 to every ship within 9."},
-  nebula:{label:"Nebula",col:0xc9a6ff,r:10,obscure:true,slow:true,text:"Difficult space. Beyond Close, fire into or out of it is at disadvantage."},
+  nebula:{label:"Nebula",col:0xc9a6ff,r:10,obscure:true,slow:true,text:"Difficult space. From more than 10 units away, fire into or out of it is at disadvantage."},
   ion:{label:"Ion storm",col:0x8fb4ff,r:10,drain:"1d6",text:"Inside: no shield regen, and shields lose 1d6 at the end of each round."},
   heat:{label:"Heat",col:0xff8a4a,r:10,burn:"1d6",text:"Corona, exhaust or flare-off. Inside: 1d6 at the end of each round, shields first."},
   well:{label:"Gravity well",col:0x8a6aff,r:28,core:4,pull:5,coreDmg:"4d10",text:"Pulls ships toward its centre at the end of each round (up to 5 units, harder near the core). Flying through the core: DC 15 or 4d10. Slingshot: Edge for extra Speed."},
@@ -296,22 +302,22 @@ const DC_SOLID=14,DC_MINE=14,DC_CURRENT=12,DC_CORE=15,NEAR_SOLID=2;
 const PILOT={
   burn:{n:"Burn",c:"a",t:"Extra movement equal to your Speed (half if ponderous). Two turns running strains the reactor."},
   evade:{n:"Evasive flying",c:"a",t:"Attacks on your ship have disadvantage until your next turn."},
-  lock:{n:"Break lock",c:"a",t:"Leaving Close doesn't provoke reaction fire this turn."},
+  lock:{n:"Break lock",c:"a",t:"Leaving a hostile's 10-unit close-in zone doesn't draw reaction fire this turn."},
   lineup:{n:"Line up",c:"a",t:"Your ship's next attack this turn has advantage."},
-  tail:{n:"Tail",c:"a",t:"Contested pilot checks against a ship within Medium. Win: your gunners have advantage against it, its attacks on you have disadvantage."},
+  tail:{n:"Tail",c:"a",t:"Contested pilot checks against a ship within 20 units. Win: your gunners have advantage against it, its attacks on you have disadvantage."},
   free:{n:"Break free",c:"a",t:"Contested pilot checks against each ship tailing you. You win ties."},
   ready:{n:"Ready",c:"a",t:"Later this round, use your reaction to move up to half your Speed."},
   about:{n:"Come about",c:"b",t:"Rear-arc weapons can fire at one target this turn."},
   lead:{n:"Lead the shot",c:"b",edge:true,t:"Your ship's next attack this turn adds the Edge die."},
-  cut:{n:"Cut the drive",c:"b",edge:true,t:"Running dark: stealth to every ship beyond Close until you move or fire."},
+  cut:{n:"Cut the drive",c:"b",edge:true,t:"Running dark: stealth to every ship more than 10 units away until you move or fire."},
   sling:{n:"Slingshot",c:"",edge:true,t:"Inside a gravity well: extra Speed of twice the die, and no pull this round."},
 };
 
 // The party's ship. Generic templates come from templates.js and campaign ships from ../gm/ships.js.
 const BASE_PRESETS=[
   {name:"Patience",side:"party",group:"Party",model:"dropship",ac:13,maxHull:25,maxSh:10,regen:0,pilot:4,spd:8,ai:"hold",blurb:"K. Vash's dropship.",
-   weapons:["Dorsal turret (lasers) | +5 | 2d8 | CML | dis:L",
-            "Stern launcher (missiles) | +5 | 3d10 | ML | missile rear ammo:6 | 6 spare in the hold."]},
+   weapons:["Dorsal turret (lasers) | +5 | 2d8 | 20/32",
+            "Stern launcher (missiles) | +5 | 3d10 | 32 | min:10 missile rear ammo:6 | 6 spare in the hold."]},
 ];
 const PRESETS=BASE_PRESETS.concat(Array.isArray(window.COMBAT_TEMPLATES)?window.COMBAT_TEMPLATES:[],Array.isArray(window.GM_SHIPS)?window.GM_SHIPS:[]);
 const BGS=Array.isArray(window.BACKDROPS)&&window.BACKDROPS.length?window.BACKDROPS:[{id:"deep",name:"Deep space",group:"Generic",sky:{},light:{},bodies:[],hazards:[],events:[]}];
@@ -338,23 +344,43 @@ function d20(mode){const a=die(20),b=die(20);
   if(mode==="dis")return {nat:Math.min(a,b),text:`[${a},${b}]▼`};
   return {nat:a,text:String(a)};}
 const W_FLAGS=["missile","rear","heavy","area","ion","pierce","per","board","ram"];
+// Older weapons were written in bands (C under 10, M under 20, L under 32; dis:L for disadvantage at Long).
+// Turn "CML" + "L" into ranges: normal 20, long 32, minimum 0.
+const OLD_BAND={C:[0,10],M:[10,20],L:[20,32]};
+function rangesFromBands(bands,dis){
+  const b=["C","M","L"].filter(x=>String(bands||"CML").toUpperCase().includes(x));if(!b.length)b.push("C","M","L");
+  const ok=b.filter(x=>!String(dis||"").toUpperCase().includes(x));
+  const lng=OLD_BAND[b[b.length-1]][1];
+  return {min:OLD_BAND[b[0]][0],rng:ok.length?OLD_BAND[ok[ok.length-1]][1]:lng,lng};
+}
+// "20/32" (normal/long), "10" (normal = long), or older band letters "CML"
+function parseRange(str,dis){
+  const s=String(str||"").trim();
+  const m=/^(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+(?:\.\d+)?))?$/.exec(s);
+  if(m){const rng=clamp(+m[1],1,200),lng=clamp(m[2]!=null?+m[2]:rng,rng,200);return {min:0,rng,lng}}
+  return rangesFromBands(s.replace(/[^CMLcml]/g,"")||"CML",dis);
+}
+const rangeText=w=>`${w.min?w.min+"–":""}${w.rng}${w.lng>w.rng?"/"+w.lng:""}`;
 function parseWeapon(line){
   const p=String(line).split("|").map(x=>x.trim());if(!p[0])return null;
-  const w={name:p[0].slice(0,48),atk:parseInt(p[1],10)||0,dmg:(p[2]||"1d6").replace(/\s+/g,""),bands:(p[3]||"CML").toUpperCase().replace(/[^CML]/g,"")||"CML",
-    dis:"",ammo:null,note:(p[5]||"").slice(0,160)};
+  const w={name:p[0].slice(0,48),atk:parseInt(p[1],10)||0,dmg:(p[2]||"1d6").replace(/\s+/g,""),ammo:null,note:(p[5]||"").slice(0,160)};
   for(const f of W_FLAGS)w[f]=false;
+  let dis="",min=null;
   for(const t of (p[4]||"").split(/\s+/).filter(Boolean)){
     const [k,v]=t.toLowerCase().split(":");
-    if(k==="dis")w.dis=(v||"").toUpperCase().replace(/[^CML]/g,"");
+    if(k==="dis")dis=v||"";
+    else if(k==="min")min=clamp(parseFloat(v)||0,0,100);
     else if(k==="ammo")w.ammo=Math.max(0,parseInt(v,10)||0);
     else if(W_FLAGS.includes(k))w[k]=true;
     else if(k==="helm")w.rear=true; // older saves: "fires only when your pilot wins the helm"
   }
+  Object.assign(w,parseRange(p[3]||"32",dis));
+  if(min!=null)w.min=Math.min(min,w.lng);
   return w;
 }
 function weaponLine(w){
-  const o=[w.dis?"dis:"+w.dis:"",...W_FLAGS.filter(f=>w[f]),w.ammo!=null?"ammo:"+w.ammo:""].filter(Boolean).join(" ");
-  return [w.name,sgn(w.atk),w.dmg,w.bands,o,w.note].join(" | ").replace(/( \| )+$/,"");
+  const o=[w.min?"min:"+w.min:"",...W_FLAGS.filter(f=>w[f]),w.ammo!=null?"ammo:"+w.ammo:""].filter(Boolean).join(" ");
+  return [w.name,sgn(w.atk),w.dmg,`${w.rng}${w.lng>w.rng?"/"+w.lng:""}`,o,w.note].join(" | ").replace(/( \| )+$/,"");
 }
 // "armor:2 swarm:6 small volatile:3d6 stealth repair:3 screen"
 function parseTraits(str){
@@ -376,8 +402,8 @@ function traitLine(t){
   if(!t)return "";
   return [t.armor?"armor:"+t.armor:"",t.swarm?"swarm:"+t.swarm:"",t.small?"small":"",t.stealth?"stealth":"",t.volatile?"volatile:"+t.volatile:"",t.repair?"repair:"+t.repair:"",t.screen?"screen":"",t.edge?"edge:"+t.edge:"",t.agile?"agile":"",t.ponderous?"ponderous":""].filter(Boolean).join(" ");
 }
-const TRAIT_TIP={armor:"Hull damage reduced per hit",swarm:"Units sharing the hull",small:"Heavy weapons at disadvantage",stealth:"Beyond Close, attacks at disadvantage unless scanned",
-  volatile:"Explodes when disabled",repair:"Repairs friends within Close at the end of each round",screen:"Missiles at friends within 6 at disadvantage",
+const TRAIT_TIP={armor:"Hull damage reduced per hit",swarm:"Units sharing the hull",small:"Heavy weapons at disadvantage",stealth:"From more than 10 units, attacks at disadvantage unless scanned",
+  volatile:"Explodes when disabled",repair:"Repairs friends within 10 units at the end of each round",screen:"Missiles at friends within 6 at disadvantage",
   edge:"The pilot's Edge dice (d8)",agile:"+2 to pilot checks",ponderous:"Disadvantage on hazard checks and Tail; Burn adds half Speed"};
 function traitChips(t){
   return Object.keys(TRAIT_TIP).filter(k=>t&&t[k]).map(k=>`<span class="tr" title="${esc(TRAIT_TIP[k])}">${k}${typeof t[k]==="boolean"?"":" "+esc(t[k])}</span>`).join(" ");
@@ -405,7 +431,7 @@ let S;
 const UI={tab:"turn",att:null,wpn:0,tgt:null,bonus:"",nat:"",over:false,scan:false,jam:false,adv:"auto",eng:null,initIn:{},adj:"",pd:{},
   pin:{},ptgt:null,pover:"w0",pfix:"-1",pjam:null,lastRef:"",sending:false,localMsg:"",watchOnly:false,
   place:null,hsel:null,fsel:null,addSide:"",npcBusy:false,openShip:{},
-  mv:false,malt:"",mhard:false,mthread:false,mtgt:0,press:false,hover:null,pmv:false,pdest:null,running:false};
+  mv:false,lock:null,noShells:false,malt:"",mhard:false,mthread:false,mtgt:0,press:false,hover:null,pmv:false,pdest:null,running:false};
 // fight: initiative rolled. init: [{id, v}] highest first; turn: index of the ship whose turn it is.
 // react: reactions used this round, by seat key. wait: a decision that blocks play (jink, reaction fire, hard brake, follow).
 // rmove: a reaction move in progress (follow, readied move). tact: the current pilot's action and bonus action.
@@ -422,7 +448,6 @@ const live=s=>s&&s.status==="ok";
 const present=s=>s&&s.status!=="escaped";
 // The flagship: the first party ship still fighting, else the first one present. Hostile range bands and the camera follow it.
 function flagship(){const p=S.ships.filter(s=>s.side==="party"&&present(s));return p.find(live)||p[0]||S.ships.find(s=>s.side==="ally"&&present(s))||null}
-const pairBand=(a,b)=>bandOf(dist(a,b));
 const hz=id=>S.haz.find(h=>h.id===id);
 const swarmN=s=>(s&&s.traits&&s.traits.swarm)||0;
 // Swarms: the hull is split evenly across the units; each lost share is one unit gone.
@@ -432,14 +457,13 @@ const inNull=s=>S.haz.some(h=>h.kind==="null"&&insideHaz(s,h));
 // Whose turn it is (null before initiative), and whether a ship is the one that can move right now.
 function cur(){if(!S.fight)return null;const e=S.init[S.turn];return e?ship(e.id)||null:null}
 const myTurn=s=>!S.fight||cur()===s;
-// s.band is derived: hostiles measure to the flagship; everyone else to the nearest hostile.
-function recalc(){
-  const f=flagship();
-  for(const s of S.ships){
-    if(s.side==="enemy")s.band=f&&f!==s?bandOf(dist(s,f)):"M";
-    else{const foes=S.ships.filter(x=>x.side==="enemy"&&present(x));s.band=bandOf(foes.length?Math.min(...foes.map(x=>dist(s,x))):99)}
-  }
-}
+// What a's weapons can do at distance d: "near" (inside some weapon's normal range), "long" (only at long range), or "none".
+function reachAt(a,d){let r="none";for(const w of a.weapons){if(d<w.min)continue;if(d<=w.rng)return "near";if(d<=w.lng)r="long"}return r}
+const reachOf=s=>s.weapons.reduce((m,w)=>Math.max(m,w.lng),0);   // the farthest any of its weapons reaches
+const inReach=(w,d)=>d>=w.min&&d<=w.lng;
+const altTxt=(a,t)=>{const dy=Math.round(t.y-a.y);return dy?` ${dy>0?"▲":"▼"}${Math.abs(dy)}`:""};
+// A chip with the distance from a to t (▲/▼: t is above or below), coloured by what a's weapons can do there.
+function distChip(a,t){const d=dist(a,t),r=reachAt(a,d);return `<span class="chip" style="--c:${REACH_CSS[r]}" title="${esc(REACH_NAME[r])} for ${esc(a.name)}'s weapons">${r1(d)} u${altTxt(a,t)}</span>`}
 const MODEL_SPD={dropship:8,corsair:7,corvette:7,fighter:10,capital:3,swarm:6,trooper:8,hauler:4,platform:0,bomber:7,tug:5,cathedral:4};
 function defaultAi(side){return side==="enemy"?"close":side==="ally"?"escort":"hold"}
 /* ---- crew & stations ---- */
@@ -466,20 +490,22 @@ function makeShip(p,sideOver){
   const model=MODELS.includes(p.model)?p.model:"corvette";
   const f=flagship();const o=f?{x:f.x,y:f.y,z:f.z}:{x:0,y:0,z:0};
   const n=S.ships.filter(s=>s.side===side&&present(s)).length;
-  const ai=ORDERS[p.ai]?p.ai:defaultAi(side);
+  const [ai,od]=parseAi(p.ai,side),at=clamp(+p.at||START_AT[p.band]||15,3,60);
   const s={id:S.nid++,name:String(p.name||"Ship").slice(0,40),side,model,
     ac:+p.ac||12,maxHull:Math.max(1,+p.maxHull||30),maxSh:+p.maxSh||0,regen:+p.regen||0,pilot:+p.pilot||0,pd:!!p.pd,
     spd:p.spd!=null&&Number.isFinite(+p.spd)?clamp(+p.spd,0,40):(MODEL_SPD[model]??6),
     traits:typeof p.traits==="string"?parseTraits(p.traits):cleanTraits(p.traits),ai,
     weapons:(p.weapons||[]).map(w=>typeof w==="string"?parseWeapon(w):cleanWeapon(w)).filter(Boolean),
-    band:BANDS.includes(p.band)?p.band:"M",crits:[],status:"ok",marks:0,brace:false,boarders:0,
-    x:0,y:0,z:0,vx:0,vy:0,vz:0,order:{k:ai,tgt:0,x:0,z:0,alt:null},...TURN0,chk:[],ai:{},prov:[],edge:0};
-  if(side==="enemy"&&f){const a=n*.95+.35,d=BAND_MID[s.band];s.x=o.x+Math.sin(a)*d;s.z=o.z+Math.cos(a)*d;s.y=clamp(o.y+((n%3)-1)*4+(n%2?1.5:-1.5),-20,20)}
-  else if(side!=="enemy"&&f){const a=Math.PI+(n%2?1:-1)*(.6+.35*Math.floor(n/2));s.x=o.x+Math.sin(a)*4.5;s.z=o.z+Math.cos(a)*4.5;s.y=o.y}
-  else if(side==="enemy"){const a=n*.95+.35;s.x=Math.sin(a)*BAND_MID[s.band];s.z=Math.cos(a)*BAND_MID[s.band]}
+    at,crits:[],status:"ok",marks:0,brace:false,boarders:0,
+    x:0,y:0,z:0,vx:0,vy:0,vz:0,order:{k:ai,tgt:0,x:0,z:0,alt:null,d:od},...TURN0,chk:[],ai:{},prov:[],edge:0};
+  // Hostiles arrive `at` units out (measured in 3D), spread around the compass and above and below.
+  if(side==="enemy"){const a=n*.95+.35,dy=clamp([0,6,-6,10,-10,3,-3][n%7],-at*.6,at*.6),hd=Math.sqrt(Math.max(1,at*at-dy*dy));
+    s.x=o.x+Math.sin(a)*hd;s.z=o.z+Math.cos(a)*hd;s.y=clamp(o.y+dy,-25,25)}
+  else if(f){const a=Math.PI+(n%2?1:-1)*(.6+.35*Math.floor(n/2));s.x=o.x+Math.sin(a)*4.5;s.z=o.z+Math.cos(a)*4.5;s.y=clamp(o.y+(n%2?2:-2),-25,25)}
   s.hull=s.maxHull;s.sh=s.maxSh;
   return s;
 }
+const hostileClose=s=>!!s&&S.ships.some(x=>team(x)!==team(s)&&live(x)&&dist(x,s)<CLOSE_IN);
 // Per-ship turn state. moveLeft: Speed left this turn; spent: Speed used; tail: id of the ship it's tailing;
 // dodge: evasive until its next turn; lock: break lock; ready: a readied move; about: Come about target;
 // dark: running dark; thread: +2 AC from Thread the needle; sling: no well pull this round; burnR: round it last burned;
@@ -491,7 +517,6 @@ const forFoe=(s,pub)=>s.side==="enemy"?pub:undefined;
 // Files and live data come from outside: coerce everything to known shapes.
 const num=(v,d=0,lo=-1e6,hi=1e6)=>{v=Number(v);return Number.isFinite(v)?clamp(Math.round(v),lo,hi):d};
 const arr=v=>Array.isArray(v)?v:v&&typeof v==="object"?Object.values(v):[];
-const bandStr=v=>String(v||"").toUpperCase().replace(/[^CML]/g,"");
 const fl=(v,d=0,lo=-1e6,hi=1e6)=>{v=Number(v);return Number.isFinite(v)?clamp(v,lo,hi):d};
 function cleanTraits(t){
   if(typeof t==="string")return parseTraits(t);
@@ -500,22 +525,26 @@ function cleanTraits(t){
 }
 function cleanWeapon(w){
   const o={name:String(w.name||"Weapon").slice(0,48),atk:num(w.atk,0,-50,50),
-    dmg:String(w.dmg||"0").replace(/[^0-9dD+-]/g,"").slice(0,24)||"0",bands:bandStr(w.bands)||"CML",dis:bandStr(w.dis),
+    dmg:String(w.dmg||"0").replace(/[^0-9dD+-]/g,"").slice(0,24)||"0",
     ammo:w.ammo==null?null:num(w.ammo,0,0,9999),note:String(w.note||"").slice(0,160)};
-  for(const f of W_FLAGS)o[f]=!!w[f];
+  for(const f of W_FLAGS)o[f]=!!(w[f]||(f==="rear"&&w.helm));
+  if(Number.isFinite(+w.lng)&&+w.lng>0){o.rng=fl(w.rng,+w.lng,1,200);o.lng=fl(w.lng,o.rng,o.rng,200);o.min=fl(w.min,0,0,o.lng)}
+  else Object.assign(o,rangesFromBands(w.bands,w.dis)); // a save from before ranges
   return o;
 }
 function cleanOrder(o,ai){
   o=o&&typeof o==="object"?o:{};
-  return {k:ORDERS[o.k]?o.k:ORDERS[ai]?ai:"hold",tgt:num(o.tgt,0,0),x:fl(o.x,0,-WORLD,WORLD),z:fl(o.z,0,-WORLD,WORLD),alt:o.alt==null||o.alt===""?null:fl(o.alt,0,-20,20)};
+  let k=o.k,d=o.d;if(/^keep:/.test(String(k))){[k,d]=parseAi(k)}
+  return {k:ORDERS[k]?k:ORDERS[ai]?ai:"hold",tgt:num(o.tgt,0,0),x:fl(o.x,0,-WORLD,WORLD),z:fl(o.z,0,-WORLD,WORLD),
+    alt:o.alt==null||o.alt===""?null:fl(o.alt,0,-25,25),d:fl(d,k==="orbit"?12:15,2,60)};
 }
 function cleanShip(s){
-  const model=MODELS.includes(s.model)?s.model:"corvette",side=SIDES[s.side]?s.side:"enemy",ai=ORDERS[s.ai]?s.ai:defaultAi(side);
+  const model=MODELS.includes(s.model)?s.model:"corvette",side=SIDES[s.side]?s.side:"enemy",ai=parseAi(s.ai,side)[0];
   const o={id:num(s.id,0,0),name:String(s.name||"Ship").slice(0,40),side,model,
     ac:num(s.ac,12,0,99),maxHull:num(s.maxHull,30,1,99999),maxSh:num(s.maxSh,0,0,99999),regen:num(s.regen,0,0,9999),pilot:num(s.pilot,0,-50,50),pd:!!s.pd,
     spd:num(s.spd,MODEL_SPD[model]??6,0,40),traits:cleanTraits(s.traits),ai,
     weapons:arr(s.weapons).filter(w=>w&&typeof w==="object").map(cleanWeapon),
-    band:BANDS.includes(s.band)?s.band:"M",angle:Number.isFinite(+s.angle)?+s.angle:0,crits:arr(s.crits).filter(k=>CRIT_BY[k]),
+    band:String(s.band||"").slice(0,1),at:fl(s.at,15,3,60),angle:Number.isFinite(+s.angle)?+s.angle:0,crits:arr(s.crits).filter(k=>CRIT_BY[k]),
     status:["ok","disabled","escaped"].includes(s.status)?s.status:"ok",marks:num(s.marks,s.halfCrit?2:0,0,3),brace:!!s.brace,
     boarders:num(s.boarders,0,0,20),order:cleanOrder(s.order,ai),
     vx:fl(s.vx,0,-40,40),vy:fl(s.vy,0,-40,40),vz:fl(s.vz,0,-40,40),
@@ -588,10 +617,10 @@ function sanitizeState(j){
   // positions: ships from older saves get placed from their old range band and angle
   {const party=o.ships.filter(x=>x.side!=="enemy");let i=0;
    for(const x of o.ships){if(x.x!=null)continue;
-     if(x.side==="enemy"){const d=BAND_MID[x.band];x.x=Math.sin(x.angle)*d;x.y=0;x.z=Math.cos(x.angle)*d}
+     if(x.side==="enemy"){const d=START_AT[x.band]||15;x.x=Math.sin(x.angle)*d;x.y=0;x.z=Math.cos(x.angle)*d}
      else if(x===party[0]){x.x=0;x.y=0;x.z=0}
      else{const a=Math.PI+(i++-.5)*.9;x.x=Math.sin(a)*4.5;x.y=0;x.z=Math.cos(a)*4.5}}}
-  for(const x of o.ships)delete x.angle;
+  for(const x of o.ships){delete x.angle;delete x.band}
   {const ids=new Set();let n=Math.max(num(j.hnid,1,1),1);
    o.haz=arr(j.haz).filter(h=>h&&typeof h==="object").slice(0,80).map(cleanHaz);
    for(const h of o.haz){if(!h.id||ids.has(h.id))h.id=0;else ids.add(h.id)}
@@ -678,24 +707,24 @@ function coverAC(t){let ac=0,src=null;for(const h of S.haz){const c=HAZ[h.kind].
 const screened=t=>S.ships.some(x=>x!==t&&team(x)===team(t)&&live(x)&&x.traits.screen&&dist(x,t)<=SCREEN_R);
 const obscured=(a,t)=>S.haz.some(h=>HAZ[h.kind].obscure&&(insideHaz(a,h)||insideHaz(t,h)));
 function attackMods(a,w,t,react=false){
-  const adv=[],dis=[];const band=pairBand(a,t);
+  const adv=[],dis=[];const d=dist(a,t),far=d>CLOSE_IN;
   if(!react&&S.lineup===a.id)adv.push("lined up");
   if(a.tail===t.id)adv.push("on its tail");
   if(t.tail===a.id)dis.push("it's on your tail");
   if(t.dodge)dis.push("target evading");
-  if(w.dis.includes(band))dis.push(`${BAND_NAME[band]} range`);
+  if(d>w.rng)dis.push(`long range (${r1(d)} of ${w.rng})`);
   if(w.missile&&t.pd)dis.push("point defense");
   else if(w.missile&&screened(t))dis.push("drone screen");
   if(w.heavy&&t.traits&&t.traits.small)dis.push("small target");
   const scanned=team(a)==="party"&&S.mods.scan;
-  if(t.traits&&t.traits.stealth&&band!=="C"&&!scanned)dis.push("stealth");
-  else if(t.dark&&band!=="C"&&!scanned)dis.push("running dark");
+  if(t.traits&&t.traits.stealth&&far&&!scanned)dis.push("stealth");
+  else if(t.dark&&far&&!scanned)dis.push("running dark");
   const blk=t.x!=null?lineCover(a,t):null;if(blk)dis.push(`${blk.name} in the way`);
-  if(band!=="C"&&obscured(a,t))dis.push("nebula");
+  if(far&&obscured(a,t))dis.push("nebula");
   if(UI.jam||S.mods.jam[a.id])dis.push("jammed");
   let mode=adv.length&&!dis.length?"adv":dis.length&&!adv.length?"dis":"normal";
   if(UI.adv!=="auto")mode=UI.adv;
-  return {adv,dis,mode,band,d:dist(a,t)};
+  return {adv,dis,mode,d};
 }
 function targetAC(t){return t.ac+(t.brace?2:0)+(t.thread?2:0)+coverAC(t).ac}
 // react: reaction fire, which happens outside the shooter's turn.
@@ -709,8 +738,9 @@ function canFire(a,w,t,react=false){
   const wi=a.weapons.indexOf(w);
   if(!manned(a,"w"+wi))return `Nobody is manning ${w.name}.`;
   if(S.pending[seatKey(a.id,"w"+wi)])return `${w.name} is waiting for the damage roll from its last hit.`;
-  const band=pairBand(a,t);
-  if(!w.bands.includes(band))return `${w.name} can't reach ${t.name}: ${BAND_NAME[band]} range, ${r1(dist(a,t))} units.`;
+  const d=dist(a,t);
+  if(d>w.lng)return `${t.name} is out of reach: ${r1(d)} units, ${w.name} reaches ${w.lng}.`;
+  if(d<w.min)return `${t.name} is too close: ${w.name} can't fire inside ${w.min} units (${r1(d)}).`;
   if(w.ammo!=null&&w.ammo<=0)return `${w.name} is out of ammo.`;
   if(w.board&&swarmN(t))return "You can't board a swarm.";
   if(w.rear&&t.tail!==a.id&&a.about!==t.id)return `${w.name} is rear-arc: it fires at a ship tailing you, or after your pilot comes about.`;
@@ -828,8 +858,9 @@ function canFireHaz(a,w,h){
   if(!manned(a,"w"+wi))return `Nobody is manning ${w.name}.`;
   if(S.pending[seatKey(a.id,"w"+wi)])return `${w.name} is waiting for the damage roll from its last hit.`;
   if(!HAZ[h.kind].hp)return `${h.name} can't be shot to any effect.`;
-  const band=bandOf(dist(a,h));
-  if(!w.bands.includes(band))return `${w.name} can't reach ${h.name}: ${BAND_NAME[band]} range, ${r1(dist(a,h))} units.`;
+  const d=dist(a,h);
+  if(d>w.lng)return `${h.name} is out of reach: ${r1(d)} units, ${w.name} reaches ${w.lng}.`;
+  if(d<w.min)return `${h.name} is too close: ${w.name} can't fire inside ${w.min} units.`;
   if(w.ammo!=null&&w.ammo<=0)return `${w.name} is out of ammo.`;
   if(w.board||w.ram)return `${w.name} is no use against ${h.name}.`;
   if(w.rear&&!a.about)return `${w.name} is rear-arc: your pilot has to come about first.`;
@@ -839,7 +870,7 @@ function attackHaz(a,wi,h,{bonus=null,nat=null}={}){
   const w=a&&a.weapons[wi];const why=canFireHaz(a,w,h);if(why)return why;
   const key=seatKey(a.id,"w"+wi),K=HAZ[h.kind];
   if(bonus==null)bonus=gunBonus(a,wi);
-  const band=bandOf(dist(a,h)),mode=w.dis.includes(band)?"dis":"normal";
+  const mode=dist(a,h)>w.rng?"dis":"normal";
   const r=nat>=1&&nat<=20?{nat,text:`${nat} (table)`}:d20(UI.adv!=="auto"?UI.adv:mode);
   const total=r.nat+bonus,hit=r.nat===20||(r.nat!==1&&total>=K.ac);
   if(w.ammo!=null)w.ammo--;
@@ -899,12 +930,14 @@ function planMove(s,sp=budgetOf(s)){
   else{
     const t=orderTarget(s);if(!t)return null;
     if(k==="orbit"){
-      const dx=s.x-t.x,dz=s.z-t.z,r=Math.hypot(dx,dz)||1,want=12,rr=r+clamp(want-r,-sp*.7,sp*.7);
+      // a tilted orbit: it climbs over and dives under the target as it circles
+      const dx=s.x-t.x,dz=s.z-t.z,r=Math.hypot(dx,dz)||1,want=o.d||12,rr=r+clamp(want-r,-sp*.7,sp*.7);
       const ang=Math.atan2(dx,dz)+(sp*.7)/Math.max(rr,4)*(s.id%2?1:-1);
-      g={x:t.x+Math.sin(ang)*rr,y:s.y+(t.y-s.y)*.3,z:t.z+Math.cos(ang)*rr};
+      g={x:t.x+Math.sin(ang)*rr,y:t.y+Math.sin(ang*1.3+s.id)*rr*.45,z:t.z+Math.cos(ang)*rr};
     }else{
-      const want=k.startsWith("keep:")?BAND_MID[k.slice(5)]:ORDER_GAP[k]??4,d=dist(s,t)||1;
-      g={x:t.x+(s.x-t.x)/d*want,y:t.y+(s.y-t.y)/d*want,z:t.z+(s.z-t.z)/d*want};
+      // come in on a slant: each ship picks a height above or below the target (boarders and rams go straight in)
+      const want=k==="keep"?o.d:ORDER_GAP[k]??4,d=dist(s,t)||1,lift=k==="board"||k==="ram"?0:[5,-5,8,-8,3][s.id%5]*Math.min(1,want/8);
+      g={x:t.x+(s.x-t.x)/d*want,y:t.y+(s.y-t.y)/d*want*.4+lift,z:t.z+(s.z-t.z)/d*want};
     }
   }
   if(o.alt!=null)g.y=o.alt;
@@ -941,7 +974,7 @@ const slowAt=p=>S.haz.some(h=>HAZ[h.kind].slow&&insideHaz(p,h));
 const lerp3=(a,b,k)=>({x:a.x+(b.x-a.x)*k,y:a.y+(b.y-a.y)*k,z:a.z+(b.z-a.z)*k});
 function clampWorld(p){const L=Math.hypot(p.x,p.z),M=WORLD*1.6,k=L>M?M/L:1;return {x:p.x*k,y:clamp(p.y,-25,25),z:p.z*k}}
 // Plan a straight flight from s toward `to` with `budget` units of movement: where it stops, what it costs, and what
-// happens on the way. Each unit inside difficult space costs 2. Events, in path order: prov (leaves a foe's Close range;
+// happens on the way. Each unit inside difficult space costs 2. Events, in path order: prov (leaves a foe's close-in zone;
 // the point is the last one inside it) and haz (a hazard check: only when more than half the ship's Speed is spent this
 // turn). stop: "budget", "solid:<id>" (stops short of a rock), "null" (the drive dies inside a null zone), "ship".
 function planPath(s,to,budget,{skip=[],spent=0}={}){
@@ -962,10 +995,10 @@ function planPath(s,to,budget,{skip=[],spent=0}={}){
   while(k>0&&S.ships.some(x=>x!==s&&present(x)&&x.status!=="escaped"&&dist(x,P.pts[k])<2.2)){k--;P.stop="ship"}
   P.pts.length=k+1;P.costs.length=k+1;P.k=k;P.to=P.pts[k];P.cost=P.costs[k];P.len=dist(A,P.to);
   if(!k)return P;
-  // leaving a foe's Close range provokes reaction fire (Break lock prevents it)
+  // leaving a foe's close-in zone (CLOSE_IN) provokes reaction fire (Break lock prevents it)
   if(!s.lock)for(const F of S.ships){
     if(F===s||team(F)===team(s)||!live(F)||skip.includes(F.id))continue;
-    for(let i=1;i<=k;i++)if(dist(P.pts[i-1],F)<EDGE.C&&dist(P.pts[i],F)>=EDGE.C){P.events.push({i:i-1,k:"prov",id:F.id});break}
+    for(let i=1;i<=k;i++)if(dist(P.pts[i-1],F)<CLOSE_IN&&dist(P.pts[i],F)>=CLOSE_IN){P.events.push({i:i-1,k:"prov",id:F.id});break}
   }
   // hazard checks, if this flight takes the ship past half its Speed this turn
   if(spent+P.cost>speedOf(s)/2+1e-6){
@@ -1001,7 +1034,7 @@ function moveShip(s,to,o={}){
   if(!rm&&S.rmove)return "Finish the reaction move first.";
   const blk=moveBlock(s);if(blk)return `${s.name} can't maneuver: ${blk}.`;
   const budget=budgetOf(s);if(budget<=.05)return `${s.name} has no movement left this turn.`;
-  if(!o.resume){s.prov=[];o.before=bandsOf(s)}
+  if(!o.resume)s.prov=[];
   const dest={x:to.x,y:to.y,z:to.z},resume={sid:s.id,...dest,hard:!!o.hard,thread:!!o.thread};
   // the ship it's tailing can Hard brake as the tailer starts to move
   if(!o.resume&&!rm&&s.tail&&!s.ai.braked){
@@ -1023,11 +1056,11 @@ function moveShip(s,to,o={}){
     if(e.k==="prov"){
       s.prov.push(e.id);const F=ship(e.id),g=F&&rfireGun(F,s);if(g==null)continue;
       if(npcSide(F)){
-        log(`${nm(s)} leaves ${nm(F)}'s Close range: reaction fire.`,"sys");attack(F,g,s,{react:true});
+        log(`${nm(s)} pulls out of ${nm(F)}'s close-in zone: reaction fire.`,"sys");attack(F,g,s,{react:true});
         if(S.wait){S.wait.resume=resume;commit();return ""}
       }else{
         S.wait={k:"rfire",sid:F.id,tid:s.id,wi:g,resume};
-        log(`${nm(s)} leaves ${nm(F)}'s Close range. ${nm(F)} can take <b>reaction fire</b>.`,"sys");commit();return "";
+        log(`${nm(s)} pulls out of ${nm(F)}'s close-in zone. ${nm(F)} can take <b>reaction fire</b>.`,"sys");commit();return "";
       }
       if(!live(s)){ended="hit";break}
       continue;
@@ -1054,7 +1087,7 @@ function moveShip(s,to,o={}){
   }
   keepIn(s);separate();
   if(threadH&&insideHaz(s,threadH,3)){s.thread=true;log(`${nm(s)} threads the needle: +2 AC until its next turn.`,"sys")}
-  const ch=bandText(s,o.before||{});
+  const ch=foesText(s);
   log(`${nm(s)}${rm?` (${S.rmove.why==="ready"?"readied move":"follows"})`:""} flies ${r1(P.len)} units${Math.abs(used-P.len)>.3?`, costing ${r1(used)}`:""}${rm?`, ${r1(S.rmove.left)} left`:`, ${r1(s.moveLeft)} left`}.${ch?" "+ch:""}`,"sys");
   if(rm&&(S.rmove.left<.3||npcSide(s)&&S.rmove.why==="follow"))S.rmove=null;
   // ships tailing it may follow (a reaction)
@@ -1066,16 +1099,16 @@ function moveShip(s,to,o={}){
   commit();return "";
 }
 // Bands to every foe, before and after a move.
-function bandsOf(s){const o={};for(const x of S.ships)if(team(x)!==team(s)&&live(x))o[x.id]=bandOf(dist(s,x));return o}
-function bandText(s,before){
-  const out=[];for(const x of S.ships){if(team(x)===team(s)||!live(x)||before[x.id]==null)continue;const b=bandOf(dist(s,x));if(b!==before[x.id])out.push(`${BAND_NAME[b]} of ${nm(x)}`)}
-  return out.length?`Now ${out.join(", ")}.`:"";
+// After a move: how far the nearest foes are now (▲/▼: they're above or below).
+function foesText(s){
+  const fs=S.ships.filter(x=>team(x)!==team(s)&&live(x)).sort((a,b)=>dist(s,a)-dist(s,b)).slice(0,3);
+  return fs.length?`Now ${fs.map(x=>`${r1(dist(s,x))} from ${nm(x)}${altTxt(s,x)}`).join(", ")}.`:"";
 }
-// The first weapon on F that can take reaction fire at s: reaches Close, not rear-arc, gunner's reaction unused.
+// The first weapon on F that can take reaction fire at s: in reach, not rear-arc, its gunner's reaction unused.
 function rfireGun(F,s){
   if(!live(F)||!present(s))return null;
   for(let i=0;i<F.weapons.length;i++){const w=F.weapons[i];
-    if(!w.bands.includes("C")||w.rear||w.board||S.react[seatKey(F.id,"w"+i)])continue;
+    if(w.rear||w.board||S.react[seatKey(F.id,"w"+i)])continue;
     if(!canFire(F,w,s,true))return i}
   return null;
 }
@@ -1164,7 +1197,7 @@ function addHaz(kind,o={}){
   const h=cleanHaz(Object.assign({kind,r:K.r,name:K.label},o,{id:S.hnid++}));
   S.haz.push(h);return h;
 }
-// Somewhere clear of ships and other hazards, between Close and Long of the flagship.
+// Somewhere clear of ships and other hazards, 7 to 27 units from the flagship.
 function clearSpot(r=3){
   const f=flagship(),c=f?f:{x:0,y:0,z:0};
   for(let i=0;i<60;i++){
@@ -1262,9 +1295,9 @@ function pilotAct(s,k,o={}){
     case "burn":{const add=s.traits.ponderous?Math.floor(speedOf(s)/2):speedOf(s);s.moveLeft+=add;
       log(`${nm(s)} burns: +${add} movement (${r1(s.moveLeft)} left).`,"sys");if(S.round>1&&s.burnR===S.round-1)strain(s);s.burnR=S.round;break}
     case "evade":s.dodge=true;log(`${nm(s)} flies evasively: attacks on it have disadvantage until its next turn.`,"sys");break;
-    case "lock":s.lock=true;log(`${nm(s)} breaks lock: leaving Close won't draw reaction fire this turn.`,"sys");break;
+    case "lock":s.lock=true;log(`${nm(s)} breaks lock: pulling out of close-in zones won't draw reaction fire this turn.`,"sys");break;
     case "lineup":S.lineup=s.id;log(`${nm(s)} lines up a shot: its next attack this turn has advantage.`,"sys");break;
-    case "tail":{if(!t||!live(t)||team(t)===team(s))return "Pick a hostile ship to tail.";if(dist(s,t)>=EDGE.M)return `${t.name} is beyond Medium range.`;
+    case "tail":{if(!t||!live(t)||team(t)===team(s))return "Pick a hostile ship to tail.";if(dist(s,t)>TAIL_R)return `${t.name} is more than ${TAIL_R} units away.`;
       if(o.press&&edgeOf(s).n<=0)return "No Edge dice left to press with.";tailContest(s,t,!!o.press);break}
     case "free":{const ts=S.ships.filter(x=>x.tail===s.id&&live(x));if(!ts.length)return "Nobody is tailing you.";
       if(o.press&&edgeOf(s).n<=0)return "No Edge dice left to press with.";breakFree(s,ts,!!o.press);break}
@@ -1300,7 +1333,7 @@ function resolveWait(use,nat=null){
     let hit=true;
     if(use&&X&&canJink(X))hit=jinkRoll(X,w.total,w.ac);else if(X)log(`${nm(X)} takes the hit.`,"sys");
     if(T&&X)landHit(T,w.wi,X,{hit,over:w.over,scan:w.scan,manual:w.manual,one:w.react});
-  }else if(w.k==="rfire"){ // X: the shooter, T: the ship leaving Close
+  }else if(w.k==="rfire"){ // X: the shooter, T: the ship leaving its close-in zone
     if(use&&X&&T){const why=attack(X,w.wi,T,{react:true,nat,manualDamage:nat!=null});if(why)log(why,"miss")}
     else if(X)log(`${nm(X)} holds its fire.`,"miss");
   }else if(w.k==="brake"){ // X: the ship being tailed, T: the tailer
@@ -1362,15 +1395,16 @@ function endTurn(){
     if(live(s)){
       // breaking away: Beyond every foe with nobody on its tail
       const foes=S.ships.filter(x=>team(x)!==team(s)&&live(x));
-      if(foes.length&&foes.every(f=>dist(f,s)>=EDGE.L)&&!S.ships.some(x=>x.tail===s.id&&live(x))){
-        if(!s.breaking){s.breaking=true;log(`${nm(s)} is Beyond every foe. If none of them ends a turn within Long of it before its next turn, it's gone.`,"sys")}
+      // breaking away: out of reach of every foe's weapons, with nobody on its tail
+      if(foes.length&&foes.every(f=>dist(f,s)>Math.max(reachOf(f),CLOSE_IN))&&!S.ships.some(x=>x.tail===s.id&&live(x))){
+        if(!s.breaking){s.breaking=true;log(`${nm(s)} is out of reach of every foe. If none of them ends a turn with it in reach before its next turn, it's gone.`,"sys")}
       }else s.breaking=false;
-      for(const x of S.ships)if(x.breaking&&x!==s&&team(x)!==team(s)&&dist(x,s)<EDGE.L){x.breaking=false;log(`${nm(s)} keeps ${nm(x)} in sight: no break-away yet.`,"sys")}
+      for(const x of S.ships)if(x.breaking&&x!==s&&team(x)!==team(s)&&dist(x,s)<=Math.max(reachOf(s),CLOSE_IN)){x.breaking=false;log(`${nm(s)} keeps ${nm(x)} in sight: no break-away yet.`,"sys")}
     }
   }
   for(const x of S.ships){
     x.brace=false;
-    if(x.tail){const t=ship(x.tail);if(!t||!live(t)||!live(x)||dist(x,t)>=EDGE.M){if(t&&live(x)&&present(t))log(`${nm(x)} loses its tail on ${nm(t)}.`,"sys");x.tail=0}}
+    if(x.tail){const t=ship(x.tail);if(!t||!live(t)||!live(x)||dist(x,t)>TAIL_R){if(t&&live(x)&&present(t))log(`${nm(x)} loses its tail on ${nm(t)}.`,"sys");x.tail=0}}
   }
   S.lineup=0;S.lead=null;
   S.turn++;beginTurn();commit();return "";
@@ -1383,14 +1417,14 @@ function aiAction(s){
   if(pilotBlock(s)||S.tact.a)return;
   const k=s.order.k,t=orderTarget(s),foe=t&&team(t)!==team(s)&&live(t)?t:nearestFoe(s);if(!foe)return;
   if(S.ships.some(x=>x.tail===s.id&&live(x))){pilotAct(s,"free");return}
-  if(["close","board","ram","orbit"].includes(k)&&!s.tail&&dist(s,foe)<EDGE.M){pilotAct(s,"tail",{tgt:foe.id});return}
+  if(["close","board","ram","orbit"].includes(k)&&!s.tail&&dist(s,foe)<=TAIL_R){pilotAct(s,"tail",{tgt:foe.id});return}
   if(s.hull<s.maxHull/2||k==="flee"){pilotAct(s,"evade");return}
-  if(s.weapons.some(w=>!w.rear&&w.bands.includes(bandOf(dist(s,foe)))))pilotAct(s,"lineup");
+  if(s.weapons.some(w=>!w.rear&&inReach(w,dist(s,foe))))pilotAct(s,"lineup");
 }
 function aiBonus(s){
   if(pilotBlock(s)||S.tact.b)return;
   const foe=orderTarget(s);if(!foe||team(foe)===team(s))return;
-  if(s.weapons.some(w=>w.rear&&(!w.ammo||w.ammo>0)&&w.bands.includes(bandOf(dist(s,foe))))&&foe.tail!==s.id){pilotAct(s,"about",{tgt:foe.id});return}
+  if(s.weapons.some(w=>w.rear&&(!w.ammo||w.ammo>0)&&inReach(w,dist(s,foe)))&&foe.tail!==s.id){pilotAct(s,"about",{tgt:foe.id});return}
   if(edgeOf(s).n>=2&&s.weapons.some(w=>!canFire(s,w,foe)))pilotAct(s,"lead");
 }
 // Every weapon on s that hasn't fired shoots its order's target, or the nearest thing in reach. Stops on a decision.
@@ -1441,7 +1475,7 @@ function endRound(){
   }
   for(const s of S.ships){
     if(!live(s)||!s.traits.repair)continue;
-    for(const x of S.ships)if(live(x)&&team(x)===team(s)&&x.hull<x.maxHull&&dist(x,s)<EDGE.C){
+    for(const x of S.ships)if(live(x)&&team(x)===team(s)&&x.hull<x.maxHull&&dist(x,s)<CLOSE_IN){
       const g=Math.min(s.traits.repair,x.maxHull-x.hull);x.hull+=g;log(`${nm(s)} patches ${x===s?"itself":nm(x)}: hull +${g}.`,"sys",forFoe(x,`${nm(s)} patches ${x===s?"itself":nm(x)}.`))}
   }
   for(const s of S.ships){
@@ -1450,14 +1484,13 @@ function endRound(){
   }
   for(const s of S.ships){delete s.blown;s.sling=false}
   S.acted={};S.react={};S.pending={};S.mods.over="";S.mods.jam={};S.round++;
-  recalc();
   const f=flagship(),es=S.ships.filter(x=>x.side==="enemy"&&live(x));
-  if(f&&es.length)log(`Ranges from ${nm(f)}: ${es.map(e=>`${nm(e)} <b style="color:${BAND_CSS[e.band]}">${BAND_NAME[e.band]}</b> ${r1(dist(e,f))}`).join(" · ")}.`,"sys");
+  if(f&&es.length)log(`Ranges from ${nm(f)}: ${es.map(e=>`${nm(e)} <b style="color:${REACH_CSS[reachAt(f,dist(f,e))]}">${r1(dist(e,f))}</b>${altTxt(f,e)}`).join(" · ")}.`,"sys");
   log(`Round ${S.round}.`,"r");
 }
 // The HUD button: roll initiative, then end each turn in order.
 function nextStep(){const why=S.fight?endTurn():rollInit();if(why){log(why,"miss");commit()}}
-function commit(){recalc();save();render();FX.sync()}
+function commit(){save();render();FX.sync()}
 
 // A player's action from their device. cid: the crew member they claimed. Returns "" or why it was refused.
 function playerAction(cid,a){
@@ -1511,7 +1544,7 @@ function playerAction(cid,a){
       if(fi>=0&&s.crits[fi]){const k=s.crits.splice(fi,1)[0];return done(`${who}, damage control: ${roll1}. ${CRIT_BY[k].name} fixed.`)}
       const r=roll("1d6"),g=Math.min(r.total,s.maxHull-s.hull);s.hull+=g;return done(`${who}, damage control: ${roll1}. Hull +${g} (${r.text}).`)}
     if(type==="spool"){if(!ok20)return "Enter your d20 roll (1 to 20).";
-      if(S.ships.some(x=>x.side==="enemy"&&live(x)&&x.band==="C"))return "You can't spool the drive with a hostile at Close.";
+      if(hostileClose(s))return `You can't spool the drive with a hostile within ${CLOSE_IN} units.`;
       const tot=d+c.tech;S.acted[key]=true;spool(tot>=13?"s":"f",`${esc(c.name)}: ${d}${sgn(c.tech)} = ${tot} vs DC 13`);
       if(tot<=8){log(`${esc(c.name)} failed by 5 or more.`,"crit");rollCrit(s)}
       commit();return ""}
@@ -1539,9 +1572,8 @@ function statusChip(s){
   if(s.status==="escaped")return `<span class="chip">Gone</span>`;
   return "";
 }
-function shipOpts(list,sel){return list.map(s=>`<option value="${s.id}"${s.id===sel?" selected":""}>${esc(s.name)}${s.side==="enemy"?` · ${BAND_NAME[s.band]}`:""}</option>`).join("")}
+function shipOpts(list,sel){return list.map(s=>`<option value="${s.id}"${s.id===sel?" selected":""}>${esc(s.name)}${s.side==="enemy"&&flagship()?` · ${r1(dist(s,flagship()))} u`:""}</option>`).join("")}
 
-const bandChip=(b,d)=>`<span class="chip" style="--c:${BAND_CSS[b]}">${BAND_NAME[b]}${d!=null?` · ${r1(d)}`:""}</span>`;
 // Quick moves: a destination for s, measured from target t; moveShip trims it to the movement left.
 const QUICK=[["close","Close in"],["open","Open range"],["climb","Climb"],["dive","Dive"],["flankL","Flank ◂"],["flankR","Flank ▸"],["cover","Into cover"]];
 function quickDest(s,q,t){
@@ -1565,7 +1597,7 @@ function quickDest(s,q,t){
 // One-line notes on a planned flight, for the preview on the plot.
 function pathNote(s,P){
   const bits=[`${r1(P.len)} units`+(Math.abs(P.cost-P.len)>.3?` (costs ${r1(P.cost)})`:"")];
-  for(const e of P.events){if(e.k==="prov"){const F=ship(e.id);if(F)bits.push(`leaves Close of ${F.name}`)}else{const h=hz(e.id);if(h)bits.push(`DC ${e.dc} ${h.name}`)}}
+  for(const e of P.events){if(e.k==="prov"){const F=ship(e.id);if(F)bits.push(`reaction fire from ${F.name}`)}else{const h=hz(e.id);if(h)bits.push(`DC ${e.dc} ${h.name}`)}}
   if(P.stop.startsWith("solid:")){const h=hz(+P.stop.slice(6));if(h)bits.push(`stops at ${h.name}`)}
   if(P.stop==="null")bits.push("drive dies (null zone)");
   if(P.stop==="budget")bits.push("out of movement");
@@ -1580,7 +1612,7 @@ function shipTags(x){
 function waitWords(w){
   const X=ship(w.sid),T=ship(w.tid);if(!X||!T)return null;
   if(w.k==="jink")return [`${esc(T.name)} hits ${esc(X.name)}${S.hide&&WATCH?"":` (${w.total} vs AC ${w.ac})`}. Jink: spend an Edge die (d${edgeOf(X).die}) and add it to AC?`,"Jink","Take the hit"];
-  if(w.k==="rfire"){const wp=X.weapons[w.wi];return [`${esc(T.name)} leaves ${esc(X.name)}'s Close range. Reaction fire with ${esc(wp?wp.name:"a weapon")}?`,"Fire","Hold fire"]}
+  if(w.k==="rfire"){const wp=X.weapons[w.wi];return [`${esc(T.name)} pulls out of ${esc(X.name)}'s close-in zone (${CLOSE_IN} units). Reaction fire with ${esc(wp?wp.name:"a weapon")}?`,"Fire","Hold fire"]}
   if(w.k==="brake")return [`${esc(T.name)} is on ${esc(X.name)}'s tail and starts to move. Hard brake: spend an Edge die; its pilot needs DC 10 + the die or overshoots.`,"Hard brake","Let it"];
   if(w.k==="follow")return [`${esc(X.name)} is tailing ${esc(T.name)}. Follow it (reaction, up to ${speedOf(X)} units)?`,"Follow","Stay"];
   return null;
@@ -1618,6 +1650,7 @@ function renderTurn(){
   if(!swarmN(s))h+=`<div class="sub"><div class="stats">Crew on this turn</div><div class="row"><button class="btn sm" data-act="boost" data-id="${s.id}"${boostOk(s)?"":" disabled"} title="Engineering action: +half Speed this turn">Boost engines</button><button class="btn sm" data-act="callline" data-id="${s.id}"${S.acted[seatKey(s.id,"sens")]||!manned(s,"sens")?" disabled":""} title="Sensors action: advantage on the pilot's next hazard check">Call the line</button><button class="btn sm" data-act="totab" data-tab="stations">Gunnery & engineering ▸</button></div></div>`;
   h+=`<div class="row" style="margin-top:10px"><button class="btn pri" data-act="endturn"${S.wait?" disabled":""}>End turn ▸</button></div></div>`;
   h+=`<label class="chk"><input type="checkbox" data-act="autonpc"${S.autoNpc?" checked":""}> Run hostile and allied turns automatically</label>
+    <label class="chk"><input type="checkbox" data-act="shells"${UI.noShells?"":" checked"}> Show the focused ship's weapon reach (green: normal range, amber: long)</label>
     <div class="row"><button class="btn sm warn" data-act="clearinit">Clear initiative</button></div>`;
   return h;
 }
@@ -1631,7 +1664,7 @@ function moveControls(m){
   return `<div class="sub"><div class="stats">Fly ${esc(m.name)} · <b>${r1(b)}</b> units · alt ${sgn(Math.round(m.y))}</div>
    <div class="row"><button class="btn sm${UI.mv?" on":""}" data-act="mvmode">${UI.mv?"Click the plot… (Esc to stop)":"Move on the plot"}</button><label class="f" style="flex:0 1 96px">To altitude<input type="number" step="1" min="-25" max="25" data-k="malt" data-mv="malt" value="${esc(UI.malt)}" placeholder="${Math.round(m.y)}"></label>${npcSide(m)?`<button class="btn sm" data-act="flyorder" data-id="${m.id}">Fly its order</button>`:""}</div>
    <div class="row"><label class="chk"><input type="checkbox" data-mv="mhard"${UI.mhard?" checked":""}> Hard line (DC +5, Edge back)</label><label class="chk"><input type="checkbox" data-mv="mthread"${UI.mthread?" checked":""}${edgeOf(m).n?"":" disabled"}> Thread the needle</label></div>
-   ${foes.length?`<div class="row"><label class="f">Target<select data-mv="mtgt">${foes.map(x=>`<option value="${x.id}"${x.id===UI.mtgt?" selected":""}>${esc(x.name)} · ${BAND_NAME[bandOf(dist(m,x))]} ${r1(dist(m,x))}</option>`).join("")}</select></label></div>`:""}
+   ${foes.length?`<div class="row"><label class="f">Target<select data-mv="mtgt">${foes.map(x=>`<option value="${x.id}"${x.id===UI.mtgt?" selected":""}>${esc(x.name)} · ${r1(dist(m,x))} u${altTxt(m,x)}</option>`).join("")}</select></label></div>`:""}
    <div class="row">${QUICK.map(([q,l])=>`<button class="btn sm" data-act="quick" data-q="${q}" data-id="${m.id}">${l}</button>`).join("")}</div></div>`;
 }
 function pilotBtn(s,k,attr="act"){const P=PILOT[k],off=(P.c==="a"&&S.tact.a)||(P.c==="b"&&S.tact.b)||(P.edge&&!edgeOf(s).n)||!!S.wait;
@@ -1640,7 +1673,7 @@ function pilotControls(s,attr="act"){
   if(swarmN(s))return `<div class="mods">Swarms take no pilot actions.</div>`;
   const blk=pilotBlock(s);if(blk)return `<div class="mods dis">No pilot actions: ${esc(blk)}.</div>`;
   const tailed=S.ships.some(x=>x.tail===s.id&&live(x)),inWell=S.haz.some(h=>h.kind==="well"&&insideHaz(s,h));
-  const t=ship(UI.mtgt),tailOk=t&&live(t)&&team(t)!==team(s)&&dist(s,t)<EDGE.M;
+  const t=ship(UI.mtgt),tailOk=t&&live(t)&&team(t)!==team(s)&&dist(s,t)<=TAIL_R;
   return `<div class="sub"><div class="stats">Pilot action${S.tact.a?" (used)":""}</div>
     <div class="row">${["burn","evade","lock","lineup","ready"].map(k=>pilotBtn(s,k,attr)).join("")}${tailed?pilotBtn(s,"free",attr):""}</div>
     <div class="row"><button class="btn sm" data-${attr}="pilot" data-k="tail" data-id="${s.id}" title="${esc(PILOT.tail.t)}"${S.tact.a||!tailOk||S.wait?" disabled":""}>Tail ${t?esc(t.name):"target"}</button><label class="chk"><input type="checkbox" data-mv="press"${UI.press?" checked":""}${edgeOf(s).n?"":" disabled"}> Press (Edge on Tail / Break free)</label></div>
@@ -1648,7 +1681,7 @@ function pilotControls(s,attr="act"){
     <div class="row"><button class="btn sm" data-${attr}="pilot" data-k="about" data-id="${s.id}" title="${esc(PILOT.about.t)}"${S.tact.b||!t||S.wait?" disabled":""}>Come about${t?" to "+esc(t.name):""}</button>${pilotBtn(s,"lead",attr)}${pilotBtn(s,"cut",attr)}${inWell?pilotBtn(s,"sling",attr):""}</div></div>`;
 }
 function tgtOpts(a,list,haz,sel){
-  return list.map(s=>`<option value="${s.id}"${s.id===sel?" selected":""}>${esc(s.name)} · ${BAND_NAME[pairBand(a,s)]} ${r1(dist(a,s))}${s.status!=="ok"?" · out":""}</option>`).join("")+
+  return list.map(s=>`<option value="${s.id}"${s.id===sel?" selected":""}>${esc(s.name)} · ${r1(dist(a,s))} u${altTxt(a,s)} · ${REACH_NAME[reachAt(a,dist(a,s))]}${s.status!=="ok"?" · out":""}</option>`).join("")+
     (haz.length?`<optgroup label="Hazards">${haz.map(h=>`<option value="${-h.id}"${-h.id===sel?" selected":""}>${esc(h.name)} · ${r1(dist(a,h))} · ${h.hp} HP</option>`).join("")}</optgroup>`:"");
 }
 const shootable=()=>S.haz.filter(h=>HAZ[h.kind].hp&&h.hp>0);
@@ -1665,20 +1698,20 @@ function renderStations(){
   let h=waitHtml()+crewRound();
   const c0=cur();
   if(c0&&npcSide(c0)&&live(c0)&&c0.weapons.length)h+=`<h3>${esc(c0.name)}'s guns · round ${S.round}</h3><div class="row"><button class="btn sm" data-act="npcfire"${UI.running||S.wait?" disabled":""}>Fire its weapons</button><span class="mods" style="margin:0">Every weapon that hasn't fired shoots its order's target, or the nearest thing in reach.</span></div>`;
-  if(S.fight&&c0)h+=`<p class="note">${esc(c0.name)}'s turn: only its crew act. Reaction fire comes from the Turn tab when a ship leaves Close.</p>`;
+  if(S.fight&&c0)h+=`<p class="note">${esc(c0.name)}'s turn: only its crew act. Reaction fire comes from the Turn tab when a ship pulls out of a close-in zone (${CLOSE_IN} units).</p>`;
   h+=`<h3>Gunner · round ${S.round}</h3>
   <div class="box" style="--c:${SIDES[a.side].css}">
    <div class="row"><label class="f">Attacker<select data-ui="att">${shipOpts(fighters,UI.att)}</select></label>
    <label class="f">Target<select data-ui="tgt">${foes.length||hzs.length?tgtOpts(a,foes,hzs,UI.tgt):"<option>none</option>"}</select></label></div>
-   <div class="row"><label class="f">Weapon<select data-ui="wpn">${a.weapons.map((x,i)=>`<option value="${i}"${i===UI.wpn?" selected":""}>${esc(x.name)} · ${sgn(x.atk)} · ${esc(dmgExpr(a,x))} · ${x.bands}${x.ammo!=null?` · ${x.ammo} left`:""}${S.acted[seatKey(a.id,"w"+i)]?" · fired":""}</option>`).join("")||"<option>no weapons</option>"}</select></label></div>`;
+   <div class="row"><label class="f">Weapon<select data-ui="wpn">${a.weapons.map((x,i)=>`<option value="${i}"${i===UI.wpn?" selected":""}>${esc(x.name)} · ${sgn(x.atk)} · ${esc(dmgExpr(a,x))} · ${rangeText(x)} u${x.ammo!=null?` · ${x.ammo} left`:""}${S.acted[seatKey(a.id,"w"+i)]?" · fired":""}</option>`).join("")||"<option>no weapons</option>"}</select></label></div>`;
   if(w&&th){
     const why=canFireHaz(a,w,th),K=HAZ[th.kind];
-    h+=`<div class="mods">${esc(th.name)} · ${r1(dist(a,th))} units (${BAND_NAME[bandOf(dist(a,th))]}) · AC ${K.ac} · ${th.hp} HP<br>${esc(K.text)}</div>${why?`<div class="mods dis">${esc(why)}</div>`:""}
+    h+=`<div class="mods">${esc(th.name)} · ${r1(dist(a,th))} units · ${esc(w.name)} reaches ${rangeText(w)} · AC ${K.ac} · ${th.hp} HP<br>${esc(K.text)}</div>${why?`<div class="mods dis">${esc(why)}</div>`:""}
       <div class="row"><label class="f">d20 from table<input type="number" min="1" max="20" data-k="nat" data-ui="nat" value="${esc(UI.nat)}" placeholder="auto"></label></div>
       <div class="row"><button class="btn pri" data-act="fire"${why?" disabled":""}>Fire</button></div>`;
   }else if(w&&t){
     const m=attackMods(a,w,t);const why=canFire(a,w,t);const cv=coverAC(t);
-    h+=`<div class="mods">Range <b style="color:${BAND_CSS[m.band]}">${BAND_NAME[m.band]}</b>, ${r1(m.d)} units · reaches ${w.bands.split("").map(b=>BAND_NAME[b]).join("/")} · AC ${t.ac}${t.brace?" +2 braced":""}${cv.ac?` +${cv.ac} ${esc(cv.src.name)}`:""}<br>`+
+    h+=`<div class="mods">Range <b style="color:${REACH_CSS[m.d<w.min||m.d>w.lng?"none":m.d>w.rng?"long":"near"]}">${r1(m.d)} units</b>${altTxt(a,t)} · ${esc(w.name)} reaches ${rangeText(w)}${w.lng>w.rng?` (past ${w.rng}: disadvantage)`:""} · AC ${t.ac}${t.brace?" +2 braced":""}${cv.ac?` +${cv.ac} ${esc(cv.src.name)}`:""}<br>`+
       (m.adv.length?`<span class="adv">▲ ${esc(m.adv.join(", "))}</span> `:"")+(m.dis.length?`<span class="dis">▼ ${esc(m.dis.join(", "))}</span>`:"")+
       (!m.adv.length&&!m.dis.length?"No advantage or disadvantage.":"")+
       `<br>Roll: <b>${m.mode==="adv"?"with advantage":m.mode==="dis"?"with disadvantage":"straight"}</b>`+
@@ -1717,10 +1750,10 @@ function renderStations(){
     </div>`;
   }
   // Spool drive
-  const close=S.ships.some(s=>s.side==="enemy"&&live(s)&&s.band==="C")||!live(flagship());
-  h+=`<h3>Spool drive</h3><div class="box"><p class="note" style="margin:0 0 8px">3 successes before 3 failures (Int + tinker's tools, DC 13). Not at Close. Fail by 5+: roll a crit on your own ship.</p>
+  const close=hostileClose(flagship())||!live(flagship());
+  h+=`<h3>Spool drive</h3><div class="box"><p class="note" style="margin:0 0 8px">3 successes before 3 failures (Int + tinker's tools, DC 13). Not with a hostile within ${CLOSE_IN} units. Fail by 5+: roll a crit on your own ship.</p>
    <div class="row spread"><span class="track s">${[0,1,2].map(i=>`<i class="${i<S.spool.s?"on":""}"></i>`).join("")}</span><span class="track f">${[0,1,2].map(i=>`<i class="${i<S.spool.f?"on":""}"></i>`).join("")}</span></div>
-   <div class="row"><button class="btn sm" data-act="spool" data-k="s"${close?" disabled":""}>Success</button><button class="btn sm" data-act="spool" data-k="f"${close?" disabled":""}>Failure</button><button class="btn sm" data-act="spool" data-k="x">Reset</button>${close?`<span class="mods dis" style="margin:0">${live(flagship())?"A hostile is at Close.":"The flagship is disabled."}</span>`:""}</div></div>`;
+   <div class="row"><button class="btn sm" data-act="spool" data-k="s"${close?" disabled":""}>Success</button><button class="btn sm" data-act="spool" data-k="f"${close?" disabled":""}>Failure</button><button class="btn sm" data-act="spool" data-k="x">Reset</button>${close?`<span class="mods dis" style="margin:0">${live(flagship())?`A hostile is within ${CLOSE_IN} units.`:"The flagship is disabled."}</span>`:""}</div></div>`;
   return h;
 }
 const seatChip=k=>S.pending[k]?`<span class="chip" style="--c:var(--amber)">Damage due</span>`:S.acted[k]?`<span class="chip" style="--c:var(--ok)">Acted</span>`:"";
@@ -1791,10 +1824,12 @@ function orderBox(s){
   const d=f&&f!==s?dist(s,f):null,mv=live(s)?planMove(s,speedOf(s)):null;
   return `<div class="row"><label class="f" style="flex:2">Order<select data-ord="k:${s.id}">${Object.entries(ORDERS).map(([k,l])=>`<option value="${k}"${k===o.k?" selected":""}>${l}</option>`).join("")}</select></label>
      ${ORDER_NEEDS_TGT.has(o.k)?`<label class="f" style="flex:2">Target<select data-ord="tgt:${s.id}"><option value="0">${o.k==="escort"?"Flagship":"Nearest"}${t&&!o.tgt?` (${esc(t.name)})`:""}</option>${cand.map(x=>`<option value="${x.id}"${x.id===o.tgt?" selected":""}>${esc(x.name)}</option>`).join("")}</select></label>`:""}
-     <label class="f">Altitude<input type="number" step="1" min="-20" max="20" data-ord="alt:${s.id}" data-k="alt:${s.id}" value="${o.alt==null?"":o.alt}" placeholder="${r1(s.y)}"></label></div>
+     ${o.k==="keep"||o.k==="orbit"?`<label class="f">Distance<input type="number" step="1" min="2" max="60" data-ord="d:${s.id}" data-k="d:${s.id}" value="${r1(o.d)}"></label>`:""}
+     <label class="f">Altitude<input type="number" step="1" min="-25" max="25" data-ord="alt:${s.id}" data-k="alt:${s.id}" value="${o.alt==null?"":o.alt}" placeholder="${r1(s.y)}"></label></div>
    <div class="stats" style="margin-top:6px">At ${r1(s.x)}, ${r1(s.z)}, alt ${sgn(Math.round(s.y))}${d!=null?` · ${r1(d)} units from ${esc(f.name)}`:""} · speed <b>${speedOf(s)}</b>${o.k==="goto"?` · waypoint ${r1(o.x)}, ${r1(o.z)}`:""}${s.side!=="party"?(mv?` · on its turn: flies ${r1(Math.hypot(mv.x-s.x,mv.y-s.y,mv.z-s.z))}`:" · holds"):""}</div>
    <div class="row"><button class="btn sm" data-act="place" data-id="${s.id}">Place on plot</button><button class="btn sm" data-act="wp" data-id="${s.id}">Set waypoint</button>
-     ${s.side==="enemy"&&f?`<button class="btn sm" data-act="band" data-d="-1" data-id="${s.id}"${s.band==="C"?" disabled":""} title="Move it one band closer">◂</button>${bandChip(s.band,dist(s,f))}<button class="btn sm" data-act="band" data-d="1" data-id="${s.id}"${s.band==="X"?" disabled":""} title="Move it one band farther">▸</button>`:""}</div>`;
+     ${f&&f!==s?`<button class="btn sm" data-act="nudge" data-d="-5" data-id="${s.id}" title="Move it 5 units toward ${esc(f.name)}">◂ 5</button>${distChip(f,s)}<button class="btn sm" data-act="nudge" data-d="5" data-id="${s.id}" title="Move it 5 units away from ${esc(f.name)}">5 ▸</button>
+       <button class="btn sm" data-act="nudgey" data-d="5" data-id="${s.id}" title="Climb 5">▲</button><button class="btn sm" data-act="nudgey" data-d="-5" data-id="${s.id}" title="Dive 5">▼</button>`:""}</div>`;
 }
 function renderFleet(){
   if(UI.preset==null||!PRESETS[UI.preset])UI.preset=Math.max(0,PRESETS.findIndex(p=>p.side!=="party"));
@@ -1813,7 +1848,7 @@ function renderFleet(){
      <div class="stats">AC <b>${s.ac}</b>${s.brace?" (+2)":""} · Hull <b>${s.hull}/${s.maxHull}</b>${n?` (<b>${unitsOf(s)}</b>/${n} units)`:""} · Shields <b>${s.sh}/${s.maxSh}</b>${s.regen?` (+${s.regen}/rd)`:""} · Pilot <b>${sgn(s.pilot)}</b>${s.pd?" · PD":""}</div>
      <div style="max-width:220px">${meters(s)}</div>
      ${traitLine(s.traits)?`<div class="row" style="margin-top:6px">${traitChips(s.traits)}</div>`:""}
-     <div class="stats" style="margin-top:6px">${s.weapons.map(w=>`${esc(w.name)} ${sgn(w.atk)} ${esc(dmgExpr(s,w))} [${w.bands}]${[w.missile&&"missile",w.heavy&&"heavy",w.area&&"area",w.ion&&"ion",w.pierce&&"pierce",w.board&&"board",w.ram&&"ram"].filter(Boolean).map(x=>` ${x}`).join("")}${w.ammo!=null?` ${w.ammo} left`:""}`).join("<br>")||"Unarmed"}</div>
+     <div class="stats" style="margin-top:6px">${s.weapons.map(w=>`${esc(w.name)} ${sgn(w.atk)} ${esc(dmgExpr(s,w))} [${rangeText(w)} u]${[w.missile&&"missile",w.heavy&&"heavy",w.area&&"area",w.ion&&"ion",w.pierce&&"pierce",w.board&&"board",w.ram&&"ram"].filter(Boolean).map(x=>` ${x}`).join("")}${w.ammo!=null?` ${w.ammo} left`:""}`).join("<br>")||"Unarmed"}</div>
      ${s.crits.length?`<div class="row">${s.crits.map((k,i)=>`<button class="chip" style="--c:var(--amber)" data-act="fix" data-id="${s.id}" data-i="${i}" title="Fixed: remove">${CRIT_BY[k].name} ×</button>`).join("")}</div>`:""}
      ${s.boarders?`<div class="row"><span class="chip" style="--c:var(--haz)">Boarders × ${s.boarders}</span><button class="btn sm" data-act="repel" data-id="${s.id}">Repel one</button></div>`:""}
      ${s.status!=="escaped"?`<details class="more" data-ship="${s.id}"${UI.openShip[s.id]?" open":""}><summary>Orders and position · ${esc(ORDERS[s.order.k])}</summary>${orderBox(s)}</details>`:""}
@@ -1836,11 +1871,11 @@ function rangeTable(){
   const live2=S.ships.filter(x=>present(x));if(live2.length<2)return "";
   if(!ship(UI.fsel)||!present(ship(UI.fsel)))UI.fsel=(flagship()||live2[0]).id;
   const a=ship(UI.fsel);
-  const rows=live2.filter(x=>x!==a).sort((x,y)=>dist(a,x)-dist(a,y)).map(x=>{const d=dist(a,x),b=bandOf(d),blk=team(x)!==team(a)?lineCover(a,x):null;
-    return `<tr><td style="color:${SIDES[x.side].css}">${esc(x.name)}</td><td class="n">${r1(d)}</td><td style="color:${BAND_CSS[b]}">${BAND_NAME[b]}</td><td>${blk?`behind ${esc(blk.name)}`:team(x)===team(a)?"friendly":""}</td></tr>`}).join("");
+  const rows=live2.filter(x=>x!==a).sort((x,y)=>dist(a,x)-dist(a,y)).map(x=>{const d=dist(a,x),foe=team(x)!==team(a),rc=foe?reachAt(a,d):null,blk=foe?lineCover(a,x):null,dy=Math.round(x.y-a.y);
+    return `<tr><td style="color:${SIDES[x.side].css}">${esc(x.name)}</td><td class="n">${r1(d)}</td><td class="n">${dy?sgn(dy):"0"}</td><td style="color:${rc?REACH_CSS[rc]:"var(--faint)"}">${rc?REACH_NAME[rc]:"friendly"}</td><td>${blk?`behind ${esc(blk.name)}`:""}</td></tr>`}).join("");
   return `<h3>Ranges</h3><div class="row"><label class="f">From<select data-ui="fsel">${shipOpts(live2,UI.fsel)}</select></label></div>
-   <table class="dist"><tr><th>Ship</th><th style="text-align:right">Units</th><th>Band</th><th>Line of fire</th></tr>${rows}</table>
-   <p class="note" style="margin-top:6px">Close is under ${EDGE.C} units, Medium under ${EDGE.M}, Long under ${EDGE.L}. Beyond that, nothing reaches.</p>`;
+   <table class="dist"><tr><th>Ship</th><th style="text-align:right">Units</th><th style="text-align:right">Alt</th><th>Its weapons</th><th>Line of fire</th></tr>${rows}</table>
+   <p class="note" style="margin-top:6px">Distances are in 3D; Alt is how far above (+) or below (−) it is. Each weapon has a normal and a long range: past normal it fires at disadvantage, past long it can't.</p>`;
 }
 function renderField(){
   const bg=bgById(S.bg);
@@ -1890,7 +1925,7 @@ function renderWatch(){
      <div class="row spread"><span><span class="name">${esc(s.name)}</span> <span class="side" style="--c:${SIDES[s.side].css}">${SIDES[s.side].label}${s===c?" · their turn":""}</span></span>${statusChip(s)}</div>
      ${hidden?"":`<div class="stats">AC <b>${s.ac}</b>${s.brace?" (+2)":""} · Hull <b>${s.hull}/${s.maxHull}</b> · Shields <b>${s.sh}/${s.maxSh}</b> · Speed <b>${speedOf(s)}</b></div>`}
      <div style="max-width:220px">${meters(s)}</div>
-     <div class="row">${s.side==="enemy"&&s.status!=="escaped"&&f?bandChip(s.band,dist(s,f)):""}${tg?`<span class="chip" style="--c:var(--ally)">${esc(tg)}</span>`:""}${s.boarders?`<span class="chip" style="--c:var(--haz)">Boarders × ${s.boarders}</span>`:""}${swarmN(s)?`<span class="chip">${unitsOf(s)} of ${swarmN(s)} units</span>`:""}
+     <div class="row">${s.side==="enemy"&&s.status!=="escaped"&&f?distChip(f,s):""}${tg?`<span class="chip" style="--c:var(--ally)">${esc(tg)}</span>`:""}${s.boarders?`<span class="chip" style="--c:var(--haz)">Boarders × ${s.boarders}</span>`:""}${swarmN(s)?`<span class="chip">${unitsOf(s)} of ${swarmN(s)} units</span>`:""}
       ${s.crits.map(k=>`<span class="chip" style="--c:var(--amber)">${CRIT_BY[k].name}</span>`).join("")}</div></div>`;
   }
   if(!S.ships.length&&L.status==="live")h+=`<p class="note">No ships on the plot yet.</p>`;
@@ -1939,10 +1974,12 @@ function pilotPanel(c,s){
     else if(b>.05){
       const foes=foesOf(s);if(!foes.some(x=>x.id===UI.mtgt))UI.mtgt=(nearestFoe(s)||foes[0]||{}).id||0;
       const P=UI.pdest?planPath(s,{x:UI.pdest.x,y:UI.malt===""?s.y:+UI.malt,z:UI.pdest.z},b,{skip:[],spent:rm?0:s.spent}):null;
-      h+=`<div class="row"><button class="btn sm${UI.pmv?" on":""}" data-act="pmv">${UI.pmv?"Tap the plot…":"Tap the plot to aim"}</button><label class="f" style="flex:0 1 96px">To altitude<input type="number" step="1" min="-25" max="25" data-k="malt" data-mv="malt" value="${esc(UI.malt)}" placeholder="${Math.round(s.y)}"></label></div>
+      const al=UI.malt===""?Math.round(s.y):+UI.malt;
+      h+=`<div class="row"><button class="btn sm${UI.pmv?" on":""}" data-act="pmv">${UI.pmv?"Tap the plot…":"Tap the plot to aim"}</button></div>
+        <div class="row"><label class="f">Fly to altitude <output>${sgn(al)}</output><input type="range" step="1" min="-25" max="25" data-k="malt" data-mv="malt" value="${al}"></label></div>
         ${P?`<div class="mods">${esc(pathNote(s,P))}</div><div class="row"><button class="btn pri sm" data-pact="move">Fly there</button><button class="btn sm" data-act="pclear">Clear</button></div>`:""}
         <div class="row"><label class="chk"><input type="checkbox" data-mv="mhard"${UI.mhard?" checked":""}> Hard line</label><label class="chk"><input type="checkbox" data-mv="mthread"${UI.mthread?" checked":""}${e.n?"":" disabled"}> Thread the needle</label></div>
-        ${foes.length?`<div class="row"><label class="f">Target<select data-mv="mtgt">${foes.map(x=>`<option value="${x.id}"${x.id===UI.mtgt?" selected":""}>${esc(x.name)} · ${BAND_NAME[bandOf(dist(s,x))]} ${r1(dist(s,x))}</option>`).join("")}</select></label></div>`:""}
+        ${foes.length?`<div class="row"><label class="f">Target<select data-mv="mtgt">${foes.map(x=>`<option value="${x.id}"${x.id===UI.mtgt?" selected":""}>${esc(x.name)} · ${r1(dist(s,x))} u${altTxt(s,x)}</option>`).join("")}</select></label></div>`:""}
         <div class="row">${QUICK.map(([q,l])=>`<button class="btn sm" data-pact="quick" data-q="${q}">${l}</button>`).join("")}</div>`;
     }
     h+=`</div>`;
@@ -1967,7 +2004,7 @@ function stationPanel(c,seat){
       <div class="row">${pinBox("dmg","total",0)}<button class="btn pri sm" data-pact="damage">Deal damage</button></div>`;
   }
   const wt=myWait(s,st);if(wt)return wt;
-  if(S.fight&&cur()!==s)return `<p class="note">Your station acts on ${esc(s.name)}'s turn${cur()?` (now: ${esc(cur().name)})`:""}.${/^w\d+$/.test(st)?" If a hostile leaves your Close range, you'll be asked about reaction fire.":""}</p>`;
+  if(S.fight&&cur()!==s)return `<p class="note">Your station acts on ${esc(s.name)}'s turn${cur()?` (now: ${esc(cur().name)})`:""}.${/^w\d+$/.test(st)?" If a hostile pulls out of your ${CLOSE_IN}-unit close-in zone, you'll be asked about reaction fire.":""}</p>`;
   if(!S.fight)return `<p class="note">Waiting for initiative.</p>`;
   if(S.acted[key])return `<p class="note">Done for this round.</p>`;
   if(/^w\d+$/.test(st)){
@@ -1975,7 +2012,7 @@ function stationPanel(c,seat){
     const foes=S.ships.filter(x=>x.side==="enemy"&&present(x)).sort((x,y)=>dist(s,x)-dist(s,y)),hzs=shootable().sort((x,y)=>dist(s,x)-dist(s,y));
     if(!foes.length&&!hzs.length)return `<p class="note">No targets.</p>`;
     if(!(UI.ptgt<0?hzs.some(h=>-h.id===UI.ptgt):foes.some(x=>x.id===UI.ptgt)))UI.ptgt=foes.length?(foes.find(live)||foes[0]).id:-hzs[0].id;
-    const th=UI.ptgt<0?hz(-UI.ptgt):null,t=th?null:ship(UI.ptgt),why=th?canFireHaz(s,w,th):canFire(s,w,t),m=th?{adv:[],dis:w.dis.includes(bandOf(dist(s,th)))?["range"]:[],mode:w.dis.includes(bandOf(dist(s,th)))?"dis":"normal"}:attackMods(s,w,t);
+    const th=UI.ptgt<0?hz(-UI.ptgt):null,t=th?null:ship(UI.ptgt),why=th?canFireHaz(s,w,th):canFire(s,w,t),m=th?{adv:[],dis:dist(s,th)>w.rng?["long range"]:[],mode:dist(s,th)>w.rng?"dis":"normal"}:attackMods(s,w,t);
     return `<div class="row"><label class="f">Target<select data-pui="ptgt">${tgtOpts(s,foes,hzs,UI.ptgt)}</select></label></div>
       <div class="mods">${esc(w.name)} · ${esc(dmgExpr(s,w))}${w.ammo!=null?` · ${w.ammo} left`:""} · your bonus <b>${sgn(gunBonus(s,wi))}</b>${S.lead&&S.lead.sid===s.id?` <span class="adv">+${S.lead.v} lead</span>`:""}
        ${m.adv.length?`<br><span class="adv">▲ ${esc(m.adv.join(", "))}</span>`:""}${m.dis.length?`<br><span class="dis">▼ ${esc(m.dis.join(", "))}</span>`:""}
@@ -1984,13 +2021,13 @@ function stationPanel(c,seat){
       <div class="row">${pinBox("fire")}<button class="btn pri sm" data-pact="fire"${why?" disabled":""}>Fire</button></div>`;
   }
   if(st==="eng"){
-    const reactor=s.crits.includes("reactor"),close=S.ships.some(x=>x.side==="enemy"&&live(x)&&x.band==="C");
+    const reactor=s.crits.includes("reactor"),close=hostileClose(s);
     if(!s.weapons.some((w,i)=>"w"+i===UI.pover))UI.pover="w0";
     return `<p class="note" style="margin:0 0 6px">One action per round, on your ship's turn.${reactor?` <span class="dis">Reactor scram: no Overcharge or Boost.</span>`:""}${inNull(s)?` <span class="dis">Null zone: only damage control works.</span>`:""}</p>
      <div class="sub"><div class="row"><button class="btn sm" data-pact="shields"${s.sh>=s.maxSh?" disabled":""}>Shields +5</button><button class="btn sm" data-pact="boost"${reactor?" disabled":""} title="+half Speed this turn">Boost engines</button></div></div>
      ${s.weapons.length?`<div class="sub"><div class="row"><label class="f">Overcharge a gunner (+1d8)<select data-pui="pover">${s.weapons.map((w,i)=>`<option value="w${i}"${UI.pover==="w"+i?" selected":""}>${esc(w.name)}</option>`).join("")}</select></label><button class="btn sm" data-pact="overcharge"${reactor?" disabled":""} style="align-self:flex-end">Overcharge</button></div></div>`:""}
      <div class="sub"><div class="stats">Damage control · DC 12 · ${sgn(c.tech)}</div><div class="row"><select data-pui="pfix" style="flex:1;width:auto"><option value="-1">Repair 1d6 hull</option>${s.crits.map((k,i)=>`<option value="${i}"${UI.pfix===String(i)?" selected":""}>Fix: ${CRIT_BY[k].name}</option>`).join("")}</select>${pinBox("dc")}<button class="btn sm" data-pact="dc">Roll</button></div></div>
-     <div class="sub"><div class="stats">Spool drive · DC 13 · ${sgn(c.tech)} · ${S.spool.s} of 3 successes, ${S.spool.f} of 3 failures</div><div class="row">${pinBox("spool")}<button class="btn sm" data-pact="spool"${close?" disabled":""}>Roll</button>${close?`<span class="mods dis" style="margin:0">A hostile is at Close.</span>`:""}</div></div>`;
+     <div class="sub"><div class="stats">Spool drive · DC 13 · ${sgn(c.tech)} · ${S.spool.s} of 3 successes, ${S.spool.f} of 3 failures</div><div class="row">${pinBox("spool")}<button class="btn sm" data-pact="spool"${close?" disabled":""}>Roll</button>${close?`<span class="mods dis" style="margin:0">A hostile is within ${CLOSE_IN} units.</span>`:""}</div></div>`;
   }
   if(st==="sens"){
     if(!es.some(e=>e.id===UI.pjam))UI.pjam=es.length?es[0].id:null;
@@ -2041,7 +2078,10 @@ function render(){
   $("#nextBtn").textContent=S.fight?"End turn ▸":"Roll initiative ▸";$("#nextBtn").disabled=!!S.wait;
   const mvr=moveTarget();if(!mvr){UI.mv=false;UI.pmv=false}
   const mh=$("#moveHint");mh.hidden=!(UI.mv||UI.pmv);
-  if(!mh.hidden)mh.firstElementChild.textContent=`${WATCH?"Tap":"Click"} the plot: ${mvr.name} flies there (altitude ${UI.malt===""?Math.round(mvr.y):UI.malt}).`;
+  if(!UI.mv)UI.lock=null;
+  if(!mh.hidden)mh.firstElementChild.textContent=WATCH?`Tap the plot to aim ${mvr.name}; set the altitude with the slider.`
+    :UI.lock?`Move the mouse up or down to set the altitude, then click: ${mvr.name} flies there. Right-click to re-pick.`
+    :`Click a point (at altitude ${UI.malt===""?Math.round(mvr.y):UI.malt}), then raise or lower it. Shift-click flies there level.`;
   const lg=$("#log");
   lg.innerHTML=S.log.slice().reverse().map(e=>`<p class="${esc(e.c)}"><span class="r">R${e.r}</span> ${safeHtml(e.h)}</p>`).join("")||`<p class="r">Combat log is empty.</p>`;
   FX.labels();
@@ -2051,7 +2091,7 @@ function render(){
 /* events */
 document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("button[data-tab]");if(b){UI.tab=b.dataset.tab;render()}});
 $("#nextBtn").addEventListener("click",nextStep);
-$("#moveCancel").addEventListener("click",()=>{UI.mv=false;UI.pmv=false;UI.hover=null;render()});
+$("#moveCancel").addEventListener("click",()=>{UI.mv=false;UI.pmv=false;UI.lock=null;UI.hover=null;render()});
 // The ship that the move tool flies: a reaction move in progress, else the ship whose turn it is (on a player's
 // device, only their own ship).
 function moveTarget(){
@@ -2064,7 +2104,7 @@ $("#pane").addEventListener("submit",e=>{if(e.target.id!=="joinForm")return;e.pr
 $("#pane").addEventListener("input",e=>{
   const t=e.target;
   if(t.dataset.init){const v=parseInt(t.value,10);if(v>=1&&v<=20)S.initIn[t.dataset.init]=v;else delete S.initIn[t.dataset.init];save();return}
-  if(t.dataset.mv){const k=t.dataset.mv;if(t.type==="checkbox"){UI[k]=t.checked;render();FX.sync()}else if(k==="malt"){UI.malt=t.value;UI.hover=null}return}
+  if(t.dataset.mv){const k=t.dataset.mv;if(t.type==="checkbox"){UI[k]=t.checked;render();FX.sync()}else if(k==="malt"){UI.malt=t.value;if(t.type==="range"){const o=t.parentNode.querySelector("output");if(o)o.textContent=sgn(+t.value)}else UI.hover=null}return}
   if(t.dataset.pin){UI.pin[t.dataset.pin]=t.value;return}
   if(t.dataset.pd){UI.pd[t.dataset.pd]=t.value;return}
   if(t.id==="adjN"){UI.adj=t.value;return}
@@ -2087,11 +2127,13 @@ $("#pane").addEventListener("change",e=>{
     if(c&&k==="name")document.querySelectorAll(`select[data-seat] option[value="${+id}"]`).forEach(o=>{o.textContent=c.name});
     return}
   if(t.dataset.mv==="mtgt"){UI.mtgt=+t.value;render();return}
+  if(t.dataset.mv==="malt"&&t.type==="range"){UI.malt=t.value;render();return}
   if(t.dataset.pui){UI[t.dataset.pui]=t.dataset.pui==="ptgt"||t.dataset.pui==="pjam"?+t.value:t.value;render();return}
   if(t.dataset.ord){const [k,id]=t.dataset.ord.split(":");const x=ship(+id);if(!x)return;
     if(k==="k"){x.order.k=ORDERS[t.value]?t.value:"hold";if(x.order.k==="goto"&&!x.order.x&&!x.order.z){x.order.x=x.x;x.order.z=x.z}}
     if(k==="tgt")x.order.tgt=+t.value||0;
-    if(k==="alt")x.order.alt=t.value===""?null:clamp(Math.round(+t.value||0),-20,20);
+    if(k==="alt")x.order.alt=t.value===""?null:clamp(Math.round(+t.value||0),-25,25);
+    if(k==="d")x.order.d=clamp(+t.value||15,2,60);
     commit();return}
   if(t.dataset.hz){const [k,id]=t.dataset.hz.split(":");const z=hz(+id);if(!z)return;
     if(k==="name")z.name=t.value.slice(0,40)||HAZ[z.kind].label;
@@ -2127,6 +2169,7 @@ $("#pane").addEventListener("click",e=>{
   switch(b.dataset.act){
     case "init":say(rollInit());break;
     case "autonpc":S.autoNpc=b.checked;commit();if(S.autoNpc)continueAuto();break;
+    case "shells":UI.noShells=!b.checked;render();break;
     case "clearinit":if(confirm("Clear initiative? Turns start over when you roll again."))clearInit();break;
     case "endturn":say(endTurn());break;
     case "npcturn":runNpc();break;
@@ -2159,7 +2202,7 @@ $("#pane").addEventListener("click",e=>{
     case "release":Live.release(b.dataset.uid);break;
     case "addp":case "addname":{const p=PRESETS[b.dataset.act==="addp"?UI.preset:+b.dataset.i];if(!p)return;const n=makeShip(p,b.dataset.act==="addp"?UI.addSide:"");
       const same=S.ships.filter(x=>x.name===n.name||x.name.startsWith(n.name+" ")).length;if(same)n.name+=" "+(same+1);
-      S.ships.push(n);recalc();log(`${nm(n)} enters the plot${n.side==="enemy"&&flagship()?` at ${BAND_NAME[n.band]} range`:""}.`,"sys");joinInit(n);commit();break}
+      S.ships.push(n);log(`${nm(n)} enters the plot${n.side==="enemy"&&flagship()?` ${r1(dist(n,flagship()))} units out${altTxt(flagship(),n)}`:""}.`,"sys");joinInit(n);commit();break}
     case "repel":if(s.boarders>0){s.boarders--;log(`${nm(s)}: a boarding squad is repelled${s.boarders?` (${s.boarders} left)`:""}.`,"sys");commit()}break;
     case "place":startPlace("ship",s.id);break;
     case "wp":startPlace("wp",s.id);break;
@@ -2181,8 +2224,9 @@ $("#pane").addEventListener("click",e=>{
       const wasCur=cur()===s;S.ships=S.ships.filter(x=>x!==s);dropSeats(s.id);for(const x of S.ships){if(x.tail===s.id)x.tail=0;if(x.about===s.id)x.about=0}
       if(S.wait&&(S.wait.sid===s.id||S.wait.tid===s.id))S.wait=null;if(S.rmove&&S.rmove.sid===s.id)S.rmove=null;
       leaveInit(s.id);if(wasCur&&S.fight)beginTurn();commit()}break;
-    case "band":{const f=flagship();if(!f||f===s)break;const order=["C","M","L","X"],i=clamp(order.indexOf(bandOf(dist(s,f)))+ +b.dataset.d,0,3),want=BAND_MID[order[i]],d=dist(s,f)||1;
-      s.x=f.x+(s.x-f.x)/d*want;s.y=f.y+(s.y-f.y)/d*want;s.z=f.z+(s.z-f.z)/d*want;recalc();log(`${nm(s)} moves to ${BAND_NAME[s.band]}.`,"sys");commit();break}
+    case "nudge":{const f=flagship();if(!f||f===s)break;const d=dist(s,f)||1,want=Math.max(2.5,d+ +b.dataset.d);
+      s.x=f.x+(s.x-f.x)/d*want;s.y=clamp(f.y+(s.y-f.y)/d*want,-25,25);s.z=f.z+(s.z-f.z)/d*want;keepIn(s);log(`${nm(s)} repositioned: ${r1(dist(s,f))} units from ${nm(f)}.`,"sys");commit();break}
+    case "nudgey":{s.y=clamp(s.y+ +b.dataset.d,-25,25);log(`${nm(s)} repositioned: altitude ${sgn(Math.round(s.y))}.`,"sys");commit();break}
     case "refit":if(confirm("Restore every ship to full hull, shields and ammo, and clear crits?")){
       for(const x of S.ships){const p=PRESETS.find(p=>p.name===x.name.replace(/ \d+$/,""));x.hull=x.maxHull;x.sh=x.maxSh;x.crits=[];x.status="ok";x.marks=0;x.brace=false;x.boarders=0;
         if(p)x.weapons.forEach((w,i)=>{const pw=p.weapons[i]&&parseWeapon(p.weapons[i]);if(pw&&pw.ammo!=null&&w.name===pw.name)w.ammo=pw.ammo})}
@@ -2196,9 +2240,9 @@ let editing=null;
 $("#edForm").model.innerHTML=MODELS.map(m=>`<option>${m}</option>`).join("");
 $("#edForm").ai.innerHTML=Object.entries(ORDERS).map(([k,l])=>`<option value="${k}">${l}</option>`).join("");
 function openEditor(s){
-  editing=s;const f=$("#edForm");const src=s||{name:"New ship",side:"enemy",model:"corvette",ac:13,maxHull:20,maxSh:10,regen:5,pilot:3,band:"M",pd:false,spd:7,ai:"close",traits:parseTraits(""),weapons:[parseWeapon("Lasers | +5 | 2d8 | CML | dis:L")]};
+  editing=s;const f=$("#edForm");const src=s||{name:"New ship",side:"enemy",model:"corvette",ac:13,maxHull:20,maxSh:10,regen:5,pilot:3,at:15,pd:false,spd:7,ai:"close",traits:parseTraits(""),weapons:[parseWeapon("Lasers | +5 | 2d8 | 20/32")]};
   $("#edTitle").textContent=s?`Edit ${s.name}`:"New ship";
-  for(const k of ["name","side","model","ac","maxHull","maxSh","regen","pilot","band","spd"])f[k].value=src[k];
+  for(const k of ["name","side","model","ac","maxHull","maxSh","regen","pilot","at","spd"])f[k].value=src[k]??15;
   f.ai.value=s?s.order.k:src.ai;f.traits.value=traitLine(src.traits);
   f.pd.checked=!!src.pd;f.weapons.value=src.weapons.map(weaponLine).join("\n");
   $("#editor").showModal();
@@ -2207,9 +2251,9 @@ $("#editor").addEventListener("close",()=>{
   if($("#editor").returnValue!=="ok")return;
   const f=$("#edForm");
   const d={name:f.name.value.trim().slice(0,40)||"Ship",side:f.side.value,model:f.model.value,ac:+f.ac.value,maxHull:Math.max(1,+f.maxHull.value),maxSh:Math.max(0,+f.maxSh.value),
-    regen:Math.max(0,+f.regen.value),pilot:+f.pilot.value,band:f.band.value,pd:f.pd.checked,weapons:f.weapons.value.split("\n").map(parseWeapon).filter(Boolean),
+    regen:Math.max(0,+f.regen.value),pilot:+f.pilot.value,at:clamp(+f.at.value||15,3,60),pd:f.pd.checked,weapons:f.weapons.value.split("\n").map(parseWeapon).filter(Boolean),
     spd:clamp(+f.spd.value||0,0,40),ai:ORDERS[f.ai.value]?f.ai.value:"hold",traits:parseTraits(f.traits.value)};
-  if(editing){const s=editing;const dh=d.maxHull-s.maxHull,ds=d.maxSh-s.maxSh;const k=d.ai;delete d.band;Object.assign(s,d);s.order.k=k;s.hull=clamp(s.hull+Math.max(0,dh),0,s.maxHull);s.sh=clamp(s.sh+Math.max(0,ds),0,s.maxSh);
+  if(editing){const s=editing;const dh=d.maxHull-s.maxHull,ds=d.maxSh-s.maxSh;const k=d.ai;delete d.at;Object.assign(s,d);s.order.k=k;s.hull=clamp(s.hull+Math.max(0,dh),0,s.maxHull);s.sh=clamp(s.sh+Math.max(0,ds),0,s.maxSh);
     dropSeats(s.id,st=>s.side==="party"&&(!/^w/.test(st)||+st.slice(1)<s.weapons.length))}
   else{const n=makeShip(d);S.ships.push(n);log(`${nm(n)} enters the plot.`,"sys");joinInit(n)}
   editing=null;commit();
@@ -2250,6 +2294,7 @@ function placeAt(x,z){
 $("#placeCancel").addEventListener("click",endPlace);
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"&&UI.place){endPlace();return}
+  if(e.key==="Escape"&&UI.lock){UI.lock=null;UI.hover=null;render();return}
   if(e.key==="Escape"&&(UI.mv||UI.pmv)){UI.mv=false;UI.pmv=false;UI.hover=null;render();return}
   if(e.key!=="Enter")return;
   if(e.target.matches("[data-init]")){e.preventDefault();say0(rollInit());return}
@@ -2271,7 +2316,7 @@ const FX=(()=>{
   const cam=new THREE.PerspectiveCamera(48,1,.1,3000);
   const HOME=V(0,30,48);cam.position.copy(HOME);
   const ctl=THREE.OrbitControls?new THREE.OrbitControls(cam,renderer.domElement):null;
-  if(ctl){ctl.enableDamping=true;ctl.dampingFactor=.08;ctl.minDistance=8;ctl.maxDistance=150;ctl.maxPolarAngle=1.52;ctl.enablePan=true}
+  if(ctl){ctl.enableDamping=true;ctl.dampingFactor=.08;ctl.minDistance=8;ctl.maxDistance=170;ctl.enablePan=true}
   cam.lookAt(0,0,0);
   const amb=new THREE.AmbientLight(0x5a5f99,.75);scene.add(amb);
   const key=new THREE.DirectionalLight(0xfff3dd,1.1);key.position.set(30,40,20);scene.add(key);
@@ -2294,19 +2339,23 @@ const FX=(()=>{
     $("#bgName").innerHTML=`${esc(def.name)}${WATCH?"":`<i>${esc(def.note||"")}</i>`}`;
   }
 
-  /* ---- grid and range rings (the rings follow the flagship) ---- */
-  const grid=new THREE.GridHelper(260,65,0x2a3266,0x141836);grid.material.transparent=true;grid.material.opacity=.3;grid.material.depthWrite=false;grid.position.y=-.05;scene.add(grid);
-  const rings=new THREE.Group();scene.add(rings);
-  const bandLbl={};
-  for(const b of BANDS){
-    const r=EDGE[b],pts=[];for(let i=0;i<=160;i++){const a=i/160*Math.PI*2;pts.push(V(Math.sin(a)*r,0,Math.cos(a)*r))}
-    const ln=new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineDashedMaterial({color:BAND_HEX[b],dashSize:.9,gapSize:.7,transparent:true,opacity:.5}));
-    ln.computeLineDistances();rings.add(ln);
-    const inner=b==="C"?0:EDGE[BANDS[BANDS.indexOf(b)-1]];
-    const ring=new THREE.Mesh(new THREE.RingGeometry(inner,r,128),new THREE.MeshBasicMaterial({color:BAND_HEX[b],transparent:true,opacity:.03,side:THREE.DoubleSide,depthWrite:false}));
-    ring.rotation.x=-Math.PI/2;ring.position.y=-.02;rings.add(ring);
-    const el=label("band3d");el.textContent=BAND_NAME[b];
-    bandLbl[b]={el,pos:V(0,0,(inner+r)/2+(b==="C"?2.5:0))};
+  /* ---- the reference plane (altitude 0) and the focused ship's weapon reach ---- */
+  // The grid is only a datum for altitude: every ship has a stalk down to it. Range is shown as spheres around the
+  // focused ship: green out to its best normal range, amber out to its longest reach.
+  const grid=new THREE.GridHelper(260,65,0x2a3266,0x141836);grid.material.transparent=true;grid.material.opacity=.22;grid.material.depthWrite=false;grid.position.y=-.05;scene.add(grid);
+  function shell(col,op){const g=new THREE.Group();
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(1,48,24),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:op,side:THREE.BackSide,depthWrite:false})));
+    const eq=new THREE.Line(new THREE.BufferGeometry().setFromPoints(Array.from({length:129},(_,i)=>V(Math.sin(i/128*Math.PI*2),0,Math.cos(i/128*Math.PI*2)))),new THREE.LineDashedMaterial({color:col,dashSize:.02,gapSize:.015,transparent:true,opacity:.55}));
+    eq.computeLineDistances();g.add(eq);
+    const mer=eq.clone();mer.rotation.z=Math.PI/2;mer.material=eq.material.clone();mer.material.opacity=.25;g.add(mer);
+    scene.add(g);g.visible=false;return g}
+  const shellN=shell(REACH_HEX.near,.035),shellL=shell(REACH_HEX.long,.025);
+  function reachShells(sh){
+    const m=sh&&live(sh)&&sh.weapons.length?meshes.get(sh.id):null;
+    if(!m||UI.noShells){shellN.visible=shellL.visible=false;return}
+    const n=Math.max(...sh.weapons.map(w=>w.rng)),l=reachOf(sh);
+    shellN.visible=true;shellN.position.copy(m.root.position);shellN.scale.setScalar(n);
+    shellL.visible=l>n+.5;shellL.position.copy(m.root.position);shellL.scale.setScalar(l);
   }
 
   /* ---- ship models: nose along +z ---- */
@@ -2485,7 +2534,7 @@ const FX=(()=>{
     const f=flagship();
     for(const s of S.ships){const m=meshes.get(s.id);if(!m)continue;
       const d=f&&s!==f&&s.side==="enemy"?dist(s,f):null;
-      m.label.innerHTML=`<b style="color:${SIDES[s.side].css}">${esc(s.name)}</b>${swarmN(s)?` <span class="st">×${unitsOf(s)}</span>`:""}${s.status==="disabled"?`<div class="st" style="color:var(--haz)">${swarmN(s)?"WIPED OUT":"DISABLED"}</div>`:shipTags(s)?`<div class="st" style="color:var(--ally)">${esc(shipTags(s).toUpperCase())}</div>`:""}${cur()===s?`<div class="st" style="color:var(--amber)">▶ TURN</div>`:""}${s.boarders?`<div class="st" style="color:var(--haz)">BOARDED ×${s.boarders}</div>`:""}${d!=null&&s.status==="ok"?`<div class="st" style="color:${BAND_CSS[s.band]}">${BAND_NAME[s.band]} · ${r1(d)}</div>`:""}<div class="bars">${meters(s)}</div>`;
+      m.label.innerHTML=`<b style="color:${SIDES[s.side].css}">${esc(s.name)}</b>${swarmN(s)?` <span class="st">×${unitsOf(s)}</span>`:""}${s.status==="disabled"?`<div class="st" style="color:var(--haz)">${swarmN(s)?"WIPED OUT":"DISABLED"}</div>`:shipTags(s)?`<div class="st" style="color:var(--ally)">${esc(shipTags(s).toUpperCase())}</div>`:""}${cur()===s?`<div class="st" style="color:var(--amber)">▶ TURN</div>`:""}${s.boarders?`<div class="st" style="color:var(--haz)">BOARDED ×${s.boarders}</div>`:""}<div class="st">alt ${sgn(Math.round(s.y))}${d!=null&&s.status==="ok"?` · <span style="color:${REACH_CSS[reachAt(f,d)]}">${r1(d)} u</span>`:""}</div><div class="bars">${meters(s)}</div>`;
       const us=m.model.userData.units;if(us){const n=unitsOf(s);us.forEach((u,i)=>{u.visible=i<n})}
     }
     for(const h of S.haz){const x=hmeshes.get(h.id);if(x)x.el.innerHTML=`<b>${esc(h.name)}</b>${h.hp!=null&&HAZ[h.kind].hp?` · ${h.hp} HP`:""}`}
@@ -2496,21 +2545,26 @@ const FX=(()=>{
   const reachRing=add2(new THREE.Line(new THREE.BufferGeometry().setFromPoints(Array.from({length:97},(_,i)=>V(Math.sin(i/96*Math.PI*2),0,Math.cos(i/96*Math.PI*2)))),new THREE.LineBasicMaterial({color:0xffb35c,transparent:true,opacity:.6})));reachRing.visible=false;
   const pvLine=add2(new THREE.Line(new THREE.BufferGeometry().setFromPoints([V(),V()]),new THREE.LineDashedMaterial({color:0xffb35c,dashSize:.6,gapSize:.35,transparent:true,opacity:.95})));pvLine.visible=false;pvLine.frustumCulled=false;
   const pvMark=add2(new THREE.Mesh(new THREE.OctahedronGeometry(.5,0),new THREE.MeshBasicMaterial({color:0xffb35c,wireframe:true})));pvMark.visible=false;
+  const pvPole=add2(new THREE.Line(new THREE.BufferGeometry().setFromPoints([V(),V()]),new THREE.LineDashedMaterial({color:0xffffff,dashSize:.3,gapSize:.25,transparent:true,opacity:.8})));pvPole.visible=false;pvPole.frustumCulled=false;
   const pvLbl=label("rng3d");pvLbl.style.setProperty("--c","var(--amber)");
   let pvKey="",pvPlan=null;
   function preview(){
     const m=moveTarget(),want=(UI.mv&&!WATCH)||(WATCH&&(UI.pmv||UI.pdest));
-    if(!m||!want){reach.visible=reachRing.visible=pvLine.visible=pvMark.visible=false;pvLbl.style.display="none";return}
+    if(!m||!want){reach.visible=reachRing.visible=pvLine.visible=pvMark.visible=pvPole.visible=false;pvLbl.style.display="none";return}
     const b=budgetOf(m),y=UI.malt===""?m.y:clamp(+UI.malt||0,-25,25);
     reach.visible=true;reach.position.set(m.x,m.y,m.z);reach.scale.setScalar(Math.max(.1,b));
     const dy=Math.abs(y-m.y),rr=b>dy?Math.sqrt(b*b-dy*dy):0;reachRing.visible=rr>.1;reachRing.position.set(m.x,y,m.z);reachRing.scale.setScalar(Math.max(.1,rr));
-    const tgt=WATCH&&UI.pdest&&!UI.pmv?{x:UI.pdest.x,y,z:UI.pdest.z}:UI.hover?{x:UI.hover.x,y,z:UI.hover.z}:null;
-    if(!tgt){pvLine.visible=pvMark.visible=false;pvLbl.style.display="none";return}
+    const tgt=WATCH&&UI.pdest&&!UI.pmv?{x:UI.pdest.x,y,z:UI.pdest.z}:UI.hover?{x:UI.hover.x,y:WATCH?y:UI.hover.y,z:UI.hover.z}:null;
+    if(!tgt){pvLine.visible=pvMark.visible=pvPole.visible=false;pvLbl.style.display="none";return}
+    // a pole from the level the point was picked at to where it is now: the height being chosen
+    const base=UI.lock&&!WATCH?UI.lock.y:WATCH&&UI.pdest?UI.pdest.y:tgt.y;
+    pvPole.visible=Math.abs(tgt.y-base)>.2;if(pvPole.visible){const q=pvPole.geometry.attributes.position;q.setXYZ(0,tgt.x,base,tgt.z);q.setXYZ(1,tgt.x,tgt.y,tgt.z);q.needsUpdate=true;pvPole.computeLineDistances()}
+    if(UI.lock&&!WATCH){const dy2=Math.abs(tgt.y-m.y),r2=b>dy2?Math.sqrt(b*b-dy2*dy2):0;reachRing.visible=r2>.1;reachRing.position.set(m.x,tgt.y,m.z);reachRing.scale.setScalar(Math.max(.1,r2))}
     const key=[m.id,r1(m.x),r1(m.y),r1(m.z),r1(tgt.x),r1(tgt.y),r1(tgt.z),r1(b),S.haz.length].join(",");
     if(key!==pvKey){pvKey=key;pvPlan=planPath(m,tgt,b,{skip:[],spent:S.rmove&&S.rmove.sid===m.id?0:m.spent})}
     const P=pvPlan,a=pvLine.geometry.attributes.position;a.setXYZ(0,m.x,m.y,m.z);a.setXYZ(1,P.to.x,P.to.y,P.to.z);a.needsUpdate=true;pvLine.computeLineDistances();
     pvLine.visible=pvMark.visible=true;pvMark.position.set(P.to.x,P.to.y,P.to.z);
-    pvLbl.textContent=pathNote(m,P);tmp.set(P.to.x,P.to.y,P.to.z);place(pvLbl,tmp,1.2);
+    pvLbl.textContent=`alt ${sgn(Math.round(P.to.y))} · `+pathNote(m,P);tmp.set(P.to.x,P.to.y,P.to.z);place(pvLbl,tmp,1.2);
   }
   /* ---- tail lines: who is on whose tail ---- */
   const tails=[];
@@ -2594,17 +2648,29 @@ const FX=(()=>{
   const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();let down=null;
   renderer.domElement.addEventListener("pointerdown",e=>{down=[e.clientX,e.clientY]});
   // The move tool: a point on the horizontal plane at the target altitude.
+  // Step 1: a point on the level plane at the ship's altitude (or the altitude box). Step 2 (UI.lock set): the mouse
+  // slides that point straight up or down, on a vertical plane facing the camera.
   function planePoint(e){
     const m=moveTarget();if(!m)return null;
     const r=renderer.domElement.getBoundingClientRect();ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);
-    ray.setFromCamera(ptr,cam);const y=UI.malt===""?m.y:clamp(+UI.malt||0,-25,25),pt=V();
+    ray.setFromCamera(ptr,cam);const pt=V();
+    if(UI.lock&&!WATCH){
+      const n=V(cam.position.x-UI.lock.x,0,cam.position.z-UI.lock.z);if(n.lengthSq()<1e-6)n.set(0,0,1);n.normalize();
+      const pl=new THREE.Plane().setFromNormalAndCoplanarPoint(n,V(UI.lock.x,0,UI.lock.z));
+      return ray.ray.intersectPlane(pl,pt)?{x:UI.lock.x,y:clamp(pt.y,-25,25),z:UI.lock.z}:null;
+    }
+    const y=UI.malt===""?m.y:clamp(+UI.malt||0,-25,25);
     return ray.ray.intersectPlane(new THREE.Plane(V(0,1,0),-y),pt)?{x:pt.x,y,z:pt.z}:null;
   }
   renderer.domElement.addEventListener("pointermove",e=>{if(!(UI.mv&&!WATCH)&&!(WATCH&&UI.pmv))return;UI.hover=planePoint(e)});
+  renderer.domElement.addEventListener("contextmenu",e=>{if(UI.lock){e.preventDefault();UI.lock=null;UI.hover=null;render()}});
   renderer.domElement.addEventListener("pointerup",e=>{
     if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;down=null;
+    if(e.button===2)return;
     if(WATCH){if(UI.pmv){const p=planePoint(e);if(p){UI.pdest=p;UI.pmv=false;render()}}return}
-    if(UI.mv){const p=planePoint(e),m=moveTarget();if(p&&m){const why=moveShip(m,p,{hard:UI.mhard,thread:UI.mthread});if(why){log(why,"miss");commit()}UI.hover=null}return}
+    if(UI.mv){const p=planePoint(e),m=moveTarget();if(!p||!m)return;
+      if(!UI.lock&&!e.shiftKey){UI.lock={x:p.x,z:p.z,y:p.y};UI.hover=p;render();return} // now pick the height
+      UI.lock=null;UI.hover=null;const why=moveShip(m,p,{hard:UI.mhard,thread:UI.mthread});if(why){log(why,"miss");commit()}else render();return}
     const r=renderer.domElement.getBoundingClientRect();ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);
     ray.setFromCamera(ptr,cam);
     if(UI.place){
@@ -2642,11 +2708,11 @@ const FX=(()=>{
   function frame(now){
     const dt=Math.min(.05,(now-last)/1000);last=now;const t=(now-T0)/1000;size();
     const f=flagship(),fm=f&&meshes.get(f.id);
-    // camera and range rings follow the flagship
-    if(fm&&f.status!=="escaped")fpos.copy(fm.root.position).setY(0);
+    // the camera follows the flagship, altitude included
+    if(fm&&f.status!=="escaped")fpos.copy(fm.root.position);
     const dv=fpos.clone().sub(focus).multiplyScalar(1-Math.exp(-dt*2.5));
     focus.add(dv);cam.position.add(dv);if(ctl)ctl.target.add(dv);
-    rings.position.copy(focus);
+    grid.position.x=Math.round(focus.x/4)*4;grid.position.z=Math.round(focus.z/4)*4;
     if(scen){scen.group.position.copy(focus);scen.update(t,cam)}
     for(const s of S.ships){const m=meshes.get(s.id);if(!m)continue;
       if(s.status==="escaped"){const d=V(s.x,0,s.z).sub(focus);if(d.lengthSq()<.01)d.set(1,0,0);tmp.copy(focus).addScaledVector(d.normalize(),160).setY(s.y)}
@@ -2697,13 +2763,12 @@ const FX=(()=>{
       const foes=S.ships.filter(x=>x!==from&&team(x)!==team(from)&&x.status==="ok"&&meshes.get(x.id)).sort((a,b)=>dist(from,a)-dist(from,b));
       const show=foes.slice(0,8);const tgS=ship(tgId);if(tgS&&foes.includes(tgS)&&!show.includes(tgS))show.push(tgS);
       for(const x of show){const xm=meshes.get(x.id);
-        const d=dist(from,x),b=bandOf(d),L=rangeLine(n++);const a=L.l.geometry.attributes.position;a.setXYZ(0,fp.x,fp.y,fp.z);a.setXYZ(1,xm.root.position.x,xm.root.position.y,xm.root.position.z);a.needsUpdate=true;L.l.computeLineDistances();
-        L.l.material.color.setHex(BAND_HEX[b]);L.l.material.opacity=b==="X"?.2:.5;L.l.visible=true;
-        L.el.style.setProperty("--c",BAND_CSS[b]);L.el.textContent=`${r1(d)} · ${BAND_NAME[b]}${lineCover(from,x)?" · blocked":""}`;tmp.copy(fp).lerp(xm.root.position,.5);place(L.el,tmp,0)}
+        const d=dist(from,x),b=reachAt(from,d),L=rangeLine(n++);const a=L.l.geometry.attributes.position;a.setXYZ(0,fp.x,fp.y,fp.z);a.setXYZ(1,xm.root.position.x,xm.root.position.y,xm.root.position.z);a.needsUpdate=true;L.l.computeLineDistances();
+        L.l.material.color.setHex(REACH_HEX[b]);L.l.material.opacity=b==="none"?.25:.6;L.l.visible=true;
+        L.el.style.setProperty("--c",REACH_CSS[b]);L.el.textContent=`${r1(d)} u${altTxt(from,x)} · ${REACH_NAME[b]}${lineCover(from,x)?" · blocked":""}`;tmp.copy(fp).lerp(xm.root.position,.5);place(L.el,tmp,0)}
     }
     for(let i=n;i<rl.length;i++){rl[i].l.visible=false;rl[i].el.style.display="none"}
-    preview();tailLines();
-    for(const b of BANDS){tmp.copy(bandLbl[b].pos).add(focus);place(bandLbl[b].el,tmp,0)}
+    preview();tailLines();reachShells(from&&from.status==="ok"?from:null);
     if(flareT>0){flareT=Math.max(0,flareT-dt*.8);amb.intensity=((bgById(S.bg).light||{}).amb??.75)+flareT*1.6}
     for(let i=effects.length-1;i>=0;i--){const e=effects[i];e.t+=dt;const k=Math.min(1,e.t/e.life);e.update(k);
       if(k>=1){scene.remove(e.obj);dispose(e.obj);effects.splice(i,1);if(e.done)e.done()}}
@@ -2783,7 +2848,7 @@ const Live=(()=>{
       lineup:S.lineup,lead:S.lead,initIn:S.initIn,autoNpc:S.autoNpc,
       focus:{att:UI.tab==="stations"?UI.att:0,tgt:UI.tab==="stations"?UI.tgt:0},
       ships:S.ships.map(s=>{
-        const o={id:s.id,name:s.name,side:s.side,model:s.model,band:s.band,status:s.status,brace:s.brace,crits:s.crits,
+        const o={id:s.id,name:s.name,side:s.side,model:s.model,status:s.status,brace:s.brace,crits:s.crits,
           ac:s.ac,hull:s.hull,maxHull:s.maxHull,sh:s.sh,maxSh:s.maxSh,regen:s.regen,pilot:s.pilot,pd:s.pd,weapons:s.weapons,
           x:r1(s.x),y:r1(s.y),z:r1(s.z),spd:s.spd,traits:s.traits,boarders:s.boarders,order:{k:s.order.k,tgt:s.order.tgt},
           moveLeft:r1(s.moveLeft),spent:r1(s.spent),tail:s.tail,dodge:s.dodge,lock:s.lock,ready:s.ready,about:s.about,dark:s.dark,thread:s.thread,
@@ -2872,7 +2937,7 @@ const Live=(()=>{
   function update(){
     if(!mirror||typeof mirror!=="object"||!mirror.state){status=mirror?"live":"ended";ui();render();return}
     status="live";
-    const j=mirror.state;S=sanitizeState(j);S.hide=!!j.hide;recalc();
+    const j=mirror.state;S=sanitizeState(j);S.hide=!!j.hide;
     const fc=j.focus||{};UI.att=num(fc.att,0);UI.tgt=num(fc.tgt,0);
     const r=me().reply;if(UI.sending&&r&&r.ref===UI.lastRef)UI.sending=false;
     FX.sync();ui();render();
@@ -2968,7 +3033,7 @@ if(WATCH){
     log("Sample encounter loaded. Add ships in the Fleet tab; pick a battlefield and hazards in the Field tab.","sys");
     log("Round 1.","r");
   }
-  recalc();FX.sync();render();Live.resume();
+  FX.sync();render();Live.resume();
 }
 </script>
 </body></html>
