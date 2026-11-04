@@ -54,6 +54,8 @@ firebase login
 firebase deploy --only hosting
 ```
 
+**Automatic Firebase deploys:** `.github/workflows/firebase-hosting.yml` runs that deploy on every push to `main` (or by hand from the Actions tab). It needs one repo secret, set up once: in the Firebase console go to Project settings → Service accounts → Generate new private key, then paste the file's contents into GitHub → Settings → Secrets and variables → Actions as `FIREBASE_SERVICE_ACCOUNT`.
+
 `.firebaserc` points at the `drift-combat` project. If Firebase gave your project a different ID (check Project settings), change it there.
 
 ## Setting up the live player view (once)
