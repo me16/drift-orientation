@@ -156,6 +156,29 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
 .btn,label.chk{-webkit-touch-callout:none}
 #tip .tk{display:block;font:400 10.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:3px}
 #tip .tk i{font-style:normal;color:var(--amber)}
+/* The GM's turn card: pops up over the plot on each hostile or allied turn (unless automatic enemy AI is on). */
+#npcCard{position:absolute;right:12px;top:96px;z-index:4;width:min(390px,calc(100% - 24px));max-height:calc(100% - 108px);overflow:auto;
+  background:rgba(14,18,48,.97);border:1px solid var(--rule-2);border-top:2px solid var(--c,var(--haz));box-shadow:0 8px 30px #000b;padding:10px 12px 12px}
+#npcPill{position:absolute;right:12px;top:96px;z-index:4;border-color:var(--c,var(--haz));color:var(--c,var(--haz))}
+.card-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.card-h .name{font-size:16px;line-height:1.25}
+.step{border-top:1px solid var(--rule);padding:8px 0 4px;margin-top:8px}
+.step-h{display:flex;justify-content:space-between;gap:8px;font:400 10.5px var(--f-disp);letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:6px}
+.step-h .ok{color:var(--ok);font-family:var(--f-data);letter-spacing:.06em}
+.step.done .step-h>span:first-child{color:var(--ok)}
+.wl{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;padding:5px 0;border-top:1px dashed var(--rule)}
+.wl:first-of-type{border-top:0}
+.wl .mods{margin:2px 0 0;font-size:11.5px}
+.sb{font-size:13px;line-height:1.45}
+.sb p{margin:0 0 4px}
+.sb i.k{font-style:italic;font-weight:600;color:var(--fg)}
+.sb-sub{font-style:italic;color:var(--dim);font-size:12.5px;margin:1px 0 4px}
+.sb-sec{font:400 10px var(--f-disp);letter-spacing:.18em;text-transform:uppercase;color:var(--c,var(--haz));border-bottom:1px solid var(--rule);margin:8px 0 4px;padding-bottom:2px}
+.tac{font-size:12.5px;color:var(--amber);margin:6px 0 0}
+@media (max-width:860px){
+  #npcCard{position:fixed;left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:62vh;z-index:20}
+  #npcPill{position:fixed;top:auto;bottom:10px;right:10px;z-index:20}
+}
 </style>
 </head>
 <body>
@@ -180,6 +203,8 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
   <div class="placing" id="moveHint" hidden><span></span><button class="btn sm" type="button" id="moveCancel">Done</button></div>
   <div class="placing gm-only" id="placeHint" hidden><span></span><button class="btn sm" type="button" id="placeCancel">Cancel</button></div>
   <div class="bgname" id="bgName"></div>
+  <div id="npcCard" class="gm-only" hidden role="dialog" aria-label="Hostile or allied turn"></div>
+  <button class="btn gm-only" id="npcPill" type="button" data-act="cardopen" hidden></button>
  </div>
  <aside>
   <div class="tabs gm-only" role="tablist">
@@ -215,9 +240,10 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
   <label class="chk"><input type="checkbox" name="pd"> Point defense (missiles attack it at disadvantage)</label>
   <label class="f">Traits<input type="text" name="traits" maxlength="120" spellcheck="false" placeholder="armor:2 swarm:6 small volatile:3d6 stealth repair:3 screen edge:2 agile ponderous"></label>
   <label class="f">Weapons (one per line)<textarea name="weapons" rows="5" spellcheck="false"></textarea></label>
+  <label class="f">Tactics (GM only: how it fights, shown on its turn card)<input type="text" name="tactics" maxlength="200"></label>
   <p class="help">Format: <code>Name | +attack | damage | range | options | note</code><br>
    Range in plot units, normal/long: <code>20/32</code> fires normally out to 20 and at disadvantage out to 32; <code>10</code> reaches 10 and no farther.<br>
-   Options: <code>min:10</code> (can't fire inside 10 units, e.g. missiles), <code>missile</code>, <code>rear</code> (rear arc: fires only at a ship tailing you, or after the pilot's Come about), <code>ammo:6</code>, <code>heavy</code> (disadvantage against small targets), <code>area</code> (double damage to swarms), <code>ion</code> (double damage, shields only), <code>pierce</code> (ignores shields), <code>per</code> (damage once per swarm unit), <code>board</code> (a hit puts a boarding squad aboard), <code>ram</code> (a swarm spends a unit; a ship takes half the damage back). The note is shown on a hit.<br>
+   Options: <code>min:10</code> (can't fire inside 10 units, e.g. missiles), <code>missile</code>, <code>rear</code> (rear arc: fires only at a ship tailing you, or after the pilot's Come about), <code>ammo:6</code>, <code>recharge:5</code> (fires, then is spent until a d6 at the start of the ship's turn rolls 5 or more), <code>heavy</code> (disadvantage against small targets), <code>area</code> (double damage to swarms), <code>ion</code> (double damage, shields only), <code>pierce</code> (ignores shields), <code>per</code> (damage once per swarm unit), <code>board</code> (a hit puts a boarding squad aboard), <code>ram</code> (a swarm spends a unit; a ship takes half the damage back). The note is shown on a hit.<br>
    Traits: <code>armor:N</code> (hull damage −N per hit), <code>swarm:N</code> (N units share the hull; no crits, no pilot actions), <code>small</code>, <code>stealth</code> (from more than 10 units away, attacks at disadvantage unless scanned), <code>volatile:3d6</code> (explodes when disabled, 8 units), <code>repair:N</code> (friends within 10 units regain N hull at the end of each round), <code>screen</code> (missiles at friends within 6 units at disadvantage), <code>edge:N</code> (the pilot's Edge dice, d8), <code>agile</code> (+2 to pilot checks), <code>ponderous</code> (disadvantage on hazard checks and Tail; Burn adds half Speed).</p>
   <div class="row spread">
    <button class="btn" value="cancel" formnovalidate type="submit">Cancel</button>
@@ -320,6 +346,10 @@ const PILOT={
   sling:{n:"Slingshot",c:"",edge:true,t:"Inside a gravity well: extra Speed of twice the die, and no pull this round."},
 };
 
+// Hostile and allied ships run from a stat block, like a 5e monster: a short list of maneuvers (the pilot's action),
+// a bonus action or two, and automatic reactions. Ready, Cut the drive, Slingshot, the hard line, Thread the needle
+// and Press are the party's.
+const NPC_ACT=["burn","evade","tail","free","lineup","lock"],NPC_BONUS=["about","lead"];
 // The party's ship. Generic templates come from templates.js and campaign ships from ../gm/ships.js.
 const BASE_PRESETS=[
   {name:"Patience",side:"party",group:"Party",model:"dropship",ac:13,maxHull:25,maxSh:10,regen:0,pilot:4,spd:8,ai:"hold",blurb:"K. Vash's dropship.",
@@ -346,6 +376,12 @@ function roll(expr){
   }
   return {total:Math.max(0,total),text:bits.join(" ")||"0"};
 }
+// The 5e stat-block average of a dice expression ("2d8+3" -> 12), rounded down.
+function avgOf(expr){
+  const s=String(expr||"0").replace(/\s+/g,"");let t=0;const re=/([+-]?)(\d*)d(\d+)|([+-]?)(\d+)/gi;let m;
+  while((m=re.exec(s))){if(m[3]){const v=(+(m[2]||1))*(+m[3]+1)/2;t+=m[1]==="-"?-v:v}else t+=m[4]==="-"?-(+m[5]):+m[5]}
+  return Math.max(0,Math.floor(t));
+}
 function d20(mode){const a=die(20),b=die(20);
   if(mode==="adv")return {nat:Math.max(a,b),text:`[${a},${b}]▲`};
   if(mode==="dis")return {nat:Math.min(a,b),text:`[${a},${b}]▼`};
@@ -370,7 +406,7 @@ function parseRange(str,dis){
 const rangeText=w=>`${w.min?w.min+"–":""}${w.rng}${w.lng>w.rng?"/"+w.lng:""}`;
 function parseWeapon(line){
   const p=String(line).split("|").map(x=>x.trim());if(!p[0])return null;
-  const w={name:p[0].slice(0,48),atk:parseInt(p[1],10)||0,dmg:(p[2]||"1d6").replace(/\s+/g,""),ammo:null,note:(p[5]||"").slice(0,160)};
+  const w={name:p[0].slice(0,48),atk:parseInt(p[1],10)||0,dmg:(p[2]||"1d6").replace(/\s+/g,""),ammo:null,rch:0,down:false,note:(p[5]||"").slice(0,160)};
   for(const f of W_FLAGS)w[f]=false;
   let dis="",min=null;
   for(const t of (p[4]||"").split(/\s+/).filter(Boolean)){
@@ -378,6 +414,7 @@ function parseWeapon(line){
     if(k==="dis")dis=v||"";
     else if(k==="min")min=clamp(parseFloat(v)||0,0,100);
     else if(k==="ammo")w.ammo=Math.max(0,parseInt(v,10)||0);
+    else if(k==="recharge")w.rch=clamp(parseInt(v,10)||5,2,6);
     else if(W_FLAGS.includes(k))w[k]=true;
     else if(k==="helm")w.rear=true; // older saves: "fires only when your pilot wins the helm"
   }
@@ -386,7 +423,7 @@ function parseWeapon(line){
   return w;
 }
 function weaponLine(w){
-  const o=[w.min?"min:"+w.min:"",...W_FLAGS.filter(f=>w[f]),w.ammo!=null?"ammo:"+w.ammo:""].filter(Boolean).join(" ");
+  const o=[w.min?"min:"+w.min:"",...W_FLAGS.filter(f=>w[f]),w.ammo!=null?"ammo:"+w.ammo:"",w.rch?"recharge:"+w.rch:""].filter(Boolean).join(" ");
   return [w.name,sgn(w.atk),w.dmg,`${w.rng}${w.lng>w.rng?"/"+w.lng:""}`,o,w.note].join(" | ").replace(/( \| )+$/,"");
 }
 // "armor:2 swarm:6 small volatile:3d6 stealth repair:3 screen"
@@ -441,9 +478,14 @@ const TIP_WAIT={
 const TIPS={
   init:["Initiative","Every ship rolls d20 + its pilot's bonus (agile +2). Ships act from highest to lowest, every round."],
   endturn:["End turn","Ships ending more than 20 units apart lose their Tail; a ship out of every hostile's reach starts breaking away. After the last ship: drift, hazards, events, shield regen, fires, repair, boarders."],
-  npcturn:["Hostile or allied turn","Flies its standing order, takes a pilot action and a bonus action, then fires every weapon in reach."],
-  npcfire:["Hostile or allied guns","Every weapon that hasn't fired shoots its order's target, or the nearest thing in reach."],
-  flyorder:["Order","Fly this ship's standing order with the movement it has left."],
+  npcturn:["Hostile or allied turn · AI","Does whatever is left of its turn the way its AI would: flies its standing order with the movement left, takes the maneuver and bonus action it would pick, then fires every weapon in reach. You still end the turn, unless automatic enemy AI is on."],
+  npcfire:["Multiattack","Every weapon that hasn't fired this round shoots the card's target if it can reach it, else its order's target, else the nearest foe in reach."],
+  npcw:["Attack","Fire this weapon at the card's target: d20 + its attack bonus vs AC, with the advantage or disadvantage shown. Once per weapon per round."],
+  cardmin:["Turn card","Tuck the card away. It comes back from the button on the plot or the Turn tab, and pops up again on the next hostile or allied turn."],
+  cardopen:["Turn card","Run this hostile or allied turn by hand: move, one maneuver, attack."],
+  autonpc:["Automatic enemy AI","On: hostile and allied ships fly, maneuver, fire and end their turns by themselves. Off: each of their turns opens a turn card and waits for you."],
+  avgdmg:["Average damage","Like a 5e stat block: hostile and allied hits deal the average shown (9 for 2d8) instead of rolling. Party damage is still rolled."],
+  flyorder:["Order","Fly this ship's standing order with the movement it has left. Change the order above to fly something else."],
   brace:TIP_BRACE,
   readymv:["Reaction","Readied move: move up to half its Speed now."],
   ready:["Reaction","Readied move: move up to half your Speed now."],
@@ -481,7 +523,7 @@ function tipFor(el){
   if(el.hasAttribute("title")){el.dataset.tip=el.title;el.removeAttribute("title")}
   const d=el.dataset,lbl=el.matches("label")?el:null,inp=lbl&&lbl.querySelector("input");
   let key=d.pact||d.act||(el.id==="nextBtn"?(S.fight?"endturn":"init"):""),arg=d.q||d.k;
-  if(inp){key=inp.dataset.mv||inp.dataset.ui;if(key==="scan"||key==="jam")key+="chk"}
+  if(inp){key=inp.dataset.mv||inp.dataset.ui||inp.dataset.act;if(key==="scan"||key==="jam")key+="chk"}
   let t=TIPS[key];if(typeof t==="function")t=t(arg,el);
   if(t)return `<span class="tk">${t[0]}</span>${esc(t[1])}`;
   return d.tip?esc(d.tip):"";
@@ -551,14 +593,16 @@ const ROOM_IN=(PARAMS.get("watch")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").s
 let S;
 const UI={tab:"turn",att:null,wpn:0,tgt:null,bonus:"",nat:"",over:false,scan:false,jam:false,adv:"auto",eng:null,initIn:{},adj:"",pd:{},
   pin:{},ptgt:null,pover:"w0",pfix:"-1",pjam:null,lastRef:"",sending:false,localMsg:"",watchOnly:false,
-  place:null,hsel:null,fsel:null,addSide:"",npcBusy:false,openShip:{},
+  place:null,hsel:null,fsel:null,addSide:"",npcBusy:false,openShip:{},openSb:{},cardKey:"",cardMin:false,cardTraits:false,
   mv:false,lock:null,noShells:false,malt:"",mhard:false,mthread:false,mtgt:0,press:false,hover:null,pmv:false,pdest:null,running:false};
 // fight: initiative rolled. init: [{id, v}] highest first; turn: index of the ship whose turn it is.
 // react: reactions used this round, by seat key. wait: a decision that blocks play (jink, reaction fire, hard brake, follow).
 // rmove: a reaction move in progress (follow, readied move). tact: the current pilot's action and bonus action.
-function blank(){return {v:3,nid:1,round:1,fight:false,init:[],turn:0,ships:[],spool:{s:0,f:0},log:[],
+// autoNpc: hostile and allied turns run themselves (off: the GM runs them from the turn card). avgDmg: their hits deal
+// the stat-block average instead of rolling. v 4: saves from before the turn card come back with autoNpc off.
+function blank(){return {v:4,nid:1,round:1,fight:false,init:[],turn:0,ships:[],spool:{s:0,f:0},log:[],
   crew:[],cnid:1,seats:{},acted:{},react:{},pending:{},mods:{scan:false,over:"",jam:{}},
-  wait:null,rmove:null,tact:{a:false,b:false},lineup:0,lead:null,initIn:{},autoNpc:true,
+  wait:null,rmove:null,tact:{a:false,b:false},lineup:0,lead:null,initIn:{},autoNpc:false,avgDmg:false,
   haz:[],hnid:1,bg:"deep",events:true}}
 function save(){if(WATCH)return;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&Array.isArray(j.ships))return sanitizeState(j)}catch(e){}return null}
@@ -617,7 +661,7 @@ function makeShip(p,sideOver){
     spd:p.spd!=null&&Number.isFinite(+p.spd)?clamp(+p.spd,0,40):(MODEL_SPD[model]??6),
     traits:typeof p.traits==="string"?parseTraits(p.traits):cleanTraits(p.traits),ai,
     weapons:(p.weapons||[]).map(w=>typeof w==="string"?parseWeapon(w):cleanWeapon(w)).filter(Boolean),
-    at,crits:[],status:"ok",marks:0,brace:false,boarders:0,
+    at,tactics:String(p.tactics||"").slice(0,200),crits:[],status:"ok",marks:0,brace:false,boarders:0,
     x:0,y:0,z:0,vx:0,vy:0,vz:0,order:{k:ai,tgt:0,x:0,z:0,alt:null,d:od},...TURN0,chk:[],ai:{},prov:[],edge:0};
   // Hostiles arrive `at` units out (measured in 3D), spread around the compass and above and below.
   if(side==="enemy"){const a=n*.95+.35,dy=clamp([0,6,-6,10,-10,3,-3][n%7],-at*.6,at*.6),hd=Math.sqrt(Math.max(1,at*at-dy*dy));
@@ -647,7 +691,8 @@ function cleanTraits(t){
 function cleanWeapon(w){
   const o={name:String(w.name||"Weapon").slice(0,48),atk:num(w.atk,0,-50,50),
     dmg:String(w.dmg||"0").replace(/[^0-9dD+-]/g,"").slice(0,24)||"0",
-    ammo:w.ammo==null?null:num(w.ammo,0,0,9999),note:String(w.note||"").slice(0,160)};
+    ammo:w.ammo==null?null:num(w.ammo,0,0,9999),rch:num(w.rch,0,0,6),down:!!w.down,note:String(w.note||"").slice(0,160)};
+  if(o.rch===1)o.rch=2;if(!o.rch)o.down=false;
   for(const f of W_FLAGS)o[f]=!!(w[f]||(f==="rear"&&w.helm));
   if(Number.isFinite(+w.lng)&&+w.lng>0){o.rng=fl(w.rng,+w.lng,1,200);o.lng=fl(w.lng,o.rng,o.rng,200);o.min=fl(w.min,0,0,o.lng)}
   else Object.assign(o,rangesFromBands(w.bands,w.dis)); // a save from before ranges
@@ -665,7 +710,7 @@ function cleanShip(s){
     ac:num(s.ac,12,0,99),maxHull:num(s.maxHull,30,1,99999),maxSh:num(s.maxSh,0,0,99999),regen:num(s.regen,0,0,9999),pilot:num(s.pilot,0,-50,50),pd:!!s.pd,
     spd:num(s.spd,MODEL_SPD[model]??6,0,40),traits:cleanTraits(s.traits),ai,
     weapons:arr(s.weapons).filter(w=>w&&typeof w==="object").map(cleanWeapon),
-    band:String(s.band||"").slice(0,1),at:fl(s.at,15,3,60),angle:Number.isFinite(+s.angle)?+s.angle:0,crits:arr(s.crits).filter(k=>CRIT_BY[k]),
+    band:String(s.band||"").slice(0,1),at:fl(s.at,15,3,60),tactics:String(s.tactics||"").slice(0,200),angle:Number.isFinite(+s.angle)?+s.angle:0,crits:arr(s.crits).filter(k=>CRIT_BY[k]),
     status:["ok","disabled","escaped"].includes(s.status)?s.status:"ok",marks:num(s.marks,s.halfCrit?2:0,0,3),brace:!!s.brace,
     boarders:num(s.boarders,0,0,20),order:cleanOrder(s.order,ai),
     vx:fl(s.vx,0,-40,40),vy:fl(s.vy,0,-40,40),vz:fl(s.vz,0,-40,40),
@@ -732,7 +777,7 @@ function sanitizeState(j){
   o.lineup=shipIds.has(num(j.lineup))?num(j.lineup):0;
   o.lead=j.lead&&shipIds.has(num(j.lead.sid))?{sid:num(j.lead.sid),v:num(j.lead.v,0,0,12)}:null;
   for(const [k,v] of Object.entries(obj(j.initIn)))if(shipIds.has(+k)){const d=num(v,0,0,20);if(d>=1)o.initIn[k]=d}
-  o.autoNpc=j.autoNpc!==false;
+  o.autoNpc=num(j.v,0)>=4&&j.autoNpc===true;o.avgDmg=j.avgDmg===true;
   {const r=obj(j.rmove);o.rmove=shipIds.has(num(r.sid))?{sid:num(r.sid),left:fl(r.left,0,0,100),why:r.why==="ready"?"ready":"follow"}:null}
   o.wait=cleanWait(j.wait,shipIds);
   // positions: ships from older saves get placed from their old range band and angle
@@ -863,10 +908,12 @@ function canFire(a,w,t,react=false){
   if(d>w.lng)return `${t.name} is out of reach: ${r1(d)} units, ${w.name} reaches ${w.lng}.`;
   if(d<w.min)return `${t.name} is too close: ${w.name} can't fire inside ${w.min} units (${r1(d)}).`;
   if(w.ammo!=null&&w.ammo<=0)return `${w.name} is out of ammo.`;
+  if(w.rch&&w.down)return `${w.name} is recharging (${rchText(w)} on a d6 at the start of ${a.name}'s turn).`;
   if(w.board&&swarmN(t))return "You can't board a swarm.";
   if(w.rear&&t.tail!==a.id&&a.about!==t.id)return `${w.name} is rear-arc: it fires at a ship tailing you, or after your pilot comes about.`;
   return "";
 }
+const rchText=w=>w.rch>=6?"6":`${w.rch}–6`;
 // Swarm weapons marked "per" roll once per unit still flying (one unit's worth for reaction fire).
 function dmgExpr(a,w,one=false){
   const n=w.per&&swarmN(a)&&!one?unitsOf(a):1;if(n<=1)return w.dmg;
@@ -912,7 +959,7 @@ function attack(a,wi,t,{bonus=null,nat=null,manualDamage=false,react=false}={}){
   const r=nat>=1&&nat<=20?{nat,text:`${nat} (table)`}:d20(m.mode);
   const cv=coverAC(t),ac=targetAC(t);const total=r.nat+bonus+lead;
   const hit=r.nat===20||(r.nat!==1&&total>=ac);
-  if(w.ammo!=null)w.ammo--;
+  if(w.ammo!=null)w.ammo--;if(w.rch)w.down=true;
   const gunner=a.side==="party"?seated(a.id,"w"+wi):null;
   const who=gunner?` (${esc(gunner.name)})`:"";
   const tag=(react?" (reaction)":"")+(m.mode==="adv"?" with advantage":m.mode==="dis"?" with disadvantage":"");
@@ -957,7 +1004,7 @@ function landHit(a,wi,t,{hit,nat20=false,over=false,scan=false,manual=false,one=
   }
   let res=null;
   if(hit){
-    const dmg=roll(dmgExpr(a,w,one));let total=dmg.total;const extra=[];
+    const dmg=npcDmg(a,dmgExpr(a,w,one));let total=dmg.total;const extra=[];
     if(w.dmg!=="0"){
       if(over){const o=roll("1d8");total+=o.total;extra.push(`overcharge ${o.text}`)}
       if(scan){const o=roll("1d8");total+=o.total;extra.push(`scan ${o.text}`);UI.scan=false;S.mods.scan=false}
@@ -969,6 +1016,8 @@ function landHit(a,wi,t,{hit,nat20=false,over=false,scan=false,manual=false,one=
   FX.shot(a.id,t.id,w,hit,res);
   commit();return "";
 }
+// Hostile and allied damage: rolled, or the stat-block average when that option is on.
+const npcDmg=(a,ex)=>S.avgDmg&&npcSide(a)?{total:avgOf(ex),text:`${ex} (average)`}:roll(ex);
 // Shooting a mine or a charge.
 function canFireHaz(a,w,h){
   if(!a||!w||!h)return "Pick a weapon and a target.";
@@ -983,6 +1032,7 @@ function canFireHaz(a,w,h){
   if(d>w.lng)return `${h.name} is out of reach: ${r1(d)} units, ${w.name} reaches ${w.lng}.`;
   if(d<w.min)return `${h.name} is too close: ${w.name} can't fire inside ${w.min} units.`;
   if(w.ammo!=null&&w.ammo<=0)return `${w.name} is out of ammo.`;
+  if(w.rch&&w.down)return `${w.name} is recharging.`;
   if(w.board||w.ram)return `${w.name} is no use against ${h.name}.`;
   if(w.rear&&!a.about)return `${w.name} is rear-arc: your pilot has to come about first.`;
   return "";
@@ -994,12 +1044,12 @@ function attackHaz(a,wi,h,{bonus=null,nat=null}={}){
   const mode=dist(a,h)>w.rng?"dis":"normal";
   const r=nat>=1&&nat<=20?{nat,text:`${nat} (table)`}:d20(UI.adv!=="auto"?UI.adv:mode);
   const total=r.nat+bonus,hit=r.nat===20||(r.nat!==1&&total>=K.ac);
-  if(w.ammo!=null)w.ammo--;
+  if(w.ammo!=null)w.ammo--;if(w.rch)w.down=true;
   if(a.side!=="party"||crewOn())S.acted[key]=true;
   a.dark=false;
   log(`${nm(a)} fires <b>${esc(w.name)}</b> at <b>${esc(h.name)}</b>: ${r.text}${sgn(bonus)} = <b>${total}</b> vs AC ${K.ac}. ${hit?"Hit.":"Miss."}`,hit?"hit":"miss");
   FX.shotAt(a.id,{x:h.x,y:h.y,z:h.z},w,hit);
-  if(hit){const d=roll(dmgExpr(a,w));h.hp=Math.max(0,(h.hp??K.hp)-d.total);
+  if(hit){const d=npcDmg(a,dmgExpr(a,w));h.hp=Math.max(0,(h.hp??K.hp)-d.total);
     if(h.hp<=0)setTimeout(()=>{detonate(h,`shot by ${esc(a.name)}`);commit()},w.missile?1000:250);
     else log(`${esc(h.name)}: ${d.total} damage, holding (${h.hp} left).`,"sys")}
   commit();return "";
@@ -1155,6 +1205,7 @@ function moveShip(s,to,o={}){
   if(!rm&&S.rmove)return "Finish the reaction move first.";
   const blk=moveBlock(s);if(blk)return `${s.name} can't maneuver: ${blk}.`;
   const budget=budgetOf(s);if(budget<=.05)return `${s.name} has no movement left this turn.`;
+  if(npcSide(s))o={...o,hard:false,thread:false}; // the hard line and Thread the needle are for party pilots
   if(!o.resume)s.prov=[];
   const dest={x:to.x,y:to.y,z:to.z},resume={sid:s.id,...dest,hard:!!o.hard,thread:!!o.thread};
   // the ship it's tailing can Hard brake as the tailer starts to move
@@ -1405,6 +1456,7 @@ function breakFree(s,ts,press){
 // A pilot action (PILOT) on the ship's own turn. o: tgt (ship id), press (spend an Edge die on Tail or Break free).
 function pilotAct(s,k,o={}){
   const P=PILOT[k];if(!P)return "Unknown action.";
+  if(npcSide(s)&&!NPC_ACT.includes(k)&&!NPC_BONUS.includes(k))return `${P.n} is a party pilot's stunt: hostile and allied ships don't use it.`;
   if(S.wait)return "Waiting on a decision first.";
   if(!S.fight||cur()!==s)return `It's not ${s.name}'s turn.`;
   const blk=pilotBlock(s);if(blk)return `${s.name}: ${blk}.`;
@@ -1435,13 +1487,13 @@ function pilotAct(s,k,o={}){
 }
 // Station actions that belong to the ship's turn (engineering Boost, sensors Call the line). key: the seat that acts.
 function boostAct(s){
-  const key=seatKey(s.id,"eng");if(S.fight&&cur()!==s)return `It's not ${s.name}'s turn.`;
+  const key=seatKey(s.id,"eng");if(npcSide(s))return "Stat-block ships have no engineering station.";if(S.fight&&cur()!==s)return `It's not ${s.name}'s turn.`;
   if(!manned(s,"eng"))return "Nobody is in Engineering.";if(S.acted[key])return "Engineering has already acted this round.";
   if(s.crits.includes("reactor"))return "Reactor scram: no Boost until it's fixed.";if(inNull(s))return "Nothing powered works in the null zone.";
   const add=Math.floor(speedOf(s)/2);s.moveLeft+=add;S.acted[key]=true;log(`${nm(s)}: engineering boosts the engines, +${add} movement.`,"sys");commit();return "";
 }
 function callLineAct(s){
-  const key=seatKey(s.id,"sens");if(S.fight&&cur()!==s)return `It's not ${s.name}'s turn.`;
+  const key=seatKey(s.id,"sens");if(npcSide(s))return "Stat-block ships have no sensors station.";if(S.fight&&cur()!==s)return `It's not ${s.name}'s turn.`;
   if(!manned(s,"sens"))return "Nobody is on Sensors.";if(S.acted[key])return "Sensors have already acted this round.";
   s.callLine=true;S.acted[key]=true;log(`${nm(s)}: sensors call the line. The pilot has advantage on the next hazard check.`,"sys");commit();return "";
 }
@@ -1501,6 +1553,8 @@ function beginTurn(){
     Object.assign(s,{moveLeft:speedOf(s),spent:0,dodge:false,lock:false,ready:false,about:0,thread:false,sling:false,callLine:false,chk:[],ai:{},prov:[],mx:0,my:0,mz:0});
     S.tact={a:false,b:false};S.lineup=0;S.lead=null;S.rmove=null;
     log(`<b style="color:${SIDES[s.side].css}">${esc(s.name)}</b>'s turn (initiative ${S.init[S.turn].v}). Speed ${speedOf(s)}.`,"r");
+    for(const w of s.weapons)if(w.rch&&w.down){const d=die(6);if(d>=w.rch)w.down=false;
+      log(`${nm(s)}: ${esc(w.name)} ${w.down?"is still recharging":"recharges"} (d6 = ${d}, needs ${rchText(w)}).`,w.down?"sys":"crit")}
     const mb=moveBlock(s);
     if(mb&&live(s)&&s.side==="party"||inNull(s)){coast(s);s.moveLeft=0;if(mb)log(`${nm(s)}: ${esc(mb)}.`,"sys")}
     if(S.autoNpc&&npcSide(s)&&!WATCH)setTimeout(runNpc,450);
@@ -1534,27 +1588,33 @@ function endTurn(){
 function continueAuto(){if(S.wait||S.rmove||WATCH||!S.autoNpc)return;const c=cur();if(c&&npcSide(c))setTimeout(runNpc,300)}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 // What a hostile or allied pilot does with its action, from its standing order.
-function aiAction(s){
-  if(pilotBlock(s)||S.tact.a)return;
-  const k=s.order.k,t=orderTarget(s),foe=t&&team(t)!==team(s)&&live(t)?t:nearestFoe(s);if(!foe)return;
-  if(S.ships.some(x=>x.tail===s.id&&live(x))){pilotAct(s,"free");return}
-  if(["close","board","ram","orbit"].includes(k)&&!s.tail&&dist(s,foe)<=TAIL_R){pilotAct(s,"tail",{tgt:foe.id});return}
-  if(s.hull<s.maxHull/2||k==="flee"){pilotAct(s,"evade");return}
-  if(s.weapons.some(w=>!w.rear&&inReach(w,dist(s,foe))))pilotAct(s,"lineup");
+// aiPick / aiBonusPick: what it would choose ({k, tgt} or null). The turn card shows these as suggestions.
+function aiPick(s){
+  if(pilotBlock(s)||S.tact.a)return null;
+  const k=s.order.k,t=orderTarget(s),foe=t&&team(t)!==team(s)&&live(t)?t:nearestFoe(s);if(!foe)return null;
+  if(S.ships.some(x=>x.tail===s.id&&live(x)))return {k:"free"};
+  if(["close","board","ram","orbit"].includes(k)&&!s.tail&&dist(s,foe)<=TAIL_R)return {k:"tail",tgt:foe.id};
+  if(s.hull<s.maxHull/2||k==="flee")return {k:"evade"};
+  if(s.weapons.some(w=>!w.rear&&inReach(w,dist(s,foe))))return {k:"lineup"};
+  return null;
 }
-function aiBonus(s){
-  if(pilotBlock(s)||S.tact.b)return;
-  const foe=orderTarget(s);if(!foe||team(foe)===team(s))return;
-  if(s.weapons.some(w=>w.rear&&(!w.ammo||w.ammo>0)&&inReach(w,dist(s,foe)))&&foe.tail!==s.id){pilotAct(s,"about",{tgt:foe.id});return}
-  if(edgeOf(s).n>=2&&s.weapons.some(w=>!canFire(s,w,foe)))pilotAct(s,"lead");
+function aiBonusPick(s){
+  if(pilotBlock(s)||S.tact.b)return null;
+  const foe=orderTarget(s);if(!foe||team(foe)===team(s))return null;
+  if(s.weapons.some(w=>w.rear&&(w.ammo==null||w.ammo>0)&&inReach(w,dist(s,foe)))&&foe.tail!==s.id)return {k:"about",tgt:foe.id};
+  if(edgeOf(s).n>=2&&s.weapons.some(w=>!canFire(s,w,foe)))return {k:"lead"};
+  return null;
 }
-// Every weapon on s that hasn't fired shoots its order's target, or the nearest thing in reach. Stops on a decision.
-async function fireShip(s){
+function aiAction(s){const p=aiPick(s);if(p)pilotAct(s,p.k,{tgt:p.tgt})}
+function aiBonus(s){const p=aiBonusPick(s);if(p)pilotAct(s,p.k,{tgt:p.tgt})}
+// Every weapon on s that hasn't fired shoots prefId (the turn card's target), else its order's target, else the nearest
+// thing in reach. Stops on a decision.
+async function fireShip(s,prefId=0){
   let shots=0;
   for(let i=0;i<s.weapons.length;i++){
     if(!live(s)||S.wait)break;
     const key=seatKey(s.id,"w"+i),w=s.weapons[i];if(S.acted[key]||S.pending[key])continue;
-    const pref=orderTarget(s);
+    const p0=prefId?ship(prefId):null,pref=p0&&live(p0)&&team(p0)!==team(s)?p0:orderTarget(s);
     const foes=S.ships.filter(t=>team(t)!==team(s)&&live(t)).sort((x,y)=>(x===pref?-1:y===pref?1:0)||dist(s,x)-dist(s,y));
     const t=foes.find(t=>!canFire(s,w,t));if(!t)continue;
     attack(s,i,t);shots++;await sleep(420);
@@ -1752,7 +1812,7 @@ function renderTurn(){
     if(!ships.length)return h+`<p class="note">No ships. Add some in the Fleet tab.</p>`;
     h+=`<div class="box">${ships.map(s=>`<div class="row spread seat"><span class="stats"><b style="color:${SIDES[s.side].css}">${esc(s.name)}</b> ${sgn(pilotBonus(s))} · Speed ${speedOf(s)}</span><input type="number" class="mini" min="1" max="20" data-k="init:${s.id}" data-init="${s.id}" value="${esc(S.initIn[s.id]??"")}" placeholder="auto"></div>`).join("")}
       <div class="row"><button class="btn pri" data-act="init">Roll initiative</button></div></div>
-      <label class="chk"><input type="checkbox" data-act="autonpc"${S.autoNpc?" checked":""}> Run hostile and allied turns automatically</label>`;
+      <label class="chk"><input type="checkbox" data-act="autonpc"${S.autoNpc?" checked":""}> Automatic enemy AI (otherwise you run hostile and allied turns from a turn card)</label>`;
     return h;
   }
   const s=cur();
@@ -1765,15 +1825,175 @@ function renderTurn(){
   const e=edgeOf(s),npc=npcSide(s);
   h+=`<h3>${esc(s.name)}'s turn</h3><div class="box" style="--c:${SIDES[s.side].css}">
     <div class="stats">Movement <b>${r1(s.moveLeft)}</b> of ${speedOf(s)} · Edge <b>${e.n}</b>/${e.max}${e.max?` d${e.die}`:""} · Action ${S.tact.a?"used":"<b>ready</b>"} · Bonus ${S.tact.b?"used":"<b>ready</b>"}</div>`;
-  if(npc)h+=`<div class="row"><button class="btn pri sm" data-act="npcturn"${UI.running||S.wait||S.rmove?" disabled":""}>${UI.running?"Running…":"Run its turn"}</button><span class="mods" style="margin:0">Flies its order (${esc(ORDERS[s.order.k])}), takes a pilot action, fires.</span></div>`;
-  if(!rm)h+=moveControls(s);
-  h+=pilotControls(s);
-  if(!swarmN(s))h+=`<div class="sub"><div class="stats">Crew on this turn</div><div class="row"><button class="btn sm" data-act="boost" data-id="${s.id}"${boostOk(s)?"":" disabled"} title="Engineering action: +half Speed this turn">Boost engines</button><button class="btn sm" data-act="callline" data-id="${s.id}"${S.acted[seatKey(s.id,"sens")]||!manned(s,"sens")?" disabled":""} title="Sensors action: advantage on the pilot's next hazard check">Call the line</button><button class="btn sm" data-act="totab" data-tab="stations">Gunnery & engineering ▸</button></div></div>`;
+  if(npc){
+    h+=`<p class="note" style="margin:8px 0 0">A stat-block ship: run its turn from the turn card on the plot (move, one maneuver, attack), or let its AI do it.</p>
+     <div class="row"><button class="btn sm${UI.cardMin?" pri":""}" data-act="cardopen"${live(s)?"":" disabled"}>${UI.cardMin?"Show turn card":"Turn card is open"}</button><button class="btn sm" data-act="npcturn"${UI.running||S.wait||S.rmove?" disabled":""}>${UI.running?"Running…":"Run its turn with AI"}</button></div>`;
+  }else{
+    if(!rm)h+=moveControls(s);
+    h+=pilotControls(s);
+  }
+  if(!swarmN(s)&&!npc)h+=`<div class="sub"><div class="stats">Crew on this turn</div><div class="row"><button class="btn sm" data-act="boost" data-id="${s.id}"${boostOk(s)?"":" disabled"} title="Engineering action: +half Speed this turn">Boost engines</button><button class="btn sm" data-act="callline" data-id="${s.id}"${S.acted[seatKey(s.id,"sens")]||!manned(s,"sens")?" disabled":""} title="Sensors action: advantage on the pilot's next hazard check">Call the line</button><button class="btn sm" data-act="totab" data-tab="stations">Gunnery & engineering ▸</button></div></div>`;
   h+=`<div class="row" style="margin-top:10px"><button class="btn pri" data-act="endturn"${S.wait?" disabled":""}>End turn ▸</button></div></div>`;
-  h+=`<label class="chk"><input type="checkbox" data-act="autonpc"${S.autoNpc?" checked":""}> Run hostile and allied turns automatically</label>
+  h+=`<label class="chk"><input type="checkbox" data-act="autonpc"${S.autoNpc?" checked":""}> Automatic enemy AI (hostile and allied turns run themselves)</label>
     <label class="chk"><input type="checkbox" data-act="shells"${UI.noShells?"":" checked"}> Show the focused ship's weapon reach (green: normal range, amber: long)</label>
     <div class="row"><button class="btn sm warn" data-act="clearinit">Clear initiative</button></div>`;
   return h;
+}
+/* ---- stat blocks: hostile and allied ships, written up like 5e monsters ---- */
+const MODEL_TYPE={dropship:"dropship",corsair:"corsair",corvette:"corvette",fighter:"starfighter",capital:"capital ship",swarm:"drone swarm",
+  trooper:"boarding troops",hauler:"hauler",platform:"gun platform",bomber:"bomber",tug:"tug",cathedral:"cathedral-ship"};
+function typeLine(s){
+  const n=swarmN(s),cls=s.model==="capital"||s.model==="cathedral"?"Capital":s.traits.ponderous?"Heavy":s.traits.small?"Light":"Medium";
+  return `${n?`Swarm of ${n} ${s.traits.small?"small ":""}units`:cls} ${MODEL_TYPE[s.model]||s.model} · ${SIDES[s.side].label.toLowerCase()} · ${esc(ORDERS[s.order&&s.order.k]||"")}`;
+}
+const TRAIT_TEXT={
+  armor:t=>["Armor "+t.armor,`Each hit's hull damage is reduced by ${t.armor}.`],
+  swarm:t=>[`Swarm (${t.swarm})`,`${t.swarm} units share the hull; each lost share is one unit gone. No crits and no maneuvers. Area weapons deal it double damage.`],
+  small:()=>["Small","Heavy weapons attack it at disadvantage."],
+  stealth:()=>["Stealth",`From more than ${CLOSE_IN} units away, attacks on it have disadvantage unless the attacker's side has a Scan up.`],
+  volatile:t=>["Volatile",`When it's disabled it explodes: ${t.volatile} to every ship within ${BLAST} units.`],
+  repair:t=>[`Repair ${t.repair}`,`At the end of each round, friendly ships within ${CLOSE_IN} units (itself included) regain ${t.repair} hull.`],
+  screen:()=>["Screen",`Missiles aimed at friendly ships within ${SCREEN_R} units of it have disadvantage.`],
+  agile:()=>["Agile","+2 to initiative and pilot checks."],
+  ponderous:()=>["Ponderous","Disadvantage on hazard checks and Tail. Burn adds only half its Speed."],
+};
+const sbLine=(k,t)=>`<p><i class="k">${k}.</i> ${t}</p>`; // k and t are HTML: escape names before they get here
+// "9 (2d8)" like a stat block; per-unit swarm weapons count the units still flying.
+function dmgShow(s,w){if(w.dmg==="0")return "no damage";const ex=dmgExpr(s,w);return `${avgOf(ex)} (${esc(ex)})`}
+function weaponText(s,w){
+  const x=[];
+  if(w.min)x.push(`Can't fire inside ${w.min} units.`);
+  if(w.rear)x.push("Rear arc: only at a ship tailing it, or after Come about.");
+  if(w.missile)x.push("Missile: point defense and drone screens give disadvantage.");
+  if(w.heavy)x.push("Heavy: disadvantage against small targets.");
+  if(w.area)x.push("Area: double damage to swarms.");
+  if(w.ion)x.push("Ion: double damage, to shields only.");
+  if(w.pierce)x.push("Ignores shields.");
+  if(w.per&&swarmN(s))x.push(`Rolls ${esc(w.dmg)} for each unit still flying.`);
+  if(w.board)x.push("A hit puts a boarding squad aboard.");
+  if(w.ram)x.push(swarmN(s)?"Ram: one unit is spent in the impact.":"Ram: it takes half the damage back.");
+  if(w.ammo!=null)x.push(`Ammo ${w.ammo}.`);
+  if(w.note)x.push(esc(w.note));
+  return `${sgn(w.atk)} to hit, range ${rangeText(w)} units. <i>Hit:</i> ${dmgShow(s,w)}${w.dmg==="0"?"":" damage"}.${x.length?" "+x.join(" "):""}`;
+}
+const wName=w=>`${esc(w.name)}${w.rch?` (Recharge ${rchText(w)})`:""}`;
+// The parts of a stat block. Swarms and pilotless platforms skip what they can't do.
+function sbTraits(s){
+  const t=Object.keys(TRAIT_TEXT).filter(k=>s.traits[k]).map(k=>{const [a,b]=TRAIT_TEXT[k](s.traits);return sbLine(a,b)});
+  if(s.pd)t.push(sbLine("Point defense","Missiles attack it at disadvantage."));
+  return t.join("");
+}
+function sbManeuvers(s){
+  if(swarmN(s))return sbLine("No maneuvers","Swarms just fly. They don't Tail, Burn or evade.");
+  if(!s.spd)return sbLine("Anchored","It doesn't move, and it takes no maneuvers.");
+  const e=s.traits.edge,rear=s.weapons.some(w=>w.rear);
+  return sbLine("Maneuver (one a turn)","Burn (+Speed"+(s.traits.ponderous?", half":"")+"), Evasive flying, Tail, Break free, Line up, or Break lock.")+
+    (rear?sbLine("Come about (bonus)","Its rear-arc weapons bear on one target this turn."):"")+
+    (e?sbLine("Lead the shot (bonus, Edge)","Its next attack this turn adds an Edge die."):"");
+}
+function sbReactions(s){
+  const r=[];
+  if(s.weapons.some(w=>!w.rear&&!w.board))r.push(sbLine("Reaction fire",`When a foe pulls out of its ${CLOSE_IN}-unit close-in zone, one weapon in reach fires at it.`));
+  if(!swarmN(s)&&s.spd){
+    if(s.traits.edge)r.push(sbLine("Jink (Edge)","When a hit beats its AC by 3 or less, it spends an Edge die and adds it to AC."),
+      sbLine("Hard brake (Edge)","When a ship tailing it starts to move, if it has 2 Edge left: that pilot checks against DC 10 + the die or overshoots."));
+    r.push(sbLine("Follow","When the ship it's tailing moves, it follows (up to its Speed)."));
+  }
+  return r.join("")+(r.length?`<p class="mods" style="margin:2px 0 0">The plot makes these calls for it, on the spot.</p>`:"");
+}
+function statBlock(s){
+  const n=swarmN(s),e=s.traits.edge,c=`--c:${SIDES[s.side].css}`,ws=s.weapons;
+  return `<div class="sb" style="${c}"><div class="name">${esc(s.name)}</div><div class="sb-sub">${typeLine(s)}</div>
+   <div class="stats"><b>AC</b> ${s.ac} · <b>Hull</b> ${s.hull}/${s.maxHull}${n?` (${unitsOf(s)} units)`:""} · <b>Shields</b> ${s.maxSh}${s.regen?` (+${s.regen}/rd)`:""}<br><b>Speed</b> ${s.spd} · <b>Pilot</b> ${sgn(s.pilot)}${e?` · <b>Edge</b> ${e} d8`:""}</div>
+   ${sbTraits(s)?`<div class="sb-sec">Traits</div>${sbTraits(s)}`:""}
+   <div class="sb-sec">Actions</div>${ws.length>1?sbLine("Multiattack","It fires each of its weapons once, at one target or several."):""}${ws.map(w=>sbLine(wName(w),weaponText(s,w))).join("")||"<p>Unarmed.</p>"}
+   <div class="sb-sec">Maneuvers</div>${sbManeuvers(s)}
+   ${sbReactions(s)?`<div class="sb-sec">Reactions</div>${sbReactions(s)}`:""}
+   ${s.tactics?`<p class="tac"><i class="k" style="color:var(--amber)">Tactics.</i> ${esc(s.tactics)}</p>`:""}</div>`;
+}
+// A template as a ship-shaped object, for the Add-ship preview.
+function previewShip(p){
+  const side=SIDES[p.side]?p.side:"enemy",h=Math.max(1,+p.maxHull||30);
+  return {name:String(p.name||"Ship"),side,model:MODELS.includes(p.model)?p.model:"corvette",ac:+p.ac||12,maxHull:h,hull:h,maxSh:+p.maxSh||0,regen:+p.regen||0,pilot:+p.pilot||0,pd:!!p.pd,
+    spd:p.spd!=null?+p.spd:(MODEL_SPD[p.model]??6),traits:parseTraits(p.traits||""),weapons:(p.weapons||[]).map(parseWeapon).filter(Boolean),tactics:p.tactics||"",order:{k:parseAi(p.ai,side)[0]}};
+}
+/* ---- the GM's turn card: one hostile or allied turn, step by step ---- */
+// Shown on the GM's screen for the ship whose turn it is, when it's hostile or allied. It pops up at the start of
+// each such turn unless automatic enemy AI is on (then it starts hidden). UI.cardKey: the turn it belongs to.
+function cardShip(){
+  if(WATCH||!S.fight)return null;const s=cur();if(!s||!npcSide(s)||!live(s))return null;
+  const key=`${S.round}:${S.turn}:${s.id}`;
+  if(UI.cardKey!==key){UI.cardKey=key;UI.cardMin=S.autoNpc;const t=orderTarget(s);if(t&&team(t)!==team(s))UI.mtgt=t.id}
+  return s;
+}
+function npcCard(s){
+  const e=edgeOf(s),n=swarmN(s),foes=S.ships.filter(x=>team(x)!==team(s)&&live(x)).sort((a,b)=>dist(s,a)-dist(s,b));
+  if(!foes.some(x=>x.id===UI.mtgt))UI.mtgt=(foes[0]||{}).id||0;
+  const t=ship(UI.mtgt),busy=UI.running||!!S.wait||!!S.rmove,off=busy?" disabled":"";
+  let h=`<div class="card-h"><span><span class="side" style="--c:${SIDES[s.side].css}">${SIDES[s.side].label} turn · round ${S.round}</span><div class="name">${esc(s.name)}</div></span>
+    <button class="btn sm" data-act="cardmin" title="Hide the turn card (open it again from the plot or the Turn tab)">Hide</button></div>
+   <div class="sb-sub">${typeLine(s)}</div>
+   <div class="stats">AC <b>${s.ac}</b>${s.dodge?" · evasive":""} · Hull <b>${s.hull}/${s.maxHull}</b>${n?` (${unitsOf(s)}/${n})`:""} · Shields <b>${s.sh}/${s.maxSh}</b> · Pilot <b>${sgn(pilotBonus(s))}</b>${e.max?` · Edge <b>${e.n}</b>/${e.max}`:""}</div>
+   <div style="max-width:220px">${meters(s)}</div>
+   ${s.crits.length||s.boarders?`<div class="row" style="margin-top:4px">${s.crits.map(k=>`<span class="chip" style="--c:var(--amber)">${CRIT_BY[k].name}</span>`).join("")}${s.boarders?`<span class="chip" style="--c:var(--haz)">Boarders × ${s.boarders}</span>`:""}</div>`:""}
+   ${s.tactics?`<p class="tac">${esc(s.tactics)}</p>`:""}
+   ${sbTraits(s)||sbReactions(s)?`<details class="more"${UI.cardTraits?" open":""} data-cardtr="1"><summary>Traits and reactions</summary><div class="sb" style="margin-top:6px">${sbTraits(s)}${sbReactions(s)}</div></details>`:""}`;
+  if(S.wait)h+=`<div style="margin-top:8px">${waitHtml()}</div>`;
+  if(S.rmove){const rm=ship(S.rmove.sid);if(rm)h+=`<div class="mods" style="color:var(--amber)">${esc(rm.name)} is making a reaction move. Finish it in the Turn tab. <button class="btn sm" data-act="totab" data-tab="turn">Turn tab ▸</button></div>`}
+  h+=`<div class="row" style="margin-top:8px"><label class="f">Target<select data-mv="mtgt">${foes.map(x=>`<option value="${x.id}"${x.id===UI.mtgt?" selected":""}>${esc(x.name)} · ${r1(dist(s,x))} u${altTxt(s,x)} · ${REACH_NAME[reachAt(s,dist(s,x))]}</option>`).join("")||"<option value=\"0\">no foes</option>"}</select></label></div>`;
+  // 1 · Move
+  const mb=moveBlock(s),b=budgetOf(s),moved=s.spent>.05;
+  h+=`<div class="step${moved?" done":""}"><div class="step-h"><span>1 · Move</span><span class="ok">${r1(s.moveLeft)} of ${speedOf(s)} left</span></div>`;
+  if(mb)h+=`<div class="mods dis">Can't maneuver: ${esc(mb)}.</div>`;
+  else if(!s.spd)h+=`<div class="mods">Anchored: it doesn't move.</div>`;
+  else if(b<=.05)h+=`<div class="mods">No movement left.</div>`;
+  else{
+    const g=planMove(s,b),gt=orderTarget(s);
+    const pv=g?`flies ${r1(dist(s,g))} u${gt&&gt!==s?`, ends ${r1(dist(g,gt))} u from ${esc(gt.name)}`:""}`:"holds where it is";
+    h+=`<div class="row"><label class="f" style="flex:2">Order<select data-ord="k:${s.id}">${Object.entries(ORDERS).map(([k,l])=>`<option value="${k}"${k===s.order.k?" selected":""}>${l}</option>`).join("")}</select></label>
+      ${s.order.k==="keep"||s.order.k==="orbit"?`<label class="f">Distance<input type="number" step="1" min="2" max="60" data-ord="d:${s.id}" data-k="cd:${s.id}" value="${r1(s.order.d)}"></label>`:""}</div>
+     <div class="row"><button class="btn sm${g?" on":""}" data-act="flyorder" data-id="${s.id}"${off}${g?"":" disabled"}>Fly its order</button><span class="mods" style="margin:0">${pv}</span></div>
+     <div class="row">${QUICK.map(([q,l])=>`<button class="btn sm" data-act="quick" data-q="${q}" data-id="${s.id}"${off}>${l}</button>`).join("")}</div>
+     <div class="row"><button class="btn sm${UI.mv?" on":""}" data-act="mvmode"${S.wait?" disabled":""}>${UI.mv?"Click the plot… (Esc to stop)":"Move on the plot"}</button></div>`;
+  }
+  h+=`</div>`;
+  // 2 · Maneuver
+  const pb=pilotBlock(s),acted=S.tact.a;
+  h+=`<div class="step${acted?" done":""}"><div class="step-h"><span>2 · Maneuver</span><span class="ok">${acted?"used":"action ready"}${S.tact.b?" · bonus used":""}</span></div>`;
+  if(n)h+=`<div class="mods">Swarms don't maneuver.</div>`;
+  else if(pb)h+=`<div class="mods dis">No maneuvers: ${esc(pb)}.</div>`;
+  else{
+    const sug=aiPick(s),bsug=aiBonusPick(s),tailed=S.ships.some(x=>x.tail===s.id&&live(x)),tailOk=t&&dist(s,t)<=TAIL_R;
+    const btn=(k,lbl,dis,tip)=>{const P=PILOT[k];const no=dis||(P.c==="a"&&acted)||(P.c==="b"&&S.tact.b)||(P.edge&&!e.n)||busy;
+      const on=(sug&&sug.k===k)||(bsug&&bsug.k===k);return `<button class="btn sm${on&&!no?" on":""}" data-act="pilot" data-k="${k}" data-id="${s.id}"${no?" disabled":""}${tip?` title="${esc(tip)}"`:""}>${lbl||P.n}${P.edge?" ◆":""}</button>`};
+    h+=`<div class="row">${btn("burn")}${btn("evade")}${tailed?btn("free"):btn("tail",`Tail ${t?esc(t.name):"target"}`,!tailOk)}${btn("lineup")}${btn("lock")}</div>`;
+    const rear=s.weapons.some(w=>w.rear);
+    if(rear||e.max)h+=`<div class="row">${rear?btn("about",`Come about${t?" to "+esc(t.name):""}`,!t):""}${e.max?btn("lead"):""}</div>`;
+    const sw=[sug&&(sug.k==="tail"&&ship(sug.tgt)?`Tail ${ship(sug.tgt).name}`:PILOT[sug.k].n),bsug&&PILOT[bsug.k].n].filter(Boolean);
+    h+=`<div class="mods">${sw.length?`Its AI would pick: <b style="color:var(--amber)">${esc(sw.join(", then "))}</b> (highlighted).`:"Its AI would skip this."}</div>`;
+  }
+  h+=`</div>`;
+  // 3 · Attack
+  const fired=s.weapons.filter((w,i)=>S.acted[seatKey(s.id,"w"+i)]).length;
+  h+=`<div class="step${fired&&fired===s.weapons.length?" done":""}"><div class="step-h"><span>3 · Attack</span><span class="ok">${s.weapons.length?`${fired} of ${s.weapons.length} fired`:"unarmed"}</span></div>`;
+  s.weapons.forEach((w,i)=>{
+    const k=seatKey(s.id,"w"+i),done=S.acted[k],why=t?canFire(s,w,t):"No target.",m=t&&!why?attackMods(s,w,t):null;
+    const st=done?`<span style="color:var(--ok)">Fired this round.</span>`:why?`<span class="dis">${esc(why.replace(/^It's not .*/,"Not its turn."))}</span>`
+      :`vs AC ${targetAC(t)} · ${m.mode==="adv"?`<span class="adv">advantage (${esc(m.adv.join(", "))})</span>`:m.mode==="dis"?`<span class="dis">disadvantage (${esc(m.dis.join(", "))})</span>`:"straight roll"}`;
+    h+=`<div class="wl"><div><div class="stats"><b>${wName(w)}</b> ${sgn(w.atk)} · ${rangeText(w)} u · ${dmgShow(s,w)}${w.ammo!=null?` · ${w.ammo} left`:""}</div><div class="mods">${st}</div></div>
+      <button class="btn sm${!done&&!why?" pri":""}" data-act="npcw" data-id="${s.id}" data-i="${i}"${done||why||busy?" disabled":""}>Fire</button></div>`;
+  });
+  if(s.weapons.length>1)h+=`<div class="row"><button class="btn sm" data-act="npcfire"${off}${fired===s.weapons.length?" disabled":""}>Multiattack: fire everything in reach</button></div>`;
+  h+=`<div class="row"><label class="chk"><input type="checkbox" data-act="avgdmg"${S.avgDmg?" checked":""}> Average damage (hostile and allied)</label></div></div>`;
+  h+=`<div class="row spread" style="margin-top:10px"><button class="btn sm" data-act="npcturn"${off}>${UI.running?"Running…":"Let the AI finish"}</button><button class="btn pri" data-act="endturn"${S.wait||UI.running?" disabled":""}>End turn ▸</button></div>`;
+  return h;
+}
+function renderCard(){
+  const card=$("#npcCard"),pill=$("#npcPill"),s=cardShip();
+  if(!s){card.hidden=true;pill.hidden=true;card.innerHTML="";return}
+  const c=SIDES[s.side].css;card.style.setProperty("--c",c);pill.style.setProperty("--c",c);
+  if(UI.cardMin){card.hidden=true;card.innerHTML="";pill.hidden=false;pill.textContent=`${s.name}'s turn ▸`;return}
+  pill.hidden=true;const sc=card.scrollTop;card.innerHTML=npcCard(s);card.hidden=false;card.scrollTop=sc;
 }
 const boostOk=s=>manned(s,"eng")&&!S.acted[seatKey(s.id,"eng")]&&!s.crits.includes("reactor")&&!inNull(s);
 function foesOf(m){return S.ships.filter(x=>team(x)!==team(m)&&present(x)&&x.status!=="escaped")}
@@ -1957,6 +2177,7 @@ function renderFleet(){
   const pr=PRESETS[UI.preset];
   let h=`<h3>Add a ship</h3><div class="row"><select id="presetSel" data-ui="preset" style="flex:1">${presetOpts(UI.preset)}</select></div>
    ${pr&&pr.blurb?`<p class="blurb">${esc(pr.blurb)}</p>`:""}
+   ${pr&&pr.side!=="party"?`<details class="more"${UI.openSb.pre?" open":""} data-sb="pre"><summary>Stat block</summary><div class="box" style="margin-top:6px;--c:${SIDES[pr.side||"enemy"].css}">${statBlock(previewShip(pr))}</div></details>`:""}
    ${pr?`<div class="stats" style="margin-top:4px">AC ${pr.ac} · hull ${pr.maxHull}${pr.maxSh?` · shields ${pr.maxSh}`:""} · speed ${pr.spd??MODEL_SPD[pr.model]??6} · ${esc(ORDERS[pr.ai]||ORDERS[defaultAi(pr.side)])}</div>${pr.traits?`<div class="row" style="margin-top:4px">${traitChips(parseTraits(pr.traits))}</div>`:""}`:""}
    <div class="row"><label class="f" style="flex:0 1 150px">As<select data-ui="addSide"><option value="">${pr?SIDES[pr.side||"enemy"].label:"Template"}</option>${Object.entries(SIDES).filter(([k])=>!pr||k!==(pr.side||"enemy")).map(([k,v])=>`<option value="${k}"${UI.addSide===k?" selected":""}>${v.label}</option>`).join("")}</select></label>
    <button class="btn pri" data-act="addp" style="align-self:flex-end">Add</button><button class="btn" data-act="new" style="align-self:flex-end">Custom…</button></div>
@@ -1972,6 +2193,7 @@ function renderFleet(){
      <div class="stats" style="margin-top:6px">${s.weapons.map(w=>`${esc(w.name)} ${sgn(w.atk)} ${esc(dmgExpr(s,w))} [${rangeText(w)} u]${[w.missile&&"missile",w.heavy&&"heavy",w.area&&"area",w.ion&&"ion",w.pierce&&"pierce",w.board&&"board",w.ram&&"ram"].filter(Boolean).map(x=>` ${x}`).join("")}${w.ammo!=null?` ${w.ammo} left`:""}`).join("<br>")||"Unarmed"}</div>
      ${s.crits.length?`<div class="row">${s.crits.map((k,i)=>`<button class="chip" style="--c:var(--amber)" data-act="fix" data-id="${s.id}" data-i="${i}" title="Fixed: remove">${CRIT_BY[k].name} ×</button>`).join("")}</div>`:""}
      ${s.boarders?`<div class="row"><span class="chip" style="--c:var(--haz)">Boarders × ${s.boarders}</span><button class="btn sm" data-act="repel" data-id="${s.id}">Repel one</button></div>`:""}
+     ${s.side!=="party"?`<details class="more" data-sb="${s.id}"${UI.openSb[s.id]?" open":""}><summary>Stat block</summary><div style="margin-top:6px">${statBlock(s)}</div></details>`:""}
      ${s.status!=="escaped"?`<details class="more" data-ship="${s.id}"${UI.openShip[s.id]?" open":""}><summary>Orders and position · ${esc(ORDERS[s.order.k])}</summary>${orderBox(s)}</details>`:""}
      <div class="row">
       <button class="btn sm" data-act="edit" data-id="${s.id}">Edit</button>
@@ -2205,6 +2427,7 @@ function render(){
     :`Click a point (at altitude ${UI.malt===""?Math.round(mvr.y):UI.malt}), then raise or lower it. Shift-click flies there level.`;
   const lg=$("#log");
   lg.innerHTML=S.log.slice().reverse().map(e=>`<p class="${esc(e.c)}"><span class="r">R${e.r}</span> ${safeHtml(e.h)}</p>`).join("")||`<p class="r">Combat log is empty.</p>`;
+  renderCard();
   FX.labels();
   if(!WATCH)Live.push();
 }
@@ -2220,9 +2443,11 @@ function moveTarget(){
   if(WATCH){const me=Live.me(),st=me&&me.crew!=null?seatOf(me.crew):null;if(!st||st.st!=="helm"||st.ship!==m)return null}
   return m&&live(m)&&!moveBlock(m)&&budgetOf(m)>.05?m:null;
 }
+// The side panel, the GM's turn card and its pill share the same controls.
+function onPanes(type,fn,cap){for(const id of ["#pane","#npcCard","#npcPill"])$(id).addEventListener(type,fn,cap)}
 $("#pane").addEventListener("submit",e=>{if(e.target.id!=="joinForm")return;e.preventDefault();
   const c=e.target.code.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);if(c)location.search="?watch="+c});
-$("#pane").addEventListener("input",e=>{
+onPanes("input",e=>{
   const t=e.target;
   if(t.dataset.init){const v=parseInt(t.value,10);if(v>=1&&v<=20)S.initIn[t.dataset.init]=v;else delete S.initIn[t.dataset.init];save();return}
   if(t.dataset.mv){const k=t.dataset.mv;if(t.type==="checkbox"){UI[k]=t.checked;render();FX.sync()}else if(k==="malt"){UI.malt=t.value;if(t.type==="range"){const o=t.parentNode.querySelector("output");if(o)o.textContent=sgn(+t.value)}else UI.hover=null}return}
@@ -2235,7 +2460,7 @@ $("#pane").addEventListener("input",e=>{
   if(t.type==="checkbox"){UI[k]=t.checked;render();return}
   if(k==="bonus"||k==="nat"){UI[k]=t.value;return}
 });
-$("#pane").addEventListener("change",e=>{
+onPanes("change",e=>{
   const t=e.target,k=t.dataset.ui;
   if(t.dataset.seat){const key=t.dataset.seat,v=t.value?+t.value:null;
     for(const [sk,cid] of Object.entries(S.seats))if(cid===v)delete S.seats[sk];
@@ -2271,8 +2496,8 @@ $("#pane").addEventListener("change",e=>{
   if(k==="bonus"||k==="nat")return;
   render();FX.sync();
 });
-$("#pane").addEventListener("toggle",e=>{const d=e.target;if(d.dataset&&d.dataset.ship)UI.openShip[d.dataset.ship]=d.open},true);
-$("#pane").addEventListener("click",e=>{
+onPanes("toggle",e=>{const d=e.target;if(!d.dataset)return;if(d.dataset.ship)UI.openShip[d.dataset.ship]=d.open;if(d.dataset.cardtr)UI.cardTraits=d.open;if(d.dataset.sb)UI.openSb[d.dataset.sb]=d.open},true);
+onPanes("click",e=>{
   if(WATCH){
     const pb=e.target.closest("[data-pact]");if(pb&&!pb.disabled){UI.localMsg="";playerSend(pb);return}
     const b=e.target.closest("[data-act]");if(!b)return;
@@ -2289,12 +2514,16 @@ $("#pane").addEventListener("click",e=>{
   const say=why=>{if(why){log(why,"miss");commit()}};
   switch(b.dataset.act){
     case "init":say(rollInit());break;
-    case "autonpc":S.autoNpc=b.checked;commit();if(S.autoNpc)continueAuto();break;
+    case "autonpc":S.autoNpc=b.checked;UI.cardMin=S.autoNpc;commit();if(S.autoNpc)continueAuto();break;
     case "shells":UI.noShells=!b.checked;render();break;
     case "clearinit":if(confirm("Clear initiative? Turns start over when you roll again."))clearInit();break;
     case "endturn":say(endTurn());break;
     case "npcturn":runNpc();break;
-    case "npcfire":{const c=cur();if(c&&npcSide(c)&&!UI.running){UI.running=true;render();fireShip(c).then(n=>{UI.running=false;if(!n)log(`${nm(c)} has nothing in reach.`,"sys");commit()})}break}
+    case "npcfire":{const c=cur();if(c&&npcSide(c)&&!UI.running){UI.running=true;render();fireShip(c,UI.tab==="stations"?0:UI.mtgt).then(n=>{UI.running=false;if(!n)log(`${nm(c)} has nothing in reach.`,"sys");commit()})}break}
+    case "npcw":{const t=ship(UI.mtgt);if(!t){say("Pick a target.");break}say(attack(s,+b.dataset.i,t));break}
+    case "avgdmg":S.avgDmg=b.checked;commit();break;
+    case "cardmin":UI.cardMin=true;UI.mv=false;render();break;
+    case "cardopen":UI.cardMin=false;render();break;
     case "flyorder":{const g=planMove(s,budgetOf(s));if(!g){say(`${s.name}'s order holds it where it is.`);break}say(moveShip(s,g,{}));break}
     case "wait":say(resolveWait(b.dataset.use==="1"));break;
     case "brace":say(braceAct(s));break;
@@ -2349,7 +2578,7 @@ $("#pane").addEventListener("click",e=>{
       s.x=f.x+(s.x-f.x)/d*want;s.y=clamp(f.y+(s.y-f.y)/d*want,-25,25);s.z=f.z+(s.z-f.z)/d*want;keepIn(s);log(`${nm(s)} repositioned: ${r1(dist(s,f))} units from ${nm(f)}.`,"sys");commit();break}
     case "nudgey":{s.y=clamp(s.y+ +b.dataset.d,-25,25);log(`${nm(s)} repositioned: altitude ${sgn(Math.round(s.y))}.`,"sys");commit();break}
     case "refit":if(confirm("Restore every ship to full hull, shields and ammo, and clear crits?")){
-      for(const x of S.ships){const p=PRESETS.find(p=>p.name===x.name.replace(/ \d+$/,""));x.hull=x.maxHull;x.sh=x.maxSh;x.crits=[];x.status="ok";x.marks=0;x.brace=false;x.boarders=0;
+      for(const x of S.ships){const p=PRESETS.find(p=>p.name===x.name.replace(/ \d+$/,""));x.hull=x.maxHull;x.sh=x.maxSh;x.crits=[];x.status="ok";x.marks=0;x.brace=false;x.boarders=0;x.weapons.forEach(w=>{w.down=false});
         if(p)x.weapons.forEach((w,i)=>{const pw=p.weapons[i]&&parseWeapon(p.weapons[i]);if(pw&&pw.ammo!=null&&w.name===pw.name)w.ammo=pw.ammo})}
       log("Full refit.","sys");commit()}break;
     case "clearlog":S.log=[];commit();break;
@@ -2365,7 +2594,7 @@ function openEditor(s){
   $("#edTitle").textContent=s?`Edit ${s.name}`:"New ship";
   for(const k of ["name","side","model","ac","maxHull","maxSh","regen","pilot","at","spd"])f[k].value=src[k]??15;
   f.ai.value=s?s.order.k:src.ai;f.traits.value=traitLine(src.traits);
-  f.pd.checked=!!src.pd;f.weapons.value=src.weapons.map(weaponLine).join("\n");
+  f.pd.checked=!!src.pd;f.weapons.value=src.weapons.map(weaponLine).join("\n");f.tactics.value=src.tactics||"";
   $("#editor").showModal();
 }
 $("#editor").addEventListener("close",()=>{
@@ -2373,7 +2602,7 @@ $("#editor").addEventListener("close",()=>{
   const f=$("#edForm");
   const d={name:f.name.value.trim().slice(0,40)||"Ship",side:f.side.value,model:f.model.value,ac:+f.ac.value,maxHull:Math.max(1,+f.maxHull.value),maxSh:Math.max(0,+f.maxSh.value),
     regen:Math.max(0,+f.regen.value),pilot:+f.pilot.value,at:clamp(+f.at.value||15,3,60),pd:f.pd.checked,weapons:f.weapons.value.split("\n").map(parseWeapon).filter(Boolean),
-    spd:clamp(+f.spd.value||0,0,40),ai:ORDERS[f.ai.value]?f.ai.value:"hold",traits:parseTraits(f.traits.value)};
+    spd:clamp(+f.spd.value||0,0,40),ai:ORDERS[f.ai.value]?f.ai.value:"hold",traits:parseTraits(f.traits.value),tactics:f.tactics.value.trim().slice(0,200)};
   if(editing){const s=editing;const dh=d.maxHull-s.maxHull,ds=d.maxSh-s.maxSh;const k=d.ai;delete d.at;Object.assign(s,d);s.order.k=k;s.hull=clamp(s.hull+Math.max(0,dh),0,s.maxHull);s.sh=clamp(s.sh+Math.max(0,ds),0,s.maxSh);
     dropSeats(s.id,st=>s.side==="party"&&(!/^w/.test(st)||+st.slice(1)<s.weapons.length))}
   else{const n=makeShip(d);S.ships.push(n);log(`${nm(n)} enters the plot.`,"sys");joinInit(n)}
@@ -2808,6 +3037,7 @@ const FX=(()=>{
       render();return;
     }
     const s=ship(o.userData.sid);if(!s)return;
+    const cs=cardShip();if(cs&&!UI.cardMin&&s!==cs&&team(s)!==team(cs)&&live(s)){UI.mtgt=s.id;render();return}
     const a=ship(UI.att);
     if(UI.tab==="fleet"||UI.tab==="field"){UI.fsel=s.id;UI.openShip[s.id]=true;if(UI.tab==="field"){render();return}}
     else if(UI.tab!=="stations")UI.tab="stations";
