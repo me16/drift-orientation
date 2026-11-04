@@ -303,14 +303,19 @@ window.Scenery = (function () {
         anims.push(t => { f.material.opacity = .3 + .3 * Math.abs(Math.sin(t * 3 + h.id)); g.rotation.y += .0008; });
         break;
       }
-      case "debris": {
-        const n = Math.round(30 * r), pos = new Float32Array(n * 3);
-        for (let i = 0; i < n; i++) { const a = R() * TAU, d = Math.sqrt(R()) * r; pos.set([Math.cos(a) * d, (R() - .5) * r * .35, Math.sin(a) * d], i * 3); }
+      case "debris": case "rocks": {
+        // A sphere of junk, or (hh) a flat disc 2·hh thick: a ring plane, a gravel layer.
+        const rk = h.kind === "rocks", hh = h.hh || 0;
+        const at = () => { if (hh) { const a = R() * TAU, d = Math.sqrt(R()) * r; return [Math.cos(a) * d, (R() * 2 - 1) * hh, Math.sin(a) * d]; }
+          const u = R() * 2 - 1, a = R() * TAU, d = Math.cbrt(R()) * r, q = Math.sqrt(1 - u * u); return [Math.cos(a) * q * d, u * d, Math.sin(a) * q * d]; };
+        const n = Math.round(Math.min(3000, hh ? 2 * r * r : 30 * r)), pos = new Float32Array(n * 3);
+        for (let i = 0; i < n; i++) pos.set(at(), i * 3);
         const pg = new T.BufferGeometry(); pg.setAttribute("position", new T.BufferAttribute(pos, 3));
-        g.add(new T.Points(pg, new T.PointsMaterial({ color: 0xa8aab8, size: .22 })));
-        const mat = std(0x6a6c80, { metalness: .4 });
-        for (let i = 0; i < Math.round(r * 1.6); i++) { const a = R() * TAU, d = Math.sqrt(R()) * r; const k = .2 + R() * .45; const m = mesh(new T.TetrahedronGeometry(k), mat, Math.cos(a) * d, (R() - .5) * r * .3, Math.sin(a) * d); m.rotation.set(R() * 6, R() * 6, 0); g.add(m); }
-        anims.push(t => { g.rotation.y = t * .02; });
+        g.add(new T.Points(pg, new T.PointsMaterial({ color: rk ? 0xc8b8a0 : 0xa8aab8, size: rk ? .28 : .22 })));
+        const mat = rk ? std(0x8a7c6a, { roughness: .95 }) : std(0x6a6c80, { metalness: .4 });
+        const chunks = Math.round(Math.min(160, (rk ? 3 : 1.6) * r * (hh ? 1.5 : 1)));
+        for (let i = 0; i < chunks; i++) { const p = at(), k = rk ? .3 + R() * .9 : .2 + R() * .45; const m = mesh(rk ? new T.DodecahedronGeometry(k, 0) : new T.TetrahedronGeometry(k), mat, p[0], p[1], p[2]); m.rotation.set(R() * 6, R() * 6, 0); g.add(m); }
+        anims.push(t => { g.rotation.y = t * (rk ? .01 : .02); });
         break;
       }
       case "mine": {
@@ -332,7 +337,12 @@ window.Scenery = (function () {
       case "nebula": case "ion": case "heat": {
         const tone = h.kind === "nebula" ? col : h.kind === "ion" ? 0x8fb4ff : 0xff8a4a;
         const parts = [];
-        for (let i = 0; i < 7; i++) { const s = sprite(tone, r * (1 + R() * .8), .1 + R() * .1, true); s.position.set((R() - .5) * r, (R() - .5) * r * .3, (R() - .5) * r); g.add(s); parts.push([s, R() * 6, s.material.opacity]); }
+        // a cloud ball, or (hh) a flat deck: more, smaller puffs spread across the disc
+        const hh = h.hh || 0, cnt = hh ? Math.round(Math.min(40, 6 + r * r / 40)) : 7, sz = hh ? Math.max(hh * 2.4, r * .35) : r;
+        for (let i = 0; i < cnt; i++) { const s = sprite(tone, sz * (1 + R() * .8), .1 + R() * .1, true);
+          if (hh) { const a = R() * TAU, d = Math.sqrt(R()) * r * .9; s.position.set(Math.cos(a) * d, (R() - .5) * hh, Math.sin(a) * d); }
+          else s.position.set((R() - .5) * r, (R() - .5) * r * .6, (R() - .5) * r);
+          g.add(s); parts.push([s, R() * 6, s.material.opacity]); }
         anims.push(t => { for (const [s, ph, op] of parts) s.material.opacity = h.kind === "ion" ? op * (.6 + .8 * ((t * 3 + ph) % 1 < .07 ? 2 : .5)) : op * (.8 + .2 * Math.sin(t * .8 + ph)); });
         break;
       }
