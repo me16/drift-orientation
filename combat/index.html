@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
+<!-- Opened as …/combat without the trailing slash, every relative file below would load from the wrong folder. -->
+<script>if(!/\/$|\.html?$/.test(location.pathname))location.replace(location.pathname+"/"+location.search+location.hash)</script>
 <title>Drift Tactical Plot</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&family=Michroma&family=Share+Tech+Mono&display=swap">
@@ -225,14 +227,12 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<!-- Firebase settings for the live player view (window.LIVE_CONFIG). -->
-<script src="live-config.js"></script>
-<!-- Optional campaign presets (window.GM_SHIPS). Lives in the GM partition; missing file is fine. -->
-<script src="../gm/ships.js" onerror="void 0"></script>
-<!-- Generic ship templates (window.COMBAT_TEMPLATES), battlefields (window.BACKDROPS) and 3D scenery (window.Scenery). -->
-<script src="templates.js"></script>
-<script src="backdrops.js"></script>
-<script src="scenery.js"></script>
+<!-- Our own data files load with a fresh URL every time, so edits show up right after a deploy instead of
+     when the host's cache expires (GitHub Pages: 10 minutes, Firebase Hosting: up to an hour).
+     live-config.js: Firebase settings (window.LIVE_CONFIG) · ../gm/ships.js: campaign ships (window.GM_SHIPS; a missing
+     file is fine) · templates.js: generic ships (window.COMBAT_TEMPLATES) · backdrops.js: battlefields (window.BACKDROPS)
+     · scenery.js: 3D scenery (window.Scenery). -->
+<script>(function(){var v=Date.now();["live-config.js","../gm/ships.js","templates.js","backdrops.js","scenery.js"].forEach(function(f){document.write('<script src="'+f+'?v='+v+'" onerror="void 0"><\/script>')})})()</script>
 <script>
 "use strict";
 /* ============================== rules data ============================== */
