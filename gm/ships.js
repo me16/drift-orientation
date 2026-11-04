@@ -45,6 +45,10 @@ window.GM_SHIPS = [
     tactics: "Stuns shields, then demands the claim papers. Rather disable than kill.",
     ac: 14, maxHull: 26, maxSh: 10, regen: 5, pilot: 4, spd: 8, at: 15, ai: "keep:15", traits: "edge:1",
     weapons: ["Stun lance | +5 | 2d8 | 20 | ion", "Lasers | +5 | 2d8 | 20/32"] },
+  { name: "Sable battleship", side: "enemy", group: "STR", model: "capital", blurb: "Commonweal's last word in any argument.",
+    tactics: "Holds at 26 and trades broadsides with the biggest hostile. Ignores small ships until they shoot it.",
+    ac: 17, maxHull: 120, maxSh: 50, regen: 15, pilot: 2, spd: 3, pd: true, at: 30, ai: "keep:26", traits: "armor:3 ponderous edge:1",
+    weapons: ["Spinal railgun | +8 | 6d10 | 32 | min:10 heavy recharge:5", "Broadside batteries | +6 | 4d8 | 20/32", "Point-defense flak | +5 | 2d8 | 10 | area"] },
 
   // ---------- Drift ----------
   { name: "Ashborn salvage rig", side: "enemy", group: "Drift", model: "tug", blurb: "Salvagers who decided you're salvage.",

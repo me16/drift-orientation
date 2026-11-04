@@ -688,7 +688,7 @@ const ROOM_IN=(PARAMS.get("watch")||"").toUpperCase().replace(/[^A-Z0-9]/g,"").s
 let S;
 const UI={tab:"turn",att:null,wpn:0,tgt:null,bonus:"",nat:"",over:false,scan:false,jam:false,adv:"auto",eng:null,initIn:{},adj:"",pd:{},
   pin:{},ptgt:null,pover:"w0",pfix:"-1",pjam:null,lastRef:"",sending:false,localMsg:"",watchOnly:false,
-  place:null,hsel:null,fsel:null,addSide:"",npcBusy:false,openShip:{},openSb:{},cardKey:"",cardMin:false,cardTraits:false,
+  place:null,hsel:null,fsel:null,addSide:"",arrive:"jump",npcBusy:false,openShip:{},openSb:{},cardKey:"",cardMin:false,cardTraits:false,
   mv:false,lock:null,noShells:false,logOpen:false,malt:"",mhard:false,mthread:false,mtgt:0,press:false,hover:null,pmv:false,pdest:null,running:false};
 // fight: initiative rolled. init: [{id, v}] highest first; turn: index of the ship whose turn it is.
 // react: reactions used this round, by seat key. wait: a decision that blocks play (jink, reaction fire, hard brake, follow).
@@ -745,6 +745,15 @@ function pilotBlock(s){if(!live(s))return `${s.name} is disabled`;if(swarmN(s))r
 // Pilot checks: disadvantage from a cockpit hit or reactor scram, and for ponderous ships on hazard checks and Tail.
 function pilotMode(s,kind,adv){const dis=s.crits.some(k=>k==="cockpit"||k==="reactor")||s.traits.ponderous&&(kind==="haz"||kind==="tail");return adv&&!dis?"adv":dis&&!adv?"dis":"normal"}
 function dropSeats(sid,keep){for(const k of Object.keys(S.seats))if(k.startsWith(sid+":")&&!(keep&&keep(k.slice(k.indexOf(":")+1))))delete S.seats[k]}
+// How a ship added to the plot arrives (Ships tab). The 3D view plays it for the GM and live players.
+const ARRIVE={jump:"Out of hyperspace",hole:"Through a wormhole",here:"Already there"};
+function arriveShip(n){
+  const f=flagship(),how=ARRIVE[UI.arrive]?UI.arrive:"jump";
+  const where=f&&f!==n&&dist(n,f)>=8?` ${r1(dist(n,f))} units out${altTxt(f,n)}`:"";
+  log(how==="jump"?`${nm(n)} drops out of hyperspace${where}.`:how==="hole"?`A wormhole tears open${where} and ${nm(n)} comes through. It closes behind ${n.side==="party"?"the ship":"it"}.`:`${nm(n)} enters the plot${where}.`,"sys");
+  joinInit(n);commit();
+  if(how!=="here")FX.arrive(n.id,how);
+}
 function makeShip(p,sideOver){
   const side=SIDES[sideOver]?sideOver:SIDES[p.side]?p.side:"enemy";
   const model=MODELS.includes(p.model)?p.model:"corvette";
@@ -760,6 +769,9 @@ function makeShip(p,sideOver){
     x:0,y:0,z:0,vx:0,vy:0,vz:0,order:{k:ai,tgt:0,x:0,z:0,alt:null,d:od},...TURN0,chk:[],ai:{},prov:[],edge:0};
   // Hostiles arrive `at` units out (measured in 3D), spread around the compass and above and below.
   if(side==="enemy"){const a=n*.95+.35,dy=clamp([0,6,-6,10,-10,3,-3][n%7],-at*.6,at*.6),hd=Math.sqrt(Math.max(1,at*at-dy*dy));
+    s.x=o.x+Math.sin(a)*hd;s.z=o.z+Math.cos(a)*hd;s.y=clamp(o.y+dy,-25,25)}
+  // Allies with a long entry distance (warships, at 20+), or a distance set in the Add row, arrive that far out on the far side.
+  else if(f&&side!=="enemy"&&(p.far||at>=20)){const a=Math.PI+n*.7+.35,dy=clamp([0,-6,6,-10,10][n%5],-at*.6,at*.6),hd=Math.sqrt(Math.max(1,at*at-dy*dy));
     s.x=o.x+Math.sin(a)*hd;s.z=o.z+Math.cos(a)*hd;s.y=clamp(o.y+dy,-25,25)}
   else if(f){const a=Math.PI+(n%2?1:-1)*(.6+.35*Math.floor(n/2));s.x=o.x+Math.sin(a)*4.5;s.z=o.z+Math.cos(a)*4.5;s.y=clamp(o.y+(n%2?2:-2),-25,25)}
   s.hull=s.maxHull;s.sh=s.maxSh;
@@ -850,7 +862,7 @@ function sanitizeState(j){
   o.log=arr(j.log).filter(e=>e&&typeof e==="object").slice(-200).map(e=>{const x={r:num(e.r,1,1),h:String(e.h||"").slice(0,2000),c:/^[a-z]{0,8}$/.test(e.c)?e.c:""};if(e.p!=null)x.p=String(e.p).slice(0,2000);return x});
   o.crew=arr(j.crew).filter(c=>c&&typeof c==="object").slice(0,16).map(c=>({id:num(c.id,0,0),name:String(c.name||"Crew").slice(0,30),
     pilot:num(c.pilot,0,-20,30),gun:num(c.gun,0,-20,30),missile:num(c.missile,0,-20,30),tech:num(c.tech,0,-20,30),sensors:num(c.sensors,0,-20,30),
-    lvl:num(c.lvl,1,1,20),edge:c.edge==null?null:num(c.edge,0,0,10)}));
+    lvl:num(c.lvl,1,1,20),edge:c.edge==null?null:num(c.edge,0,0,10),npc:c.npc===true}));
   {const ids=new Set();let n=Math.max(num(j.cnid,1,1),...o.crew.map(c=>c.id+1));for(const c of o.crew){if(!c.id||ids.has(c.id))c.id=n++;ids.add(c.id)}o.cnid=n}
   const shipIds=new Set(o.ships.map(s=>s.id)),crewIds=new Set(o.crew.map(c=>c.id));
   const okKey=k=>SEAT_RE.test(k)&&shipIds.has(+k.split(":")[0]);
@@ -1771,6 +1783,7 @@ function commit(){save();render();FX.sync()}
 // A player's action from their device. cid: the crew member they claimed. Returns "" or why it was refused.
 function playerAction(cid,a){
   const c=crewById(cid);if(!c)return "Your character isn't on the crew list any more.";
+  {const c=crewById(cid);if(!c)return "That character isn't on the crew any more.";if(c.npc)return "The GM runs that character.";}
   const seat=seatOf(cid);if(!seat)return "You don't have a station yet. The GM will seat you.";
   const s=seat.ship,st=seat.st,key=seat.key,type=String(a.type||"");
   const d=num(a.d20,0,0,99),ok20=d>=1&&d<=20;
@@ -2234,15 +2247,15 @@ function crewRound(){
 }
 const CREW_STATS=[["pilot","Pilot"],["gun","Gunnery"],["missile","Missiles"],["tech","Tech"],["sensors","Sensors"],["lvl","Level"]];
 function renderCrew(){
-  let h=`<p class="intro">The player characters and where they sit. Optional, but it lets players act from their phones.</p><h3>Crew</h3><p class="note">The characters aboard. Their bonuses are used at their station, so players only roll dice. Once anyone is on this list, a station with nobody in it can't act.</p>`;
+  let h=`<p class="intro">The player characters and where they sit. Optional, but it lets players act from their phones.</p><h3>Crew</h3><p class="note">The characters aboard. Their bonuses are used at their station, so players only roll dice. Once anyone is on this list, a station with nobody in it can't act. Tick <b>NPC</b> for a hand you run yourself: you act for their station from this page, and players can't pick them.</p>`;
   for(const c of S.crew){
     const seat=seatOf(c.id),dev=Live.seatOnDevice(c.id);
     h+=`<div class="box" style="--c:var(--teal)">
-     <div class="row"><label class="f" style="flex:2">Name<input type="text" maxlength="30" data-k="crew:${c.id}:name" data-crew="${c.id}:name" value="${esc(c.name)}"></label>${dev?`<span class="chip" style="--c:var(--ok);align-self:flex-end">On a device</span>`:""}</div>
+     <div class="row"><label class="f" style="flex:2">Name<input type="text" maxlength="30" data-k="crew:${c.id}:name" data-crew="${c.id}:name" value="${esc(c.name)}"></label>${c.npc?`<span class="chip" style="--c:var(--amber);align-self:flex-end">NPC</span>`:""}${dev?`<span class="chip" style="--c:var(--ok);align-self:flex-end">On a device</span>`:""}</div>
      <div class="grid5">${CREW_STATS.map(([k,l])=>`<label class="f" style="min-width:0">${l}<input type="number" data-k="crew:${c.id}:${k}" data-crew="${c.id}:${k}" value="${c[k]}"></label>`).join("")}</div>
-     <div class="row spread"><span class="stats">${seat?`Seat: <b>${esc(stationLabel(seat.ship,seat.st))}</b> · ${esc(seat.ship.name)}`:"No seat"}</span><button class="btn sm warn" data-act="crewdel" data-cid="${c.id}">Remove</button></div></div>`;
+     <div class="row spread"><span class="stats">${seat?`Seat: <b>${esc(stationLabel(seat.ship,seat.st))}</b> · ${esc(seat.ship.name)}`:"No seat"}</span><span class="row" style="gap:8px;margin:0"><label class="chk" title="An NPC crew member: you act for them, and players can't pick them on their phones."><input type="checkbox" data-crewnpc="${c.id}"${c.npc?" checked":""}> NPC</label><button class="btn sm warn" data-act="crewdel" data-cid="${c.id}">Remove</button></span></div></div>`;
   }
-  h+=`<div class="row"><button class="btn" data-act="crewadd">Add crew member</button></div>
+  h+=`<div class="row"><button class="btn" data-act="crewadd">Add crew member</button><button class="btn" data-act="crewadd" data-npc="1">Add NPC crew</button></div>
    <p class="note" style="margin-top:10px"><b>Pilot</b> Dex + proficiency (vehicles, space) · <b>Gunnery</b> proficiency + Dex · <b>Missiles</b> proficiency + Int · <b>Tech</b> Int + tinker's tools (damage control, drive spool) · <b>Sensors</b> the check you use for Scan and Jam · <b>Level</b> sets the pilot's Edge dice (proficiency bonus; d10 from level 11).</p>`;
   const ps=S.ships.filter(s=>s.side==="party"&&present(s));
   h+=`<h3>Stations</h3>`;
@@ -2250,7 +2263,9 @@ function renderCrew(){
   for(const s of ps){
     h+=`<div class="box" style="--c:var(--teal)"><div class="name">${esc(s.name)}${s===flagship()?` <span class="side" style="--c:var(--teal)">Flagship</span>`:""}</div>`;
     for(const x of stationsOf(s)){const k=seatKey(s.id,x.st),cur=S.seats[k];
-      h+=`<div class="row spread seat"><span class="stats">${esc(x.label)}</span><span class="row" style="gap:6px;margin:0">${seatChip(k)}<select data-seat="${k}" style="width:auto;min-width:140px"><option value="">Empty</option>${S.crew.map(c=>`<option value="${c.id}"${c.id===cur?" selected":""}>${esc(c.name)}</option>`).join("")}</select></span></div>`}
+      h+=`<div class="row spread seat"><span class="stats">${esc(x.label)}</span><span class="row" style="gap:6px;margin:0">${seatChip(k)}<select data-seat="${k}" style="width:auto;min-width:140px"><option value="">Empty</option>${S.crew.map(c=>`<option value="${c.id}"${c.id===cur?" selected":""}>${esc(c.name)}${c.npc?" (NPC)":""}</option>`).join("")}</select></span></div>`}
+    const empty=stationsOf(s).filter(x=>!S.seats[seatKey(s.id,x.st)]).length;
+    if(empty)h+=`<div class="row"><button class="btn sm" data-act="npcfill" data-id="${s.id}"${S.crew.length+empty>16?" disabled title=\"The crew list holds 16.\"":""} title="Adds an NPC hand to each empty station, using the ship's own pilot and gunnery bonuses. You act for them.">Crew the ${empty} empty station${empty>1?"s":""} with NPCs</button></div>`;
     h+=`</div>`;
   }
   const L=Live.state();
@@ -2289,6 +2304,8 @@ function renderFleet(){
    ${pr&&pr.side!=="party"?`<details class="more"${UI.openSb.pre?" open":""} data-sb="pre"><summary>Stat block</summary><div class="box" style="margin-top:6px;--c:${SIDES[pr.side||"enemy"].css}">${statBlock(previewShip(pr))}</div></details>`:""}
    ${pr?`<div class="stats" style="margin-top:4px">AC ${pr.ac} · hull ${pr.maxHull}${pr.maxSh?` · shields ${pr.maxSh}`:""} · speed ${pr.spd??MODEL_SPD[pr.model]??6} · ${esc(ORDERS[pr.ai]||ORDERS[defaultAi(pr.side)])}</div>${pr.traits?`<div class="row" style="margin-top:4px">${traitChips(parseTraits(pr.traits))}</div>`:""}`:""}
    <div class="row"><label class="f" style="flex:0 1 150px">As<select data-ui="addSide"><option value="">${pr?SIDES[pr.side||"enemy"].label:"Template"}</option>${Object.entries(SIDES).filter(([k])=>!pr||k!==(pr.side||"enemy")).map(([k,v])=>`<option value="${k}"${UI.addSide===k?" selected":""}>${v.label}</option>`).join("")}</select></label>
+   <label class="f" style="flex:0 1 96px" title="How far from the flagship it arrives, in units. Blank: the template's distance (allies under 20 form up beside the flagship).">Distance<input type="number" min="3" max="60" data-k="addAt" data-ui="addAt" value="${esc(UI.addAt||"")}" placeholder="${pr?esc(String(pr.at||(pr.side==="enemy"||!pr.side?15:"beside"))):""}"></label>
+   <label class="f" style="flex:0 1 190px" title="How the ship shows up on the plot. Players watching live see it too.">Arrives<select data-ui="arrive">${Object.entries(ARRIVE).map(([k,v])=>`<option value="${k}"${UI.arrive===k?" selected":""}>${v}</option>`).join("")}</select></label>
    <button class="btn pri" data-act="addp" style="align-self:flex-end">Add</button><button class="btn" data-act="new" style="align-self:flex-end">Custom…</button></div>
    <h3>Ships</h3>`;
   if(!S.ships.length)h+=`<p class="note">The plot is empty.</p>`;
@@ -2391,7 +2408,7 @@ function renderMine(){
   if(me.crew==null||!crewById(me.crew)){
     if(UI.watchOnly||!S.crew.length)return S.crew.length?`<div class="row" style="margin-bottom:10px"><button class="btn sm" data-act="iam">I'm a crew member</button></div>`:"";
     return `<div class="box mine"><div class="name">Who are you?</div><p class="note" style="margin:4px 0 8px">Pick your character to act from your station.</p>
-      <div class="row">${S.crew.map(c=>`<button class="btn" data-act="claim" data-cid="${c.id}">${esc(c.name)}</button>`).join("")}<button class="btn sm" data-act="justwatch">Just watching</button></div>
+      <div class="row">${S.crew.filter(c=>!c.npc).map(c=>`<button class="btn" data-act="claim" data-cid="${c.id}">${esc(c.name)}</button>`).join("")}<button class="btn sm" data-act="justwatch">Just watching</button></div>
       ${UI.localMsg?`<div class="mods dis">${esc(UI.localMsg)}</div>`:""}</div>`;
   }
   const c=crewById(me.crew),seat=seatOf(c.id);
@@ -2614,7 +2631,7 @@ function guideHtml(){
     <li>Each station acts once per round. Reactions (Brace, Jink, reaction fire) can come on anyone's turn, once per round.</li></ol>
     <p class="note" style="margin-top:10px">Hover any button (long-press on a phone) to read its rule.</p>`;
   return `<h3>How a fight runs</h3><ol>
-    <li><b>Set up.</b> Add the party's ship and the opposition in the <b>Ships</b> tab. Optional: add the characters and seat them in <b>Crew</b>, and pick a place in <b>Battlefield</b>.</li>
+    <li><b>Set up.</b> Add the party's ship and the opposition in the <b>Ships</b> tab. Optional: add the characters and seat them in <b>Crew</b> (tick <b>NPC</b> for hands you run yourself, or use <b>Crew the empty stations</b>), and pick a place in <b>Battlefield</b>. A ship added mid-fight drops out of hyperspace or comes through a wormhole (pick it next to <b>Add</b>) and joins initiative.</li>
     <li><b>Roll initiative.</b> Every ship rolls once; they act from highest to lowest, every round.</li>
     <li><b>On a party ship's turn:</b> ① the pilot moves up to the ship's Speed, ② takes one pilot action (plus maybe a bonus action), ③ each crew station acts once: gunners fire, the engineer repairs or reroutes power, sensors scan or jam. Then <b>End turn</b>.</li>
     <li><b>On a hostile turn</b>, a turn card pops up over the plot: move, one maneuver, attack. Or let its AI do it.</li>
@@ -2700,7 +2717,7 @@ onPanes("input",e=>{
     c[k]=k==="name"?t.value.slice(0,30):k==="lvl"?num(t.value,1,1,20):num(t.value,0,-20,30);save();Live.push();return}
   const k=t.dataset.ui;if(!k)return;
   if(t.type==="checkbox"){UI[k]=t.checked;render();return}
-  if(k==="bonus"||k==="nat"){UI[k]=t.value;return}
+  if(k==="bonus"||k==="nat"||k==="addAt"){UI[k]=t.value;return}
 });
 onPanes("change",e=>{
   const t=e.target,k=t.dataset.ui;
@@ -2710,6 +2727,9 @@ onPanes("change",e=>{
     const c=v&&crewById(v);const sh=ship(+key.split(":")[0]);
     if(sh)log(c?`${esc(c.name)} takes ${esc(stationLabel(sh,key.split(":")[1]))} on ${nm(sh)}.`:`${esc(stationLabel(sh,key.split(":")[1]))} on ${nm(sh)} is empty.`,"sys");
     commit();return}
+  if(t.dataset.crewnpc){const c=crewById(+t.dataset.crewnpc);if(!c)return;c.npc=t.checked;
+    if(c.npc)for(const [uid,p] of Object.entries(Live.players()))if(p&&+p.crew===c.id)Live.release(uid);
+    commit();Live.push();return}
   if(t.dataset.crew){ // update names in the seat lists without redrawing (a redraw would steal the next field's focus)
     const [id,k]=t.dataset.crew.split(":");const c=crewById(+id);
     if(c&&k==="name")document.querySelectorAll(`select[data-seat] option[value="${+id}"]`).forEach(o=>{o.textContent=c.name});
@@ -2730,8 +2750,8 @@ onPanes("change",e=>{
   if(t.dataset.live==="pause"){Live.setPaused(t.checked);return}
   if(!k||t.type==="checkbox")return;
   if(k==="att"||k==="tgt"||k==="eng"||k==="fsel"||k==="preset")UI[k]=+t.value;
-  if(k==="addSide"||k==="bgsel")UI[k]=t.value;
-  if(k==="preset")UI.addSide="";
+  if(k==="addSide"||k==="bgsel"||k==="arrive")UI[k]=t.value;
+  if(k==="preset"){UI.addSide="";UI.addAt=""}
   if(k==="att"){UI.wpn=0;UI.bonus=""}
   if(k==="wpn"){UI.wpn=+t.value;UI.bonus=""}
   if(k==="adv")UI.adv=t.value;
@@ -2790,13 +2810,22 @@ onPanes("click",e=>{
     case "spool":{const k=b.dataset.k;if(k==="x")S.spool={s:0,f:0};else spool(k);commit();break}
     case "pdmg":{const k=b.dataset.key,n=parseInt(UI.pd[k],10);if(!(n>=0))return;delete UI.pd[k];finishHit(k,n);break}
     case "pauto":{const k=b.dataset.key;delete UI.pd[k];finishHit(k,null);break}
-    case "crewadd":{const c={id:S.cnid++,name:`Crew ${S.crew.length+1}`,pilot:0,gun:0,missile:0,tech:0,sensors:0,lvl:1,edge:null};S.crew.push(c);UI.tab="crew";commit();break}
+    case "crewadd":{if(S.crew.length>=16){say("The crew list holds 16.");return}
+      const npc=!!b.dataset.npc;const c={id:S.cnid++,name:npc?`Hand ${S.crew.filter(x=>x.npc).length+1}`:`Crew ${S.crew.length+1}`,pilot:npc?3:0,gun:npc?3:0,missile:npc?3:0,tech:npc?3:0,sensors:npc?3:0,lvl:1,edge:null,npc};S.crew.push(c);UI.tab="crew";commit();break}
+    case "npcfill":{const sh=ship(+b.dataset.id);if(!sh)return;const names=[];
+      for(const x of stationsOf(sh)){const k=seatKey(sh.id,x.st);if(S.seats[k])continue;if(S.crew.length>=16)break;
+        const w=/^w\d/.test(x.st)?sh.weapons[+x.st.slice(1)]:null,best=Math.max(3,...sh.weapons.map(v=>v.atk||0));
+        const c={id:S.cnid++,name:(x.st==="helm"?"Pilot":x.st==="eng"?"Engineer":x.st==="sens"?"Sensors hand":`${x.label.replace(/\s*\(.*$/,"")} gunner`).slice(0,30),
+          pilot:sh.pilot,gun:w?w.atk:best,missile:w?w.atk:best,tech:3,sensors:3,lvl:1,edge:null,npc:true};
+        S.crew.push(c);S.seats[k]=c.id;names.push(stationLabel(sh,x.st))}
+      if(names.length)log(`NPC crew take ${esc(names.join(", "))} on ${nm(sh)}.`,"sys");commit();break}
     case "crewdel":{const c=crewById(+b.dataset.cid);if(!c||!confirm(`Remove ${c.name} from the crew?`))return;
       S.crew=S.crew.filter(x=>x!==c);for(const [k,v] of Object.entries(S.seats))if(v===c.id)delete S.seats[k];commit();break}
     case "release":Live.release(b.dataset.uid);break;
-    case "addp":case "addname":{const p=PRESETS[b.dataset.act==="addp"?UI.preset:+b.dataset.i];if(!p)return;const n=makeShip(p,b.dataset.act==="addp"?UI.addSide:"");
+    case "addp":case "addname":{let p=PRESETS[b.dataset.act==="addp"?UI.preset:+b.dataset.i];if(!p)return;
+      const far=b.dataset.act==="addp"?parseInt(UI.addAt,10):NaN;if(far>=3)p=Object.assign({},p,{at:Math.min(60,far),far:true});const n=makeShip(p,b.dataset.act==="addp"?UI.addSide:"");
       const same=S.ships.filter(x=>x.name===n.name||x.name.startsWith(n.name+" ")).length;if(same)n.name+=" "+(same+1);
-      S.ships.push(n);log(`${nm(n)} enters the plot${n.side==="enemy"&&flagship()?` ${r1(dist(n,flagship()))} units out${altTxt(flagship(),n)}`:""}.`,"sys");joinInit(n);commit();break}
+      S.ships.push(n);arriveShip(n);break}
     case "repel":if(s.boarders>0){s.boarders--;log(`${nm(s)}: a boarding squad is repelled${s.boarders?` (${s.boarders} left)`:""}.`,"sys");commit()}break;
     case "place":startPlace("ship",s.id);break;
     case "wp":startPlace("wp",s.id);break;
@@ -2849,7 +2878,7 @@ $("#editor").addEventListener("close",()=>{
     spd:clamp(+f.spd.value||0,0,40),ai:ORDERS[f.ai.value]?f.ai.value:"hold",traits:parseTraits(f.traits.value),tactics:f.tactics.value.trim().slice(0,200)};
   if(editing){const s=editing;const dh=d.maxHull-s.maxHull,ds=d.maxSh-s.maxSh;const k=d.ai;delete d.at;Object.assign(s,d);s.order.k=k;s.hull=clamp(s.hull+Math.max(0,dh),0,s.maxHull);s.sh=clamp(s.sh+Math.max(0,ds),0,s.maxSh);
     dropSeats(s.id,st=>s.side==="party"&&(!/^w/.test(st)||+st.slice(1)<s.weapons.length))}
-  else{const n=makeShip(d);S.ships.push(n);log(`${nm(n)} enters the plot.`,"sys");joinInit(n)}
+  else{const n=makeShip(d);S.ships.push(n);editing=null;arriveShip(n);return}
   editing=null;commit();
 });
 
@@ -2898,7 +2927,7 @@ document.addEventListener("keydown",e=>{
 
 /* ============================== 3D ============================== */
 const FX=(()=>{
-  const noop={sync(){},labels(){},shot(){},shotAt(){},boom(){},blast(){},flash(){},reset(){}};
+  const noop={sync(){},labels(){},shot(){},shotAt(){},boom(){},blast(){},flash(){},arrive(){},reset(){}};
   const stage=$("#stage");
   if(!window.THREE){stage.insertAdjacentHTML("beforeend",`<div class="offline">The 3D plot needs three.js from the CDN and couldn't load it.<br>The combat panel works without it.</div>`);return noop}
   let renderer;
@@ -3108,7 +3137,7 @@ const FX=(()=>{
     for(const s of S.ships){
       let m=meshes.get(s.id);
       if(m&&m.key!==shipKey(s)){dropMesh(m);meshes.delete(s.id);m=null}
-      if(!m){m=makeMesh(s);meshes.set(s.id,m)}
+      if(!m){m=makeMesh(s);meshes.set(s.id,m);const pa=pendArr.get(s.id);if(pa){pendArr.delete(s.id);if(performance.now()-pa.at<8000)startArr(m,s.id,pa.k)}}
       // planned move and waypoint (GM only)
       const p=!WATCH&&s.status==="ok"&&cur()===s&&npcSide(s)&&!s.ai.flown?planMove(s,s.moveLeft):null;
       m.ghost.visible=m.gmark.visible=!!p;
@@ -3234,6 +3263,62 @@ const FX=(()=>{
       ring.position.copy(p);ring.rotation.x=-Math.PI/2;add(ring,1.1,k=>{ring.scale.setScalar(r*k);ring.material.opacity=1-k});
     },350);
   }
+  /* ---- arrivals: out of hyperspace, or through a wormhole that closes behind the ship ---- */
+  const ARR_T={jump:1.3,hole:3.1};
+  const pendArr=new Map(); // a live player can get the effect before the state that holds the ship
+  function arrive(id,k){if(!ARR_T[k])return;const m=meshes.get(id);if(!m){pendArr.set(id,{k,at:performance.now()});return}startArr(m,id,k)}
+  function ringFX(p,n,col,r,life,w=.08){
+    const ring=new THREE.Mesh(new THREE.RingGeometry(1-w,1,64),new THREE.MeshBasicMaterial({color:col,transparent:true,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+    ring.position.copy(p);ring.quaternion.setFromUnitVectors(V(0,0,1),n);add(ring,life,k=>{ring.scale.setScalar(.2+r*k);ring.material.opacity=1-k});
+  }
+  function startArr(m,id,k){
+    const s=ship(id);if(!s)return;const p=V(s.x,s.y,s.z),f=flagship(),sz=m.model.userData.size||1;
+    // dir: from the flagship out to the arrival point; ships come in from beyond it
+    const dir=f&&f!==s?p.clone().sub(V(f.x,f.y,f.z)):V(1,.2,0);if(dir.lengthSq()<.01)dir.set(1,.2,0);dir.normalize();
+    m.arr={k,t:0,p,dir,sz,hit:false};m.first=false;m.root.position.copy(p);m.root.scale.setScalar(.001);
+    if(k==="jump"){
+      // a blue-white streak that races in from deep space and stops dead
+      const far=p.clone().addScaledVector(dir,110).add(V(0,(Math.random()-.5)*8,0)),ax=p.clone().sub(far).normalize();
+      const g=new THREE.Group();
+      const core=new THREE.Mesh(new THREE.CylinderGeometry(.1,.1,1,6,1,true),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+      const glow=new THREE.Mesh(new THREE.CylinderGeometry(.4*sz,.4*sz,1,8,1,true),new THREE.MeshBasicMaterial({color:0x7fb8ff,transparent:true,opacity:.55,blending:THREE.AdditiveBlending,depthWrite:false}));
+      g.add(core,glow);g.quaternion.setFromUnitVectors(V(0,1,0),ax);
+      const a=V(),b=V();
+      add(g,.7,q=>{const head=Math.min(1,q/.47),tail=Math.min(1,Math.max(0,(q-.12)/.5));
+        a.copy(far).lerp(p,tail);b.copy(far).lerp(p,head);const len=Math.max(.01,a.distanceTo(b));
+        g.position.copy(a).lerp(b,.5);g.scale.set(1,len,1);core.material.opacity=glow.material.opacity=q<.47?1:.55*(1-(q-.47)/.53)});
+    }else{
+      // a dark disc ringed in violet light opens in front of the ship, facing the flagship
+      const q0=p.clone().addScaledVector(dir,-sz*1.1),R=sz*2.4,g=new THREE.Group();
+      const disc=new THREE.Mesh(new THREE.CircleGeometry(.92,48),new THREE.MeshBasicMaterial({color:0x020008,side:THREE.DoubleSide}));
+      const rim=new THREE.Mesh(new THREE.RingGeometry(.86,1,64),new THREE.MeshBasicMaterial({color:0xb48cff,transparent:true,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+      const swirl=new THREE.Mesh(new THREE.RingGeometry(.55,1.25,48,1,0,Math.PI*1.4),new THREE.MeshBasicMaterial({color:0x6a4bff,transparent:true,opacity:.35,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+      const halo=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:0x9d7bff,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+      g.add(disc,rim,swirl,halo);g.position.copy(q0);g.lookAt(q0.clone().addScaledVector(dir,-1));
+      const L=ARR_T.hole;let sparked=false;
+      add(g,L,q=>{const t=q*L;
+        const sc=t<.9?1-Math.pow(1-t/.9,3):t<2.3?1+.04*Math.sin(t*9):Math.max(0,1-(t-2.3)/.55);
+        g.scale.setScalar(Math.max(.001,sc*R));swirl.rotation.z=-t*2.4;rim.rotation.z=t*.8;
+        halo.scale.setScalar(2.6+.3*Math.sin(t*5));halo.material.opacity=.5*sc;rim.material.opacity=Math.min(1,sc*1.3);
+        if(t>2.75&&!sparked){sparked=true;flash(q0,0xd9c2ff,R*3,.5);burst(q0,0xb48cff,60,5,.9,.35)}});
+      flash(q0,0xb48cff,R*1.5,.6);
+    }
+  }
+  // Runs each frame for a ship that's arriving, after its normal position update.
+  function arrStep(m,dt){
+    const a=m.arr;a.t+=dt;let sc=1,off=0;
+    if(a.k==="jump"){const T=.33;
+      if(a.t<T)sc=.001;
+      else{if(!a.hit){a.hit=true;flash(a.p,0xdff0ff,a.sz*8,.7);burst(a.p,0x9fd0ff,80,8,1,.35);ringFX(a.p,a.dir,0x9fd0ff,a.sz*6,.9);flareT=Math.max(flareT,.35)}
+        const u=Math.min(1,(a.t-T)/.3);sc=u<1?.2+.8*u+.15*Math.sin(u*Math.PI):1;off=(1-u)*(1-u)*a.sz*5}
+    }else{const T=1,E=1.2;
+      if(a.t<T)sc=.001;
+      else{const u=Math.min(1,(a.t-T)/E),e=1-Math.pow(1-u,2);off=(1-e)*a.sz*3.5}
+    }
+    if(off)m.root.position.copy(a.p).addScaledVector(a.dir,off);
+    m.root.scale.setScalar(sc);a.hid=sc<.01;
+    if(a.t>=ARR_T[a.k]){m.root.scale.setScalar(1);m.arr=null}
+  }
   let flareT=0;
   function flareFlash(){flareT=1}
   function reset(){for(const [,m] of meshes)dropMesh(m);meshes.clear();for(const [,x] of hmeshes){scene.remove(x.root);dispose(x.root);x.el.remove()}hmeshes.clear()}
@@ -3304,6 +3389,7 @@ const FX=(()=>{
       if(s.status==="escaped"){const d=V(s.x,0,s.z).sub(focus);if(d.lengthSq()<.01)d.set(1,0,0);tmp.copy(focus).addScaledVector(d.normalize(),160).setY(s.y)}
       else tmp.set(s.x,s.y+Math.sin(t*.8+s.id)*.15,s.z);
       if(m.first){m.root.position.copy(tmp);m.first=false}else m.root.position.lerp(tmp,1-Math.exp(-dt*(s.status==="escaped"?.6:2)));
+      const arr=m.arr;if(arr)arrStep(m,dt);
       const P=m.root.position;
       if(s.status==="disabled"){m.model.rotation.x+=m.tumble.x*dt;m.model.rotation.z+=m.tumble.z*dt}
       else{
@@ -3319,7 +3405,7 @@ const FX=(()=>{
       m.flash=Math.max(0,m.flash-dt*2.2);
       const idle=s.maxSh&&s.status==="ok"?.05*s.sh/s.maxSh:0;
       m.shield.material.opacity=Math.max(idle,m.flash*.55);
-      const vis=s.status!=="escaped"||P.distanceTo(focus)<90;
+      const vis=(s.status!=="escaped"||P.distanceTo(focus)<90)&&!(arr&&arr.hid);
       m.root.visible=vis;m.stalk.visible=m.foot.visible=vis&&s.status!=="escaped";
       if(m.stalk.visible){const a=m.stalk.geometry.attributes.position;a.setXYZ(0,P.x,P.y,P.z);a.setXYZ(1,P.x,0,P.z);a.needsUpdate=true;m.foot.position.set(P.x,0,P.z)}
       // trail: sample the flown path
@@ -3362,7 +3448,7 @@ const FX=(()=>{
     renderer.render(scene,cam);requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
-  return {sync,labels,shot,shotAt,boom,blast,flash:flareFlash,reset};
+  return {sync,labels,shot,shotAt,boom,blast,flash:flareFlash,arrive,reset};
 })();
 
 /* ============================== live (Firebase) ==============================
@@ -3537,6 +3623,7 @@ const Live=(()=>{
       else if(e.kind==="shotp")FX.shotAt(num(e.aid),{x:fl(e.x),y:fl(e.y),z:fl(e.z)},{name:String(e.name||""),missile:!!e.missile},!!e.hit);
       else if(e.kind==="blast")FX.blast(fl(e.x),fl(e.y),fl(e.z),fl(e.r,8,1,40));
       else if(e.kind==="flare")FX.flash();
+      else if(e.kind==="arrive")FX.arrive(num(e.id),String(e.k||""));
     }
   }
   function me(){
@@ -3598,7 +3685,8 @@ const Live=(()=>{
     state:()=>({status,err}),resume(){if(configured&&st.room)start()}};
 })();
 // Mirror the GM's effects to players.
-{const shot=FX.shot,boom=FX.boom,shotAt=FX.shotAt,blast=FX.blast,flash=FX.flash;
+{const shot=FX.shot,boom=FX.boom,shotAt=FX.shotAt,blast=FX.blast,flash=FX.flash,arrive=FX.arrive;
+ FX.arrive=(id,k)=>{arrive(id,k);Live.emit("arrive",{id,k})};
  FX.shot=(aid,tid,w,hit,res)=>{shot(aid,tid,w,hit,res);Live.emit("shot",{aid,tid,name:w.name,missile:!!w.missile,hit:!!hit,res:res||null})};
  FX.shotAt=(aid,p,w,hit)=>{shotAt(aid,p,w,hit);Live.emit("shotp",{aid,x:r1(p.x),y:r1(p.y),z:r1(p.z),name:w.name,missile:!!w.missile,hit:!!hit})};
  FX.blast=(x,y,z,r)=>{blast(x,y,z,r);Live.emit("blast",{x:r1(x),y:r1(y),z:r1(z),r})};

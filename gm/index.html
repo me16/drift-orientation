@@ -92,6 +92,16 @@ td.n{font-family:var(--f-data);color:var(--amber);white-space:nowrap;width:1%}
 .stat .line{font:400 13.5px/1.55 var(--f-data);color:#cfd3f5;border-top:1px solid var(--rule);padding-top:7px;margin-top:7px}
 .stat .line b{color:var(--teal);font-weight:400}
 .secret{color:var(--amber)}
+.read{font:italic 500 18px/1.45 var(--f-lore);color:#e3e0fb;background:var(--panel);border-left:3px solid var(--amber);padding:12px 16px;margin:8px 0 14px;max-width:72ch}
+.read::before{content:"Read aloud";display:block;font:400 10.5px var(--f-data);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:4px}
+.beat{background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--c,var(--teal));padding:14px 18px;margin-bottom:14px}
+.beat>:last-child{margin-bottom:0}
+.beat-h{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline;margin-bottom:8px}
+.beat-h h3{margin:0;font:400 15px/1.3 var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:#fff}
+.beat-h .t{font:400 11.5px var(--f-data);letter-spacing:.12em;color:var(--amber)}
+ul.todo{list-style:none;padding-left:0}
+ul.todo li{padding-left:24px;position:relative}
+ul.todo li::before{content:"";position:absolute;left:2px;top:.42em;width:11px;height:11px;border:1px solid var(--rule-2)}
 
 /* library */
 .lib-tools{position:sticky;top:calc(48px + env(safe-area-inset-top,0px));z-index:3;background:rgba(5,6,15,.96);padding:12px 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid var(--rule);margin-bottom:16px}
@@ -154,7 +164,7 @@ code{font-family:var(--f-data);color:var(--teal)}
 <div id="app" hidden>
 <div class="bar"><div class="bar-in">
  <span class="brand">GM · DRIFT</span>
- <nav aria-label="Sections"><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
+ <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
  <button class="btn" id="lockBtn" type="button">Lock</button>
 </div></div>
 
@@ -164,6 +174,110 @@ code{font-family:var(--f-data);color:var(--teal)}
  <h1>What the datapad doesn't say</h1>
  <p class="lede">The truth behind the handout, the rules the table runs on, and every map and resource for the campaign.</p>
 </header>
+
+<!-- ============================ TONIGHT ============================ -->
+<section id="tonight">
+ <h2><span class="k">S1</span>Tonight: session 0 and session 1 <span class="tag draft">Plan</span></h2>
+ <p>Two players, one mercenary crew, a job in the Drift. About four hours: <strong>session 0</strong> (30 min), <strong>characters</strong> (75 min), a break, then <strong>session 1</strong> (about 100 min). It opens in the middle of a theft, goes to a ship fight, then a boarding fight on Owlbear, and ends with the Patience wrecked in the crossfire between two fleets.</p>
+ <p class="dim">The job uses Draft truths (the Arbiter's Due nav core, the steered Ash War). If you change those, change the job: any wreck in the Grave with something both powers want buried will do.</p>
+
+ <h3>Before the players arrive</h3>
+ <ul class="todo">
+  <li><strong>Tactical plot</strong> (<a href="../combat/" target="_blank" rel="noopener">combat/</a>): New encounter. In <b>Battlefield</b>, pick <b>The Grave of Ash</b> and use it with its hazards (wrecks, debris, two Ash War mines, an unexploded torpedo, Ember's flares).</li>
+  <li><b>Ships</b>: keep the Patience. Add one <b>Ashborn salvage rig</b> with <b>Arrives: Already there</b>. It's been waiting in the wrecks. Don't roll initiative yet.</li>
+  <li>After character creation, in <b>Crew</b>: add both PCs with their bonuses (formulas are on the Crew tab) and seat them. Then press <b>Crew the empty stations with NPCs</b> and rename the hands after the mercs below. NPC hands are yours to run: players can't pick them on their phones.</li>
+  <li><b>Go live</b> and give the players the room code. <b>Save file</b> so you can reload it if a browser dies.</li>
+  <li><strong>Owlbear Rodeo</strong>: upload the Patience map (<a href="#library">Library</a> → PBMI DropShip, grid <b>19×26</b>). Make tokens for both PCs, the NPC hands, and five Ashborn.</li>
+  <li>Have the 5e SRD <b>Bandit</b>, <b>Thug</b> and <b>Scout</b> stat blocks open.</li>
+ </ul>
+
+ <div class="beat" style="--c:var(--lil)">
+  <div class="beat-h"><h3>1 · Session 0</h3><span class="t">30 min</span></div>
+  <ul>
+   <li><strong>The pitch.</strong> Read the handout's Briefing together. Two powers, a strip of lawless space between them, and a light in the middle that nobody can explain. The PCs are hired guns working the Drift.</li>
+   <li><strong>Tone and limits.</strong> Lines and veils, and an X-card or a "let's skip that" word. Talk about how deadly the game is. Session 1 ends with a scripted disaster. You can promise them that nobody dies in the ending, without saying why.</li>
+   <li><strong>Settle the open questions</strong> (these decide what they can build). Faith is divine magic: clerics and paladins pray to something that answers. Tech is STR-licensed gear and fits artificers. "The touched" covers sorcerers and warlocks. The Null Corridor shuts off both prayer and power. The rules are 5e with the reskins in <a href="#rules">Rules</a>.</li>
+   <li><strong>Level.</strong> With two players, start at <b>level 3</b>: they get subclasses, and the boarding fight below is built for it. Numbers for level 1 are given too.</li>
+   <li><strong>Table rules.</strong> Phones out for the ship fight only. Bring a d20 and the usual dice.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--teal)">
+  <div class="beat-h"><h3>2 · Characters</h3><span class="t">75 min</span></div>
+  <ul>
+   <li>Build with the reskinned gear in <a href="#rules">Rules</a>. For backgrounds and hooks, use the handout's <a href="../index.html#origins" target="_blank" rel="noopener">Origins</a> tab.</li>
+   <li><strong>Three questions each:</strong> Why did you sign on with this crew? Who do you owe, and how much? What won't you do for money?</li>
+   <li><strong>One tie between them:</strong> how they know each other, and one thing they disagree about.</li>
+   <li><strong>One station each.</strong> Helm (flies the ship and spends the Edge dice: the busiest seat) or the dorsal turret (fires every round: the easiest seat) are the best for first-timers. The stern launcher, engineering and sensors go to the NPC hands. If a PC is built for one of those, swap.</li>
+   <li><strong>Station bonuses</strong> for the Crew tab: Pilot = Dex + proficiency (if proficient with space vehicles) · Gunnery = proficiency + Dex · Missiles = proficiency + Int · Tech = Int + engineer's kit · Sensors = the check they use to Scan · Level.</li>
+   <li>Each PC starts with a vac suit, magboots and a comm bead, plus whatever their class gives.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--amber)">
+  <div class="beat-h"><h3>The job, and the crew</h3><span class="t">for you</span></div>
+  <p><strong>The client:</strong> Marra Tesk brokered it for "Mr. Sallow". The target is the <b>nav core of the Arbiter's Due</b>, an STR cruiser that died at the Grave of Ash in CY 274. Pay is 4,000 cr on delivery, to be split by the crew. Sallow said, "Don't plug it into anything."</p>
+  <p class="secret">The core proves the Ash War fleets were steered. Pulling it from the wreck woke its Commonweal relay, and both powers heard it. That's why the fleets come. (This uses Draft truths.)</p>
+  <p><strong>The ship:</strong> the Patience. The captain bought it at a Tamsin impound auction, and the datapad came with it. If you want the players' handout to be Vash's own pad, this is how they got it.</p>
+  <div class="grid">
+   <div class="stat"><h4>Captain Rue Halloran</h4><div class="sub">Owns the contract and the debt</div><div class="line">Veteran. Runs engineering in a fight. Calm on the comm, swears off it.</div><div class="line secret">Owes Marra more than the job pays. Will want to sell the core twice.</div></div>
+   <div class="stat"><h4>Ostrava "Os" Pell</h4><div class="sub">Missiles</div><div class="line">Thug. Ex-Sable, never says why. Mutters the Psalter famine numbers when nervous.</div><div class="line secret">Recognizes the Sable battleships' hull codes. Their old unit.</div></div>
+   <div class="stat"><h4>Kit Danso</h4><div class="sub">Sensors and comms, 19</div><div class="line">Scout. Talks too fast and reads the plot better than anyone.</div><div class="line secret">Hears singing in the comm static before the Cathedral-ships arrive. Nobody else does.</div></div>
+  </div>
+  <p class="dim" style="margin-top:10px">If a PC takes the helm, the captain hands it over gladly. If neither does, add a fourth hand, Bastian Roe (pilot).</p>
+ </div>
+
+ <div class="beat" style="--c:var(--haz)">
+  <div class="beat-h"><h3>3 · Cold open: the Grave</h3><span class="t">10 min</span></div>
+  <p class="read">Ember's light is the color of an old wound. The Patience hangs in the shadow of a cruiser that died thirty-eight years ago. Her name is still legible on the hull: ARBITER'S DUE. Your suits are cold, and your hands are full: forty kilos of black nav core, cut free ninety seconds ago, sliding into the cargo bay. The bay door is closing. Then every wreck around you lights up at once.</p>
+  <ul>
+   <li>Start here. Whoever was on the EVA team gets one sentence about how the cut went. Fill in how they got here with flashbacks later.</li>
+   <li><strong>Optional warm-up (3 rolls)</strong> if they want to play the theft itself: Athletics or Acrobatics to get across the hull in zero-g (DC 12), a bypass kit or engineer's kit to cut the core free (DC 13), and Stealth to get back unseen (DC 12). Two failures and the Ashborn rig starts 5 units closer and gets a free shot.</li>
+   <li>The Ashborn hail them over open comm: <i>"You took from the dead. Put it back and you can leave."</i> They won't, so it's a fight.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--haz)">
+  <div class="beat-h"><h3>4 · Ship fight: Ashborn in the wrecks</h3><span class="t">35 min</span></div>
+  <ul>
+   <li>Open <b>? Guide</b> on the plot and walk them through one turn. Roll initiative.</li>
+   <li>The rig's order is <b>board</b>. It closes in, cuts with its torch, and fires its harpoon. When the harpoon hits, boarders cross next round: that's the end of the ship fight.</li>
+   <li><strong>If it's too easy</strong> (the rig is below half hull by round 2): add a second Ashborn salvage rig with <b>Arrives: Out of hyperspace</b>. It jumped in from the far side of the Grave, called by the first one. It joins initiative by itself.</li>
+   <li><strong>If it's going badly:</strong> the rig ignores a disabled turret and goes straight for the harpoon. Don't let the Patience go below about 8 hull, because it has to survive until the ending.</li>
+   <li>Make them use the hazards. The torpedo near the rig can be shot. The debris sheet slows anything flying through it. The Ember flare goes off on a 6.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--haz)">
+  <div class="beat-h"><h3>5 · Boarding fight (Owlbear)</h3><span class="t">40 min</span></div>
+  <p class="read">The harpoon rings through the hull like a bell. Then the cutting starts: two hatches at once, orange light tracing a circle in the metal. The grav plates stutter, and your stomach goes with them.</p>
+  <ul>
+   <li><strong>Ashborn boarders</strong> (5e SRD, reskinned). <b>Level 3:</b> Tobin Kell (Thug: stun baton and scattergun) and 4 Ashborn cutters (Bandit: mono-blade and carbine). <b>Level 1:</b> 3 cutters, with Tobin staying on the rig. Keep a Scout in reserve as a sniper at the airlock if it's a walkover.</li>
+   <li><strong>Where they come in:</strong> two of the four EVA hatches, then the KEEP CLEAR bay airlock in round 3. The NPC hands fight too. Kill one if you want the players to feel the stakes. Kit is a good choice: their warning about the singing never gets heard.</li>
+   <li><strong>The ship is the terrain.</strong> In round 2 the grav plates fail, and zero-g rules apply (<a href="#rules">Rules</a>: difficult terrain without magboots, push off, drifting). The cargo loader arms can slam (2d6) or pin (DC 13). Opening the airlock blows out everyone unanchored in the bay unless they make a DC 13 Strength save. The core is loose in the cargo bay and the Ashborn want it.</li>
+   <li><strong>Tobin</strong> is Auntie Sefa Kell's grandson. He surrenders at half HP. What the PCs do with him matters to the Ashborn later.</li>
+   <li>When it's over, press <b>Repel one</b> on the Patience in the plot for each squad, so the boarders stop cutting the hull.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--lan)">
+  <div class="beat-h"><h3>6 · The crossfire</h3><span class="t">15 min</span></div>
+  <p class="read">The comm hisses. Under the static, Kit swears they can hear a choir. Then space opens in front of you: a ring of violet light around a perfect dark, and something vast and white comes through it, ribbed like a nave. Behind you, the stars streak blue, and three Commonweal battleships stop dead where nothing was a moment ago. Nobody hails anyone.</p>
+  <ul>
+   <li>In the plot: <b>Clear initiative</b> and remove what's left of the rig. Set <b>Distance 16</b> and <b>Arrives: Through a wormhole</b>, and add two <b>Cathedral-ships</b> (Hostile). Then set <b>Distance 16</b> and <b>Arrives: Out of hyperspace</b>, and add three <b>Sable battleships</b> with <b>As: Ally</b>. Ally only means they shoot at the Cathedral-ships. They don't care about the Patience. The fleets land on opposite sides of the Patience, 32 units apart, in range of each other's big guns. Roll initiative.</li>
+   <li class="secret">The wormholes are a suggestion. Nobody has seen Corinthia move ships this way. If you keep it, it's the Eye folding space for its own ships: a new Draft truth, and a reveal for later.</li>
+   <li><strong>Keep the AI off</strong> (the default) so every fleet turn opens a turn card. Left alone, the Cathedral-ships will shoot the Patience in round 1. For the first round, retarget them on the card to the battleships.</li>
+   <li><strong>Let them try.</strong> Give the Patience a turn or two to run, hide behind a wreck or hail someone. Nothing works. The Patience sits between the two fleets, and it's in range of everything they have.</li>
+   <li><strong>Then end it.</strong> On a Cathedral-ship's turn, aim the hymn lance at the Sable battleship <em>behind</em> the Patience. It goes straight through. Finish the Patience with <b>Stations → Engineer &amp; crew → Damage</b> (type its remaining hull). Play it as a scene, not dice: no death saves.</li>
+  </ul>
+  <p class="read">The lance doesn't hit you so much as pass through. One moment there's a ship around you; the next there's light where the cargo bay was, and the stars are turning, slowly, the wrong way. The cockpit seals with a bang. In the dark, the datapad lights up on its own: BEARING ZERO-ZERO-ZERO. COME HOME.</p>
+  <ul>
+   <li><strong>Why they live</strong> (yours, not theirs): the cockpit section seals and spins clear, and the lances steer around it. Vash's relic shard behind the cockpit panel <span class="secret">sang to the Cathedral-ships' relic-cores, and they wouldn't fire on it.</span></li>
+   <li><strong>End the session there.</strong> They have the core, a sealed cockpit full of crew, and air for a few hours.</li>
+   <li><strong>Session 2 opens</strong> with Auntie Sefa's Ashborn cutting them out of the wreck. What happened to Tobin decides whether they're rescued or salvaged.</li>
+  </ul>
+ </div>
+</section>
 
 <!-- ============================ TRUTHS ============================ -->
 <section id="truths">

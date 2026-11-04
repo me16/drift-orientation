@@ -8,6 +8,7 @@
  *   spd: plot units it can fly on its turn (0 = can't move; Burn adds it again). Every distance is measured in 3D,
  *        altitude included. Ships fly between altitudes −25 and +25.
  *   at: how far from the party's flagship it enters, in units (it arrives above or below, not just level)
+ *       Hostiles always use it. Allies with at 20+ arrive that far out on the far side (warships); below 20 they form up beside the flagship.
  *   tactics: one GM-only line on how it fights, shown on its turn card and stat block (hostile and allied ships)
  *   ai: its standing order. close | board | ram | keep:N (hold N units from its target) | orbit | escort | hold | flee
  *   Hostile and allied ships run from a stat block, like 5e monsters: on their turn they move, take one maneuver
