@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Patience Combat Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,400;0,600;0,700;1,400&family=Michroma&family=Share+Tech+Mono&display=swap">
+<style>
+/* One-page player reference for ship combat (rules from gm/index.html #ships and #flight).
+   Prints on one US Letter page, portrait, no margins (Chrome honors @page). Keep it to one page: check the print preview after edits. On screen it's the same sheet on the datapad's dark backdrop. */
+:root{
+  --paper:#fbfaf6; --ink:#141729; --dim:#555a78; --rule:#c9ccdc; --band:#eceef6;
+  --teal:#11a897; --teal-ink:#04121a; --haz:#e0414f; --amber:#c27a12; --void:#05060f;
+  --f-disp:"Michroma","Eurostile","Arial Black",sans-serif;
+  --f-body:"Exo 2","Segoe UI",system-ui,sans-serif;
+  --f-data:"Share Tech Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--void);color:var(--ink);font:400 7.6pt/1.25 var(--f-body);padding:24px 16px}
+.bar{max-width:8.5in;margin:0 auto 12px;display:flex;justify-content:space-between;align-items:center;gap:12px;color:#9aa0d0;font:400 13px var(--f-data)}
+.bar a{color:#6ff3e0}
+.bar button{background:#0e1230;border:1px solid #3a4282;border-top:2px solid #6ff3e0;color:#e3e7ff;font:400 13px var(--f-data);padding:6px 14px;cursor:pointer}
+.sheet{width:8.5in;max-width:100%;min-height:11in;margin:0 auto;background:var(--paper);padding:.34in .36in;box-shadow:0 0 0 1px #252b5a,0 10px 40px rgba(0,0,0,.6)}
+
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:2px solid var(--ink);padding-bottom:5px;margin-bottom:7px}
+h1{font:400 15pt/1 var(--f-disp);letter-spacing:.06em;margin:0}
+h1 small{display:block;font:400 7pt var(--f-data);letter-spacing:.2em;color:var(--dim);margin-bottom:4px}
+.stats{font:400 8.4pt var(--f-data);text-align:right;line-height:1.45}
+.stats b{font-weight:400;background:var(--ink);color:var(--paper);padding:0 4px;border-radius:2px}
+
+.grid{display:grid;grid-template-columns:2.95in 1fr;gap:0 .2in}
+h2{font:400 7.2pt/1 var(--f-disp);letter-spacing:.12em;text-transform:uppercase;margin:6px 0 3px;padding:3px 5px;background:var(--band);border-left:3px solid var(--teal)}
+h2:first-child{margin-top:0}
+h2.red{border-left-color:var(--haz)}
+p{margin:0 0 4px}
+ul{margin:0 0 4px;padding-left:13px}
+li{margin:0 0 1px}
+b,strong{font-weight:700}
+.k{font:400 1em var(--f-data)}
+.dim{color:var(--dim)}
+table{width:100%;border-collapse:collapse;margin:0 0 4px}
+th,td{text-align:left;vertical-align:top;padding:1.5px 3px;border-bottom:1px solid var(--rule)}
+th{font:400 6.8pt var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);border-bottom:1px solid var(--ink)}
+td:first-child{font-weight:700;white-space:nowrap}
+td.c{white-space:nowrap;color:var(--dim)}
+table.one td:nth-child(1){width:1.02in}
+table.one td:nth-child(2){width:.78in}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 .16in}
+
+/* station plan: the same markers as gm/index.html (viewBox = image pixels) */
+figure{margin:0}
+.sch{display:block;width:100%;height:auto;border:1px solid var(--ink)}
+.sch .st circle,.sch .st rect{fill:var(--teal);stroke:var(--teal-ink);stroke-width:5}
+.sch .st text{font:400 30px var(--f-data);fill:var(--teal-ink);text-anchor:middle;dominant-baseline:central}
+.sch .cr rect{fill:var(--haz);stroke:#1a0306;stroke-width:4}
+.sch .cr text{font:400 28px var(--f-data);fill:#fff;text-anchor:middle;dominant-baseline:central}
+.sch .lb rect{fill:rgba(5,6,15,.85);stroke:#ffb35c;stroke-width:2}
+.sch .lb text{font:400 24px var(--f-data);letter-spacing:.14em;fill:#ffb35c;text-anchor:middle;dominant-baseline:central}
+figcaption{font:400 6.4pt var(--f-data);color:var(--dim);margin:2px 0 5px}
+.mk{display:inline-grid;place-items:center;min-width:17px;height:13px;padding:0 3px;border-radius:7px;background:var(--teal);color:var(--teal-ink);font:400 7pt var(--f-data);border:1px solid var(--teal-ink);vertical-align:1px}
+.mk.cr{background:var(--haz);color:#fff;border-radius:2px;border-color:#1a0306}
+dl.legend{display:grid;grid-template-columns:auto 1fr;gap:2px 5px;margin:0 0 2px;align-items:start}
+dl.legend dt{margin:0}
+dl.legend dd{margin:0}
+
+.order{counter-reset:s;list-style:none;padding:0}
+.order li{counter-increment:s;padding-left:15px;position:relative}
+.order li::before{content:counter(s);position:absolute;left:0;top:1px;font:400 6.6pt var(--f-data);background:var(--ink);color:var(--paper);width:10px;height:10px;display:grid;place-items:center;border-radius:2px}
+.foot{margin-top:6px;padding-top:4px;border-top:1px solid var(--rule);font:400 6.4pt var(--f-data);color:var(--dim);display:flex;justify-content:space-between;gap:10px}
+
+@media (max-width:820px){
+  body{padding:12px 16px}
+  .sheet{width:auto;min-height:0;padding:16px;font-size:10pt}
+  .grid,.two{grid-template-columns:1fr}
+  header{flex-direction:column;align-items:flex-start}
+  .stats{text-align:left}
+  figure{max-width:340px}
+  table.one td:nth-child(1),table.one td:nth-child(2){width:auto}
+}
+@page{size:letter portrait;margin:0}
+@media print{
+  body{background:none;padding:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .bar{display:none}
+  .sheet{width:8.5in;height:11in;min-height:0;box-shadow:none;overflow:hidden;font-size:7.6pt}
+  .grid{grid-template-columns:2.95in 1fr}
+  .two{grid-template-columns:1fr 1fr}
+}
+</style></head>
+<body>
+<div class="bar"><a href="index.html">← Tactical plot</a><button type="button" onclick="print()">Print this sheet</button></div>
+
+<main class="sheet">
+<header>
+ <div><h1><small>DRIFT · SHIP COMBAT REFERENCE</small>The Patience</h1></div>
+ <div class="stats">K. Vash's dropship · <b>AC 13</b> <b>Hull 25</b> <b>Shields 10</b> <b>Speed 8</b><br>
+  Dorsal turret lasers <span class="dim">+5 · 2d8 · 20/32 · any arc</span><br>
+  Stern launcher missiles <span class="dim">+5 · 3d10 · 10–32 · rear arc · 6 + 6 spare</span></div>
+</header>
+
+<div class="grid">
+<div>
+ <h2>Who sits where</h2>
+ <figure>
+  <svg class="sch" viewBox="0 0 1428 2000" role="img" aria-labelledby="schT schD">
+   <title id="schT">Patience station plan</title>
+   <desc id="schD">The deck plan, bow up: helm and sensors in the cockpit at upper right, gunner in the dorsal turret at upper left, engineer in either reactor room aft, second gunner at the stern launcher. Red squares mark the critical damage rooms.</desc>
+   <image href="../gm/maps/pbmi-dropship-patience.jpg" width="1428" height="2000"/>
+   <g class="lb"><rect x="1095.0" y="583" width="190" height="44" rx="4"/><text x="1190" y="605">COCKPIT</text></g>
+   <g class="lb"><rect x="51.0" y="638" width="168" height="44" rx="4"/><text x="135" y="660">TURRET</text></g>
+   <g class="lb"><rect x="628.0" y="558" width="234" height="44" rx="4"/><text x="745" y="580">CARGO BAY</text></g>
+   <g class="lb"><rect x="672.0" y="1153" width="146" height="44" rx="4"/><text x="745" y="1175">BUNKS</text></g>
+   <g class="lb"><rect x="650.0" y="1588" width="190" height="44" rx="4"/><text x="745" y="1610">AIRLOCK</text></g>
+   <g class="lb"><rect x="173.0" y="1253" width="234" height="44" rx="4"/><text x="290" y="1275">REACTOR P</text></g>
+   <g class="lb"><rect x="1078.0" y="1253" width="234" height="44" rx="4"/><text x="1195" y="1275">REACTOR S</text></g>
+   <g class="lb"><rect x="494.0" y="1718" width="212" height="44" rx="4"/><text x="600" y="1740">LAUNCHER</text></g>
+   <g class="cr"><rect x="1306" y="536" width="48" height="48" rx="6"/><text x="1330" y="560">1</text></g>
+   <g class="cr"><rect x="191" y="576" width="48" height="48" rx="6"/><text x="215" y="600">2</text></g>
+   <g class="cr"><rect x="596" y="1926" width="48" height="48" rx="6"/><text x="620" y="1950">3</text></g>
+   <g class="cr"><rect x="381" y="1666" width="48" height="48" rx="6"/><text x="405" y="1690">4</text></g>
+   <g class="cr"><rect x="1291" y="1666" width="48" height="48" rx="6"/><text x="1315" y="1690">4</text></g>
+   <g class="cr"><rect x="876" y="626" width="48" height="48" rx="6"/><text x="900" y="650">5</text></g>
+   <g class="cr"><rect x="911" y="1086" width="48" height="48" rx="6"/><text x="935" y="1110">6</text></g>
+   <g class="st"><circle cx="1190" cy="300" r="32"/><text x="1190" y="300">H</text></g>
+   <g class="st"><circle cx="1085" cy="300" r="32"/><text x="1085" y="300">S</text></g>
+   <g class="st"><rect x="324" y="510" width="96" height="60" rx="30"/><text x="372" y="540">G1</text></g>
+   <g class="st"><rect x="775" y="1780" width="96" height="60" rx="30"/><text x="823" y="1810">G2</text></g>
+   <g class="st"><circle cx="200" cy="1440" r="32"/><text x="200" y="1440">E</text></g>
+   <g class="st"><circle cx="1110" cy="1440" r="32"/><text x="1110" y="1440">E</text></g>
+  </svg>
+  <figcaption>Bow up · 19×26 squares · map art: PBMI DropShip</figcaption>
+ </figure>
+ <dl class="legend">
+  <dt><span class="mk">H</span></dt><dd><b>Helm</b>, cockpit starboard. Rolls initiative, flies, takes pilot actions, spends Edge.</dd>
+  <dt><span class="mk">S</span></dt><dd><b>Sensors / Comms</b>, cockpit port console.</dd>
+  <dt><span class="mk">G1</span></dt><dd><b>Gunner</b>, dorsal turret: lasers, any arc.</dd>
+  <dt><span class="mk">G2</span></dt><dd><b>Gunner</b>, stern launcher: missiles, rear arc only (a ship tailing you, or after Come about).</dd>
+  <dt><span class="mk">E</span></dt><dd><b>Engineer</b>, either reactor room. Walk to the other to fix a scram there.</dd>
+  <dt><span class="mk cr">1</span></dt><dd><b>Crit rooms.</b> You have to be in the room to fix its crit.</dd>
+ </dl>
+
+ <h2 class="red">Critical damage (d6)</h2>
+ <p class="dim">On a natural 20, and each time hull first drops below 75%, 50% and 25%.</p>
+ <table>
+  <tr><th>d6</th><th>Result</th><th>Fix in</th></tr>
+  <tr><td>1</td><td>Cockpit hit: Helm and Sensors take 2d6 thunder (DC 12 Dex half); pilot has disadvantage.</td><td class="c">Cockpit</td></tr>
+  <tr><td>2</td><td>Turret jammed.</td><td class="c">Turret</td></tr>
+  <tr><td>3</td><td>Launcher drum jammed.</td><td class="c">Launcher</td></tr>
+  <tr><td>4</td><td>Reactor scram (d2: port/stbd). No shield regen, Overcharge or Boost; half Speed; pilot disadv.</td><td class="c">That reactor</td></tr>
+  <tr><td>5</td><td>Cargo bay breach: DC 12 Dex or pulled toward the hole; a tenth of the cargo vents.</td><td class="c">Bay, DC 12</td></tr>
+  <tr><td>6</td><td>Fire in the bunks: 1d6 hull each round.</td><td class="c">Bunks, DC 12</td></tr>
+ </table>
+  <h2>Tailing</h2>
+  <p>Win the contest (ties to you) and you're on its tail: your gunners have adv. against it, its attacks on you have disadv., and you can react to <b>follow</b> it up to your Speed when it moves. Its rear arc still fires at you. Ends if it breaks free (its action, ties to it), you end a turn more than 20 apart, it Hard brakes you, or your helm empties.</p>
+</div>
+
+<div>
+ <h2>The round</h2>
+ <ul class="order">
+  <li><b>Initiative, once per fight:</b> d20 + pilot's Dex + proficiency (Vehicles, space). Highest goes first for the whole fight.</li>
+  <li><b>Your ship's turn:</b> the pilot moves up to Speed (split around actions as you like) and takes an action + bonus action. <b>Every crew member at a station takes one action.</b> Crew off-station act now too: fires, boarders, breaches, spells.</li>
+  <li><b>Reactions:</b> everyone has one per round, on anyone's turn.</li>
+  <li><b>End of round:</b> drift and hazard forces → battlefield events → shields regen (if powered) → fires burn → repairs → boarders.</li>
+ </ul>
+ <p class="dim">An empty station can't act. An empty helm coasts along its last move and can't Brace or Jink.</p>
+
+ <h2>Stations: one action each, on your ship's turn</h2>
+ <table>
+  <tr><td>Gunner <span class="mk">G1</span> <span class="mk">G2</span></td><td>d20 + prof + Dex (Int for missiles) vs the target's AC. Damage hits shields first, then hull.</td></tr>
+  <tr><td>Engineer <span class="mk">E</span></td><td><b>Shields</b> +5 · <b>Overcharge</b> a gunner's next hit +1d8 · <b>Boost</b> +half Speed this turn · <b>Damage control</b> (DC 12) fix a crit or 1d6 hull · <b>Spool drive</b>.</td></tr>
+  <tr><td>Sensors <span class="mk">S</span></td><td><b>Scan</b> (DC 13) next hit +1d8 · <b>Jam</b> (DC 13) an enemy attack at disadvantage · <b>Call the line</b> pilot adv. on next hazard check · <b>Hail</b> any Cha check · <b>Help</b>.</td></tr>
+  <tr><td>Anyone else</td><td>Wherever it's burning: fires (DC 12), boarders, breaches, spells.</td></tr>
+ </table>
+
+ <h2>The pilot <span class="mk">H</span></h2>
+ <table class="one">
+  <tr><td>Burn</td><td class="c">Action</td><td>Extra move = Speed. Two turns running: engineer DC 12 or scram.</td></tr>
+  <tr><td>Evasive flying</td><td class="c">Action</td><td>Attacks on you have disadvantage until your next turn.</td></tr>
+  <tr><td>Break lock</td><td class="c">Action</td><td>Leaving close-in zones draws no reaction fire.</td></tr>
+  <tr><td>Line up</td><td class="c">Action</td><td>One gunner: advantage on their next attack.</td></tr>
+  <tr><td>Tail</td><td class="c">Action</td><td>Contested pilot checks, a ship within 20 (see Tailing).</td></tr>
+  <tr><td>Ready</td><td class="c">Action</td><td>Name a trigger; when it happens, react: move half Speed.</td></tr>
+  <tr><td>Come about</td><td class="c">Bonus</td><td>Stern to one target: the rear arc can fire at it.</td></tr>
+  <tr><td>Brace</td><td class="c">Reaction</td><td>+2 AC until the end of the current turn.</td></tr>
+ </table>
+ <h2>Edge dice <span class="dim" style="letter-spacing:0;text-transform:none;font:400 7pt var(--f-body)">spend one, roll it, add it</span></h2>
+ <p>Pool = the pilot's proficiency bonus, d8s (d10s from level 11). Regain one on a natural 20 pilot check or a hard-line success. Edge stays with the PC at the helm and resets each fight.</p>
+ <table class="one">
+  <tr><td>Jink</td><td class="c">Reaction</td><td>When hit: add it to your AC against that attack.</td></tr>
+  <tr><td>Lead the shot</td><td class="c">Bonus</td><td>One gunner adds it to their next attack roll.</td></tr>
+  <tr><td>Thread the needle</td><td class="c">Hazard check</td><td>Add it. Succeed and end within 3 of it: +2 AC.</td></tr>
+  <tr><td>Slingshot</td><td class="c">Move</td><td>Through a gravity well: +2× die Speed, no pull.</td></tr>
+  <tr><td>Press</td><td class="c">Tail contest</td><td>Add it to your pilot check, either side.</td></tr>
+  <tr><td>Hard brake</td><td class="c">Reaction</td><td>Your tail moves: it checks DC 10 + die or you tail it.</td></tr>
+  <tr><td>Cut the drive</td><td class="c">Bonus, after move</td><td>Stealth beyond 10 units till you move or fire.</td></tr>
+ </table>
+
+ <div class="two">
+ <div>
+  <h2>Range and movement</h2>
+  <ul>
+   <li>Real 3D distances in units. Lasers <span class="k">20/32</span>: past 20 at disadv. Missiles <span class="k">10–32</span>. Harpoons, flak, boarding gear: 10.</li>
+   <li><b>Close-in zone</b> = 10 units. Pulling out of a hostile's draws <b>reaction fire</b> (one weapon) unless you Break lock.</li>
+   <li>Can't end a move within 2 units of another ship. Solid rock or wreck in the line of fire: disadvantage.</li>
+   <li><b>Difficult space</b> (debris, ring plane, nebula): each unit costs 2.</li>
+  </ul>
+ </div>
+ <div>
+  <h2>Hazard checks</h2>
+  <p>Only if you use <b>more than half Speed</b> and pass through it: d20 + Dex + prof. <b>Hard line:</b> +5 DC, success regains an Edge die.</p>
+  <table>
+   <tr><td>12</td><td>Debris field (1d6) · crossing a current (carried off)</td></tr>
+   <tr><td>13</td><td>Ring plane, rock garden (2d6)</td></tr>
+   <tr><td>14</td><td>Within 2 of rock/wreck (its collision) · within 3 of a mine (4d6)</td></tr>
+   <tr><td>15</td><td>Gravity well core (4d10)</td></tr>
+  </table>
+ </div>
+ </div>
+
+ <div>
+  <h2 class="red">Getting out</h2>
+  <ul>
+   <li><b>Break away:</b> end your turn beyond every hostile's long range, untailed. If none gets you back in reach before your next turn, you're gone.</li>
+   <li><b>Spool drive:</b> 3 successes before 3 failures, Int + tinker's tools DC 13. Not with a hostile within 10. Fail by 5+: crit yourself.</li>
+   <li><b>0 hull:</b> disabled. No turns. 1 hour of emergency life support.</li>
+  </ul>
+ </div>
+</div>
+</div>
+
+<div class="foot"><span>Flight rules are in playtest: numbers may change.</span><span>Your GM has the rest: hazards, enemy stat blocks, battlefield events.</span></div>
+</main>
+</body></html>
