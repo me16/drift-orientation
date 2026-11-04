@@ -154,7 +154,7 @@ code{font-family:var(--f-data);color:var(--teal)}
 <div id="app" hidden>
 <div class="bar"><div class="bar-in">
  <span class="brand">GM · DRIFT</span>
- <nav aria-label="Sections"><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#library">Library</a></nav>
+ <nav aria-label="Sections"><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight (draft)</a><a href="#library">Library</a></nav>
  <button class="btn" id="lockBtn" type="button">Lock</button>
 </div></div>
 
@@ -349,6 +349,7 @@ code{font-family:var(--f-data);color:var(--teal)}
 <!-- ============================ SHIP COMBAT ============================ -->
 <section id="ships">
  <h2><span class="k">04</span>Ship combat: stations</h2>
+ <p class="dim">A playtest alternative with initiative turns, free 3D flight and pilot stunts is in <a href="#flight">05 Flight rules (draft)</a>.</p>
  <div class="grid">
   <div class="panel">
    <h4>Each round</h4>
@@ -476,9 +477,171 @@ code{font-family:var(--f-data);color:var(--teal)}
  <p class="dim" style="margin-top:14px"><a href="../combat/">Open the tactical plot</a>: a 3D engine that runs these rules (helm, stations, upkeep, crits) with positions, movement, hazards and a battlefield for every system. Players can act from their own phones at the station you give them. Campaign ship presets are in <code>gm/ships.js</code>. The session-1 run sheet and live combat tracker are in the Library (type: tool).</p>
 </section>
 
+<!-- ============================ FLIGHT (DRAFT) ============================ -->
+<section id="flight">
+ <h2><span class="k">05</span>Flight rules <span class="tag draft">Draft</span></h2>
+ <div class="truth">
+  <p><strong>A playtest replacement for the helm contest in 04.</strong> Ships take turns in initiative order and fly freely in three dimensions, with 5e-style consequences for moving badly. The pilot gets a pool of <strong>Edge</strong> dice to spend on stunts. Range bands, gunnery, the station actions, crits, hazards and the drive spool all stay as written in 04 unless this section says otherwise.</p>
+  <p class="dim" style="margin:0">The tactical plot still runs the rules in 04. Try these on paper or with the plot as a measuring tool (drag ships by hand) before the engine changes.</p>
+ </div>
+
+ <h3>The round</h3>
+ <div class="grid">
+  <div class="panel">
+   <h4>Initiative</h4>
+   <p>When a ship fight starts, every ship rolls initiative once: <strong>d20 + its pilot's Dex + proficiency with Vehicles (space)</strong> (for NPC ships, d20 + the template's pilot bonus). Ships act from highest to lowest for the rest of the fight. Ties go to the higher pilot bonus, then a d20 roll-off.</p>
+   <ul>
+    <li>Identical hostiles (a wing of interceptors) can share one initiative, as 5e monster groups do.</li>
+    <li>Swarms roll d20 with no bonus.</li>
+    <li>A ship that joins mid-fight rolls when it arrives.</li>
+   </ul>
+  </div>
+  <div class="panel">
+   <h4>A ship's turn</h4>
+   <ol>
+    <li><strong>The pilot spends the ship's Speed</strong> (units, from the template; a reactor scram halves it). Movement can be split around the crew's actions, like a character moving before and after an attack.</li>
+    <li><strong>Each crew member at a station takes one action</strong> from the station table, in any order the table likes. The pilot has an action and a bonus action too (below).</li>
+    <li>Crew away from the stations act now as well: fires, boarders, breaches, spells.</li>
+   </ol>
+   <p class="dim">Every crew member has one <strong>reaction</strong> per round, used on anyone's turn.</p>
+  </div>
+  <div class="panel">
+   <h4>End of the round</h4>
+   <p>After the last ship's turn, everything in 04's upkeep happens in its usual order: drift and hazard forces (currents, gravity wells), battlefield events, shield regen, fires, repair, boarders. Then the next round starts at the top of the initiative order.</p>
+   <h4>Empty or disabled helm</h4>
+   <p>On its turn the ship doesn't maneuver. It coasts along its last move. It can't use pilot actions, and it can't Brace or Jink.</p>
+  </div>
+ </div>
+
+ <h3>Moving</h3>
+ <div class="grid">
+  <div class="panel">
+   <h4>Free flight</h4>
+   <p>Move up to your Speed in any direction, altitude included. Climbing and diving cost the same as anything else. A ship can't end its move within 2 units of another ship.</p>
+   <h4>Difficult space</h4>
+   <p>Inside a <strong>debris field</strong>, a <strong>ring plane</strong> or a <strong>nebula</strong>, each unit of movement costs 2.</p>
+   <h4>Hazard checks</h4>
+   <p>If you spend <strong>more than half your Speed</strong> this turn and any part of the path passes through a hazard below, the pilot makes a check (d20 + Dex + proficiency) against its DC. Failure: the hazard's damage from 04. Flying slowly through it is safe and needs no check.</p>
+   <p><strong>The hard line:</strong> before rolling, the pilot can raise the DC by 5. Success regains one Edge die.</p>
+  </div>
+  <div class="panel">
+   <div class="tbl" style="margin-top:0"><table>
+    <tr><th>Hazard</th><th>DC</th><th>On a failure</th></tr>
+    <tr><td>Debris field</td><td class="n">12</td><td>1d6 (as in 04)</td></tr>
+    <tr><td>Ring plane, rock garden</td><td class="n">13</td><td>2d6</td></tr>
+    <tr><td>Passing within 2 units of an asteroid, wreck or structure</td><td class="n">14</td><td>Its collision damage (2d10 / 2d8 / 4d10); you stop there</td></tr>
+    <tr><td>Passing within 3 units of a mine</td><td class="n">14</td><td>It goes off: 4d6 within 8</td></tr>
+    <tr><td>Crossing a current against its flow</td><td class="n">12</td><td>Carried along its flow; the move ends</td></tr>
+    <tr><td>Gravity well, moving through the core</td><td class="n">15</td><td>The core's 4d10</td></tr>
+   </table></div>
+   <p class="dim">Hazards still do their end-of-round effects (pull, burn, drain) as in 04, whatever happened during the move.</p>
+  </div>
+  <div class="panel">
+   <h4>Reaction fire</h4>
+   <p>When a ship <strong>leaves the Close range</strong> (10 units) of a hostile ship, a gunner on that hostile can use their reaction to fire one weapon that reaches at Close, at the moving ship, at the point it leaves. A swarm fires one unit's worth. Disengage prevents it.</p>
+   <h4>Breaking away</h4>
+   <p>End your turn Beyond (more than 32 units from every hostile ship) with nobody tailing you. If no hostile ends its turn within Long of you before your next turn, you're gone. This replaces Break away from 04; the drive spool still works as written.</p>
+   <h4>Optional: g-forces</h4>
+   <p>A ship that Dashes and uses an Edge stunt on the same turn pulls hard: every crew member makes a DC 10 Con save. Failure means disadvantage on their next attack roll or check before the end of their next turn.</p>
+   <h4>Reactor strain</h4>
+   <p>Dashing on two turns in a row: the engineer makes a DC 12 check on the second (Int + tinker's tools). Failure, or nobody in Engineering: reactor scram (crit 4).</p>
+  </div>
+ </div>
+
+ <h3>The pilot's turn</h3>
+ <div class="tbl"><table>
+  <tr><th>Pilot option</th><th>Cost</th><th>Effect</th></tr>
+  <tr><td><strong>Burn</strong> (Dash)</td><td>Action</td><td>Extra movement equal to your Speed this turn. See reactor strain.</td></tr>
+  <tr><td><strong>Evasive flying</strong> (Dodge)</td><td>Action</td><td>Attacks on your ship have disadvantage until the start of your next turn. Replaces Evade.</td></tr>
+  <tr><td><strong>Break lock</strong> (Disengage)</td><td>Action</td><td>Leaving Close range doesn't provoke reaction fire this turn.</td></tr>
+  <tr><td><strong>Line up</strong> (Help)</td><td>Action</td><td>One gunner on your ship has advantage on their next attack this turn. Replaces Line up.</td></tr>
+  <tr><td><strong>Tail</strong></td><td>Action</td><td>Contested pilot checks against a ship within Medium (see Tailing).</td></tr>
+  <tr><td><strong>Ready</strong></td><td>Action</td><td>Name a trigger. When it happens, use your reaction to move up to half your Speed.</td></tr>
+  <tr><td><strong>Come about</strong></td><td>Bonus action</td><td>Swing the stern toward one target: rear-arc weapons can fire at it this turn.</td></tr>
+  <tr><td><strong>Brace</strong></td><td>Reaction</td><td>When an attack targets your ship: +2 AC against it.</td></tr>
+  <tr><td>Any Edge stunt</td><td>As listed</td><td>See below.</td></tr>
+ </table></div>
+
+ <h3>Edge</h3>
+ <div class="grid">
+  <div class="panel">
+   <h4>The pool</h4>
+   <ul>
+    <li>At the start of each ship fight, the PC at the helm has <strong>Edge dice equal to their proficiency bonus</strong>. The dice are d8s, or d10s from character level 11.</li>
+    <li><strong>Regain one</strong> when you roll a natural 20 on any pilot check, or pass a hazard check on the hard line. The pool can't go above its starting size.</li>
+    <li>Unspent dice don't carry over to the next fight.</li>
+    <li>Edge belongs to the pilot. A PC who leaves the helm can't spend it from another station, and whoever takes over has their own pool.</li>
+    <li>Hostile pilots get a fixed pool from their template (<em>edge:N</em>, d8). Most raiders have 1 or 2. The Due Diligence has 3.</li>
+   </ul>
+   <h4>Handling traits</h4>
+   <p><em>agile</em> (fighters, interceptors): +2 to the pilot's checks. <em>ponderous</em> (capital ships, haulers, cathedral-ships): disadvantage on hazard checks and Tail, and Burn adds only half Speed. Swarms take no pilot actions and have no Edge.</p>
+  </div>
+ </div>
+ <div class="tbl"><table>
+    <tr><th>Stunt</th><th>Cost</th><th>Effect (spend one Edge die, roll it)</th></tr>
+    <tr><td><strong>Jink</strong></td><td>Reaction</td><td>When an attack hits your ship: add the die to your AC against it, which can turn the hit into a miss.</td></tr>
+    <tr><td><strong>Lead the shot</strong></td><td>Bonus action</td><td>One gunner on your ship adds the die to their next attack roll this turn.</td></tr>
+    <tr><td><strong>Thread the needle</strong></td><td>On a hazard check</td><td>Add the die to the check. On a success, if you end your move within 3 units of that hazard, +2 AC until the start of your next turn.</td></tr>
+    <tr><td><strong>Slingshot</strong></td><td>During your move</td><td>When your path passes through a gravity well (not its core): extra Speed equal to twice the die this turn, and the well doesn't pull you at the end of the round.</td></tr>
+    <tr><td><strong>Press</strong></td><td>On a Tail contest</td><td>Add the die to your pilot check, attacking or breaking free.</td></tr>
+    <tr><td><strong>Hard brake</strong></td><td>Reaction</td><td>When a ship tailing you moves: its pilot makes a check against DC 10 + the die. On a failure it overshoots: its Tail ends, and you're now tailing it.</td></tr>
+    <tr><td><strong>Cut the drive</strong></td><td>Bonus action, after your move</td><td>Go dark: your ship counts as <em>stealth</em> to every ship beyond Close until you next move or fire. A successful Scan against you ends it.</td></tr>
+   </table></div>
+
+ <h3>Tailing</h3>
+ <div class="grid">
+  <div class="panel">
+   <p><strong>To tail:</strong> use your action against a ship within Medium (under 20 units). Make contested pilot checks; you win ties. If you win, you're on its tail.</p>
+   <ul>
+    <li>Your gunners have <strong>advantage</strong> against it, and its attacks against your ship have <strong>disadvantage</strong>.</li>
+    <li>When it moves, you can use your reaction to follow, moving up to your Speed after its move.</li>
+    <li>It can still fire rear-arc weapons at you without Come about.</li>
+   </ul>
+  </div>
+  <div class="panel">
+   <p><strong>The tail ends</strong> when:</p>
+   <ul>
+    <li>the tailed ship uses its action to break free (contested pilot checks, and it wins ties);</li>
+    <li>the two ships end any turn more than Medium apart;</li>
+    <li>it Hard brakes you;</li>
+    <li>or your helm is empty or disabled.</li>
+   </ul>
+   <p>A ship can tail only one ship at a time. Several ships can tail the same target.</p>
+  </div>
+ </div>
+
+ <h3>Changes to 04</h3>
+ <div class="tbl"><table>
+  <tr><th>In 04</th><th>Under these rules</th></tr>
+  <tr><td>Helm contest every round</td><td>Initiative once, at the start. The opposed roll happens only in Tail.</td></tr>
+  <tr><td>Shift range</td><td>Fly there.</td></tr>
+  <tr><td>Line up, Evade, Brace</td><td>Pilot actions (Line up, Evasive flying) and a reaction (Brace).</td></tr>
+  <tr><td>Break away (at Long)</td><td>Breaking away (end your turn Beyond with nobody tailing you).</td></tr>
+  <tr><td>Engineer: <em>Boost engines</em>, pilot advantage</td><td><em>Boost engines</em>: +half Speed this turn. Not during a reactor scram.</td></tr>
+  <tr><td>Sensors: <em>Help</em></td><td>Also <em>Call the line</em>: the pilot has advantage on their next hazard check.</td></tr>
+  <tr><td>Patience stern launcher: fires only when your pilot wins the helm</td><td>Rear arc: fires at a ship tailing you, or at any target after your pilot uses Come about.</td></tr>
+  <tr><td>An empty helm loses the helm contest</td><td>An empty helm coasts and can't Brace or Jink.</td></tr>
+  <tr><td>Standing orders move ships at upkeep</td><td>NPC ships fly their standing order on their own turn. The hazard forces still act at the end of the round.</td></tr>
+ </table></div>
+
+ <h3>An example turn</h3>
+ <div class="panel">
+  <p>The Patience (Speed 8) wins initiative. Its pilot dives 4 units into the ring plane. That's difficult space, so it costs all 8, and it's more than half Speed through a hazard: a DC 13 check, passed. The pilot spends an Edge die on <strong>Lead the shot</strong>, and the turret gunner fires at the Benediction with +d8 and hits. The engineer <strong>Boosts</strong> (+4 Speed), so the pilot pulls up behind a rock. That leaves the Benediction's Close range, and its gunner takes reaction fire. The pilot answers with <strong>Jink</strong>: +5 AC, a miss.</p>
+  <p style="margin:0">Then it's the Benediction's turn. It tries to <strong>Tail</strong> the Patience.</p>
+ </div>
+
+ <h3>Open questions for playtest</h3>
+ <ul>
+  <li>Is proficiency bonus enough Edge for a whole fight, or should a short lull (no hostile within Long for a round) give one back?</li>
+  <li>Does reaction fire make Close too sticky for ships without Break lock?</li>
+  <li>Is g-force worth the extra rolls, or should it stay optional?</li>
+  <li>Should Tail's advantage and disadvantage apply only to forward weapons once ships have proper facing?</li>
+ </ul>
+</section>
+
 <!-- ============================ LIBRARY ============================ -->
 <section id="library">
- <h2><span class="k">05</span>Library: maps and resources</h2>
+ <h2><span class="k">06</span>Library: maps and resources</h2>
  <details class="howto">
   <summary>How to add something</summary>
   <p>Open <code>gm/library.js</code>, copy an entry, paste it at the end and edit it. Put your own images in <code>gm/maps/</code> and point <code>file</code> at them. Link other creators' maps with <code>drive</code>, <code>folder</code> or <code>url</code> instead of copying them in, because the site is public.</p>
