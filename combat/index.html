@@ -149,6 +149,13 @@ body.watch aside{grid-template-rows:minmax(0,1fr) minmax(140px,34%)}
   .hint{display:none}
   .bgname i{display:none}
 }
+/* Rules popups: hover (or long-press on touch) any action for what it does. Text comes from TIPS below. */
+#tip{position:fixed;z-index:60;max-width:min(300px,calc(100vw - 24px));padding:8px 10px;background:var(--panel-2);border:1px solid var(--rule-2);border-left:2px solid var(--teal);
+  color:var(--fg);font:400 13px/1.45 var(--f-body);box-shadow:0 6px 24px #000a;pointer-events:none;opacity:0;transition:opacity .12s;left:0;top:0}
+#tip.on{opacity:1}
+.btn,label.chk{-webkit-touch-callout:none}
+#tip .tk{display:block;font:400 10.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:3px}
+#tip .tk i{font-style:normal;color:var(--amber)}
 </style>
 </head>
 <body>
@@ -402,6 +409,120 @@ function traitLine(t){
   if(!t)return "";
   return [t.armor?"armor:"+t.armor:"",t.swarm?"swarm:"+t.swarm:"",t.small?"small":"",t.stealth?"stealth":"",t.volatile?"volatile:"+t.volatile:"",t.repair?"repair:"+t.repair:"",t.screen?"screen":"",t.edge?"edge:"+t.edge:"",t.agile?"agile":"",t.ponderous?"ponderous":""].filter(Boolean).join(" ");
 }
+/* ============================== rules popups ============================== */
+// Hover an action (or long-press it on a phone) to see what it does. Rules text for each button lives here,
+// keyed by its data-act / data-pact (and data-q / data-k), so the panels stay uncluttered. Keep in step with
+// gm/index.html#ships and #flight. A [cost, text] pair: cost shows as the popup's heading. A title="" on any
+// element is shown the same way (and the native tooltip suppressed).
+const TIP_SPOOL=["Engineering","Spool drive: 3 successes before 3 failures (Int + tinker's tools, DC 13) and the drive jumps. Not with a hostile within 10 units. Fail by 5+: roll a crit on your own ship."];
+const TIP_FIRE=["Gunner · once per weapon per round","d20 + attack bonus vs the target's AC, with the advantage and disadvantage listed above. Beyond normal range: disadvantage; beyond long range or inside minimum: no shot. A natural 20 also rolls a crit. Damage hits shields first, then hull."];
+const TIP_DC=["Engineering · DC 12","Damage control (Int + tinker's tools): fix a crit, or repair 1d6 hull. A crit has to be fixed in its room."];
+const TIP_SCAN=["Sensors · DC 13","The party's next hit does +1d8, and the target loses stealth and running dark."];
+const TIP_JAM=["Sensors · DC 13","Jam one hostile: its next attack has disadvantage."];
+const TIP_LINE=["Sensors","Call the line: the pilot has advantage on the next hazard check."];
+const TIP_BOOST=["Engineering","Boost engines: +half Speed this turn. Not with a reactor scram, or inside a null zone."];
+const TIP_SHIELDS=["Engineering","Reroute power: +5 shields, up to the maximum."];
+const TIP_BRACE=["Reaction","Brace: +2 AC until the end of the current turn. Not with an empty or disabled helm."];
+const TIP_QUICK={
+  close:"Fly straight at the target, stopping about 4 units short.",
+  open:"Fly directly away from the target.",
+  climb:"Climb straight up with the movement left.",
+  dive:"Dive straight down with the movement left.",
+  flankL:"Swing around the target to the left, keeping distance and altitude.",
+  flankR:"Swing around the target to the right, keeping distance and altitude.",
+  cover:"Put the nearest asteroid, wreck or structure between you and the target: a solid hazard in the line of fire gives disadvantage.",
+};
+const TIP_WAIT={
+  jink:["Reaction · ◆ Edge die","Jink: roll the die and add it to your AC against this attack, which can turn the hit into a miss."],
+  rfire:["Reaction","Reaction fire: one weapon that can reach (not rear-arc) fires at the ship as it leaves the 10-unit close-in zone. Break lock prevents it."],
+  brake:["Reaction · ◆ Edge die","Hard brake: the tailer's pilot checks against DC 10 + the die. On a failure it overshoots: its Tail ends, and you're tailing it."],
+  follow:["Reaction","Follow: move up to your Speed after its move, staying on its tail."],
+};
+const TIPS={
+  init:["Initiative","Every ship rolls d20 + its pilot's bonus (agile +2). Ships act from highest to lowest, every round."],
+  endturn:["End turn","Ships ending more than 20 units apart lose their Tail; a ship out of every hostile's reach starts breaking away. After the last ship: drift, hazards, events, shield regen, fires, repair, boarders."],
+  npcturn:["Hostile or allied turn","Flies its standing order, takes a pilot action and a bonus action, then fires every weapon in reach."],
+  npcfire:["Hostile or allied guns","Every weapon that hasn't fired shoots its order's target, or the nearest thing in reach."],
+  flyorder:["Order","Fly this ship's standing order with the movement it has left."],
+  brace:TIP_BRACE,
+  readymv:["Reaction","Readied move: move up to half its Speed now."],
+  ready:["Reaction","Readied move: move up to half your Speed now."],
+  rmdone:["Reaction move","Stop here. Movement left over is lost."],
+  mvmode:["Move","Click a point on the level plane, then click again to set altitude (shift-click flies level). Each unit costs 1, or 2 in difficult space. Spending more than half your Speed through a hazard needs a pilot check; leaving a hostile's 10-unit close-in zone draws reaction fire."],
+  move:["Move","Fly the previewed path. Costs, hazard checks and reaction fire are listed above it."],
+  quick:q=>TIP_QUICK[q]&&["Quick move",TIP_QUICK[q]+" Stops short of rocks and ships; hazard checks and reaction fire apply as usual."],
+  pilot:k=>{const P=PILOT[k];if(!P)return null;
+    const c=[P.c==="a"?"Pilot action":P.c==="b"?"Bonus action":k==="sling"?"During your move":"",P.edge?"<i>◆ Edge die</i>":""].filter(Boolean).join(" · ");
+    return [c,P.t+(k==="tail"||k==="free"?" Press adds an Edge die to your check.":"")]},
+  boost:TIP_BOOST,callline:TIP_LINE,line:TIP_LINE,
+  shields:TIP_SHIELDS,
+  dc:(k,el)=>el.dataset.pact?TIP_DC:["Engineering · DC 12","Damage control succeeded: repair 1d6 hull. To fix a crit instead, click it below."],
+  crit:["Critical damage","Roll d6 on the crit table. Crits come on a natural 20 and the first time hull drops below 75%, 50% and 25%. Swarms take none."],
+  fix:["Critical damage","Damage control (DC 12) in that room fixed it: clear the crit."],
+  repel:["Boarders","The crew drove one squad off the deck. Each squad aboard does 1d6 hull at the end of the round, ignoring shields."],
+  dmg:["Damage","Apply this much damage: shields first, then hull."],
+  heal:["Repair","Restore this much hull."],
+  spool:k=>k==="x"?["Spool drive","Reset the successes and failures."]:TIP_SPOOL,
+  fire:TIP_FIRE,
+  damage:["Hit","Roll the damage dice shown and enter the total. It hits shields first, then hull."],
+  overcharge:["Engineering","Overcharge: the chosen gunner's next hit this round does +1d8. Not with a reactor scram."],
+  scan:TIP_SCAN,jam:TIP_JAM,
+  wait:(k,el)=>el.dataset.use==="1"&&S.wait?TIP_WAIT[S.wait.k]:null,
+  decide:(k,el)=>el.dataset.use==="1"&&S.wait?TIP_WAIT[S.wait.k]:null,
+  // Checkboxes, by their input's data-mv / data-ui.
+  mhard:["The hard line","Hazard checks on this move are at DC +5. Each success regains one Edge die."],
+  mthread:["On a hazard check · <i>◆ Edge die</i>","Thread the needle: add the die to the check. On a success, end within 3 units of that hazard for +2 AC until the start of your next turn."],
+  press:["On a Tail contest · <i>◆ Edge die</i>","Press: add the die to your pilot check, tailing or breaking free."],
+  over:["Engineering","This gun was overcharged: +1d8 on a hit."],
+  scanchk:TIP_SCAN,
+  jamchk:["Sensors","The attacker was jammed: its attack has disadvantage."],
+};
+function tipFor(el){
+  if(el.hasAttribute("title")){el.dataset.tip=el.title;el.removeAttribute("title")}
+  const d=el.dataset,lbl=el.matches("label")?el:null,inp=lbl&&lbl.querySelector("input");
+  let key=d.pact||d.act||(el.id==="nextBtn"?(S.fight?"endturn":"init"):""),arg=d.q||d.k;
+  if(inp){key=inp.dataset.mv||inp.dataset.ui;if(key==="scan"||key==="jam")key+="chk"}
+  let t=TIPS[key];if(typeof t==="function")t=t(arg,el);
+  if(t)return `<span class="tk">${t[0]}</span>${esc(t[1])}`;
+  return d.tip?esc(d.tip):"";
+}
+const Tip=(()=>{
+  const box=document.createElement("div");box.id="tip";box.setAttribute("role","tooltip");document.body.appendChild(box);
+  let on=null,timer=0,pend=null,press=0,ate=false;
+  const SEL="[data-tip],[title],button[data-act],button[data-pact],label.chk,#nextBtn";
+  const hide=()=>{clearTimeout(timer);on=pend=null;box.classList.remove("on")};
+  function show(el){
+    const h=tipFor(el);if(!h){hide();return}
+    on=el;box.innerHTML=h;box.classList.add("on");
+    const r=el.getBoundingClientRect(),b=box.getBoundingClientRect(),W=innerWidth,H=innerHeight;
+    let x=clamp(r.left+r.width/2-b.width/2,8,W-b.width-8),y=r.top-b.height-8;
+    if(y<8)y=Math.min(r.bottom+8,H-b.height-8);
+    box.style.left=x+"px";box.style.top=y+"px";
+  }
+  // Disabled buttons still get pointer events, so a greyed-out action can explain itself too.
+  const find=e=>{const el=document.elementFromPoint(e.clientX,e.clientY);return el&&el.closest(SEL)};
+  document.addEventListener("pointermove",e=>{
+    if(e.pointerType!=="mouse")return;const el=find(e);
+    if(el&&(el===on&&on.isConnected||el===pend))return;clearTimeout(timer);pend=null;
+    if(!el){hide();return}
+    if(on){show(el);return} // already showing: follow the pointer at once
+    pend=el;timer=setTimeout(()=>{pend=null;show(el)},350);
+  },{passive:true});
+  // Touch: hold for half a second to read it; the tap that ends the hold doesn't press the button.
+  document.addEventListener("pointerdown",e=>{
+    if(e.pointerType==="mouse"){hide();return}
+    hide();const el=e.target.closest&&e.target.closest(SEL);if(!el)return;
+    press=setTimeout(()=>{show(el);ate=true},500);
+  },{passive:true});
+  const cancel=()=>clearTimeout(press);
+  document.addEventListener("pointerup",cancel,{passive:true});
+  document.addEventListener("pointercancel",()=>{cancel();hide()},{passive:true});
+  document.addEventListener("click",e=>{if(ate){ate=false;e.preventDefault();e.stopPropagation();setTimeout(hide,1600)}},true);
+  document.addEventListener("contextmenu",e=>{if(on&&e.pointerType!=="mouse"&&!matchMedia("(hover:hover)").matches)e.preventDefault()});
+  addEventListener("scroll",hide,true);addEventListener("keydown",hide);addEventListener("blur",hide);
+  // A re-render replaces the hovered button: drop a popup whose button is gone.
+  return {hide,sweep(){if(on&&!on.isConnected)hide()}};
+})();
 const TRAIT_TIP={armor:"Hull damage reduced per hit",swarm:"Units sharing the hull",small:"Heavy weapons at disadvantage",stealth:"From more than 10 units, attacks at disadvantage unless scanned",
   volatile:"Explodes when disabled",repair:"Repairs friends within 10 units at the end of each round",screen:"Missiles at friends within 6 at disadvantage",
   edge:"The pilot's Edge dice (d8)",agile:"+2 to pilot checks",ponderous:"Disadvantage on hazard checks and Tail; Burn adds half Speed"};
@@ -2071,7 +2192,7 @@ function render(){
   const ae=document.activeElement,fk=ae&&pane.contains(ae)&&ae.dataset?ae.dataset.k:null;let sel=null;
   try{if(fk&&ae.selectionStart!=null)sel=[ae.selectionStart,ae.selectionEnd]}catch(e){}
   pane.innerHTML=WATCH?renderWatch():UI.tab==="turn"?renderTurn():UI.tab==="stations"?renderStations():UI.tab==="crew"?renderCrew():UI.tab==="field"?renderField():renderFleet();
-  pane.scrollTop=sc;
+  pane.scrollTop=sc;Tip.sweep();
   if(fk){const el=pane.querySelector(`[data-k="${CSS.escape(fk)}"]`);if(el){el.focus({preventScroll:true});if(sel)try{el.setSelectionRange(sel[0],sel[1])}catch(e){}}}
   $("#hudRound").textContent=`Round ${S.round}`;
   const c=cur();$("#hudTurn").textContent=S.fight?(c?`${c.name}'s turn`:"…"):"Initiative";
