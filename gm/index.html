@@ -164,7 +164,7 @@ code{font-family:var(--f-data);color:var(--teal)}
 <div id="app" hidden>
 <div class="bar"><div class="bar-in">
  <span class="brand">GM · DRIFT</span>
- <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
+ <nav aria-label="Sections"><a href="#log">Log</a><a href="#tonight">S0 plan</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
  <button class="btn" id="lockBtn" type="button">Lock</button>
 </div></div>
 
@@ -175,9 +175,88 @@ code{font-family:var(--f-data);color:var(--teal)}
  <p class="lede">The truth behind the handout, the rules the table runs on, and every map and resource for the campaign.</p>
 </header>
 
-<!-- ============================ TONIGHT ============================ -->
+<!-- ============================ CAMPAIGN LOG ============================ -->
+<section id="log">
+ <h2><span class="k">LOG</span>Campaign log</h2>
+ <div class="legend"><span><span class="tag canon">Canon</span> happened at the table, or decided by the GM</span><span><span class="tag draft">Draft</span> a suggestion. Keep it, change it or drop it.</span></div>
+
+ <div class="beat" style="--c:var(--lan)">
+  <div class="beat-h"><h3>Session 0 · The Grave of Ash job</h3><span class="tag canon">Canon</span></div>
+  <ul>
+   <li>The crew pulled the <strong>Navigation Core</strong> from the <em>Arbiter's Due</em> and got back to the Patience.</li>
+   <li>Alarming readings came up. A scan showed they were a <strong>distress signal</strong>.</li>
+   <li>A crew of <strong>Ashborn scavs</strong> closed in and fired on the Patience to take the core. The Patience disabled them, but not before they harpooned it and sent a boarding party across.</li>
+   <li>The scav captain and crew were killed. During the fight, <strong>Killora Vargas dropped her relic</strong> near the PCs. When V'an went down, he could tell something in it was <strong>"singing."</strong> He picked it up, and the PCs went back to their stations.</li>
+   <li><strong>Three Corinthian Cathedral-ships and three Sable Armor Freighters</strong> dropped out of hyperspace right on top of them. They ordered the Patience to stand down. Before Captain Delta could answer, they opened fire, and <strong>the Patience was destroyed</strong>.</li>
+  </ul>
+  <p class="read">The last thing they saw, as their vision frosted over and their blood began to boil, was a glow of warm platinum as the relic somehow moved them somewhere safe.</p>
+  <p class="dim">What changed from the plan below: the Ashborn captain died (the plan had Tobin Kell surrender), Sable brought Armor Freighters rather than battleships, Corinthia brought three ships rather than two, and the rescue came from <em>Vargas's</em> relic, not a shard of Vash's behind the cockpit panel. That shard is gone. Drop it.</p>
+ </div>
+
+ <article class="truth" style="--c:var(--lan)">
+  <div class="truth-h"><h3>Vargas's relic</h3><span class="tag canon">Canon</span></div>
+  <p class="players">Vargas has a lucky charm: a platinum shard from a Corinthian warp drive. It keeps Sable off her.</p>
+  <p>The relic is <strong>built specifically to keep its holder safe from Sable</strong>. Vargas cashed out her pension to have a <strong>former priest from Saint Vey jailbreak it</strong> for her. Once V'an had it, and Sable turned its guns on them, it reached out to <strong>the last two people who touched it</strong> and moved them out.</p>
+  <p class="reveal">The players don't know any of this. All they know is that it sang to V'an and that a platinum glow saved them.</p>
+  <h4>Fits with the canon <span class="tag draft">Draft</span></h4>
+  <ul>
+   <li>Relics are pieces of the Eye's network, so a jailbroken relic is <strong>hacked hardware</strong>. Whatever the priest changed, it still runs on the Eye. The Eye may now know exactly who was moved, and to where.</li>
+   <li>The "singing" is the Eye's carrier signal (see <em>Ships near the Throne hear singing</em>). V'an's artifact is what let him hear it. Nobody else in the bay did.</li>
+   <li>The priest could be <strong>Father Oren</strong>, or one of his students. A jailbreak like this is exactly the heresy the Inquisition would kill him for.</li>
+   <li><strong>Somewhere safe</strong> could be <strong>Chapel Rock at Saint Vey</strong>, the relic's home network and the priest's door. It would mean crossing about 39 pc, more than two weeks at drive speed, in an instant, and both Sable and the Church will want to know how it happened.</li>
+  </ul>
+ </article>
+
+ <h3>The party</h3>
+ <div class="grid">
+  <div class="stat"><h4>V'an</h4><div class="sub">Warlock (Pact of the Talisman), tech-themed · Meridian Prime</div>
+   <div class="line">Worked the lowest jobs on Meridian Prime for the corpo class: shoveling coal, cleaning bathrooms. There are big gaps in his memory.</div>
+   <div class="line">He thinks his sister is sick, so he takes merc work and sends the money home to pay for her treatment. He's reckless and self-destructive.</div>
+   <div class="line secret"><b>Canon:</b> an artifact plugged into his brain and took almost complete control of his body and mind. It can't change his base stats, but it raised his Charisma and Intelligence a lot. V'an is a hollow shell of the man he may have been, and it's unclear whether he knows. The artifact is draining him, and it's open to finding another host. The money doesn't go to his sister. It goes wherever the artifact sends it, for goals that are probably much more sinister.</div>
+  </div>
+  <div class="stat"><h4>Rusty Scrap</h4><div class="sub">Artificer (Armorer) · Ashborn scav</div>
+   <div class="line">As a child he lived on a <strong>border moon</strong>: an inhabited world not notable enough to give its system a name. A ship heading for the final battle of the Ash War picked him up as crew. It was mysteriously redirected into the Corinthian fleet and destroyed.</div>
+   <div class="line">He survived among the stragglers in the Grave of Ash, scrounging off the wrecks, and went with them when the survivors settled the Nine Hollows. Now he does mercenary work in the Drift.</div>
+   <div class="line secret"><b>Canon:</b> the wrecks stay powered almost permanently. Corinthian ships run on relics and STR ships on cold fusion, so whatever wasn't destroyed is still on. <b>Draft:</b> Rusty's ship was one of the "steered" ships. Its course correction is on the <em>Arbiter's Due</em> core, so he can prove what happened to him.</div>
+  </div>
+ </div>
+
+ <h3>The crew, as played</h3>
+ <div class="grid">
+  <div class="stat"><h4>Captain Jimothy "Hotshot" Delta</h4><div class="sub">Pilot</div><div class="line">Three feet tall, like Han Solo as a poison dart frog. A cracked pilot.</div></div>
+  <div class="stat"><h4>1st Ensign Killora Vargas</h4><div class="sub">Ex-Sable enforcer</div><div class="line">Rough and tumble. An enforcer for the Sable corporation until they marked her for termination, and she ran to the Drift.</div><div class="line">Her relic, the platinum shard, protected her from Sable. V'an has it now.</div></div>
+  <div class="stat"><h4>Florb</h4><div class="sub">Engineer</div><div class="line">A hovering black orb. Speaks psychically.</div></div>
+ </div>
+
+ <div class="beat" style="--c:var(--amber)">
+  <div class="beat-h"><h3>Open threads for session 1</h3><span class="t">for you</span></div>
+  <ul class="todo">
+   <li><strong>Who did the relic move?</strong> "The last two people who touched it" sounds like Vargas and V'an. If Rusty came too, then he touched it last, or it saved three.</li>
+   <li><strong>The rest of the crew.</strong> Hotshot and Florb were on the Patience when it died. Are they dead, captured, or picked up by the Ashborn? (Florb with no body to boil would be a fun survivor.)</li>
+   <li><strong>The Navigation Core.</strong> Did it go with them, or is it in the debris for Sable, Corinthia and the Ashborn to fight over?</li>
+   <li><strong>The relic's charge.</strong> Can it do that again, and does V'an's artifact want it? The artifact is looking for a new host, and the relic just showed it can move people.</li>
+   <li><strong>The Ashborn.</strong> The scav captain is dead and Rusty is Ashborn. Someone in the Hollows will hear about it. (Draft: the captain was Auntie Sefa's grandson, Tobin, if you want that grudge.)</li>
+   <li><strong>The distress signal.</strong> Who was it calling? <span class="secret">Draft: it was the core's Commonweal relay waking up, and that's how both fleets found them.</span></li>
+  </ul>
+ </div>
+
+ <article class="truth" style="--c:var(--teal)">
+  <div class="truth-h"><h3>V'an's artifact</h3><span class="tag draft">Draft: pick one</span></div>
+  <p class="players">V'an is a merc with a sick sister and some memory gaps.</p>
+  <p>Commonweal clears every transaction, so <strong>Commonweal knows where V'an's money goes</strong>. That's the way in, whichever option you pick.</p>
+  <div class="tbl"><table>
+   <tr><th>Option</th><th>The artifact</th><th>Where the money goes</th></tr>
+   <tr><td class="n">A</td><td>A Lantern fragment, the "copy" of a person the broadcast heard. V'an's name is on Sefa's tape list.</td><td>To buy passage, charts and parts for a run at bearing zero-zero-zero.</td></tr>
+   <tr><td class="n">B</td><td>An Assay Institute prototype, field-tested on people nobody on Meridian would miss.</td><td>A numbered account on Ledger. The experiment is paying for itself.</td></tr>
+   <tr><td class="n">C</td><td>A relic gone feral: a piece of the Eye's network cut off from the Eye.</td><td>Black-market relics from the Fifth Hollow. It's rebuilding itself.</td></tr>
+  </table></div>
+ </article>
+</section>
+
+<!-- ============================ SESSION 0 PLAN ============================ -->
 <section id="tonight">
- <h2><span class="k">S1</span>Tonight: session 0 and session 1 <span class="tag draft">Plan</span></h2>
+ <h2><span class="k">S0</span>The plan for session 0 <span class="tag draft">Played</span></h2>
+ <p class="dim">This was the plan going in. What actually happened is in the <a href="#log">Campaign log</a>, and where the two differ, the log wins.</p>
  <p>Two players, one mercenary crew, a job in the Drift. About four hours: <strong>session 0</strong> (30 min), <strong>characters</strong> (75 min), a break, then <strong>session 1</strong> (about 100 min). It opens in the middle of a theft, goes to a ship fight, then a boarding fight on Owlbear, and ends with the Patience wrecked in the crossfire between two fleets.</p>
  <p class="dim">The job uses Draft truths (the Arbiter's Due nav core, the steered Ash War). If you change those, change the job: any wreck in the Grave with something both powers want buried will do.</p>
 
