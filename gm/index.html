@@ -124,6 +124,7 @@ ul.todo li::before{content:"";position:absolute;left:2px;top:.42em;width:11px;he
 .empty{padding:28px;border:1px dashed var(--rule-2);color:var(--dim);font:400 13px var(--f-data)}
 details.howto{margin:0 0 16px;background:var(--panel);border:1px solid var(--rule);padding:10px 16px}
 details.howto summary{cursor:pointer;font:400 12px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--amber)}
+details.howto[open]>summary{margin-bottom:12px}
 details.howto pre{overflow-x:auto;background:#070918;border:1px solid var(--rule);padding:12px;font:400 13px/1.5 var(--f-data);color:#cfd3f5}
 code{font-family:var(--f-data);color:var(--teal)}
 /* ship schematic */
@@ -164,7 +165,7 @@ code{font-family:var(--f-data);color:var(--teal)}
 <div id="app" hidden>
 <div class="bar"><div class="bar-in">
  <span class="brand">GM · DRIFT</span>
- <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
+ <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#session0">Last time</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
  <button class="btn" id="lockBtn" type="button">Lock</button>
 </div></div>
 
@@ -177,7 +178,214 @@ code{font-family:var(--f-data);color:var(--teal)}
 
 <!-- ============================ TONIGHT ============================ -->
 <section id="tonight">
- <h2><span class="k">S1</span>Tonight: session 0 and session 1 <span class="tag draft">Plan</span></h2>
+ <h2><span class="k">S1</span>Tonight: session 1, the Crescent Fields <span class="tag draft">Plan</span></h2>
+ <p>The cockpit pod comes down on Saint Vey. The party has three days of walking to do, a town that won't sell to them, and a supplies manager with a secret. It runs about <strong>3½ hours</strong>: waking up (15 min), the walk (45 min), New Bombswick (60–90 min), and the ferry port, which ends in a fight, a getaway or a deal. Free Harbor Tamsin is next session.</p>
+ <p class="dim">This is your plan. The names and facts you wrote are yours. Anything marked <em>suggestion</em> was filled in for you, so keep it, change it or drop it. Nothing here is promoted to Canon. <a href="#session0">Last session's plan</a> is folded up below this one.</p>
+
+ <h3>Before the players arrive</h3>
+ <ul class="todo">
+  <li><strong>Owlbear</strong> (from the <a href="#library">Library</a>): <b>Plane crash in snow</b> for the pod (tint it rust and purple, or just describe it), <b>Final Journey Cantina</b> for Carby's saloon, <b>Landing pad</b> and <b>Repair bay</b> for the ferry port and its loading floor, and <b>Sci-fi outpost</b> or <b>Junkyard City tiles</b> for the town.</li>
+  <li><strong>SRD stat blocks</strong> open: <b>Animated Armor</b> and <b>Flying Sword</b> (loading droids), <b>Veteran</b> and <b>Guard</b> (Med-Prol), <b>Swarm of Insects</b> (gemglams), and <b>Priest</b>, <b>Spy</b>, <b>Commoner</b> (townsfolk).</li>
+  <li><strong>A food and water tracker</strong> for each PC, for three days. Index cards work.</li>
+  <li><strong>Exhaustion:</strong> decide which rules you're using. In 2014 rules each level adds a new penalty and level 3 means disadvantage on attacks and saves. In 2024 rules it's −2 to every d20 test and −5 ft speed per level. Six levels kills either way. The walk can hand out six levels if they fail everything, so see the note on Day 3.</li>
+  <li>The handout's Saint Vey entry now lists New Bombswick, so the datapad can find it.</li>
+ </ul>
+
+ <div class="beat" style="--c:var(--lan)">
+  <div class="beat-h"><h3>Bridge: from the Grave to Saint Vey</h3><span class="t">suggestion · for you</span></div>
+  <p>Last session ended with the cockpit sealed, spinning clear of the crossfire, and the datapad reading BEARING ZERO-ZERO-ZERO. COME HOME. Now they wake up on Saint Vey, 39 parsecs north of the Grave. That's about 16 days by drive, and the straight line between them passes close to the Lantern.</p>
+  <ul>
+   <li><strong>Don't explain it.</strong> The datapad clock says <b>11 days</b> passed. Their suits say they used four hours of air. Both readings are right.</li>
+   <li class="secret">If you want a reason: the shard sang the pod home, and the Lantern pulled it most of the way across, then let go. That's a new Draft idea, not Canon.</li>
+   <li><strong>The crew:</strong> the pod held more than the PCs. Pick one: (a) the other seats are empty and unbuckled, with boot prints leading away; (b) Hotshot is dead in his harness and Vargas is gone; (c) Florb is in the wreck, dark, and can be rebooted at Carby's (he fixes teeth, so why not orbs). The tracks from (a) or (b) lead toward New Bombswick, and someone in town has seen them.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--haz)">
+  <div class="beat-h"><h3>1 · Waking up in the Crescent Fields</h3><span class="t">15 min</span></div>
+  <p class="read">Warmth. Darkness. Cresting light. Sunrise. You wake in a barren, jagged field of clay and iron. The pod's hull is split along one seam, and through it you can see small craters dotting the landscape, with columns of orange smoke rising into a burnt purple sky. The air is thin, it smells of sulfur, and it's breathable. Somewhere under the hiss of the smoke, something small is clicking.</p>
+  <ul>
+   <li><strong>Where are we?</strong> Perception or History, DC 12: these are the Crescent Fields of Saint Vey. It's a sparsely populated dwarf planet ringed by asteroids that Old Rite miners have stripped nearly bare. The Old Rite kept the Hallowed Dominion's faith and rejected its Cardinals. Religion, DC 10: they're schismatics, hospitable to strangers and hard on Inquisitors.</li>
+   <li><strong>What they still have:</strong>
+    <ul>
+     <li><b>The navigation core of the Arbiter's Due.</b> It weighs forty kilos and is worth an extreme sum to the right buyer. Whoever carries it is slowed (see the walk).</li>
+     <li><b>Vash's datapad.</b> It still works. The nearest settlement is <b>New Bombswick</b>, a resource depot built inside the crater of Old Bombswick, three days' walk away.</li>
+     <li><b>The shard.</b> It's still behind the cockpit panel and glowing faintly. If they leave without it, it hums until someone goes back. V'an recognizes the hum as the song.</li>
+    </ul>
+   </li>
+   <li><strong>What's in the pod</strong> (one search, Investigation DC 10 finds everything): one emergency ration pack (food for one person for one day), a half-full water flask (half a day for one), a medkit with 3 uses, two power cells, and a <b>broken water reclaimer</b>. With an engineer's kit, DC 15, at camp, the reclaimer gives advantage on every Distill roll.</li>
+   <li><strong>The clicking</strong> is a gemglam, burrowing into an iron shard by the hatch. That's their first lesson in what to eat.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--amber)">
+  <div class="beat-h"><h3>2 · The walk: three days, no water</h3><span class="t">45 min</span></div>
+  <p>There's a critical drought. The rain is acid, and there's no large fauna to hunt. They have two ways to stay alive: <b>gemglams</b> and <b>soil water</b>.</p>
+  <div class="grid">
+   <div class="panel">
+    <h4>Each day</h4>
+    <ul>
+     <li>Each PC makes <strong>two gathering rolls</strong>: one while walking and one at camp. Each roll is Forage or Distill.</li>
+     <li><strong>Forage (gemglams):</strong> Survival or Nature, DC 13. Success: food for one person for a day, plus one more for every 5 points over the DC. Each success also turns up <b>1d4 glams</b> (see below).</li>
+     <li><strong>Distill (soil water):</strong> Survival, or Int with an engineer's kit, DC 12. It takes a container and heat (a power cell runs a suit heater for one distill). Success: water for two people for a day.</li>
+     <li><strong>Carrying the core:</strong> that PC has disadvantage on the walking roll. They can swap who carries it each day.</li>
+     <li><strong>At the end of the day,</strong> a PC who's short on food <em>or</em> water gains <b>1 level of exhaustion</b>. A PC with neither gains <b>2</b>. A long rest with food and water removes 1 level.</li>
+    </ul>
+   </div>
+   <div class="panel">
+    <h4>Nymphatic gemglams</h4>
+    <ul>
+     <li>Spider-beetles the size of a thumb, with glassy backs. They burrow into the gems encased in iron shards and live inside them, so you split the shard and pick them out.</li>
+     <li><strong>Raw</strong> they're edible but awful: Con save DC 10 or poisoned for an hour. Roasted on a power-cell coil, they taste like burnt shrimp.</li>
+     <li><strong>Glams:</strong> the hollowed-out gems they leave behind. In New Bombswick they're pocket money, worth 5 cr each. Carby takes them at the bar. Amelda buys them by the bag.</li>
+     <li><strong>Greed:</strong> on a natural 1 while foraging, they split a nest. A <b>Swarm of Insects</b> (gemglams) boils out of the shard.</li>
+    </ul>
+   </div>
+  </div>
+  <h4>Something happens (d6, once a day)</h4>
+  <div class="tbl"><table>
+   <tr><th>d6</th><th>Event</th></tr>
+   <tr><td>1</td><td><strong>Acid rain.</strong> Survival DC 12 to find shelter in time. Without it, 2d4 acid damage, and any uncovered water is ruined.</td></tr>
+   <tr><td>2</td><td><strong>Smoke vent.</strong> The orange columns are hot springs gone toxic. Con save DC 12 or poisoned until the next rest. The ground near one is warm enough to distill water without a power cell.</td></tr>
+   <tr><td>3</td><td><strong>Rich shard field.</strong> Iron shards everywhere, crawling with gemglams. Advantage on Forage today.</td></tr>
+   <tr><td>4</td><td><strong>A dead prospector's cache</strong> in a crater, under an Old Rite cairn: a pick, a tarp (counts as shelter from acid rain), and water for two days for one person. A Religion check, DC 12, tells them it's polite to leave something in exchange.</td></tr>
+   <tr><td>5</td><td><strong>Old Rite ore crawler.</strong> Two miners heading for the depot. They'll trade water for glams (1 day of water for 3 glams), and they'll gossip: New Bombswick only sells to the STR, Father Popsocopolis has "a new relic," and Amelda's ferry is due "any rotation now."</td></tr>
+   <tr><td>6</td><td><strong>The hum.</strong> At night the core and the shard hum together, in the same key. V'an hears the song. The datapad lights up by itself and shows a bearing, then goes dark. Wisdom save DC 12 or no long rest tonight (but they still eat and drink).</td></tr>
+  </table></div>
+  <ul>
+   <li><strong>Day 3:</strong> they see New Bombswick's lights at dusk and walk in that night. If a PC is about to reach 5 or 6 levels of exhaustion, let them reach the crater rim first. Carby's water and a bed stop the slide. The walk should hurt, but it shouldn't kill anybody.</li>
+   <li><strong>Pushing on</strong> to arrive a day early: a forced march, Con save DC 15 or 1 more level of exhaustion.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--teal)">
+  <div class="beat-h"><h3>3 · New Bombswick</h3><span class="t">60–90 min</span></div>
+  <p class="read">Old Bombswick was a mining town until someone set the wrong charge. New Bombswick is what got built at the bottom of the hole. Prefab domes and ore hoppers cling to the crater walls on terraces, connected by rope bridges and conveyor belts. Hymns leak out of a chapel cut into the rock. At the top of the crater, a single landing pad is painted with the Halvorsen Combine's logo. A sign at the bottom of the switchback reads: TRADE WITH THE SYNDICATED TECHNOCRATIC REPUBLIC ONLY. GOD KEEP YOU.</p>
+  <ul>
+   <li><strong>Resource depot, population 92.</strong> Mostly Corinthian expats and Old Rite. They mine the last asteroids and sell the ore to the STR, which is the joke nobody in town laughs at.</li>
+   <li><strong>"We only sell to the STR."</strong> Everyone says it, repeatedly and unprompted. It's protection: one rumor of a Corinthian buyer and they lose their Halvorsen contract. The PCs can't buy anything here unless they can pass as STR, or pay in glams, or someone vouches for them.</li>
+   <li><strong>Prices are high</strong> because everything comes in by ferry. A day of water costs 4 cr, a meal 2 cr, and a bunk 6 cr.</li>
+  </ul>
+
+  <h4>Places</h4>
+  <div class="grid">
+   <div class="stat"><h4>Carby Newplayer's Saloon &amp; Dentist</h4><div class="sub">The bar on one side, the chair on the other</div><div class="line">The only place with tables, so everyone's here at night. Water, a roasted gemglam bar menu, bunks upstairs. Extractions 10 cr, fillings 25 cr, gold teeth taken in trade.</div><div class="line">Carby takes glams at the bar, and he'll serve anyone who isn't rude about it. "Sold" is a strong word. Water is hospitality.</div><div class="line secret">Carby fills Amelda's water tanks, and he knows the ferry leaves heavier than it lands. He hasn't told anyone. He can be talked into it (Persuasion DC 14, or 3 rounds bought for the house).</div></div>
+   <div class="stat"><h4>The Corpo Crusher</h4><div class="sub">Armory and weapons shop</div><div class="line">Prices are listed in STR credits on a chalkboard, with a second column of what the owner thinks of the STR. <em>Suggestion:</em> Sally Smacker runs it.</div><div class="line">Sidearm 25 cr · holdout pistol 75 · scattergun 50 · longrifle 50 · mono-blade 10 · stun baton 5 · ballistic weave 50 · riot shield 10 · stims 50 · power cells 1 cr per 20 · magboots 10 · an acid slicker (shelter from acid rain anywhere) 15.</div><div class="line secret">Under the counter is a Sable assault rifle (longbow stats, +1, loud), at 400 cr. Ask Sally where she got it.</div></div>
+   <div class="stat"><h4>Halvorsen Combine Astro-Ferry Port</h4><div class="sub">The HCAFP, at the top of the crater</div><div class="line">A landing pad, a warehouse, a loading floor run by droids, and Amelda's office. A ferry stops once a galactic standard month for ore and passengers bound for Free Harbor Tamsin.</div><div class="line">Fare to Tamsin is 150 cr each. <em>Suggestion:</em> the next ferry, the <em>Prudent Margin</em>, is due in 3 rotations, which is how Amelda can offer them passage.</div><div class="line">The port has the only power and data dock big enough to read the core.</div></div>
+   <div class="stat"><h4>Chapel of Relics Unfettered</h4><div class="sub">Cut into the crater wall</div><div class="line">Old Rite. The relics on the walls had their Cardinal locks broken: hands, lamps and censers that still work, though nobody in Seraphis approves of how.</div><div class="line">Father Popsocopolis heals for free and prays loudly. This is where they can learn about the Platinum Shard.</div></div>
+  </div>
+
+  <h4>People</h4>
+  <div class="grid">
+   <div class="stat"><h4>Carby Newplayer</h4><div class="sub">Warforged saloon owner and part-time dentist</div><div class="line">Commoner, with Animated Armor's AC and HP if it comes to that. His left hand unscrews and turns into pliers. Cheerful, nosy, hums when he works. Calls everyone "patient."</div><div class="line"><b>Wants:</b> new faces, news from off-world, and someone to try the new chair.</div></div>
+   <div class="stat"><h4>Sally Smacker</h4><div class="sub">Elven farmer turned veteran, from Psalter</div><div class="line">Veteran. Flat voice, farmer's hands, a rifle she never puts down. Came out of the Psalter famine (CY 310–311) and doesn't talk about which side she fought on afterward.</div><div class="line"><b>Wants:</b> to be left alone, and to see an STR company lose something it can't buy back.</div><div class="line secret">She knows Amelda sells to Ostrava, and she suspects where the skimmed ore goes. She's on Amelda's side if it comes to a fight with Med-Prol.</div></div>
+   <div class="stat"><h4>Father Popsocopolis</h4><div class="sub">Dwarven priest of the Chapel</div><div class="line">Priest. Huge beard, huge voice, a laugh that shakes the censers. Believes relics belong to whoever needs them, not to Cardinals.</div><div class="line"><b>Wants:</b> the shard to be safe, and his old colleague's debt to be forgiven by somebody.</div><div class="line secret">Recognizes the shard at once. He watched it get jailbroken. Old Rite blessings work here without the Church, which fits the Eye being a machine (Canon).</div></div>
+   <div class="stat"><h4>Amelda Dawntreader</h4><div class="sub">Gnomish supplies manager of the HCAFP</div><div class="line">Spy. Brisk, kind to miners, crisp with everyone else. The most STR-proper person in town, which is the point.</div><div class="line"><b>Wants:</b> nobody looking at her manifests. Nobody asking about her husband's cough.</div><div class="line secret">Wears a Med-Prol vitals band on her wrist under a sleeve (Perception DC 14 to spot it, Investigation or Medicine DC 12 to know what it is). That band is why the strike squad comes.</div></div>
+  </div>
+
+  <h4>Rumors at Carby's (d6)</h4>
+  <div class="tbl"><table>
+   <tr><td>1</td><td>"Two strangers came down the switchback a week back and left on foot. Headed for Chapel Rock." (Use this for the missing crew, or ignore it.)</td></tr>
+   <tr><td>2</td><td>"Amelda's ferry lands with a thousand crates and takes off with a thousand and thirty. I can count."</td></tr>
+   <tr><td>3</td><td>"Father Pops has a new relic. Won't let anyone see it. Hums at night, they say."</td></tr>
+   <tr><td>4</td><td>"Gerrit Dawntreader hasn't been down the hill since spring. That cough."</td></tr>
+   <tr><td>5</td><td>"An Inquisitor came through two months back asking about jailbroken relics. Father Pops served him tea, and he left."</td></tr>
+   <tr><td>6</td><td>"Never touch anyone with a Med-Prol band. Somebody tried that in Copperline. They found his boots."</td></tr>
+  </table></div>
+ </div>
+
+ <div class="beat" style="--c:var(--lan)">
+  <div class="beat-h"><h3>4 · If they investigate the shard</h3><span class="t">at the Chapel</span></div>
+  <ul>
+   <li><strong>Religion, DC 13:</strong> it's a Corinthian relic, platinum-veined, of the kind the Cardinals lock to a single cathedral. The locks have been cut. It's been <em>jailbroken</em>.</li>
+   <li><strong>Father Popsocopolis</strong> tells the rest if they bring it into the chapel, earn his trust (Persuasion DC 12) or confess something to him. The shard was a Corinthian relic, jailbroken by a debt-ridden colleague of his to keep <b>Killora Vash</b> safe from Sable. <em>Suggestion:</em> the colleague is Brother Anselm Coyle. He owed Commonweal more than any priest could earn. Vash paid off his debt, and Anselm cut the locks. Anselm isn't in New Bombswick any more, and Popsocopolis won't say where he went.</li>
+   <li class="secret">Why it matters: a jailbroken relic still speaks the relics' language, but it doesn't take orders. That's why the Cathedral-ships' lances went around the cockpit (Draft).</li>
+  </ul>
+  <p class="read">Inside the chapel, every relic on the wall flickers at once. The shard warms in Rusty Scrap's hand, and a voice comes from inside his own head, quiet and very old: "You carried me out of the fire. Carry me a little further. Keep me hidden, keep me safe, and I will keep you."</p>
+  <ul>
+   <li><strong>The bargain</strong> <em>(suggestion)</em>. If Rusty agrees, then once per long rest, when Rusty or a creature within 30 ft of him is hit by an attack, the shard can raise their AC by 5 against it (like <i>shield</i>). The price: it must stay hidden. If it's shown to an Inquisitor, a Sable scanner or a Commonweal clerk, the protection fails until Rusty hides it again, and somebody notices.</li>
+   <li>V'an hears the song again, louder, and it's the same melody as the hum in the core.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--lan)">
+  <div class="beat-h"><h3>5 · If they investigate the nav core</h3><span class="t">needs power</span></div>
+  <ul>
+   <li>The core needs a data dock and real power, and the only one is at the ferry port. With a bypass kit, it's DC 16 (Sable military encryption). Rusty may be able to plug in directly.</li>
+   <li class="secret"><strong>"Don't plug it into anything."</strong> Last time, waking the core's Commonweal relay brought two fleets. Here it's quieter: plugging it in starts a clock. In 1d4 days a Sable cutter arrives to look for the signal. If the PCs are still in town, the Med-Prol squad and Sable show up together, and that's a bad day.</li>
+   <li><strong>The blackbox:</strong> the fleet was en route to the Lantern. When it exited hyperspace, it was somewhere else entirely. The recording has both sets of coordinates on screen:</li>
+  </ul>
+  <p class="read">The recording is a bridge, in amber emergency light. A voice reads out the plotted exit, "Bearing zero-zero-zero, distance zero, the Lantern," and then the console chimes, and a second set of numbers replaces the first. Twenty-five parsecs south of where they should be. Stars that belong to the Grave of Ash. Someone on the bridge says "That's not our jump." Under all of it, faint and steady, is a hum.</p>
+  <ul>
+   <li>The hum is eerily similar to the song V'an heard from the shard. If V'an hums it back, the core's display flickers.</li>
+   <li class="secret">This is the steered Ash War (Draft). The course correction came from outside the fleet.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--haz)">
+  <div class="beat-h"><h3>6 · The ferry port and Amelda</h3><span class="t">30–45 min</span></div>
+  <p>Amelda Dawntreader says the same thing as everyone else: <i>"The HCAFP serves the Syndicated Technocratic Republic, its citizens and its licensed partners. Are you any of those?"</i> But she's secretly selling to both sides. She skims a sliver of every shipment, mostly from the Ostrava Heavy Industries orders, and ships it to the Inquisitorial Order for a lucrative sum.</p>
+  <h4>How they find out</h4>
+  <ul>
+   <li><strong>The manifests</strong> (Investigation DC 14, or a hack at DC 13): every Ostrava order weighs 3% less going out than coming off the line. The difference ships under a different code, consigned to a Psalter address that's really the Inquisition.</li>
+   <li><strong>Insight, DC 13,</strong> while she recites the STR-only line: she's said it too often to mean it.</li>
+   <li><strong>Carby's tip</strong> or <strong>Sally's suspicion</strong> (see People).</li>
+  </ul>
+  <h4>The secret behind it</h4>
+  <p class="secret">She needs the money for an extremely expensive shipment of medication from the Assay Institute, for her husband (<em>suggestion:</em> Gerrit, with rust-lung from the mines). Commonweal ruled long ago that non-military STR Duplicators, machines that make small amounts of stable matter and are why the STR doesn't need a breadbasket like Psalter, can't make copyrighted components. That includes the proteins in Assay Institute medicine. A Duplicator could print Gerrit's medicine for pennies. The law says it can't, so she steals ore to buy it.</p>
+  <ul>
+   <li><strong>Discovering it:</strong> visit the Dawntreader house (Gerrit coughs in the back room; Assay med crates with seals at 900 cr a dose), Medicine DC 12 on Gerrit, or get Amelda talking (Persuasion DC 15, or DC 10 once they already know).</li>
+  </ul>
+  <h4>If they confront her</h4>
+  <p>She hits the distress beacon under her desk. The loading droids wake into combat protocols.</p>
+  <p class="read">Every light on the loading floor goes red at once. The cargo droids straighten up, all together, and their clamp-arms unfold with a sound like a gun being cocked. A calm Halvorsen voice says: "Asset protection mode. Please remain still for processing."</p>
+  <ul>
+   <li><strong>Level 3, two PCs:</strong> <b>2 loading droids</b> (Animated Armor: two slams, and on a hit they grapple instead of dealing damage if you like) and <b>2 lifter drones</b> (Flying Sword reskinned as cutting arms on rotors). That's a hard fight. For a lighter one, drop the drones.</li>
+   <li><strong>The floor is the terrain:</strong> a conveyor (moves anyone on it 10 ft at the start of their turn), an overhead crane (an action at the control: drops a crate, Dex save DC 13, 3d6 damage), ore hoppers (full cover, and the ore dust explodes if a shot hits a hopper: 2d6 fire in 10 ft).</li>
+   <li><strong>The off switch:</strong> the beacon console, an action and a bypass kit, DC 13. Turning off the beacon stops the droids. Amelda hides behind it.</li>
+   <li>Amelda doesn't fight. She ducks, hides and begs, and the moment the PCs win she starts negotiating.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--haz)">
+  <div class="beat-h"><h3>7a · If she's incapacitated: Med-Prol</h3><span class="t">one minute</span></div>
+  <p>Her vitals band goes off the moment she's knocked out, dying or restrained for long enough. Med-Prol is a lucrative collaboration between the Assay Institute and Sable Command: live monitoring of vitals, plus emergency life-saving response in the event of attack or catastrophe. The responders come from orbit.</p>
+  <p class="read">The band on Amelda's wrist chimes, politely. "Med-Prol has detected a critical event. A response team is en route. Estimated arrival: sixty seconds. Please do not move the client. Please remain where you are."</p>
+  <ul>
+   <li><strong>Count down 10 rounds out loud.</strong> At round 10 a drop pod hits the loading floor.</li>
+   <li><strong>The Med-Prol Orbital Strike Squad:</strong> a squad leader (Veteran, Sable plate, a medic's gauntlet) and 3 responders (Guard, carbines). Their first priority is stabilizing the client. Their second is detaining "parties responsible for the client's distress", and lethal force is authorized. It's not a fair fight, and it's not meant to be.</li>
+   <li><strong>Ways out:</strong> the ore tunnels under the crater (Survival DC 13, or follow Sally); Carby's dentist room has a floor hatch into the old town; stow away in a hopper; or simply walk out the front door before anyone arrives (Stealth DC 14 against the squad's drone once it lands).</li>
+   <li><strong>After:</strong> they're flagged. Med-Prol sends an invoice for the response, addressed to whatever ID the datapad gave them. Commonweal adds it to their record. It turns up at Tamsin.</li>
+   <li>Getting off-world without Amelda: stow away on the <em>Prudent Margin</em> in 3 rotations (Stealth DC 15), or pay full fare with glams and hope nobody looks closely.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--ok)">
+  <div class="beat-h"><h3>7b · If they talk her down</h3><span class="t">the good ending</span></div>
+  <ul>
+   <li>It takes Persuasion DC 15 to calm her down mid-fight (that counts as the PCs' action, and the droids stay up until she gets to the beacon). It's easier if they know about Gerrit and promise to keep quiet: DC 10.</li>
+   <li>She offers them a place to rest in her and her husband's house, and <strong>free passage to Free Harbor Tamsin in 3 galactic standard rotations</strong>.</li>
+   <li><em>Suggestion:</em> she becomes a contact. She can move small cargo off-manifest to either side. She'll know an Inquisitorial buyer for the core, if they're stupid enough to want one.</li>
+   <li><strong>Three rotations to fill:</strong> rest, heal exhaustion, and let them follow up on the shard, the core or the missing crew. End the session with the <em>Prudent Margin</em> lifting off.</li>
+  </ul>
+ </div>
+
+ <div class="beat" style="--c:var(--teal)">
+  <div class="beat-h"><h3>Next time: Free Harbor Tamsin</h3><span class="t">rough · suggestions</span></div>
+  <p>They need jobs, credits, then a ship, and maybe a crew. Here are some pieces to pick from.</p>
+  <ul>
+   <li><strong>A ship costs real money.</strong> A tired hauler or dropship like the Patience goes for 12,000–20,000 cr. A lease runs 500 cr a week plus a cut. The Tamsin impound auction, where the Patience came from, is cheaper and full of strings.</li>
+   <li><strong>The app.</strong> <b>Ledgerline</b>: a Commonweal-licensed gig board. It takes 20%, rates every job 1 to 5 stars, and unlocks better jobs at 4.5. Clients rate them, and so does the app, for reasons it doesn't explain. Some first gigs: escort a choir pilgrim to the docks (200 cr), recover a repo'd drone from the Spindle (350 cr), find a dockhand's missing brother (500 cr), sit on a Halvorsen warehouse for a night (300 cr, something is in the warehouse).</li>
+   <li><strong>Selling the core.</strong> Marra Tesk still has Mr. Sallow's offer of 4,000 cr, and she still wants her 600. An Inquisitorial buyer through Amelda pays 10,000 cr, and the Inquisition never leaves witnesses. Lt. Cmdr. Okafor would confiscate it and call that a favor. Auctioning it at the Spindle brings 15,000 cr and every faction in the Drift.</li>
+   <li><strong>The funny robot man.</strong> <b>COURTESY-7</b>: a decommissioned Halvorsen customer-service android working the Tamsin docks for tips. He's stuck in his old script ("Your satisfaction is our currency!") and asks to be paid in five-star reviews. He's a surprisingly good pilot, because nobody ever told him he wasn't one.</li>
+  </ul>
+ </div>
+</section>
+
+<section id="session0">
+ <h2><span class="k">S0</span>Last session: session 0 and the Grave <span class="tag draft">Played</span></h2>
+ <details class="howto">
+  <summary>Open last session's plan</summary>
  <p>Two players, one mercenary crew, a job in the Drift. About four hours: <strong>session 0</strong> (30 min), <strong>characters</strong> (75 min), a break, then <strong>session 1</strong> (about 100 min). It opens in the middle of a theft, goes to a ship fight, then a boarding fight on Owlbear, and ends with the Patience wrecked in the crossfire between two fleets.</p>
  <p class="dim">The job uses Draft truths (the Arbiter's Due nav core, the steered Ash War). If you change those, change the job: any wreck in the Grave with something both powers want buried will do.</p>
 
@@ -277,6 +485,7 @@ code{font-family:var(--f-data);color:var(--teal)}
    <li><strong>Session 2 opens</strong> with Auntie Sefa's Ashborn cutting them out of the wreck. What happened to Tobin decides whether they're rescued or salvaged.</li>
   </ul>
  </div>
+ </details>
 </section>
 
 <!-- ============================ TRUTHS ============================ -->
@@ -367,7 +576,7 @@ code{font-family:var(--f-data);color:var(--teal)}
 <!-- ============================ CAST ============================ -->
 <section id="cast">
  <h2><span class="k">02</span>Cast and secrets</h2>
- <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description.</p>
+ <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description. New Bombswick's people are in <a href="#tonight">Tonight</a>.</p>
  <div class="grid">
   <div class="stat"><h4>Marra Tesk</h4><div class="sub">Fixer, the Spindle, Tamsin</div><div class="line">Spy. Dry, quick, loyal to Vash in her own way. Wants her 600 cr and to know what happened.</div><div class="line secret">Takes 10% from Sallow. Doesn't know who he works for, and doesn't want to.</div></div>
   <div class="stat"><h4>"Mr. Sallow"</h4><div class="sub">The buyer</div><div class="line">Spy. Grey coat, perfect manners.</div><div class="line secret">Assay Institute handler. Needs the Ash War charts to prove the fleets were steered. Afraid of whatever silenced Kestrel.</div></div>
