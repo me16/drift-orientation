@@ -166,7 +166,7 @@ window.GM_LIBRARY = [
     credit: "Lazarus", notes: "17 tactical tokens (targets, objectives, units, landmine, radio signal) plus tiles. Pay what you want, $2 suggested." },
   { title: "Tokenstamp (make your own tokens)", type: "tool", url: "https://tokenstamp.com",
     tags: ["tokens", "frame", "npc tokens", "free"],
-    notes: "Drop any portrait in, get a round framed PNG out. Use for NPCs (Marra, Vash) when no pack fits." },
+    notes: "Drop any portrait in, get a round framed PNG out. Use for NPCs (Marra, Vargas) when no pack fits." },
 
   // ---------- Tools ----------
   { title: "Session 1 run sheet + live combat tracker", type: "tool", url: "https://claude.ai/artifact/FFSMLoFnVnMhF6emFdZNh1",

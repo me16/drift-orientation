@@ -2,7 +2,7 @@
 
 Player handout for a **sci-fi D&D campaign** set in the Drift: the neutral belt between the Hallowed Dominion of Corinthia (a theocracy whose prayers really are answered) and the Syndicated Technocratic Republic (corporations held together by contract and by Commonweal).
 
-The handout is one self-contained web page dressed as an in-world object: a secondhand Commonweal "citizen datapad" bought at Free Harbor Tamsin. Its previous owner, **K. Vash**, scribbled notes in the margins.
+The handout is one self-contained web page dressed as an in-world object: a secondhand Commonweal "citizen datapad" bought at Free Harbor Tamsin. Its previous owner, **K. Vargas**, scribbled notes in the margins.
 
 ## What's in it
 

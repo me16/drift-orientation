@@ -12,7 +12,7 @@ A **sci-fi D&D campaign site**, static, with no build step:
 Rules for the player handout:
 
 - **No GM secrets in `index.html`.** Mysteries (the Lantern, who owns Commonweal, the Ninth Pontifex's barge, the Ninth Hollow, Kestrel's silence, the Corridor, what the Eye really is) are hinted at, never explained. Secrets go in `gm/` only.
-- **Everything is diegetic.** Text is written by someone in the setting (Commonweal, K. Vash, dockside gossip). No out-of-character rules text in the page itself unless the user asks for it.
+- **Everything is diegetic.** Text is written by someone in the setting (Commonweal, K. Vargas, dockside gossip). No out-of-character rules text in the page itself unless the user asks for it.
 - **Commonweal is an unreliable narrator.** It's an STR company, so its "public record" is slanted toward the STR. Keep that bias subtle.
 
 ## Voices
@@ -20,7 +20,7 @@ Rules for the player handout:
 | Source | Where | Style |
 | --- | --- | --- |
 | Commonweal docs | Doc bodies, gazetteer `sum`, glossary | Dry, bureaucratic, short declarative sentences, faintly condescending to non-citizens ("Persons with unresolved obligations.") |
-| K. Vash annotations | `.note` blocks, `NOTES` map | Terse, first-person, wry, a little world-weary. One or two sentences max. |
+| K. Vargas annotations | `.note` blocks, `NOTES` map | Terse, first-person, wry, a little world-weary. One or two sentences max. |
 | Dockside talk | `talk` field, general rumors list | Overheard first-person hearsay. Hooks, not facts. |
 | Mottos / scripture | `.motto`, `.lede` | Serif italic. Short. |
 
@@ -34,7 +34,7 @@ Rules for the player handout:
   - `pos` is in parsecs. Tamsin-relative range, bearing and days are computed (`navCalc`), never hard-coded.
   - `model` must be a key of `BUILD` (blackhole, station, shipyard, fortress, relics, cityplanet, exchange, array, colony, port, mining, boomtown, deadstar, lantern, fleet, corridor, barge, gasgiant, habitats, foundry, farm). `gasgiant` also needs `colors:[4 hex]` and `moons:n`. Optional `tint` recolors lilac parts.
   - Each entry automatically gets a gazetteer card, a chart node, a label, and a dockside-talk row.
-- **`NOTES`**: K. Vash's per-system annotations, keyed by `DATA` id. The sidebar's annotation count is computed.
+- **`NOTES`**: K. Vargas's per-system annotations, keyed by `DATA` id. The sidebar's annotation count is computed.
 - **General rumors** (`GEN-xx`): inline array next to `#rumorList`.
 - **`REGIONS`**: floating region labels on the chart.
 - **three.js r128** + OrbitControls come from CDNs (cdnjs / jsdelivr). Keep those exact versions; the code uses the pre-module `examples/js` globals.
