@@ -466,6 +466,17 @@ a.wl:hover{color:#fff}
 
 <section id="session0">
  <h2><span class="k">S0</span>Last session: session 0 and the Grave <span class="tag draft">Played</span></h2>
+ <div class="beat" style="--c:var(--ok)">
+  <div class="beat-h"><h3>What happened at the table</h3><span class="t">played</span></div>
+  <ul>
+   <li>The crew pulled the nav core and got back to the Patience. Alarming readings turned out to be a <strong>distress signal</strong>.</li>
+   <li>An Ashborn scav crew fired on the Patience, harpooned it and boarded. The PCs killed the captain (<a href="#wiki/tobin-kell">Tobin Kell</a>, though they never learned his name) and his crew.</li>
+   <li>During the fight <strong>Vargas dropped her relic</strong>. V'an went down, heard it "singing," and picked it up.</li>
+   <li><strong>Three Cathedral-ships and three Sable Armor Freighters</strong> dropped out of hyperspace on top of them, ordered them to stand down, and opened fire before Hotshot could answer. <strong>The Patience was destroyed.</strong> The relic moved its last two holders, V'an and Rusty, out with the core.</li>
+   <li><strong>Hotshot died.</strong> Vargas and Florb were believed dead, but both are alive somewhere.</li>
+  </ul>
+  <p class="dim">The plan below differs: the Ashborn captain didn't surrender, there were no wormholes, and the rescue came from Vargas's relic, not a shard behind the cockpit panel. The full story, the PCs and the crew are in the <a href="#wiki/s0">wiki</a>.</p>
+ </div>
  <details class="howto">
   <summary>Open last session's plan</summary>
  <p>Two players, one mercenary crew, a job in the Drift. About four hours: <strong>session 0</strong> (30 min), <strong>characters</strong> (75 min), a break, then <strong>session 1</strong> (about 100 min). It opens in the middle of a theft, goes to a ship fight, then a boarding fight on Owlbear, and ends with the Patience wrecked in the crossfire between two fleets.</p>
@@ -621,8 +632,9 @@ a.wl:hover{color:#fff}
  </article>
 
  <article class="truth" style="--c:var(--lan)">
-  <div class="truth-h"><h3>The Lantern is the Eye's rival</h3><span class="tag draft">Draft</span></div>
+  <div class="truth-h"><h3>The Lantern is the Eye's rival</h3><span class="tag canon">Canon: the observer</span><span class="tag draft">The rest: Draft</span></div>
   <p class="players">A precursor structure nobody can enter.</p>
+  <p><strong>Canon:</strong> for some reason, <strong>the Eye does not want a conscious observer on the Lantern</strong>. Nobody knows why yet, the GM included. <a href="#wiki/van-artifact">V'an's artifact</a> is tied to the Lantern's true nature, in competition with the Eye and working in tandem with it.</p>
   <p>The Lantern is a second, older precursor intelligence: dormant for most of history and now waking. The Eye knows what it is and fears it. The light changing as ships approach is the Lantern sampling them.</p>
   <ul>
    <li><strong>Why both powers "found" it in the same decade:</strong> it stirred briefly around CY 140. The Eye ordered the Pontifex to claim it. Assay Institute instruments picked up the same pulse and Commonweal moved too. (K. Vargas noticed the coincidence.)</li>
@@ -632,8 +644,9 @@ a.wl:hover{color:#fff}
  </article>
 
  <article class="truth" style="--c:var(--haz)">
-  <div class="truth-h"><h3>The Ash War ended on purpose</h3><span class="tag draft">Draft</span></div>
+  <div class="truth-h"><h3>The Ash War ended on purpose</h3><span class="tag canon">Canon: the steering</span><span class="tag draft">How: Draft</span></div>
   <p class="players">Both battle fleets destroyed each other at the Grave of Ash.</p>
+  <p><strong>Canon:</strong> the STR fleet was on its way to the Lantern when <strong>the Eye steered it and the Corinthian fleet into each other</strong>. Rusty's Longreach Survey ship was one of those redirected. The survivors became the Ashborn. The details below are Draft.</p>
   <p>The <em>Arbiter's Due</em> nav core shows both fleets were steered onto converging courses by course corrections neither side issued. The Eye did it, through relic-cores aboard the Corinthian ships and a corrupted Commonweal nav update aboard the STR's. It needed both fleets gone before either could land on the Lantern. The Treaty followed within the year.</p>
   <p class="reveal">This is what Sallow's employer wants proven. It's also what would end the peace if it got out.</p>
  </article>
@@ -681,7 +694,7 @@ a.wl:hover{color:#fff}
 <!-- ============================ CAST ============================ -->
 <section id="cast">
  <h2><span class="k">02</span>Cast and secrets</h2>
- <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description. New Bombswick's people are in <a href="#tonight">Tonight</a>. Everyone has a fuller page, with hooks, in the <a href="#wiki">Wiki</a>.</p>
+ <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description. New Bombswick's people are in <a href="#tonight">Tonight</a>. Everyone has a fuller page, with hooks, in the <a href="#wiki">Wiki</a>. The party: <a href="#wiki/rusty-scrap">Rusty Scrap</a> (dwarven Armorer artificer, Ashborn) and <a href="#wiki/van">V'an Ski-born</a> (Talisman warlock from Meridian Prime).</p>
  <div class="grid">
   <div class="stat"><h4>Marra Tesk</h4><div class="sub">Fixer, the Spindle, Tamsin</div><div class="line">Spy. Dry, quick, loyal to Vargas in her own way. Wants her 600 cr and to know what happened.</div><div class="line secret">Takes 10% from Sallow. Doesn't know who he works for, and doesn't want to.</div></div>
   <div class="stat"><h4>"Mr. Sallow"</h4><div class="sub">The buyer</div><div class="line">Spy. Grey coat, perfect manners.</div><div class="line secret">Assay Institute handler. Needs the Ash War charts to prove the fleets were steered. Afraid of whatever silenced Kestrel.</div></div>
@@ -1230,7 +1243,7 @@ a.wl:hover{color:#fff}
   el.innerHTML=`<article class="wk-art" style="--c:${tc}">
    <div class="wk-crumb"><a class="wk-back" href="#wiki">← All pages</a><span><a href="#wiki">Wiki</a> / ${esc(tl)}</span></div>
    <h3 class="wk-t">${esc(x.name)}</h3>${x.sub?`<div class="wk-sub">${fmt(x.sub)}</div>`:""}
-   <div class="wk-tags"><span class="tag ty">${esc(tl.replace(/s$/,""))}</span>${x.tag?`<span class="tag ${esc(x.tag)}">${esc(x.tag==="draft"?"Draft":x.tag==="canon"?"Canon":x.tag==="played"?"Played":x.tag)}</span>`:""}${x.status?`<span class="tag st">${esc(x.status)}</span>`:""}${isMet?"":`<span class="tag nw">Not yet met</span>`}</div>
+   <div class="wk-tags"><span class="tag ty">${esc({session:"Session",pc:"PC",npc:"NPC",location:"Location",faction:"Faction",item:"Item",ship:"Ship",event:"Event",lore:"Lore"}[x.type]||tl)}</span>${x.tag?`<span class="tag ${esc(x.tag)}">${esc(x.tag==="draft"?"Draft":x.tag==="canon"?"Canon":x.tag==="played"?"Played":x.tag)}</span>`:""}${x.status?`<span class="tag st">${esc(x.status)}</span>`:""}${isMet?"":`<span class="tag nw">Not yet met</span>`}</div>
    ${facts.length?`<dl class="wk-facts">${facts.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>`:""}
    ${arr(x.known).map(k=>`<p class="players">${fmt(k)}</p>`).join("")}
    ${arr(x.body).map(p=>`<p>${fmt(p)}</p>`).join("")}

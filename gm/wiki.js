@@ -25,16 +25,19 @@ window.GM_WIKI = [
 
 /* ============================ SESSIONS ============================ */
 { id: `s0`, type: `session`, name: `Session 0: the Grave job`, tag: `played`,
-  sub: `Session zero, characters, the Ashborn fight and the crossfire`,
+  sub: `Session zero, characters, the Ashborn fight, and the Patience destroyed`,
   body: [
-    `Two PCs, [[rusty-scrap]] and [[van]], signed on with [[hotshot]]'s crew aboard the [[patience]]. [[marra-tesk]] brokered the job for [[mr-sallow]]: pull the [[nav-core]] out of the wreck of the [[arbiters-due]] at the [[grave-of-ash]]. Pay was 4,000 cr on delivery. Sallow said, "Don't plug it into anything."`,
-    `The core came free, an [[ashborn]] salvage rig attacked and then boarded, and the PCs killed its leader, [[tobin-kell]], without ever learning his name. Then came [[the-crossfire]]: two [[cathedral-ships]] came through wormholes, three Sable battleships dropped out of hyperspace, and a hymn lance went straight through the Patience. The cockpit sealed and spun clear, and the [[datapad]] lit up on its own: BEARING ZERO-ZERO-ZERO. COME HOME.`,
-    `The full plan is folded up under [[#session0|Last time]].`],
+    `Two PCs, [[rusty-scrap]] and [[van]], crewed the [[patience]] under [[hotshot]], with [[killora-vargas]] and [[florb]]. [[marra-tesk]] brokered the job for [[mr-sallow]]: pull the [[nav-core]] out of the wreck of the [[arbiters-due]] at the [[grave-of-ash]]. Pay was 4,000 cr on delivery. Sallow said, "Don't plug it into anything."`,
+    `**As played:** the crew pulled the core and got back to the Patience. Alarming readings came up, and a scan showed they were a distress signal. A crew of [[ashborn]] scavs closed in and fired on the Patience to take the core. The Patience disabled them, but not before they harpooned it and sent a boarding party across.`,
+    `The PCs killed the scav captain, [[tobin-kell]], and his crew, without ever learning his name. During the fight Vargas dropped her relic, the [[platinum-shard]], near the PCs. When V'an went down, he could tell something in it was "singing." He picked it up, and the PCs went back to their stations.`,
+    `Then [[the-crossfire]]: three [[cathedral-ships]] and three Sable Armor Freighters dropped out of hyperspace right on top of them and ordered the Patience to stand down. Before Hotshot could answer, they opened fire, and the Patience was destroyed. *"The last thing they saw, as their vision frosted over and their blood began to boil, was a glow of warm platinum as the relic somehow moved them somewhere safe."*`,
+    `**Outcome:** V'an and Rusty survived, and the core came with them. Hotshot died. Vargas and Florb were believed dead, but both turned out to be alive (see their pages).`,
+    `Differences from the plan, which is folded up under [[#session0|Last time]]: the Ashborn captain died instead of surrendering, Sable brought Armor Freighters, Corinthia brought three ships and no wormholes, and the rescue came from Vargas's relic, not a shard behind the cockpit panel.`],
+  open: [`Who was the distress signal calling? *Draft:* it was the core's Commonweal relay waking up, and that's how both fleets found them.`],
   hooks: [
-    `Anyone who was in the Grave that night can turn up: an Ashborn who saw the cockpit vanish, a Sable officer who survived the lance, a Choir singer who heard the shard answer.`,
-    `The Patience's cockpit is still out there, empty or not. Whoever opens it finds the glass-scorched seats and no bodies.`,
-    `Marra still wants her 600 cr and Sallow still wants his core. Both know the PCs had it last.`] },
-
+    `Anyone who was in the Grave that night can turn up: an Ashborn who saw the Patience die, a Sable crewman from an Armor Freighter, a Choir singer who heard the relic answer.`,
+    `From outside, the Patience's wreck shows no core and no bodies for V'an and Rusty. Somebody will work out that they left.`,
+    `Marra still wants her 600 cr and Sallow still wants his core. Both know the crew had it last.`] },
 { id: `s1`, type: `session`, name: `Session 1: the Crescent Fields`, tag: `played`,
   sub: `Saint Vey: the walk, New Bombswick, and a deal with Amelda`,
   body: [
@@ -51,67 +54,115 @@ window.GM_WIKI = [
     `Somewhere above Saint Vey there's an orb.`] },
 
 /* ============================ PCs ============================ */
-{ id: `rusty-scrap`, type: `pc`, name: `Rusty Scrap`, sub: `Player character`,
-  body: [`One of the two PCs. The details are the player's. The plan had the [[platinum-shard]] speak to Rusty inside the Chapel and offer a bargain. That never happened, so the shard hasn't spoken to anyone yet. Rusty may be able to plug straight into the [[nav-core]].`],
-  seen: [[`S0`, `Crewed the Patience on the Grave job.`], [`S1`, `Woke in the Crescent Fields, walked to New Bombswick, investigated the shard and the core.`]],
-  open: [`Record Rusty's class, background, debts and the answers to the three session-zero questions here.`],
+{ id: `rusty-scrap`, type: `pc`, name: `Rusty Scrap`, tag: `canon`,
+  sub: `Dwarven man in his mid-50s · Armorer artificer · Ashborn scav turned mercenary`, faction: `ashborn`, where: `nine-hollows`,
+  body: [
+    `**Backstory (the GM's, Canon).** As a child, Rusty was taken by a [[longreach]] ship, which was on its way to scout the path to [[lantern|the Lantern]]. That put him in the final battle of the [[ash-war]], and he was stranded at the [[grave-of-ash]] with the other survivors.`,
+    `Those survivors became the [[ashborn]]. They scavenged food and supplies from the wrecks until they caught a ride to the [[nine-hollows]], where they set up permanent shop. Rusty grew up one of them.`,
+    `He now works as a mercenary in the Drift, though things have gone awry since [[s0|the Grave job]]: the ship and captain are gone, and he's carrying a nav core every power wants.`,
+    `Class: Armorer artificer. He may be able to plug straight into the [[nav-core]].`],
+  secrets: [
+    `**Canon:** the Eye steered the STR fleet, his ship included, into the Corinthian fleet to keep the STR off the Lantern ([[ash-war-steered]]).`,
+    `**Canon:** the wrecks stay powered almost permanently, since Corinthian ships run on relics and STR ships on cold fusion. That's why the Grave still broadcasts, and how the survivors lived on them.`,
+    `*Draft:* his ship's course correction is on the [[arbiters-due]] core he's carrying, so he can prove what happened to him.`,
+    `The Ashborn captain the PCs killed in session 0 was [[tobin-kell]], [[sefa-kell]]'s grandson. Rusty killed one of his own people without knowing it.`],
+  seen: [[`S0`, `Crewed the Patience. Helped kill the Ashborn boarders. One of the last two people to touch Vargas's relic, so it took him along.`], [`S1`, `Woke in the Crescent Fields, walked to New Bombswick, investigated the shard and the core. The shard never spoke to him.`]],
+  open: [`Which Longreach ship took him, and what was it called? Who else from it is alive?`],
   hooks: [
-    `The shard's bargain is still unspent. It could speak to Rusty, or to someone else, at a moment that matters more than the Chapel: in danger, near the Lantern, or in an Inquisitor's hand. *Suggestion:* once per long rest it turns a hit (+5 AC, like *shield*), as long as it stays hidden.`,
-    `Whatever Rusty owes, and to whom, can be waiting at Tamsin.`] },
-
-{ id: `van`, type: `pc`, name: `V'an`, sub: `Player character · hears the song`,
-  body: [`One of the two PCs. V'an hears the song in the [[platinum-shard]], and the same melody hums in the [[nav-core]]. If V'an hums it back, the core's display flickers.`],
-  secrets: [`The song is relic-language: the Eye's protocol, or the Lantern's answer to it (see [[eye-is-a-machine]] and [[lantern-rival]]). V'an may be a natural listener, like [[florb]], or one of the [[the-broadcast|names on the list]].`],
-  seen: [[`S0`, `Crewed the Patience on the Grave job.`], [`S1`, `Heard the shard's song fading after the teleport.`]],
-  open: [`Record V'an's class, background, debts and session-zero answers here.`],
+    `The [[nav-core]]'s blackbox shows the Longreach ship's redirection too. Seeing it is the moment Rusty learns his childhood was a murder.`,
+    `In the Nine Hollows someone recognizes him, and then someone tells him whose grandson led the boarders.`,
+    `An old Longreach survey officer, alive and retired at Tamsin, remembers the kid they took aboard.`,
+    `Longreach still has his name on a crew manifest from CY 274, and an unpaid wage owed to him. Collecting it means proving who he is.`,
+    `The shard's bargain is still unspent. It could speak to Rusty at a moment that matters more than the Chapel would have. *Suggestion:* once per long rest it turns a hit (+5 AC, like *shield*), as long as it stays hidden.`] },
+{ id: `van`, type: `pc`, name: `V'an Ski-born`, aka: [`V'an`, `Ski-born`], tag: `canon`,
+  sub: `Pact of the Talisman warlock, tech-themed · from Meridian Prime`, where: `meridian`,
+  known: [`V'an knows (or believes): he worked the lowest jobs on Meridian Prime for the corpo class, shoveling coal and cleaning bathrooms. His memory has big gaps. His sister is sick, so he takes merc work and sends the money home for her treatment. He's reckless and self-destructive.`],
+  body: [
+    `**Backstory (the GM's, Canon).** A laborer from [[meridian]] turned mercenary. He hears the [[platinum-shard]]'s song, and the same melody hums in the [[nav-core]]. If he hums it back, the core's display flickers.`,
+    `See [[van-artifact]] for what's really running him.`],
+  secrets: [
+    `**Canon:** an artifact plugged into his brain and took almost complete control of his body and mind. It can't change his base stats, but it raised his Charisma and Intelligence a lot. V'an is a hollow shell of the man he may have been, and it's unclear whether he knows.`,
+    `**Canon:** the artifact is draining him, and it's open to finding another host.`,
+    `**Canon:** the money doesn't go to [[van-sister|his sister]]. It goes wherever the artifact sends it, for goals that are probably much more sinister.`,
+    `**Canon (direction):** the artifact is tied to the Lantern's true nature, in competition with the Eye and working in tandem with it.`],
+  seen: [[`S0`, `Went down in the boarding fight, heard Vargas's relic "singing," and picked it up. The relic took him and Rusty out of the Patience.`], [`S1`, `Heard the shard's song fading after the teleport.`]],
   hooks: [
-    `Precentor [[odile-sancte]] would know the song. She'd want V'an in her choir.`,
-    `Near any relic, a Cathedral-ship or the Lantern, the song gets louder. Near the Null Corridor, it stops. The silence is worse.`,
-    `An Ashborn tape from [[sefa-kell]]'s library plays V'an's name in the list.`] },
+    `Commonweal clears every transaction, so **Commonweal knows where V'an's money goes**. A clerk, or [[the-triumvirate]], could hand him the trail.`,
+    `He sends money home from Tamsin and the transfer bounces: there's no account in his sister's name.`,
+    `Precentor [[odile-sancte]] knows the song. She'd want V'an in her choir, and the artifact might want her.`,
+    `Near any relic, a Cathedral-ship or the Lantern, the song gets louder. In the Null Corridor it stops, and so, for a moment, does the artifact. V'an gets a few minutes as himself.`,
+    `The artifact is shopping for a new host. It just watched a relic move people across space, and [[car-b]] is a body that doesn't get tired.`] },
 
+
+
+{ id: `van-sister`, type: `npc`, name: `V'an's sister`, tag: `canon`, status: `unknown: sick, or never real`, where: `meridian`,
+  known: [`V'an believes she's sick on Meridian Prime and that his money pays for her treatment.`],
+  secrets: [`**Canon:** the money doesn't go to her. *Draft:* she may not exist, may exist and never have been sick, or may be a real person the artifact uses as a cover story.`],
+  open: [`Does she exist?`],
+  hooks: [
+    `A letter from her arrives at Tamsin, in handwriting V'an doesn't recognize.`,
+    `He finally calls home, and the number belongs to a Commonweal holding office.`,
+    `She turns up, healthy, looking for the brother who stopped writing years ago.`] },
+{ id: `van-artifact`, type: `lore`, name: `V'an's artifact`, tag: `canon`, related: [`van`, `lantern-rival`],
+  sub: `The thing in V'an's head`,
+  known: [`Nothing. V'an is a merc with a sick sister and some memory gaps.`],
+  body: [
+    `**Canon:** plugged into V'an's brain, it has almost complete control of his body and mind. It raised his Charisma and Intelligence (his warlock patron, mechanically), drains him, and is open to a new host. It sends his money somewhere sinister.`,
+    `**Canon (direction):** it's connected to the Lantern's true nature, so it's in competition with the Eye but also working in tandem with it. The rest is cloudy for now, on purpose.`,
+    `The Eye doesn't want a conscious observer on the Lantern (Canon, see [[lantern-rival]]). An artifact tied to the Lantern, riding inside a conscious host, is exactly that observer waiting to happen.`],
+  secrets: [
+    `*Draft:* it wants V'an on the Lantern. That's where the money goes: passage, charts, parts. The Eye wants to stop that, but it may also need what the artifact would find there.`,
+    `*Draft:* rivals that need each other. Each sabotages the other only up to a point, like two heirs to one throne.`,
+    `*Draft:* the relic sang to it, and it answered. Whatever it is, it speaks the Eye's language.`],
+  seen: [[`S0`, `Let V'an hear Vargas's relic singing. Nobody else in the bay did.`]],
+  open: [`What is it, who made it, and what does it want on the Lantern? (Deliberately open.)`],
+  hooks: [
+    `The money trail, through Commonweal.`,
+    `It tries to change hosts, to a relic, to CAR-B, or to Rusty.`,
+    `The Lantern's light changes when V'an gets close, and it doesn't change back.`,
+    `In the Null Corridor it goes quiet, and V'an remembers something real.`] },
 /* ============================ CREW OF THE PATIENCE ============================ */
 { id: `hotshot`, type: `npc`, name: `Captain Jimothy "Hotshot" Delta`, aka: [`Hotshot`], status: `dead`, tag: `played`,
-  sub: `Captain of the Patience · owns the contract and the debt`, stats: `Veteran`, related: [`patience`],
-  body: [`Dead. Flew the [[patience]], or ran engineering if a PC took the helm. Calm on the comm, swears off it. Bought the Patience at a [[tamsin]] impound auction, and the [[datapad]] came with it.`],
-  secrets: [`Owes [[marra-tesk]] more than the job paid. He'd have sold the [[nav-core]] twice.`],
-  seen: [[`S0`, `Captained the Grave job and the ship fight.`]],
+  sub: `Captain and pilot of the Patience · a three-foot poison-dart frog`, stats: `Veteran, reskinned: a pistol in each hand (the sword attacks are pistol shots at 30/90 ft, the crossbow is a long-barrel)`, related: [`patience`],
+  body: [`Dead. Three feet tall, skin in bright bands of color, "Han Solo as a poison dart frog." A cracked pilot. Calm on the comm, swears off it. Bought the [[patience]] at a [[tamsin]] impound auction, and the [[datapad]] came with it.`],
+  secrets: [`Owed [[marra-tesk]] more than the job paid. He'd have sold the [[nav-core]] twice.`],
+  seen: [[`S0`, `Captained and flew the Patience. The fleets opened fire before he could answer their order to stand down. He died with the ship.`]],
   hooks: [
     `His debt didn't die with him. [[marra-tesk]] calls it in, and since the crew shared the job, she says the crew shares the bill.`,
-    `*If he died aboard:* his body is in the cockpit wreck at the Grave. The Ashborn who find it will strip it, tape his last comm, and know the Patience's crew.`,
-    `Someone at Tamsin is still waiting for him: a partner, a creditor, a kid. They want to hear how he died from the people who were there.`,
+    `Someone at Tamsin is still waiting for him: a partner, a creditor, a tadpole. They want to hear how he died from the people who were there.`,
     `The Patience is still registered to him. Its impound papers, his will (if he had one) or his berth at Tamsin come with strings the PCs could pull.`,
+    `His twin pistols are in the wreck at the Grave. An Ashborn is selling them at the Fifth Hollow.`,
     `If the Lantern copies the dead, his voice could turn up on the [[the-broadcast|broadcast]].`] },
-
-{ id: `killora-vargas`, type: `npc`, name: `1st Ensign Killora Vargas`, aka: [`K. Vargas`, `Vargas`], status: `alive, somewhere`,
-  sub: `Missiles on the Patience · the K. Vargas of the datapad`, stats: `Thug`, faction: `sable-command`,
-  known: [`The previous owner of the datapad. Every "User annotation" in the handout is Vargas's.`],
-  body: [`Ex-Sable, never says why. Mutters the [[psalter-famine]] numbers when nervous. A Psalter family fed Vargas for a winter. The datapad's notes say: "Read everything. Trust half."`],
+{ id: `killora-vargas`, type: `npc`, name: `1st Ensign Killora Vargas`, aka: [`K. Vargas`, `Vargas`], status: `alive, somewhere`, tag: `played`,
+  sub: `Ex-Sable enforcer · the K. Vargas of the datapad`, stats: `Thug`, faction: `sable-command`,
+  known: [`The previous owner of the datapad: every "User annotation" in the handout is hers. Vargas had a lucky charm, a platinum shard from a Corinthian warp drive, that kept Sable off her.`],
+  body: [
+    `Rough and tumble. She was an enforcer for Sable until they marked her for termination, and she ran to the Drift. Mutters the [[psalter-famine]] numbers when nervous. A Psalter family fed her for a winter. Her notes say: "Read everything. Trust half."`,
+    `Everyone, the PCs included, thinks she died with the Patience. She didn't. She's somewhere.`],
   secrets: [
-    `Recognized the Sable battleships' hull codes in the crossfire: Vargas's old unit.`,
-    `Paid off Brother [[anselm-coyle]]'s debt, and Anselm cut the locks on the [[platinum-shard]] to keep Vargas safe from Sable.`,
-    `Survived the crossfire. Vargas is somewhere; where is yours to reveal.`,
-    `*Draft:* Vargas's name is on the [[the-broadcast|Lantern's list]]. See [[vargas-fate]].`],
-  seen: [[`S0`, `Crewed the missile launcher on the Grave job.`]],
+    `**Canon:** she cashed out her pension to have a former priest from Saint Vey jailbreak her relic, the [[platinum-shard]], so it would keep her safe from Sable. *Suggestion:* the priest is Brother [[anselm-coyle]], and the pension paid off his debt.`,
+    `She dropped the relic in the boarding fight. It saved its last two holders, not its owner. How she survived anyway is yours to reveal.`,
+    `*Draft:* her name is on the [[the-broadcast|Lantern's list]]. See [[vargas-fate]].`],
+  seen: [[`S0`, `Crewed the Patience. Dropped her relic during the boarding fight. Believed dead when the Patience was destroyed.`]],
   hooks: [
-    `Vargas's annotations are hooks already: "Ask for Marra at the Spindle," "Father Oren is kind. Don't let anyone hurt him." Follow one and someone remembers Vargas.`,
-    `A Sable recruiter at Tamsin is asking after a deserter by name.`,
-    `The broadcast says Vargas's name, in Vargas's voice.`,
-    `A message arrives on the datapad, signed K.V., with a bearing and nothing else.`] },
-
-{ id: `florb`, type: `npc`, name: `Florb`, status: `alive, airborne over Saint Vey`,
-  sub: `Sensors and comms · a sentient flying orb`, stats: `Scout, reskinned (hovers, no hands, stun zap)`,
-  body: [`Plugs straight into a sensor console. Talks too fast and reads the plot better than anyone.`],
+    `Her annotations are hooks already: "Ask for Marra at the Spindle," "Father Oren is kind. Don't let anyone hurt him." Follow one and someone remembers her.`,
+    `A Sable termination team at Tamsin is asking after her by name. They don't believe she's dead either.`,
+    `The broadcast says her name, in her voice.`,
+    `A message arrives on the datapad, signed K.V., with a bearing and nothing else.`,
+    `She wants her relic back. V'an has it.`] },
+{ id: `florb`, type: `npc`, name: `Florb`, status: `alive, airborne over Saint Vey`, tag: `played`,
+  sub: `Engineer of the Patience · a hovering black orb that speaks psychically`, stats: `Scout, reskinned (hovers, no hands, stun zap)`,
+  body: [`A hovering black orb. Speaks psychically. Ran engineering on the Patience. Believed dead with the ship.`],
   secrets: [
-    `Hears singing in comm static before Cathedral-ships arrive. Nobody else does.`,
     `Nobody knows who built Florb, including Florb.`,
-    `*Suggestion:* the timing fits. Eleven lost days plus the three-day walk is about two weeks, so Florb came down on Saint Vey at about the same time the PCs did, somewhere else. The shard took Florb too, but dropped it short.`],
-  seen: [[`S0`, `Ran sensors on the Patience.`], [`S1`, `Never seen, but rumor 1 at Carby's: a black orb crashed out of the sky two weeks ago, then took off for the upper atmosphere.`]],
+    `*Suggestion:* the timing fits. Eleven lost days plus the three-day walk is about two weeks, so Florb came down on Saint Vey at about the same time the PCs did. *Draft:* Florb was never really a body. The relic took the PCs, and Florb followed the song.`],
+  seen: [[`S0`, `Ran engineering on the Patience. Believed dead when it was destroyed.`], [`S1`, `Never seen, but rumor 1 at Carby's: a black orb crashed out of the sky two weeks ago, then took off for the upper atmosphere.`]],
   open: [`Where did Florb go? Orbit, a ship, the Shale Belt, or straight for the Lantern?`],
   hooks: [
-    `The ferry lifts off and something black paces it all the way to orbit, then pings the datapad with three chirps.`,
+    `The ferry lifts off and something black paces it all the way to orbit, then a voice in everyone's head says, "Oh good, it's you."`,
     `A Shale Belt miner at Carby's swears a black ball "borrowed" the antenna off her rig.`,
     `Florb has latched onto the outside of the ferry and rides it to Tamsin.`,
-    `The [[the-broadcast|broadcast]] comes through with Florb's chatter layered over it. Florb is listening to the Lantern.`] },
+    `The [[the-broadcast|broadcast]] comes through with Florb's psychic chatter layered over it. Florb is listening to the Lantern.`] },
 
 /* ============================ PEOPLE: TAMSIN AND THE GRAVE ============================ */
 { id: `marra-tesk`, type: `npc`, name: `Marra Tesk`, sub: `Fixer at the Spindle, Tamsin`, stats: `Spy`, where: `tamsin`,
@@ -147,21 +198,20 @@ window.GM_WIKI = [
   body: [`She keeps a tape library of the wreck broadcasts. Her grandson [[tobin-kell]] died boarding the Patience.`],
   secrets: [`Her tapes go back to CY 274. The names list started the night the war ended (see [[the-broadcast]]).`],
   hooks: [
-    `Her people reached the Patience's cockpit and found it empty, or not. Either way she wants to know how anyone leaves a sealed cockpit.`,
+    `Her people reached the Patience's wreck and found the core gone and two of the crew missing. She wants to know how anyone leaves a ship that's already dead.`,
     `The PCs killed her grandson [[tobin-kell]]. She knows a Patience crew did it. She doesn't know their faces yet.`,
     `She'll trade a tape with a PC's name on it for the story of the crossfire.`] },
 
-{ id: `tobin-kell`, type: `npc`, name: `Tobin Kell`, sub: `Ashborn boarder · Sefa Kell's grandson`, stats: `Thug`, faction: `ashborn`, tag: `played`, status: `dead`,
+{ id: `tobin-kell`, type: `npc`, name: `Tobin Kell`, sub: `Captain of the Ashborn scav crew · Sefa Kell's grandson`, stats: `Thug`, faction: `ashborn`, tag: `played`, status: `dead`,
   known: [`Nothing. The PCs never learned his name.`],
-  body: [`Led the boarding party onto the Patience with a stun baton and a scattergun. The PCs killed him.`],
+  body: [`Captained the Ashborn scav crew that fired on the Patience and boarded it for the nav core. The PCs killed him and his crew. Rusty, an Ashborn himself, killed one of his own people without knowing it.`],
   seen: [[`S0`, `Led the boarders into the Patience. The PCs killed him without ever learning his name.`]],
   hooks: [
     `The PCs learn his name the hard way: an Ashborn asks them, flatly, if they were on the Patience, and then tells them who they killed.`,
     `[[sefa-kell]] has his name on a list of her own, and she's adding theirs. A bounty notice at the Fifth Hollow's market, with the Patience's registry on it.`,
-    `His stun baton or scattergun, if they kept either, is recognized by someone who knew him.`,
+    `Someone in the [[nine-hollows]] knew Rusty as a boy. They ask him to find out who killed Tobin.`,
     `A young Ashborn signs on with the PCs at Tamsin under a false name: Tobin's sister, or cousin, looking for the crew who did it.`,
     `His voice turns up on one of Sefa's broadcast tapes. The Lantern heard him die.`] },
-
 { id: `okafor`, type: `npc`, name: `Lt. Cmdr. Ines Okafor`, sub: `Commander of the Due Diligence`, stats: `Knight, Insight +4`, faction: `sable-command`,
   body: [`By the book and tired of it.`],
   known: [`A Sable cruiser visited the Lantern off-schedule and Commonweal filed no report (general rumor 3).`],
@@ -377,14 +427,15 @@ window.GM_WIKI = [
     `Another wreck holds the STR half of the proof: the corrupted Commonweal nav update.`,
     `The two fleets from the crossfire are still circling each other here, or what's left of them is.`] },
 
-{ id: `nine-hollows`, type: `location`, name: `The Nine Hollows`, sub: `Nine linked Ashborn habitats (DRF-05)`, handout: `loc-hollows`, faction: `ashborn`,
+{ id: `nine-hollows`, type: `location`, name: `The Nine Hollows`, sub: `Nine linked Ashborn habitats (DRF-05) · Rusty's home`, handout: `loc-hollows`, faction: `ashborn`,
   known: [`Each hollow is held by a different clan. The First has the clan moot hall, the Fifth the black market, and the Ninth is abandoned: it went dark in one night, and the clan won't go back. Vargas: "Clans race skiffs between hollows on rest-days. Don't bet against the Fifth."`],
+  body: [`**Canon:** the survivors of the Ash War's last battle scavenged the Grave until they caught a ride here and set up permanent shop. [[rusty-scrap]] grew up here.`],
   secrets: [`*Draft:* the [[the-broadcast|broadcast]] reached the Ninth Hollow first. Everyone aboard heard their own names.`],
   hooks: [
+    `Rusty comes home, and everyone has heard about a Patience crew that killed an Ashborn captain.`,
     `A skiff race on rest-day, with a wager that's really a job.`,
     `The Fifth Hollow's black market is where you sell what Tamsin won't touch.`,
     `Someone wants a crew to go into the Ninth Hollow and bring back one thing.`] },
-
 { id: `copperline`, type: `location`, name: `Copperline`, sub: `Boom-town system run by the Claims Syndicate (DRF-03)`, handout: `loc-copperline`, faction: `claims-syndicate`,
   known: [`A mining rush bankrolled by STR companies. Bonanza moon is a saloon town, Rigs 1 to 4 are orbital refineries. Survey crews are hiring Null Corridor guides. Vargas: "The sheriff takes scrip."`],
   hooks: [
@@ -474,7 +525,7 @@ window.GM_WIKI = [
 
 { id: `sable-station`, type: `location`, name: `Sable Station`, sub: `Sable Command's forward base (STR-06)`, handout: `loc-sable`, faction: `sable-command`,
   known: [`Parked just outside the Drift and paid for by a dozen charter companies. Its admirals keep asking for another fleet. Vargas: "More ships every month I pass it."`],
-  hooks: [`Vargas's old unit is based here.`, `Sable wants the battleships lost in the crossfire explained.`] },
+  hooks: [`Vargas's old unit is based here.`, `Sable wants to know where the core went when its Armor Freighters destroyed the Patience.`] },
 
 /* ============================ HAZARDS ============================ */
 { id: `null-corridor`, type: `location`, name: `The Null Corridor`, sub: `Dead zone where drives, power and prayer fail (HAZ-01)`, handout: `loc-corridor`,
@@ -550,14 +601,21 @@ window.GM_WIKI = [
 
 { id: `longreach`, type: `faction`, name: `Longreach Survey`, sub: `Maps the frontier for any buyer`, faction: `str`,
   known: [`Hires freelancers and asks few questions.`],
-  hooks: [`An easy first job for a crew with a new ship: chart a system nobody wants.`, `A Longreach scout, the last of her crew, needs a ride.`] },
-
-{ id: `sable-command`, type: `faction`, name: `Sable Command`, aka: [`Sable`], sub: `Private navy on a joint defense contract`, faction: `str`, where: `sable-station`,
+  body: [`**Canon:** a Longreach Survey ship took [[rusty-scrap]] as a child, on its way to scout the path to the Lantern. It was caught in the final battle of the [[ash-war]] when the Eye steered the fleets together.`],
+  secrets: [`*Suggestion:* Longreach was scouting for the STR fleet's approach to the Lantern. Its records of that survey would show the plotted course, the one the Eye overrode.`],
+  hooks: [
+    `Longreach still has Rusty on a CY 274 crew manifest, with back wages owed.`,
+    `A Longreach scout, the last of her crew, needs a ride. She's heard of a dwarf who survived the Grave.`,
+    `An easy first job for a crew with a new ship: chart a system nobody wants.`,
+    `Longreach is quietly surveying the path to the Lantern again.`] },
+{ id: `sable-command`, type: `faction`, name: `Sable Command`, aka: [`Sable`], sub: `Private navy on a joint defense contract`, faction: `str`, where: `sable-station`, tag: `played`,
   known: [`Wants the Treaty torn up.`],
-  body: [`Three Sable battleships fought the Cathedral-ships at the Grave. [[killora-vargas]] deserted from Sable.`],
-  seen: [[`S0`, `Sable battleships in the crossfire.`]],
-  hooks: [`A Sable cutter answers any signal the nav core sends. It hasn't sent one yet, because Sally kept it off the network.`, `Sable wants the survivors of the crossfire debriefed.`] },
-
+  body: [`Three Sable Armor Freighters dropped out of hyperspace at the Grave alongside three Cathedral-ships and destroyed the Patience. [[killora-vargas]] was a Sable enforcer until Sable marked her for termination.`],
+  seen: [[`S0`, `Three Armor Freighters in the crossfire. They ordered the Patience to stand down, then fired.`]],
+  hooks: [
+    `From outside, the Patience's wreck shows no core. Sable will work out it left.`,
+    `A Sable cutter answers any signal the nav core sends. It hasn't sent one yet, because Sally kept it off the network.`,
+    `A termination team still has Vargas's file open.`] },
 { id: `free-labor-league`, type: `faction`, name: `The Free Labor League`, sub: `Banned union`, faction: `str`,
   known: [`Founded at Varga in CY 298 and banned by every charter company the same year. Growing in Varga and Brightwater.`],
   hooks: [`The League would love proof that Commonweal steered a war.`, `An organizer on the run needs a berth.`] },
@@ -576,12 +634,16 @@ window.GM_WIKI = [
   known: [`Sells to anyone at the same price.`],
   hooks: [`A Guild tanker escort job.`, `A skimmer pilot PC background.`] },
 
-{ id: `ashborn`, type: `faction`, name: `The Ashborn Clans`, aka: [`Ashborn`], sub: `Salvagers of the Grave and the Hollows`, where: `nine-hollows`,
+{ id: `ashborn`, type: `faction`, name: `The Ashborn Clans`, aka: [`Ashborn`], sub: `Salvagers of the Grave and the Hollows`, where: `nine-hollows`, tag: `canon`,
   known: [`"You took from the dead. Put it back and you can leave."`],
-  body: [`Led locally by [[sefa-kell]]. They record the wreck broadcasts and won't sell the tapes.`],
-  seen: [[`S0`, `A salvage rig attacked and boarded the Patience over the nav core.`]],
-  hooks: [`They want the nav core put back where it belongs.`, `Their tapes hold the [[the-broadcast|names list]].`] },
-
+  body: [
+    `**Canon:** the clans grew out of the survivors of the Ash War's final battle at the [[grave-of-ash]]. They scavenged food and supplies from the still-powered wrecks until they caught a ride to the [[nine-hollows]], where they set up permanent shop. [[rusty-scrap]] is one of them.`,
+    `Led at the Grave by [[sefa-kell]]. They record the wreck broadcasts and won't sell the tapes.`],
+  seen: [[`S0`, `A scav crew under [[tobin-kell]] fired on and boarded the Patience for the nav core. The PCs killed them all.`]],
+  hooks: [
+    `They want the nav core, and they want to know who killed Tobin's crew.`,
+    `Their tapes hold the [[the-broadcast|names list]].`,
+    `The oldest Ashborn are Rusty's generation. They remember which ships came out of the jump wrong.`] },
 { id: `claims-syndicate`, type: `faction`, name: `The Claims Syndicate`, sub: `Runs Copperline`, where: `copperline`,
   known: [`A Halvorsen and Ostrava front in all but name. Pays the sheriffs.`],
   hooks: [`Syndicate cutters "would rather disable than kill." A debt collection job, from either side.`] },
@@ -603,16 +665,22 @@ window.GM_WIKI = [
   hooks: [`A deserter from the Choir is a PC origin.`, `They stop the ferry to Tamsin.`] },
 
 /* ============================ ITEMS ============================ */
-{ id: `platinum-shard`, type: `item`, name: `The Platinum Shard`, aka: [`the shard`, `Vargas's relic shard`], sub: `A jailbroken Corinthian relic`, tag: `played`, status: `with the party`,
+{ id: `platinum-shard`, type: `item`, name: `Vargas's relic`, aka: [`the platinum shard`, `the shard`, `the relic`], sub: `A jailbroken Corinthian relic · a platinum shard from a warp drive`, tag: `canon`, status: `with V'an`,
+  known: [`Vargas called it her lucky charm: a platinum shard from a Corinthian warp drive that kept Sable off her. It sang to V'an, and a platinum glow saved them.`],
   body: [
-    `Platinum-veined, the kind of relic the Cardinals lock to a single cathedral. Its locks have been cut. It was hidden behind the Patience's cockpit panel. In the crossfire it sang to the Cathedral-ships' relic-cores, and their lances went around the cockpit. Then it teleported the PCs to Saint Vey.`,
-    `Brother [[anselm-coyle]] jailbroke it to keep [[killora-vargas]] safe from Sable. [[popsocopolis]] watched.`],
+    `**Canon:** built specifically to keep its holder safe from Sable. [[killora-vargas]] cashed out her pension to have a former priest from Saint Vey jailbreak it for her. *Suggestion:* the priest is Brother [[anselm-coyle]], and [[popsocopolis]] watched.`,
+    `**Canon:** Vargas dropped it in the boarding fight and V'an picked it up. When Sable turned its guns on the Patience, it reached out to the last two people who'd touched it, V'an and Rusty, and moved them, with the nav core, to the Crescent Fields of Saint Vey.`],
   secrets: [
-    `It hasn't spoken yet. The planned Chapel bargain never happened in S1, so its voice is still a reveal waiting to be used: "I carried you out of the fire. Carry me a little further. Keep me hidden, keep me safe, and I will keep you." *Suggestion:* the bargain is +5 AC against one hit per long rest, which fails while it's shown to an Inquisitor, a Sable scanner or a Commonweal clerk.`,
-    `*Draft:* a jailbroken relic still speaks the relics' language but doesn't take orders. The shard sang them toward the Lantern's call, and the Lantern pulled them most of the way, then let go.`],
-  seen: [[`S0`, `Saved the cockpit in the crossfire.`], [`S1`, `Teleported the PCs to Saint Vey. They investigated it at the Chapel. It offered no bargain.`]],
-  hooks: [`The hum: near the core at night, the two sing in the same key, and the datapad shows a bearing.`, `Any Inquisitor or Reliquarian who gets close feels it.`, `It wants to go somewhere. It hasn't said where.`] },
-
+    `*Draft:* relics are pieces of the Eye's network, so a jailbroken relic is hacked hardware still running on the Eye. The Eye may know exactly who was moved, and where to.`,
+    `*Draft:* the "singing" is the Eye's carrier signal. V'an's artifact is what let him hear it.`,
+    `It hasn't spoken. The planned Chapel bargain never happened, so its voice is still a reveal waiting to be used: "I carried you out of the fire. Carry me a little further. Keep me hidden, keep me safe, and I will keep you."`],
+  seen: [[`S0`, `Dropped by Vargas, picked up by V'an. Moved V'an, Rusty and the core out of the Patience as it died.`], [`S1`, `Investigated at the Chapel. It offered no bargain.`]],
+  open: [`Can it do that again, and does V'an's artifact want it?`],
+  hooks: [
+    `The artifact is shopping for a new host, and the relic just showed it can move people.`,
+    `The hum: near the core at night, the two sing in the same key, and the datapad shows a bearing.`,
+    `Vargas wants it back.`,
+    `Any Inquisitor or Reliquarian who gets close feels it.`] },
 { id: `nav-core`, type: `item`, name: `Nav core of the Arbiter's Due`, aka: [`the core`, `the nav core`], sub: `Forty kilos of black Sable military hardware`, tag: `played`, status: `with the party · never networked`,
   body: [
     `Pulled from the [[arbiters-due]] at the Grave. Whoever carries it is slowed. Reading it needs real power and a data dock, or a bypass kit (DC 16, Sable encryption).`,
@@ -626,9 +694,9 @@ window.GM_WIKI = [
 
 { id: `datapad`, type: `item`, name: `Vargas's datapad`, aka: [`the handout`, `the datapad`], sub: `A Commonweal civic datapad, Mk IV`, related: [`killora-vargas`], tag: `played`,
   known: [`The players' handout. Registered to K. Vargas (Tier 3), transfer unfiled, with Vargas's annotations throughout.`],
-  body: [`It came with the Patience from the Tamsin impound auction. It still works on Saint Vey, and it showed BEARING ZERO-ZERO-ZERO. COME HOME. after the crossfire.`],
+  body: [`It came with the Patience from the Tamsin impound auction. It still works on Saint Vey. *Draft:* the broadcast's BEARING ZERO-ZERO-ZERO. COME HOME. could appear on it whenever the relic and the core hum together.`],
   secrets: [`*Draft:* every pad has a Commonweal relay chip, and both intelligences can read it. See [[datapad-relay]]. The players' handout is listening.`],
-  seen: [[`S0`, `Lit up on its own in the sealed cockpit.`], [`S1`, `Led them to New Bombswick.`]],
+  seen: [[`S1`, `Still worked on Saint Vey and led them to New Bombswick.`]],
   hooks: [`A new annotation appears that nobody wrote.`, `A Commonweal clerk asks why a Tier 3 pad registered to a deserter is still active.`, `It shows a bearing whenever the shard and core hum together.`] },
 
 { id: `tracking-gems`, type: `item`, name: `Invisible Inquisitor Tracking Gems`, aka: [`tracking gems`, `the gems`], sub: `Going into Amelda's 30 crates`, tag: `played`, faction: `inquisition`,
@@ -653,9 +721,8 @@ window.GM_WIKI = [
 /* ============================ SHIPS ============================ */
 { id: `patience`, type: `ship`, name: `The Patience`, sub: `PBMI dropship · Hotshot's ship`, status: `destroyed`, tag: `played`,
   body: [`Bought at a Tamsin impound auction. Stations: helm, dorsal turret, stern launcher, engineering, sensors. Its deck map and station markers are in the Library and the [[#ships|Ship combat]] rules.`],
-  seen: [[`S0`, `Fought the Ashborn rig, was boarded, and was cut apart by a hymn lance in the crossfire. The cockpit sealed and spun clear.`]],
-  hooks: [`The cockpit section is still drifting in the Grave.`, `Someone at the impound auction remembers who sold it, and why it was impounded.`] },
-
+  seen: [[`S0`, `Disabled the Ashborn scav ship but was harpooned and boarded. Then three Cathedral-ships and three Sable Armor Freighters dropped out of hyperspace on top of it and destroyed it.`]],
+  hooks: [`Its wreck is still drifting in the Grave, with Hotshot aboard and no core.`, `Someone at the impound auction remembers who sold it, and why it was impounded.`] },
 { id: `arbiters-due`, type: `ship`, name: `The Arbiter's Due`, sub: `STR cruiser, died at the Grave in CY 274`, status: `wreck`, where: `grave-of-ash`,
   seen: [[`S0`, `The PCs cut its nav core free.`]],
   hooks: [`Its sister ships' wrecks hold more of the record.`, `A survivor of its crew is alive, old, and on Tamsin.`] },
@@ -671,30 +738,26 @@ window.GM_WIKI = [
 { id: `benediction`, type: `ship`, name: `The Benediction`, sub: `Precentor Odile's corsair`, faction: `wandering-choir`,
   hooks: [`It boards the ferry singing.`] },
 
-{ id: `cathedral-ships`, type: `ship`, name: `Cathedral-ships`, sub: `Consecrated Corinthian vessels with choir crews`, faction: `choral-orders`,
-  body: [`Sung into flight at [[candlemoor]]. Armed with hymn lances.`],
-  secrets: [`*Draft:* two came through wormholes at the Grave, which nobody has seen Corinthia do. It's the Eye folding space for its own ships.`],
-  seen: [[`S0`, `Two came through wormholes in the crossfire and cut the Patience apart.`]],
-  hooks: [`A cathedral-ship hails them by the shard's name.`, `Florb hears the singing before one arrives.`] },
+{ id: `cathedral-ships`, type: `ship`, name: `Cathedral-ships`, sub: `Consecrated Corinthian vessels with choir crews`, faction: `choral-orders`, tag: `played`,
+  body: [`Sung into flight at [[candlemoor]]. Armed with hymn lances. Corinthian ships run on relics, which is why their wrecks in the Grave are still powered.`],
+  seen: [[`S0`, `Three dropped out of hyperspace beside three Sable Armor Freighters and destroyed the Patience.`]],
+  hooks: [`A cathedral-ship hails them by the relic's name.`, `Florb hears the singing before one arrives.`] },
 
 /* ============================ EVENTS ============================ */
-{ id: `the-crossfire`, type: `event`, name: `The crossfire at the Grave`, sub: `End of session 0`, tag: `played`, where: `grave-of-ash`,
-  body: [`Cathedral-ships came through wormholes, Sable battleships came out of hyperspace, and the Patience was caught between them. A hymn lance went straight through. The cockpit sealed and spun clear, and the lances steered around it. Then the [[platinum-shard]] took the PCs to Saint Vey.`],
-  secrets: [`Pulling the core woke its Commonweal relay, and both powers heard it.`],
+{ id: `the-crossfire`, type: `event`, name: `The Patience destroyed`, aka: [`the crossfire`], sub: `End of session 0`, tag: `played`, where: `grave-of-ash`,
+  body: [`Three [[cathedral-ships]] and three Sable Armor Freighters dropped out of hyperspace right on top of the Patience and ordered it to stand down. Before [[hotshot]] could answer, they opened fire. As the PCs' blood began to boil, [[platinum-shard|Vargas's relic]] moved them, and the core, somewhere safe.`],
+  secrets: [`*Draft:* the "distress signal" was the core's Commonweal relay waking up. That's how both fleets found them.`],
   seen: [[`S0`, `It happened.`]],
-  hooks: [`Both powers lost ships and will want someone to blame.`, `Survivors on either side saw a sealed cockpit simply vanish.`] },
-
+  hooks: [`Both powers fired on a merc ship together. Someone on each side will want to know why they were there at the same time.`, `From outside, two bodies and the core are missing from the wreck.`] },
 { id: `the-broadcast`, type: `event`, name: `The broadcast`, sub: `"Bearing zero-zero-zero. Come home."`, where: `lantern`,
   known: [`Some wrecks in the Grave still broadcast. The Ashborn record them and won't sell the tapes.`],
   secrets: [`*Draft:* it's the Lantern calling. The list of names on the Ashborn tapes is people it has heard and copied. Vargas is on it, and the Ninth Pontifex is next. The Ninth Hollow heard it first, everyone aboard heard their own names, and the clan left before morning.`],
-  seen: [[`S0`, `The datapad showed it in the sealed cockpit.`]],
   hooks: [`A PC hears their own name.`, `Sefa Kell plays a tape.`, `The bearing appears again whenever the shard and the core hum together.`] },
 
-{ id: `ash-war`, type: `event`, name: `The Ash War`, sub: `CY 272–274 · the last open war`, where: `grave-of-ash`,
+{ id: `ash-war`, type: `event`, name: `The Ash War`, sub: `CY 272–274 · the last open war`, where: `grave-of-ash`, tag: `canon`,
   known: [`Both battle fleets destroyed each other at the Grave of Ash. The Treaty of the Lantern followed in CY 274.`],
-  secrets: [`*Draft:* it ended on purpose. See [[ash-war-steered]].`],
-  hooks: [`A veteran on either side remembers the jump that "wasn't ours."`] },
-
+  body: [`**Canon:** the STR fleet was on its way to the Lantern when the Eye steered it and the Corinthian fleet into each other. The survivors became the [[ashborn]]. [[rusty-scrap]] was one of them. See [[ash-war-steered]].`],
+  hooks: [`A veteran on either side remembers the jump that "wasn't ours."`, `Rusty was there.`] },
 { id: `psalter-famine`, type: `event`, name: `The Psalter famine`, sub: `CY 310–311 · the lean years`, where: `psalter`,
   known: [`Psalter's harvests failed. Bread prices doubled across Corinthia, and there were bread riots.`],
   body: [`[[sally-smacker]] came out of it. [[killora-vargas]] mutters the famine numbers when nervous.`],
@@ -712,16 +775,20 @@ window.GM_WIKI = [
   secrets: [`*Draft:* relics are hardware, hymns are protocol, clergy are users. The Pontifex always knows. Full notes under [[#truths|Truths]].`],
   hooks: [`Reveal paths: an Open Eye monk's heretical notes, a relic that answers the wrong hymn, the Tenth Pontifex's absence, direct contact near the Throne.`, `The unlocked relics at the Chapel of Relics Unfettered are the first clue the players have already seen.`] },
 
-{ id: `lantern-rival`, type: `lore`, name: `The Lantern is the Eye's rival`, tag: `draft`, related: [`lantern`],
+{ id: `lantern-rival`, type: `lore`, name: `The Lantern is the Eye's rival`, tag: `canon`, related: [`lantern`, `van-artifact`],
   known: [`A precursor structure nobody can enter.`],
-  body: [`A second, older precursor intelligence, dormant for most of history and now waking. The Eye knows and fears it. The light changing as ships approach is the Lantern sampling them. The Treaty's no-landing clause serves the Eye.`],
-  hooks: [`The shard, the core and the broadcast all point at it.`] },
-
-{ id: `ash-war-steered`, type: `lore`, name: `The Ash War ended on purpose`, tag: `draft`, related: [`ash-war`, `nav-core`],
-  body: [`Both fleets were steered onto converging courses by corrections neither side issued: the Eye, through relic-cores on the Corinthian ships and a corrupted Commonweal nav update on the STR's. It needed both fleets gone before either landed on the Lantern.`],
-  secrets: [`It's what [[mr-sallow]]'s employer wants proven, and it would end the peace if it got out. Sally Smacker has now seen half the proof.`],
-  hooks: [`The nav core's blackbox is the first piece the players have seen.`] },
-
+  body: [
+    `**Canon:** for some reason, the Eye does not want a conscious observer on the Lantern. Nobody knows why yet, the GM included. [[van-artifact|V'an's artifact]] is tied to the Lantern's true nature, and works against the Eye and alongside it.`,
+    `*Draft:* the Lantern is a second, older precursor intelligence, dormant for most of history and now waking. The light changing as ships approach is the Lantern sampling them. The Treaty's no-landing clause serves the Eye.`],
+  secrets: [`*Draft, why the Eye fears an observer:* the Lantern is what the Eye was built from, or built to guard, and a conscious observer would see the Eye's origin. Full options under [[#truths|Truths]].`],
+  open: [`Why doesn't the Eye want a conscious observer on the Lantern?`],
+  hooks: [`The relic, the core, the broadcast and V'an's artifact all point at it.`] },
+{ id: `ash-war-steered`, type: `lore`, name: `The Ash War ended on purpose`, tag: `canon`, related: [`ash-war`, `nav-core`],
+  body: [
+    `**Canon:** the STR fleet was on its way to the Lantern when the Eye steered it and the Corinthian fleet into each other. [[rusty-scrap]]'s Longreach ship was one of those redirected.`,
+    `*Draft (how):* course corrections neither side issued, through relic-cores on the Corinthian ships and a corrupted Commonweal nav update on the STR's.`],
+  secrets: [`It's what [[mr-sallow]]'s employer wants proven, and it would end the peace if it got out. Sally Smacker has now seen part of the proof.`],
+  hooks: [`The nav core's blackbox is the first piece the players have seen.`, `*Draft:* Rusty's own ship's redirection may be on the same core.`] },
 { id: `corridor-seam`, type: `lore`, name: `The Null Corridor is a seam`, tag: `draft`, related: [`null-corridor`],
   body: [`Where the Eye's field and the Lantern's meet and cancel. It's fast because of a precursor current along the seam. Whoever learns to steer it controls the shortest road between the powers.`],
   hooks: [`A survivor of a crossing that should have killed them (an Origins hook) can feel the current.`] },
