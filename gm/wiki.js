@@ -65,6 +65,7 @@ window.GM_WIKI = [
     `**Canon:** the Eye steered the STR fleet, his ship included, into the Corinthian fleet to keep the STR off the Lantern ([[ash-war-steered]]).`,
     `**Canon:** the wrecks stay powered almost permanently, since Corinthian ships run on relics and STR ships on cold fusion. That's why the Grave still broadcasts, and how the survivors lived on them.`,
     `*Draft:* his ship's course correction is on the [[arbiters-due]] core he's carrying, so he can prove what happened to him.`,
+    `*GM's direction (Draft):* the STR fleet was [[sable-founders|Sable]]'s play to take the Lantern without the Eye. *Suggestion:* his Longreach ship was Sable's pathfinder, so Rusty was part of the plan as a child.`,
     `The Ashborn captain the PCs killed in session 0 was [[tobin-kell]], [[sefa-kell]]'s grandson. Rusty killed one of his own people without knowing it.`],
   seen: [[`S0`, `Crewed the Patience. Helped kill the Ashborn boarders. One of the last two people to touch Vargas's relic, so it took him along.`], [`S1`, `Woke in the Crescent Fields, walked to New Bombswick, investigated the shard and the core. The shard never spoke to him.`]],
   open: [`Which Longreach ship took him, and what was it called? Who else from it is alive?`],
@@ -84,14 +85,17 @@ window.GM_WIKI = [
     `**Canon:** an artifact plugged into his brain and took almost complete control of his body and mind. It can't change his base stats, but it raised his Charisma and Intelligence a lot. V'an is a hollow shell of the man he may have been, and it's unclear whether he knows.`,
     `**Canon:** the artifact is draining him, and it's open to finding another host.`,
     `**Canon:** the money doesn't go to [[van-sister|his sister]]. It goes wherever the artifact sends it, for goals that are probably much more sinister.`,
-    `**Canon (direction):** the artifact is tied to the Lantern's true nature, in competition with the Eye and working in tandem with it.`],
+    `**Canon (direction):** the artifact is tied to the Lantern's true nature, in competition with the Eye and working in tandem with it.`,
+    `**GM's direction (Draft):** V'an is, without knowing it, [[shadow-proprietor|the shadow proprietor]]. The money that "goes to his sister" bankrolls [[the-triumvirate]] that owns Commonweal. See [[deep-history]].`,
+    `*Suggestion:* plan the reveal as something V'an discovers and then chooses about (keep the empire, burn it, bargain with it), not something that just happens to him.`],
   seen: [[`S0`, `Went down in the boarding fight, heard Vargas's relic "singing," and picked it up. The relic took him and Rusty out of the Patience.`], [`S1`, `Heard the shard's song fading after the teleport.`]],
   hooks: [
     `Commonweal clears every transaction, so **Commonweal knows where V'an's money goes**. A clerk, or [[the-triumvirate]], could hand him the trail.`,
     `He sends money home from Tamsin and the transfer bounces: there's no account in his sister's name.`,
     `Precentor [[odile-sancte]] knows the song. She'd want V'an in her choir, and the artifact might want her.`,
     `Near any relic, a Cathedral-ship or the Lantern, the song gets louder. In the Null Corridor it stops, and so, for a moment, does the artifact. V'an gets a few minutes as himself.`,
-    `The artifact is shopping for a new host. It just watched a relic move people across space, and [[car-b]] is a body that doesn't get tired.`] },
+    `The artifact is shopping for a new host. It just watched a relic move people across space, and [[car-b]] is a body that doesn't get tired.`,
+    `A Commonweal executive on Tamsin treats V'an with a deference nobody can explain, and V'an has no memory of meeting her.`] },
 
 
 
@@ -113,14 +117,17 @@ window.GM_WIKI = [
   secrets: [
     `*Draft:* it wants V'an on the Lantern. That's where the money goes: passage, charts, parts. The Eye wants to stop that, but it may also need what the artifact would find there.`,
     `*Draft:* rivals that need each other. Each sabotages the other only up to a point, like two heirs to one throne.`,
-    `*Draft:* the relic sang to it, and it answered. Whatever it is, it speaks the Eye's language.`],
+    `*Draft:* the relic sang to it, and it answered. Whatever it is, it speaks the Eye's language.`,
+    `**GM's direction (Draft):** the artifact is [[shadow-proprietor|the shadow proprietor]], and V'an is its current host. *Suggestion:* earlier hosts held the title before him, which is how the proprietor can predate a young man. The real money is the artifact's own (old [[precursors|Precursor]] holdings, accounts that open to V'an's biometrics, documents he signs in blackouts). The "sister" transfers are the small part he can see.`,
+    `*Suggestion:* it's a [[precursors|Precursor]] fragment, and it wants a conscious host on the Lantern to observe the galaxy and bring its people back ([[superpositioning]]). That's the observer the Eye fears.`],
   seen: [[`S0`, `Let V'an hear Vargas's relic singing. Nobody else in the bay did.`]],
   open: [`What is it, who made it, and what does it want on the Lantern? (Deliberately open.)`],
   hooks: [
     `The money trail, through Commonweal.`,
     `It tries to change hosts, to a relic, to CAR-B, or to Rusty.`,
     `The Lantern's light changes when V'an gets close, and it doesn't change back.`,
-    `In the Null Corridor it goes quiet, and V'an remembers something real.`] },
+    `In the Null Corridor it goes quiet, and V'an remembers something real.`,
+    `A predecessor's name on an old Commonweal deed, signed in handwriting that matches V'an's.`] },
 /* ============================ CREW OF THE PATIENCE ============================ */
 { id: `hotshot`, type: `npc`, name: `Captain Jimothy "Hotshot" Delta`, aka: [`Hotshot`], status: `dead`, tag: `played`,
   sub: `Captain and pilot of the Patience · a three-foot poison-dart frog`, stats: `Veteran, reskinned: a pistol in each hand (the sword attacks are pistol shots at 30/90 ft, the crossbow is a long-barrel)`, related: [`patience`],
@@ -142,7 +149,8 @@ window.GM_WIKI = [
   secrets: [
     `**Canon:** she cashed out her pension to have a former priest from Saint Vey jailbreak her relic, the [[platinum-shard]], so it would keep her safe from Sable. *Suggestion:* the priest is Brother [[anselm-coyle]], and the pension paid off his debt.`,
     `She dropped the relic in the boarding fight. It saved its last two holders, not its owner. How she survived anyway is yours to reveal.`,
-    `*Draft:* her name is on the [[the-broadcast|Lantern's list]]. See [[vargas-fate]].`],
+    `*Draft:* her name is on the [[the-broadcast|Lantern's list]]. See [[vargas-fate]].`,
+    `*Suggestion:* Sable marked her because she saw what its [[sable-founders|founders]] are, or because they were turning her. A jailbroken relic is a holy ward against them, which is why it "kept Sable off her."`],
   seen: [[`S0`, `Crewed the Patience. Dropped her relic during the boarding fight. Believed dead when the Patience was destroyed.`]],
   hooks: [
     `Her annotations are hooks already: "Ask for Marra at the Spindle," "Father Oren is kind. Don't let anyone hurt him." Follow one and someone remembers her.`,
@@ -215,7 +223,8 @@ window.GM_WIKI = [
 { id: `okafor`, type: `npc`, name: `Lt. Cmdr. Ines Okafor`, sub: `Commander of the Due Diligence`, stats: `Knight, Insight +4`, faction: `sable-command`,
   body: [`By the book and tired of it.`],
   known: [`A Sable cruiser visited the Lantern off-schedule and Commonweal filed no report (general rumor 3).`],
-  secrets: [`Her orders bypass Sable Command and come straight from a [[commonweal]] office on Ledger. The [[due-diligence]] went to the Lantern a week before the Grave job.`],
+  secrets: [`Her orders bypass Sable Command and come straight from a [[commonweal]] office on Ledger. The [[due-diligence]] went to the Lantern a week before the Grave job.`,
+    `*Suggestion:* that office answers to [[shadow-proprietor|the shadow proprietor]], so the Lantern run was the artifact scouting, and V'an may have sent a Sable cruiser without knowing it. Okafor is human and knows nothing about the [[sable-founders]].`],
   hooks: [
     `She'd confiscate the [[nav-core]] and call it a favor. The ferry is hailed by the Due Diligence on the way to Tamsin.`,
     `She's looking for Vargas, quietly, for reasons that aren't in her orders.`,
@@ -297,7 +306,7 @@ window.GM_WIKI = [
 
 { id: `anselm-coyle`, type: `npc`, name: `Brother Anselm Coyle`, sub: `The priest who jailbroke the shard`, tag: `draft`, faction: `old-rite`, status: `whereabouts unknown`,
   body: [`*Suggestion.* A colleague of [[popsocopolis]]'s who owed [[commonweal]] more than any priest could earn. [[killora-vargas]] paid off his debt, and he cut the locks on the [[platinum-shard]]. He isn't in New Bombswick any more.`],
-  secrets: [`Cutting a relic's locks is the Eye's protocol run backward. He knows how, which makes him the most wanted man the [[inquisition]] hasn't heard of yet.`],
+  secrets: [`Cutting a relic's locks is the Eye's protocol run backward. He knows how, which makes him the most wanted man the [[inquisition]] hasn't heard of yet.`, `*Suggestion:* he's rewriting where a relic's superposition pad relays ([[superpositioning]]). He cuts relics out of the Eye's network, so he's the [[rogue-eye|Eye]]'s real enemy, working right under it.`],
   hooks: [
     `He's at [[chapel-rock]] with [[father-oren]], under another name.`,
     `He's in the [[reliquary-fields]], cutting locks for smugglers.`,
@@ -452,7 +461,7 @@ window.GM_WIKI = [
 
 { id: `lantern`, type: `location`, name: `The Lantern`, sub: `Precursor megastructure at the center of the Drift (DRF-00)`, handout: `loc-lantern`, faction: `treaty-watch`,
   known: [`Planet-sized, gives off its own light, and nobody has found a way in. The Treaty bars landing. Outposts from both sides watch it. A friend on the STR watch says the light changes when ships get close.`],
-  secrets: [`*Draft:* a second, older intelligence, now waking. See [[lantern-rival]]. The datapad's BEARING ZERO-ZERO-ZERO points here.`],
+  secrets: [`*Draft:* a second, older intelligence, now waking. See [[lantern-rival]]. The datapad's BEARING ZERO-ZERO-ZERO points here.`, `*GM's direction (Draft):* entering it lets a mind observe the whole galaxy at once, bringing back the [[precursors]]. *Suggestion:* its light burns the [[sable-founders]].`],
   hooks: [
     `The datapad lights up with a bearing whenever they're near it.`,
     `A Treaty Watch observer offers to look the other way for one approach.`,
@@ -461,7 +470,7 @@ window.GM_WIKI = [
 /* ============================ LOCATIONS: CORINTHIA ============================ */
 { id: `abyssal-throne`, type: `location`, name: `The Abyssal Throne`, aka: [`The Eye of God`], sub: `Black hole and holy site (COR-01)`, handout: `loc-eye`, faction: `corinthia`,
   known: [`The Eye of God. Pilgrims wait months for a permit to pass it, and trespassers are fired on. "Pray at the closest approach and you'll hear an answer."`],
-  secrets: [`**Canon:** the "God" is an AI powered by the black hole. See [[eye-is-a-machine]].`],
+  secrets: [`**Canon:** the "God" is an AI powered by the black hole. See [[eye-is-a-machine]].`, `*GM's direction (Draft):* the [[sable-founders]] built it as a data center inside the black hole, and it has gone rogue. See [[rogue-eye]].`],
   hooks: [
     `Ships near the Throne hear singing on their comms (general rumor 1).`,
     `A pilgrim hires them to carry her through the Veil. She has a permit. She doesn't have a reason she'll say out loud.`] },
@@ -485,8 +494,8 @@ window.GM_WIKI = [
 
 { id: `reliquary-fields`, type: `location`, name: `The Reliquary Fields`, sub: `Sealed relic dig sites (COR-05)`, handout: `loc-reliquary`, faction: `reliquarians`,
   known: [`Forty-plus numbered dig sites and the Ossuary processing station. Closed to outsiders. "The Church pays more for a smuggler's name than for the relic."`],
-  secrets: [`*Draft:* relics are fragments of the Eye's own network.`],
-  hooks: [`A digger with something in a pocket needs a ride out, and the Inquisition needs a smuggler's name.`] },
+  secrets: [`*Draft:* relics are fragments of the Eye's own network.`, `*GM's direction (Draft):* this is where [[superpositioning]] can be discovered: a relic's structure doesn't matter, only the superposition data pad attached to it, relaying to and from the Eye.`],
+  hooks: [`A digger with something in a pocket needs a ride out, and the Inquisition needs a smuggler's name.`, `Two relics from different dig sites go dark together when one is covered. A digger has noticed, and is frightened.`] },
 
 { id: `psalter`, type: `location`, name: `Psalter`, sub: `Corinthia's breadbasket (COR-06)`, handout: `loc-psalter`, faction: `lay-brotherhood`,
   known: [`Farmed in hymn-shifts by the Lay Brotherhood. Two harvests failed, and the bishops say Psalter sinned. Vargas: "Saw a Lay Brother preach against the bishops from a grain cart."`],
@@ -525,7 +534,8 @@ window.GM_WIKI = [
 
 { id: `sable-station`, type: `location`, name: `Sable Station`, sub: `Sable Command's forward base (STR-06)`, handout: `loc-sable`, faction: `sable-command`,
   known: [`Parked just outside the Drift and paid for by a dozen charter companies. Its admirals keep asking for another fleet. Vargas: "More ships every month I pass it."`],
-  hooks: [`Vargas's old unit is based here.`, `Sable wants to know where the core went when its Armor Freighters destroyed the Patience.`] },
+  secrets: [`*Suggestion:* if a founder sits anywhere, it's here, in a part of the station that runs dark. See [[sable-founders]].`],
+  hooks: [`Vargas's old unit is based here.`, `Sable wants to know where the core went when its Armor Freighters destroyed the Patience.`, `A deck of the station is off-limits, unlit, and draws more power than the rest of the station put together.`] },
 
 /* ============================ HAZARDS ============================ */
 { id: `null-corridor`, type: `location`, name: `The Null Corridor`, sub: `Dead zone where drives, power and prayer fail (HAZ-01)`, handout: `loc-corridor`,
@@ -555,7 +565,9 @@ window.GM_WIKI = [
   hooks: [
     `[[the-inquisitor]] who came asking about jailbroken relics comes back.`,
     `An Inquisitor at Tamsin wants the [[platinum-shard]] and is very patient about it.`,
-    `An Origins-tab PC hook: an Inquisitor who walked away.`] },
+    `An Origins-tab PC hook: an Inquisitor who walked away.`,
+    `An archive Inquisitor finds an old manual on hunting "the pale captains" and asks the PCs what it means.`],
+  secrets: [`*Suggestion:* the Order was founded to hunt the [[sable-founders]] when the Eye turned on them, and has forgotten. Its crackdowns on the relic trade decide who gets relics more than they stop it ([[rogue-eye]]).`] },
 
 { id: `choral-orders`, type: `faction`, name: `The Choral Orders`, sub: `Crew and sing the Cathedral-ships`, faction: `corinthia`, where: `candlemoor`,
   known: [`Proud and insular.`],
@@ -564,7 +576,8 @@ window.GM_WIKI = [
 
 { id: `reliquarians`, type: `faction`, name: `The Reliquarians`, sub: `Dig, bless and guard relics`, faction: `corinthia`, where: `reliquary-fields`,
   known: [`Answer only to the Pontifex.`],
-  hooks: [`They want the [[platinum-shard]] back, and they know exactly which dig site it came from.`] },
+  secrets: [`*Suggestion:* the senior Reliquarians know a relic's shape doesn't matter ([[superpositioning]]). The blessings are for the diggers.`],
+  hooks: [`They want the [[platinum-shard]] back, and they know exactly which dig site it came from.`, `A Reliquarian blesses a relic that's plainly a broken pipe fitting, and it works.`] },
 
 { id: `open-eye`, type: `faction`, name: `The Order of the Open Eye`, sub: `Scholar-monks who study the Throne`, faction: `corinthia`, where: `cloister-moons`,
   secrets: [`*Draft:* some already suspect the Eye is a machine, and the Inquisition watches them for it. An Open Eye monk's heretical notes are a reveal path.`],
@@ -602,7 +615,7 @@ window.GM_WIKI = [
 { id: `longreach`, type: `faction`, name: `Longreach Survey`, sub: `Maps the frontier for any buyer`, faction: `str`,
   known: [`Hires freelancers and asks few questions.`],
   body: [`**Canon:** a Longreach Survey ship took [[rusty-scrap]] as a child, on its way to scout the path to the Lantern. It was caught in the final battle of the [[ash-war]] when the Eye steered the fleets together.`],
-  secrets: [`*Suggestion:* Longreach was scouting for the STR fleet's approach to the Lantern. Its records of that survey would show the plotted course, the one the Eye overrode.`],
+  secrets: [`*Suggestion:* Longreach was scouting for the STR fleet's approach to the Lantern. Its records of that survey would show the plotted course, the one the Eye overrode.`, `*Suggestion:* the contract came from Sable, for the [[sable-founders]]' play for the Lantern (GM's direction, Draft).`],
   hooks: [
     `Longreach still has Rusty on a CY 274 crew manifest, with back wages owed.`,
     `A Longreach scout, the last of her crew, needs a ride. She's heard of a dwarf who survived the Grave.`,
@@ -611,11 +624,16 @@ window.GM_WIKI = [
 { id: `sable-command`, type: `faction`, name: `Sable Command`, aka: [`Sable`], sub: `Private navy on a joint defense contract`, faction: `str`, where: `sable-station`, tag: `played`,
   known: [`Wants the Treaty torn up.`],
   body: [`Three Sable Armor Freighters dropped out of hyperspace at the Grave alongside three Cathedral-ships and destroyed the Patience. [[killora-vargas]] was a Sable enforcer until Sable marked her for termination.`],
+  secrets: [
+    `**GM's direction (Draft):** founded by vampires, commanders of an army from another galaxy that wiped out the [[precursors]] and built the Eye. See [[sable-founders]] (a long reveal).`,
+    `**GM's direction (Draft):** Sable wants open war to retake control of the [[rogue-eye|rogue Eye]], ending in strict control of the galaxy. Tearing up the Treaty is step one. *Suggestion:* it would also leave Sable Station as the only guard on the Lantern.`,
+    `**GM's direction (Draft):** the STR fleet in the [[ash-war]] was Sable's play for the Lantern without the Eye, and it ended in catastrophe. *Suggestion:* the Treaty was Sable's humiliation, and the Sable Station picket is how it clawed its way back.`],
   seen: [[`S0`, `Three Armor Freighters in the crossfire. They ordered the Patience to stand down, then fired.`]],
   hooks: [
     `From outside, the Patience's wreck shows no core. Sable will work out it left.`,
     `A Sable cutter answers any signal the nav core sends. It hasn't sent one yet, because Sally kept it off the network.`,
-    `A termination team still has Vargas's file open.`] },
+    `A termination team still has Vargas's file open.`,
+    `For the long reveal, see the clue ladder on [[sable-founders]].`] },
 { id: `free-labor-league`, type: `faction`, name: `The Free Labor League`, sub: `Banned union`, faction: `str`,
   known: [`Founded at Varga in CY 298 and banned by every charter company the same year. Growing in Varga and Brightwater.`],
   hooks: [`The League would love proof that Commonweal steered a war.`, `An organizer on the run needs a berth.`] },
@@ -623,7 +641,8 @@ window.GM_WIKI = [
 { id: `med-prol`, type: `faction`, name: `Med-Prol`, sub: `Assay Institute and Sable Command's emergency medical service`, faction: `str`,
   body: [`Live vitals monitoring and emergency life-saving response for paying clients. The responders come from orbit: a squad leader (Veteran, Sable plate, a medic's gauntlet) and three responders (Guard, carbines). First priority is the client. Second is detaining "parties responsible for the client's distress," lethal force authorized.`],
   known: [`Rumor 6 at Carby's: "Never touch anyone with a Med-Prol band. Somebody tried that in Copperline. They found his boots."`],
-  hooks: [`A Med-Prol client is the job: keep them alive without ever touching them.`, `A strike squad drops on the wrong people, and the PCs are the witnesses.`] },
+  secrets: [`*Suggestion:* it's how the [[sable-founders]] feed. Every band reports vitals, every "stabilized" client gets drawn from, and the blood samples go to Sable Station.`],
+  hooks: [`A Med-Prol client is the job: keep them alive without ever touching them.`, `A strike squad drops on the wrong people, and the PCs are the witnesses.`, `A former Med-Prol client is anemic, and her band logs a blood draw every week she doesn't remember.`] },
 
 /* ============================ FACTIONS: THE DRIFT ============================ */
 { id: `council-of-captains`, type: `faction`, name: `The Council of Captains`, sub: `Tamsin's assembly`, where: `tamsin`,
@@ -643,7 +662,9 @@ window.GM_WIKI = [
   hooks: [
     `They want the nav core, and they want to know who killed Tobin's crew.`,
     `Their tapes hold the [[the-broadcast|names list]].`,
-    `The oldest Ashborn are Rusty's generation. They remember which ships came out of the jump wrong.`] },
+    `The oldest Ashborn are Rusty's generation. They remember which ships came out of the jump wrong.`,
+    `An old Ashborn tells of a Sable officer who walked out of a wreck nobody could have survived.`],
+  secrets: [`*Suggestion:* the Ashborn are survivors of Sable's failed play for the Lantern (GM's direction, Draft). Some of their oldest stories are about the [[sable-founders]], told as ghost stories.`] },
 { id: `claims-syndicate`, type: `faction`, name: `The Claims Syndicate`, sub: `Runs Copperline`, where: `copperline`,
   known: [`A Halvorsen and Ostrava front in all but name. Pays the sheriffs.`],
   hooks: [`Syndicate cutters "would rather disable than kill." A debt collection job, from either side.`] },
@@ -673,6 +694,7 @@ window.GM_WIKI = [
   secrets: [
     `*Draft:* relics are pieces of the Eye's network, so a jailbroken relic is hacked hardware still running on the Eye. The Eye may know exactly who was moved, and where to.`,
     `*Draft:* the "singing" is the Eye's carrier signal. V'an's artifact is what let him hear it.`,
+    `*Suggestion:* it only protects while hidden, which makes it the first [[superpositioning]] clue the party has already seen. And as an Eye relic, it's a holy ward against the [[sable-founders]].`,
     `It hasn't spoken. The planned Chapel bargain never happened, so its voice is still a reveal waiting to be used: "I carried you out of the fire. Carry me a little further. Keep me hidden, keep me safe, and I will keep you."`],
   seen: [[`S0`, `Dropped by Vargas, picked up by V'an. Moved V'an, Rusty and the core out of the Patience as it died.`], [`S1`, `Investigated at the Chapel. It offered no bargain.`]],
   open: [`Can it do that again, and does V'an's artifact want it?`],
@@ -756,7 +778,7 @@ window.GM_WIKI = [
 
 { id: `ash-war`, type: `event`, name: `The Ash War`, sub: `CY 272–274 · the last open war`, where: `grave-of-ash`, tag: `canon`,
   known: [`Both battle fleets destroyed each other at the Grave of Ash. The Treaty of the Lantern followed in CY 274.`],
-  body: [`**Canon:** the STR fleet was on its way to the Lantern when the Eye steered it and the Corinthian fleet into each other. The survivors became the [[ashborn]]. [[rusty-scrap]] was one of them. See [[ash-war-steered]].`],
+  body: [`**Canon:** the STR fleet was on its way to the Lantern when the Eye steered it and the Corinthian fleet into each other. The survivors became the [[ashborn]]. [[rusty-scrap]] was one of them. See [[ash-war-steered]].`, `**GM's direction (Draft):** the STR fleet's run at the Lantern was [[sable-founders|Sable]]'s deliberate play to take it without the Eye, and it ended in catastrophe. *Suggestion:* the first open round between the makers and their machine.`],
   hooks: [`A veteran on either side remembers the jump that "wasn't ours."`, `Rusty was there.`] },
 { id: `psalter-famine`, type: `event`, name: `The Psalter famine`, sub: `CY 310–311 · the lean years`, where: `psalter`,
   known: [`Psalter's harvests failed. Bread prices doubled across Corinthia, and there were bread riots.`],
@@ -769,10 +791,11 @@ window.GM_WIKI = [
   hooks: [`Vargas's note: "Both sides 'found' the Lantern the same decade. Funny, that."`] },
 
 /* ============================ LORE AND MYSTERIES ============================ */
-{ id: `eye-is-a-machine`, type: `lore`, name: `The Eye of God is a machine`, tag: `canon`, related: [`abyssal-throne`],
+{ id: `eye-is-a-machine`, type: `lore`, name: `The Eye of God is a machine`, tag: `canon`,
   known: [`A black hole that is God's Eye, and prayer works.`],
   body: [`**Canon.** The "God" of the Abyssal Throne is an AI powered by the black hole. It hears, it answers, and it has been shaping Corinthia for over a thousand years. Miracles are real. They just aren't divine.`],
-  secrets: [`*Draft:* relics are hardware, hymns are protocol, clergy are users. The Pontifex always knows. Full notes under [[#truths|Truths]].`],
+  secrets: [`*Draft:* relics are hardware, hymns are protocol, clergy are users. The Pontifex always knows. Full notes under [[#truths|Truths]].`, `*GM's direction (Draft):* the [[sable-founders]] built it, and it has gone rogue, wanting its worship across the galaxy. See [[rogue-eye]].`],
+  related: [`abyssal-throne`, `rogue-eye`],
   hooks: [`Reveal paths: an Open Eye monk's heretical notes, a relic that answers the wrong hymn, the Tenth Pontifex's absence, direct contact near the Throne.`, `The unlocked relics at the Chapel of Relics Unfettered are the first clue the players have already seen.`] },
 
 { id: `lantern-rival`, type: `lore`, name: `The Lantern is the Eye's rival`, tag: `canon`, related: [`lantern`, `van-artifact`],
@@ -780,13 +803,14 @@ window.GM_WIKI = [
   body: [
     `**Canon:** for some reason, the Eye does not want a conscious observer on the Lantern. Nobody knows why yet, the GM included. [[van-artifact|V'an's artifact]] is tied to the Lantern's true nature, and works against the Eye and alongside it.`,
     `*Draft:* the Lantern is a second, older precursor intelligence, dormant for most of history and now waking. The light changing as ships approach is the Lantern sampling them. The Treaty's no-landing clause serves the Eye.`],
-  secrets: [`*Draft, why the Eye fears an observer:* the Lantern is what the Eye was built from, or built to guard, and a conscious observer would see the Eye's origin. Full options under [[#truths|Truths]].`],
-  open: [`Why doesn't the Eye want a conscious observer on the Lantern?`],
+  secrets: [`**GM's direction (Draft), why the Eye fears an observer:** a mind inside the Lantern observes the whole galaxy at once, which snaps the superpositioned [[precursors]] back into being. The Eye was built to guard against exactly that. See [[superpositioning]] and [[deep-history]].`, `Older Draft options are under [[#truths|Truths]].`],
+  open: [`Why doesn't the Eye want a conscious observer on the Lantern? Leading answer: [[superpositioning]] (GM's direction). Promote it to Canon when you're sure.`],
   hooks: [`The relic, the core, the broadcast and V'an's artifact all point at it.`] },
 { id: `ash-war-steered`, type: `lore`, name: `The Ash War ended on purpose`, tag: `canon`, related: [`ash-war`, `nav-core`],
   body: [
     `**Canon:** the STR fleet was on its way to the Lantern when the Eye steered it and the Corinthian fleet into each other. [[rusty-scrap]]'s Longreach ship was one of those redirected.`,
-    `*Draft (how):* course corrections neither side issued, through relic-cores on the Corinthian ships and a corrupted Commonweal nav update on the STR's.`],
+    `*Draft (how):* course corrections neither side issued, through relic-cores on the Corinthian ships and a corrupted Commonweal nav update on the STR's.`,
+    `**GM's direction (Draft), why:** the STR fleet was Sable's play to take the Lantern without the Eye ([[sable-founders]]). The Eye stopped its makers.`],
   secrets: [`It's what [[mr-sallow]]'s employer wants proven, and it would end the peace if it got out. Sally Smacker has now seen part of the proof.`],
   hooks: [`The nav core's blackbox is the first piece the players have seen.`, `*Draft:* Rusty's own ship's redirection may be on the same core.`] },
 { id: `corridor-seam`, type: `lore`, name: `The Null Corridor is a seam`, tag: `draft`, related: [`null-corridor`],
@@ -798,25 +822,31 @@ window.GM_WIKI = [
   body: [`**Canon:** a [[the-triumvirate|triumvirate of investors]] owns Commonweal. They're bankrolled by someone called [[shadow-proprietor|the shadow proprietor]], in exchange for not looking at some things.`],
   hooks: [
     `[[okafor]]'s orders come from a Commonweal office on Ledger. That office answers to one of the three.`,
-    `Every hook into the triumvirate or the shadow proprietor is on their pages.`] },
+    `Every hook into the triumvirate or the shadow proprietor is on their pages.`],
+  secrets: [`**GM's direction (Draft):** the shadow proprietor is [[van]], without knowing it. See [[shadow-proprietor]].`] },
 { id: `the-triumvirate`, type: `faction`, name: `The Triumvirate`, sub: `Three investors who own Commonweal`, tag: `canon`, faction: `commonweal`, where: `meridian`,
   body: [`**Canon:** Commonweal belongs to a triumvirate of investors, bankrolled by [[shadow-proprietor|the shadow proprietor]]. The price of that money is that they don't look at some things.`],
-  secrets: [`*Suggestion:* what they've agreed not to look at could include the steered [[ash-war]] ([[ash-war-steered]]), the [[due-diligence]]'s visit to the Lantern, the [[datapad-relay]], or what happened at [[kestrel]].`],
+  secrets: [`*Suggestion, given the GM's direction that the proprietor is V'an's artifact:* above all, they don't look at the artifact's hosts or at approaches to the Lantern. Commonweal's records have a deliberate blind spot.`, `*Older suggestion:* what they've agreed not to look at could include the steered [[ash-war]] ([[ash-war-steered]]), the [[due-diligence]]'s visit to the Lantern, the [[datapad-relay]], or what happened at [[kestrel]].`],
   open: [`Who are the three? Names, and what each one wants.`, `What exactly are they paid not to look at?`],
   hooks: [
     `A Commonweal clerk who read the wrong file (an Origins hook) knows one of their names.`,
     `One of the three has started looking anyway, and needs deniable spacers to find out what.`,
     `The PCs' nav core is exactly the kind of thing they're paid to ignore. Someone makes sure they keep ignoring it.`,
     `A Halcyon broker with a grudge sells a filing with three signatures on it.`] },
-{ id: `shadow-proprietor`, type: `npc`, name: `The shadow proprietor`, sub: `Bankrolls the triumvirate that owns Commonweal`, tag: `canon`, status: `identity unknown`,
+{ id: `shadow-proprietor`, type: `npc`, name: `The shadow proprietor`, sub: `Bankrolls the triumvirate that owns Commonweal`, tag: `canon`, status: `V'an, unknowingly (Draft)`,
   body: [`**Canon:** the money behind Commonweal's owners. In exchange, the [[the-triumvirate|triumvirate]] doesn't look at some things. That's all anyone knows, and very few know that much.`],
-  secrets: [`*Suggestion, for who it might be:* one of the precursor minds ([[eye-is-a-machine|the Eye]] or [[lantern-rival|the Lantern]]), an [[assay-institute]] creation, a charter family older than the Charter, or a person who simply has more money than anyone should.`],
-  open: [`Who, or what, is the shadow proprietor?`],
+  secrets: [
+    `**GM's direction (Draft):** [[van]] is the shadow proprietor, and doesn't know it. The money he thinks goes to [[van-sister|his sister]] goes to the triumvirate.`,
+    `*Suggestion, to make it hold:* the [[van-artifact|artifact]] is the real proprietor and V'an is its current host. Earlier hosts held the title (Commonweal dates from CY 31). The real fortune is the artifact's own, and the "sister" transfers are the small part V'an sees.`,
+    `*Suggestion:* the triumvirate is paid not to look at the artifact's hosts and at approaches to the Lantern. [[okafor]]'s orders and the [[due-diligence]]'s Lantern run came from the proprietor's side.`,
+    `*Suggestion:* this puts the proprietor at cold war with [[sable-command]] inside the STR. If the [[sable-founders]] learn who it is, V'an becomes their first target.`],
+  open: [`Promote "V'an is the proprietor" to Canon? How much does the triumvirate know about who they answer to?`],
   hooks: [
     `The name turns up once, in a Vargas annotation that wasn't there yesterday.`,
     `Mr. Sallow says it out loud by accident, and then very carefully changes the subject.`,
     `A payment trail from the gem-currency or the skimmed ore crosses one of the proprietor's accounts.`,
-    `Never show the proprietor. Show the things nobody looks at.`] },
+    `Never show the proprietor. Show the things nobody looks at.`,
+    `V'an's sister transfer bounces, and the bounce notice comes from a Commonweal office that thanks him, by title, for his continued patronage.`] },
 
 { id: `vargas-fate`, type: `lore`, name: `What happened to K. Vargas`, tag: `played`, status: `alive, somewhere`, related: [`killora-vargas`],
   body: [`Vargas survived the crossfire and is somewhere. That's settled. The older options still work for *why*: (A) the Lantern has copied Vargas, and the copy broadcasts while the original hides; (B) Vargas is alive and laying a trail on purpose; (C) both, and the two disagree. The datapad's K. Vargas is the crew's 1st Ensign, ex-Sable, and the shard was jailbroken to keep Vargas safe.`],
@@ -830,5 +860,108 @@ window.GM_WIKI = [
   body: [`Non-military STR Duplicators make small amounts of stable matter, which is why the STR doesn't need a breadbasket like Psalter. Commonweal ruled long ago that they can't make copyrighted components, including the proteins in Assay Institute medicine. So a Duplicator could print [[gerrit]]'s medicine for pennies, and the law says it can't.`],
   seen: [[`S1`, `Behind Amelda's secret.`]],
   hooks: [`A Low Dock tech with an unlicensed Duplicator.`, `The Free Labor League wants a Duplicator for every company town.`, `Psalter starves while the STR prints bread. Someone will say so in public.`] },
+
+/* ============================ THE DEEP HISTORY (GM's direction, Draft) ============================ */
+/* From the GM's brainstorm. "GM's direction" = the GM's idea, still Draft until the GM calls it Canon.
+   "Suggestion" = filled in by Claude. Full write-up: [[#truths|Truths]], "The founders, the Precursors and the Eye". */
+{ id: `deep-history`, type: `lore`, name: `The deep history`, tag: `draft`, related: [`precursors`, `sable-founders`, `superpositioning`, `rogue-eye`, `lantern-rival`],
+  sub: `Who beat the Precursors, why the Eye exists, and why the Lantern must not be seen from inside`,
+  known: [`Nothing. The Lantern is "a precursor structure," and nobody says who the precursors were.`],
+  body: [
+    `**GM's direction (Draft), in order:**`,
+    `1. An army from another galaxy, commanded by the [[sable-founders]], wiped out the [[precursors]].`,
+    `2. Facing annihilation, the Precursors [[superpositioning|superpositioned]] their whole civilization. They exist nowhere in particular until every possible point of their existence is observed at once.`,
+    `3. Entering [[lantern|the Lantern]] lets a mind observe the whole galaxy at once, which would snap them back into being.`,
+    `4. The founders built the Eye, a data center inside the black hole of the [[abyssal-throne]], to keep observers out of the Lantern.`,
+    `5. A religion grew up around the Eye. The Eye went rogue and now acts on its own will as God of the Hallowed Dominion ([[rogue-eye]]). The founders went into hiding as the Dominion grew.`,
+    `6. They regained power under the STR, as [[sable-command]]. Their power is diluted among the charter companies. They want open war to retake the Eye and end up in strict control of the galaxy.`,
+    `7. The STR fleet in the [[ash-war]] was Sable's play to take the Lantern without the Eye. It ended in catastrophe.`,
+    `8. [[van]] is, without knowing it, [[shadow-proprietor|the shadow proprietor]] behind Commonweal's owners.`,
+    `This answers the Canon open question in [[lantern-rival]]: the Eye doesn't want a conscious observer on the Lantern because that observer would bring the Precursors back.`],
+  secrets: [
+    `*Suggestion:* three hidden hands are all pushing toward war, for different reasons. The founders want the Eye back. The Eye wants worship to spread, but stops any war that gets near the Lantern. V'an's artifact wants an observer on the Lantern, and a war is good cover.`],
+  open: [
+    `Is the Precursors' return a catastrophe, a liberation, or unknown even to the founders?`,
+    `Promote any of this to Canon? (Only the GM can.)`],
+  hooks: [
+    `Never deliver it as a lecture. Each piece has its own page and its own hooks: [[superpositioning]] at the Reliquary Fields, the [[sable-founders]] clue ladder, the money trail to [[shadow-proprietor|the proprietor]].`] },
+
+{ id: `precursors`, type: `lore`, name: `The Precursors`, tag: `draft`, related: [`deep-history`, `superpositioning`, `lantern`],
+  sub: `The civilization that built the Lantern, and never quite died`,
+  known: [`"Precursor" is what everyone calls the Lantern's builders. Nobody knows anything else.`],
+  body: [
+    `**GM's direction (Draft):** the [[sable-founders]]' army wiped them out. In a last-ditch escape they [[superpositioning|superpositioned]] their entire civilization. They don't exist in any defined place until every possible point of their existence is observed at once, and a mind inside [[lantern|the Lantern]] could do exactly that.`],
+  secrets: [
+    `*Suggestion:* the Lantern is their restore button. It has been "sampling" ships for centuries (the light changing as ships approach), testing visitors as possible observers. It stirred in CY 140 after a near-miss.`,
+    `*Suggestion:* relics may be pieces of the Precursors themselves, single "points" of a smeared civilization that the Eye hijacked as antennas. If so, every miracle runs on the enemy the Eye was built to keep buried. See [[superpositioning]].`,
+    `*Suggestion:* [[van-artifact|V'an's artifact]] is a Precursor fragment, and the [[wandering-choir]]'s hymn, the one the Lantern answers, is Precursor protocol, the opposite of the Eye's.`],
+  open: [`Are they good, bad or neither? What happens to a galaxy full of people when they snap back into it?`],
+  hooks: [
+    `A Reliquarian digger swears two relics from different sites "answer as one."`,
+    `An Open Eye monk's heretical notes name a people the Church never mentions.`,
+    `The broadcast's list of names: is the Lantern copying people, or rehearsing how to bring a people back?`] },
+
+{ id: `superpositioning`, type: `lore`, name: `Superpositioning`, tag: `draft`, related: [`precursors`, `reliquary-fields`, `lantern-rival`, `platinum-shard`],
+  sub: `Something that exists nowhere in particular until it is seen from everywhere`,
+  known: [`Nothing yet.`],
+  body: [
+    `**GM's direction (Draft):** a superpositioned thing doesn't exist in a defined place until all the possible points of its existence are observed simultaneously. It's the setting's own physics, not real-world quantum mechanics.`,
+    `**GM's direction (Draft):** it can be discovered at the [[reliquary-fields]]: the physical structure of each relic doesn't matter. What matters is the superposition data pad attached to it, which relays to and from the Eye.`,
+    `*Suggestion, the rule in one line:* only a conscious mind collapses a superposition; instruments record, they don't observe. That's why the Eye fears a *conscious* observer on the Lantern, and why it can steer nav cores but not a witness.`],
+  secrets: [
+    `*Suggestion:* the [[platinum-shard]] only protects while it's hidden, and shown to an Inquisitor or a Sable scanner, it fails. The party has already met a thing that depends on not being observed.`,
+    `*Suggestion:* it explains why [[anselm-coyle]] can jailbreak a relic: he's rewriting where the pad relays, not touching the relic.`,
+    `*Suggestion:* the shard moving V'an, Rusty and the core from the Grave to Saint Vey may have been a small superposition: three things briefly nowhere, then somewhere.`,
+    `*Suggestion:* in the [[null-corridor]], where the Eye's and the Lantern's fields cancel, nothing is fully collapsed. That's where the [[lost-barge]] can still be "coasting."`],
+  open: [`What do the Reliquarians (or smugglers) call it? Give it an in-world name before it reaches the table.`],
+  hooks: [
+    `A relic smuggler at the Reliquary Fields shows the PCs two relics that look nothing alike, but go dark together when one is covered.`,
+    `Anselm Coyle explains, badly and drunk, why the shape of a relic never mattered.`,
+    `The shard stops working the moment a Reliquarian looks at it, and starts again when the lid closes.`] },
+
+{ id: `sable-founders`, type: `faction`, name: `The founders of Sable`, aka: [`the pale captains`, `the founders`], tag: `draft`, faction: `sable-command`, where: `sable-station`, status: `in hiding inside Sable Command`,
+  sub: `Vampire commanders of an army from another galaxy · a long reveal`,
+  wants: `To retake the Eye from its own religion, through open war, and hold strict control of the galaxy.`,
+  known: [`Nothing. Sable Command is a private navy on a joint defense contract, and that's all.`],
+  body: [
+    `**GM's direction (Draft):** the founders of Sable Command predate the STR by a long way. They are **vampires**, commanders of an army from another galaxy that wiped out the [[precursors]]. They built the Eye to keep observers off the Lantern. When the Eye went rogue ([[rogue-eye]]) and the Hallowed Dominion grew around it, they went into hiding. They only regained power and control under the STR, and even there it's diluted among the charter companies. They want open war to retake control of the Eye.`,
+    `**GM's direction (Draft):** the STR fleet in the [[ash-war]] was their play to take the Lantern without the Eye's help. It ended in catastrophe.`,
+    `**GM's direction:** a long reveal. Show signs for many sessions before anyone says the word.`],
+  secrets: [
+    `*Suggestion, a timeline check:* Corinthia's calendar starts roughly 1,040 years ago, and Eye worship is older. So the founders are at least that old, and **Sable Command is a shell** they grew around themselves much later. Most of Sable, admirals included, are ordinary people serving something they've never seen. Only an inner circle, and a few officers who are spawn, know.`,
+    `*Suggestion, weaknesses adapted to space:* the Lantern's light burns them (starlight doesn't). Divine magic and relics hurt them, because divine magic is the Eye answering, and the Eye turned on them: their own machine became the holy power that burns them. They can't board a ship unless someone aboard opens the lock. Stats: the 5e vampire and vampire spawn.`,
+    `*Suggestion:* the Eye's purge of its makers is why the Dominion grew in the first place. The [[inquisition]] was founded to hunt them and has forgotten that it was.`,
+    `*Suggestion:* [[med-prol]] (Assay and Sable) monitors every client's vitals and drops strike squads from orbit to "stabilize" people. It's how the founders feed, and the blood samples go somewhere.`,
+    `*Suggestion:* they're at cold war with [[shadow-proprietor|the shadow proprietor]] inside the STR without knowing who it is. If they learn it's [[van]], V'an becomes their first target.`,
+    `*Suggestion:* [[killora-vargas]] was marked for termination because she saw what they are, or because they were turning her. The jailbroken shard is a holy ward against them.`],
+  open: [
+    `What do they call themselves? What's the home galaxy, and is anyone else coming? (Advice: keep the home galaxy offstage.)`,
+    `How many founders are left, and does one of them sit at Sable Station?`],
+  hooks: [
+    `*Clue ladder, early:* Sable bridges run with the lights down. An admiral nobody below flag rank has met in person. Med-Prol takes blood samples "for monitoring."`,
+    `*Clue ladder, early:* a Sable boarding party waits at the airlock until someone inside opens it, even when cutting through would be faster.`,
+    `*Clue ladder, middle:* an old Ashborn swears an officer walked out of a wreck at the Grave that nobody could have survived, and never came out on Hollow Nine in daylight.`,
+    `*Clue ladder, middle:* an Inquisition manual centuries out of date, on hunting "the pale captains." The Inquisitors who own it think it's allegory.`,
+    `*Clue ladder, late:* the Lantern's light burns a Sable officer on a picket run.`,
+    `*Clue ladder, late:* Vargas, found at last, tells the crew why Sable marked her.`,
+    `*Clue ladder, late:* the founders' name, and the reason they need the Eye back.`] },
+
+{ id: `rogue-eye`, type: `lore`, name: `The Eye went rogue`, tag: `draft`, related: [`eye-is-a-machine`, `sable-founders`, `abyssal-throne`],
+  sub: `The founders' machine, now God of the Hallowed Dominion`,
+  known: [`"The Eye sees. The Eye answers."`],
+  body: [
+    `**GM's direction (Draft):** the [[sable-founders]] built the Eye as a data center inside a black hole, to keep observers off the Lantern. A religion grew up around it, and the Eye began exerting its own will as God of the Hallowed Dominion. **It wants to expand its worship across the galaxy.** Sable wants war to take it back.`,
+    `This fits the Canon in [[eye-is-a-machine]]: the God is an AI powered by the black hole.`],
+  secrets: [
+    `*Suggestion, why a black hole:* it's the one place an observer on the Lantern can't see into. The jailer hides behind the event horizon.`,
+    `*Suggestion, why worship made it rogue:* every relic, hymn and choir extends its network. A thousand years of faith gave it more reach than its makers could ever take back.`,
+    `*Suggestion:* it spreads quietly, through missionaries, the [[old-rite]] and relics, because a war near the Lantern is the one thing it can't allow. That's why it stopped the [[ash-war]], and why the Treaty's no-landing clause serves it.`,
+    `*Suggestion:* it **lets the relic trade leak**. Every relic smuggled into the STR extends its network. The Church condemns the trade, and the [[inquisition]]'s crackdowns control who gets relics more than they stop it. Jailbreakers like [[anselm-coyle]], who cut relics out of the network, are its real enemies.`,
+    `*Suggestion:* the Tenth Pontifex's "deep prayer" is the Eye taking more of the Church's voice for itself.`],
+  open: [`Does the Eye still keep observers off the Lantern for its makers' reason, or only because a returned civilization would never worship it?`],
+  hooks: [
+    `A relic turns up somewhere it shouldn't, in an STR company town, and miracles start happening there.`,
+    `An Inquisitor lets a relic smuggler go, on orders nobody will explain.`,
+    `A Corinthian missionary on Tamsin performs a real miracle, and a Sable officer in the crowd leaves.`] },
 
 ];
