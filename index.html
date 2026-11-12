@@ -66,6 +66,7 @@ nav.files{border-right:1px solid var(--rule);overflow:auto;padding:18px 0;backgr
 .files a[aria-current="page"] .ic{background:var(--teal);color:var(--teal-ink);filter:drop-shadow(0 0 6px var(--teal))}
 .files a[aria-current="page"] .t{color:#fff;text-shadow:0 0 12px rgba(111,243,224,.5)}
 .files a:focus-visible{outline:1px dashed var(--teal);outline-offset:-3px}
+.files a.gmx{display:none}
 .files .foot{margin:22px 20px 0;padding-top:14px;border-top:1px solid var(--rule);font:400 10.5px/1.7 var(--f-data);color:var(--faint);letter-spacing:.06em}
 
 .view{overflow:auto;min-width:0;min-height:0;height:100%;position:relative;scrollbar-width:thin;scrollbar-color:var(--rule-2) transparent}
@@ -263,6 +264,8 @@ body.mapfs .screen::after{display:none}
   .main{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
   nav.files{display:flex;overflow-x:auto;padding:0;border-right:0;border-bottom:1px solid var(--rule)}
   .files h2,.files .foot{display:none}
+  .files a.gmx{display:flex;opacity:.45;padding-inline:16px 18px}
+  .files a.gmx .ic{background:none;border:0;color:var(--faint)}
   .files a{display:flex;gap:8px;padding:10px 13px;white-space:nowrap}
   .files a .ic{width:20px;height:22px;font-size:9px}
   .files a .s{display:none}
@@ -358,6 +361,7 @@ body.mapfs .screen::after{display:none}
     <a href="#gazetteer" data-r="gazetteer"><span class="ic">05</span><span class="t">Gazetteer</span><span class="s" id="gazCount">Systems</span></a>
     <a href="#origins" data-r="origins"><span class="ic">06</span><span class="t">Origins</span><span class="s">Registry profiles</span></a>
     <a href="#glossary" data-r="glossary"><span class="ic">07</span><span class="t">Glossary</span><span class="s">Terms</span></a>
+    <a href="gm/" class="gmx" aria-label="Restricted partition" title="Restricted partition"><span class="ic">▚</span></a>
     <div class="foot">Registered to:<br>K. VARGAS (TIER 3)<br>Transfer: unfiled<br><span style="color:var(--amber)">User annotations: <span id="annCount">—</span></span><br><a href="gm/" style="color:var(--faint);text-decoration:none">▚ Restricted partition</a></div>
    </nav>
    <main class="view" id="view">

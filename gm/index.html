@@ -144,6 +144,65 @@ code{font-family:var(--f-data);color:var(--teal)}
 .sch .lb text{font:400 24px var(--f-data);letter-spacing:.14em;fill:var(--amber);text-anchor:middle;dominant-baseline:central}
 .sch .shard{fill:var(--amber);stroke:#1a1000;stroke-width:4}
 @media (max-width:760px){.ship-fig{grid-template-columns:1fr}.ship-fig svg{max-width:560px;margin:0 auto}}
+/* wiki */
+.wk-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+#wq{flex:1 1 260px;min-width:0;background:var(--panel);border:1px solid var(--rule-2);padding:9px 12px;font:400 16px var(--f-data)}
+#wcount{font:400 12px var(--f-data);color:var(--faint);letter-spacing:.08em}
+.wk{display:grid;grid-template-columns:270px minmax(0,1fr);gap:18px;align-items:start}
+.wk-list{position:sticky;top:calc(56px + env(safe-area-inset-top,0px));max-height:calc(100vh - 72px);max-height:calc(100dvh - 72px);overflow:auto;background:var(--panel);border:1px solid var(--rule);padding:4px 0 10px;overscroll-behavior:contain;scrollbar-width:thin}
+.wk-list h5{margin:14px 14px 4px;font:400 10.5px var(--f-data);letter-spacing:.16em;text-transform:uppercase;color:var(--c)}
+.wk-list a{display:flex;gap:9px;align-items:baseline;padding:5px 14px;text-decoration:none;color:var(--fg);font-size:14.5px;line-height:1.3}
+.wk-list a:hover{background:var(--panel-2)}
+.wk-list a[aria-current="page"]{background:var(--panel-2);box-shadow:inset 2px 0 var(--amber)}
+.wk-list a .nm{flex:1;min-width:0}
+.wk-list a.new .nm{color:var(--dim)}
+.wk-list .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--ok)}
+.wk-list a.new .dot{background:transparent;border:1px solid var(--faint)}
+.wk-art{background:var(--panel);border:1px solid var(--rule);border-top:3px solid var(--c,var(--amber));padding:18px 22px}
+.wk-art>:last-child{margin-bottom:0}
+.wk-crumb{display:flex;gap:10px;font:400 11px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}
+.wk-crumb a{color:var(--faint)}
+.wk-t{margin:0;font:400 20px/1.3 var(--f-disp);letter-spacing:.04em;color:#fff;overflow-wrap:anywhere}
+.wk-sub{font:italic 500 18px/1.4 var(--f-lore);color:var(--dim);margin:4px 0 10px}
+.wk-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tag.played{color:var(--teal)}.tag.ty{color:var(--c)}.tag.st{color:var(--dim)}.tag.nw{color:var(--faint)}
+.wk-facts{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;margin:0 0 14px;font-size:14.5px}
+.wk-facts dt{font:400 11px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding-top:3px}
+.wk-facts dd{margin:0}
+.wk-art h4{margin:20px 0 6px}
+.wk-art h4 small{font-size:10.5px;color:var(--faint);letter-spacing:.1em}
+.wk-seen{list-style:none;padding-left:0}
+.wk-seen li{display:grid;grid-template-columns:38px 1fr;gap:8px}
+.wk-seen .s{font:400 12px var(--f-data);color:var(--amber);padding-top:2px}
+.wk-seen .s a{color:inherit}
+.wk-hooks{border:1px dashed var(--rule-2);padding:4px 18px 8px;margin-top:20px;background:rgba(255,179,92,.04)}
+.wk-hooks h4{margin-top:12px}
+.wk-hooks li.used{color:var(--faint)}
+.wk-hooks li.used::after{content:" · used " attr(data-used);font:400 11px var(--f-data);letter-spacing:.08em;color:var(--amber)}
+.wk-open li{color:#ffd9ad}
+.wk-links{display:flex;flex-wrap:wrap;gap:6px}
+.wk-links a{font:400 12.5px var(--f-data);text-decoration:none;border:1px solid var(--rule-2);padding:4px 9px;color:var(--fg)}
+.wk-links a:hover{border-color:var(--amber);color:var(--amber)}
+a.wl{color:var(--teal);text-decoration:none;border-bottom:1px dotted currentColor}
+a.wl:hover{color:#fff}
+.wl.broken{color:var(--haz);border-bottom:1px dashed currentColor}
+.wk-home .grid{margin-bottom:14px}
+.wk-roll{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}
+.wk-hook{border-left:3px solid var(--amber);background:#0a0d26;padding:10px 14px;margin:0 0 6px;min-height:3em}
+.wk-hook .from{display:block;margin-top:6px;font:400 11.5px var(--f-data);letter-spacing:.08em;color:var(--faint)}
+.wk-stat{display:flex;flex-wrap:wrap;gap:6px 16px;font:400 12.5px var(--f-data);color:var(--dim);margin-bottom:6px}
+.wk-stat b{color:var(--fg);font-weight:400}
+.wk-back{display:none}
+@media (max-width:760px){
+  .wk{grid-template-columns:1fr}
+  .wk-list{position:static;max-height:none}
+  .wk.reading .wk-list{display:none}
+  .wk-art{padding:16px}
+  .wk-facts{grid-template-columns:1fr;gap:0}
+  .wk-facts dd{margin-bottom:8px}
+  .wk-back{display:inline}
+  .wk-list a{padding:8px 14px}
+}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head><body>
@@ -165,7 +224,7 @@ code{font-family:var(--f-data);color:var(--teal)}
 <div id="app" hidden>
 <div class="bar"><div class="bar-in">
  <span class="brand">GM · DRIFT</span>
- <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#session0">Last time</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
+ <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#session0">Last time</a><a href="#wiki">Wiki</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
  <button class="btn" id="lockBtn" type="button">Lock</button>
 </div></div>
 
@@ -188,14 +247,15 @@ code{font-family:var(--f-data);color:var(--teal)}
   <ul>
    <li><strong>The shard and the core:</strong> they investigated both (beats 4 and 5). They told Sally Smacker to read the core on a <b>sandboxed local machine</b>, not on anything networked, so its Commonweal relay never woke and <b>the Sable clock never started</b>.</li>
    <li><strong>All four major NPCs met:</strong> Carby, Sally Smacker, Father Popsocopolis and Amelda Dawntreader.</li>
-   <li><strong>Carby isn't human.</strong> "Carby Newplayer" is <b>CAR-B &nu;_player</b> (that's a Greek nu): a jailbroken reception android from the Halvorsen Combine. The party wants him in their crew once they have a ship.</li>
-   <li><strong>Amelda:</strong> they found out her secret, and there was no fight. They made a deal instead: they'll help her load <b>invisible Inquisitor Tracking Gems</b> into the <b>30 crates</b> she's requisitioning, and in exchange she gives them passage to Free Harbor Tamsin. They chose not to ask questions.</li>
+   <li><strong>Carby isn't human.</strong> "Carby Newplayer" is <b><a href="#wiki/car-b">CAR-B &nu;_player</a></b> (that's a Greek nu): a jailbroken reception android from the Halvorsen Combine. The party wants him in their crew once they have a ship.</li>
+   <li><strong>Amelda:</strong> they found out her secret, and there was no fight. They made a deal instead: they'll help her load <b><a href="#wiki/tracking-gems">invisible Inquisitor Tracking Gems</a></b> into the <b>30 crates</b> she's requisitioning, and in exchange she gives them passage to Free Harbor Tamsin. They chose not to ask questions.</li>
    <li><strong>Departure:</strong> in <b>two galactic standard weeks</b>. That replaces the plan's "3 rotations" (beat 7b and the <em>Prudent Margin</em> note).</li>
-   <li><strong>Rumor 1 changed:</strong> a black orb came crashing out of the sky two galactic standard weeks ago, then took off toward the upper atmosphere. That's your hint that Florb is alive.</li>
+   <li><strong>Rumor 1 changed:</strong> a black orb came crashing out of the sky two galactic standard weeks ago, then took off toward the upper atmosphere. That's your hint that <a href="#wiki/florb">Florb</a> is alive.</li>
   </ul>
   <h4>Loose threads <em>(suggestions)</em></h4>
   <ul>
    <li><strong>The timing works:</strong> 11 lost days plus the 3-day walk is about two weeks, so the orb came down at about the same time the party did, somewhere else. Where Florb went after that is open.</li>
+   <li class="secret"><strong>Sally has seen the blackbox.</strong> She read the core, so she knows the fleet's exit point was swapped for the Grave of Ash. With her grudge against the STR, she won't forget it. See her <a href="#wiki/sally-smacker">wiki page</a>.</li>
    <li class="secret"><strong>What the gems track</strong>, if you want options: (a) the 30 crates are the skimmed ore, and the gems let the Inquisition follow its own cargo through STR customs; (b) the gems ride in the Ostrava crates, so the Inquisition can see where the STR's ore really goes; (c) they follow the ferry itself, and everyone on it, including a jailbroken relic (rumor 5: an Inquisitor already came asking). The players didn't ask, so they don't know which.</li>
    <li class="secret"><strong>CAR-B:</strong> a Halvorsen unit running a saloon in a Halvorsen contract town is a risk. Halvorsen may still list him as stolen property, so taking him aboard their own ship is a salvage claim waiting to happen. Whoever jailbroke him could be the same hand that cut the shard's locks (Brother Anselm), or not.</li>
    <li><strong>Two weeks of downtime</strong> to fill or skip: the loading job itself, healing up, the shard's bargain with Rusty, and anything they still want from Sally or Father Pops.</li>
@@ -510,6 +570,32 @@ code{font-family:var(--f-data);color:var(--teal)}
  </details>
 </section>
 
+<!-- ============================ WIKI ============================ -->
+<section id="wiki">
+ <h2><span class="k">W</span>Campaign wiki</h2>
+ <p class="dim">Every person, place, faction, item, ship, event and secret in the campaign, one page each, linked together. Each page ends with ways to bring it in (if the players haven't met it) or back (if they have). Those are always suggestions. A filled dot in the list means it has appeared at the table.</p>
+ <details class="howto">
+  <summary>How the wiki grows</summary>
+  <p><strong>Send Claude your session plan or recap.</strong> A plan adds pages for new people, places and things, plus hooks. A recap adds an "At the table" line to everything that showed up, marks hooks you used, updates statuses, records what you decided, and adds a session page.</p>
+  <p>To edit by hand, open <code>gm/wiki.js</code>. Its header lists every field. Text can link to another page with <code>[[id]]</code> or <code>[[id|other words]]</code>. Broken links show up red, and the wiki's front page counts them.</p>
+<pre>{ id: `gerrit`, type: `npc`, name: `Gerrit Dawntreader`, sub: `Amelda's husband`,
+  where: `new-bombswick`, status: `ill`,
+  body: [`Coughing in the back room. See [[amelda]].`],
+  seen: [[`S1`, `Never seen; the party heard him.`]],
+  hooks: [`[[father-oren]] could heal him.`] },</pre>
+ </details>
+ <div class="wk-tools">
+  <input id="wq" type="search" placeholder="Search names, places, secrets, hooks" aria-label="Search the wiki" autocomplete="off" enterkeyhint="search">
+  <div class="chips" id="wtypes"></div>
+  <div class="chips" id="wmet"></div>
+  <span id="wcount" aria-live="polite"></span>
+ </div>
+ <div class="wk" id="wk">
+  <nav class="wk-list" id="wlist" aria-label="Wiki pages"></nav>
+  <div id="wpage"></div>
+ </div>
+</section>
+
 <!-- ============================ TRUTHS ============================ -->
 <section id="truths">
  <h2><span class="k">01</span>Truths of the Drift</h2>
@@ -599,7 +685,7 @@ code{font-family:var(--f-data);color:var(--teal)}
 <!-- ============================ CAST ============================ -->
 <section id="cast">
  <h2><span class="k">02</span>Cast and secrets</h2>
- <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description. New Bombswick's people are in <a href="#tonight">Tonight</a>.</p>
+ <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description. New Bombswick's people are in <a href="#tonight">Tonight</a>. Everyone has a fuller page, with hooks, in the <a href="#wiki">Wiki</a>.</p>
  <div class="grid">
   <div class="stat"><h4>Marra Tesk</h4><div class="sub">Fixer, the Spindle, Tamsin</div><div class="line">Spy. Dry, quick, loyal to Vargas in her own way. Wants her 600 cr and to know what happened.</div><div class="line secret">Takes 10% from Sallow. Doesn't know who he works for, and doesn't want to.</div></div>
   <div class="stat"><h4>"Mr. Sallow"</h4><div class="sub">The buyer</div><div class="line">Spy. Grey coat, perfect manners.</div><div class="line secret">Assay Institute handler. Needs the Ash War charts to prove the fleets were steered. Afraid of whatever silenced Kestrel.</div></div>
@@ -1035,7 +1121,7 @@ code{font-family:var(--f-data);color:var(--teal)}
 
 <!-- Load library.js with a fresh URL every time so edits show up right after a deploy
      (GitHub Pages lets browsers cache it for ~10 minutes otherwise). -->
-<script>document.write('<script src="library.js?v=' + Date.now() + '"><\/script>')</script>
+<script>document.write('<script src="library.js?v=' + Date.now() + '"><\/script><script src="wiki.js?v=' + Date.now() + '"><\/script>')</script>
 <script>
 (function(){
  /* Soft lock. The phrase is checked against a hash so it isn't sitting in the source as plain text,
@@ -1048,7 +1134,7 @@ code{font-family:var(--f-data);color:var(--teal)}
  window.gmHash = p => cyrb53(String(p).trim().toLowerCase());
  const gate=document.getElementById("gate"), app=document.getElementById("app");
  const store={get(){try{return localStorage.getItem(KEY)}catch(e){return null}},set(v){try{v?localStorage.setItem(KEY,v):localStorage.removeItem(KEY)}catch(e){}}};
- function open(){gate.hidden=true;app.hidden=false;renderLib();if(location.hash){const el=document.getElementById(location.hash.slice(1));el&&el.scrollIntoView()}}
+ function open(){gate.hidden=true;app.hidden=false;renderLib();renderWiki();if(!wikiRoute()&&location.hash){const el=document.getElementById(location.hash.slice(1));el&&el.scrollIntoView()}}
  document.getElementById("gateForm").addEventListener("submit",e=>{e.preventDefault();
   const h=gmHash(document.getElementById("pw").value);
   if(h===PASS_HASH){store.set(h);open()} else {document.getElementById("gateErr").textContent="That phrase doesn't open this partition.";document.getElementById("pw").select()}});
@@ -1090,6 +1176,111 @@ code{font-family:var(--f-data);color:var(--teal)}
      ${x.credit?`<div class="meta">Credit: ${esc(x.credit)}</div>`:""}</div>
     <div class="ft">${links.join("")}</div></article>`}).join("");
  }
+
+ /* Wiki: pages from gm/wiki.js (window.GM_WIKI). Routing is #wiki/<id>. */
+ const WIKI=(window.GM_WIKI||[]).filter(x=>x&&x.id&&x.name);
+ const WBY={};WIKI.forEach(x=>{if(WBY[x.id])console.warn("wiki: duplicate id",x.id);WBY[x.id]=x});
+ const WTYPE={session:["Sessions","var(--amber)"],pc:["PCs","var(--ok)"],npc:["NPCs","var(--teal)"],location:["Locations","var(--lil)"],faction:["Factions","var(--haz)"],item:["Items","var(--lan)"],ship:["Ships","var(--teal)"],event:["Events","var(--amber)"],lore:["Lore and mysteries","var(--lil)"]};
+ const WORDER=[...Object.keys(WTYPE),...new Set(WIKI.map(x=>x.type).filter(t=>!WTYPE[t]))];
+ const tInfo=t=>WTYPE[t]||[t||"other","var(--dim)"];
+ const arr=v=>v==null?[]:Array.isArray(v)?v:[v];
+ const hookT=h=>typeof h==="string"?h:(h&&h.t)||"";
+ const met=x=>x.type==="session"||x.type==="pc"||arr(x.seen).length>0;
+ const textsOf=x=>[x.name,...arr(x.aka),x.sub,x.status,x.stats,x.wants,...arr(x.known),...arr(x.body),...arr(x.secrets),...arr(x.open),...arr(x.seen).map(s=>arr(s)[1]),...arr(x.hooks).map(hookT)].filter(Boolean).map(String);
+ const LINK_RE=/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+ const OUT={},BACK={},BROKEN=[];
+ WIKI.forEach(x=>{const o=new Set([...arr(x.related),x.where,x.faction].filter(Boolean));
+  textsOf(x).forEach(t=>{for(const m of t.matchAll(LINK_RE)){const id=m[1].trim();if(id[0]!=="#")o.add(id)}});
+  arr(x.seen).forEach(s=>{const sid=String(arr(s)[0]||"").toLowerCase();if(sid&&!WBY[sid])BROKEN.push([x.id,sid])});
+  o.delete(x.id);OUT[x.id]=o;o.forEach(id=>{if(!WBY[id]){BROKEN.push([x.id,id]);return}(BACK[id]=BACK[id]||new Set).add(x.id)})});
+ const NOHOOKS=WIKI.filter(x=>!arr(x.hooks).length).map(x=>x.id);
+ function fmt(s){
+  return esc(s).replace(LINK_RE,(m,id,lab)=>{id=id.trim();
+   if(id[0]==="#")return `<a href="${id}">${lab||id.slice(1)}</a>`;
+   const e=WBY[id];return e?`<a class="wl" href="#wiki/${id}">${lab||esc(e.name)}</a>`:`<span class="wl broken" title="No page with id ${id}">${lab||id}</span>`})
+   .replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*([^*\s][^*]*?)\*/g,"<i>$1</i>");
+ }
+ const wlink=id=>{const e=WBY[id];return e?`<a href="#wiki/${id}">${esc(e.name)}</a>`:""};
+ const sessLink=s=>{const id=String(s).toLowerCase();return WBY[id]?`<a href="#wiki/${id}">${esc(s)}</a>`:esc(s)};
+ let wType="all",wMet="all",wCur=null,wBuilt=false;
+ const whay={};WIKI.forEach(x=>whay[x.id]=[x.id,x.type,...textsOf(x)].join(" ").toLowerCase());
+ function renderWiki(){
+  if(wBuilt)return;wBuilt=true;
+  const te=document.getElementById("wtypes"),me=document.getElementById("wmet");
+  te.innerHTML=[["all","All"],...WORDER.filter(t=>WIKI.some(x=>x.type===t)).map(t=>[t,tInfo(t)[0]])].map(([t,l])=>`<button class="chip" type="button" data-t="${esc(t)}" aria-pressed="${t==="all"}">${esc(l)}</button>`).join("");
+  me.innerHTML=[["all","Any"],["met","Met at the table"],["new","Not yet met"]].map(([t,l])=>`<button class="chip" type="button" data-m="${t}" aria-pressed="${t==="all"}">${l}</button>`).join("");
+  te.addEventListener("click",e=>{const b=e.target.closest("[data-t]");if(!b)return;wType=b.dataset.t;te.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));drawWList()});
+  me.addEventListener("click",e=>{const b=e.target.closest("[data-m]");if(!b)return;wMet=b.dataset.m;me.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));drawWList()});
+  document.getElementById("wq").addEventListener("input",drawWList);
+  document.getElementById("wpage").addEventListener("click",e=>{const b=e.target.closest("[data-roll]");if(b)rollHook(b.dataset.roll)});
+  drawWList();drawWPage();
+ }
+ function drawWList(){
+  const words=document.getElementById("wq").value.toLowerCase().split(/\s+/).filter(Boolean);
+  const list=WIKI.filter(x=>(wType==="all"||x.type===wType)&&(wMet==="all"||(wMet==="met")===met(x))&&words.every(w=>whay[x.id].includes(w)));
+  document.getElementById("wcount").textContent=`${list.length} of ${WIKI.length} pages`;
+  const el=document.getElementById("wlist");
+  if(!list.length){el.innerHTML=`<div class="empty" style="border:0">Nothing matches.</div>`;return}
+  el.innerHTML=WORDER.map(t=>{const g=list.filter(x=>x.type===t).sort((a,b)=>t==="session"?0:a.name.localeCompare(b.name));if(!g.length)return"";
+   return `<h5 style="--c:${tInfo(t)[1]}">${esc(tInfo(t)[0])} · ${g.length}</h5>`+g.map(x=>`<a href="#wiki/${esc(x.id)}" class="${met(x)?"":"new"}"${x.id===wCur?' aria-current="page"':""}><span class="dot" title="${met(x)?"Met at the table":"Not yet met"}"></span><span class="nm">${esc(x.name)}</span></a>`).join("")}).join("");
+ }
+ function drawWPage(){
+  const el=document.getElementById("wpage"),wk=document.getElementById("wk");
+  wk.classList.toggle("reading",!!wCur);
+  if(!wCur){el.innerHTML=homeHtml();return}
+  const x=WBY[wCur],[tl,tc]=tInfo(x.type),isMet=met(x);
+  const facts=[["Also",arr(x.aka).map(esc).join(" · ")],["Where",x.where&&(WBY[x.where]?wlink(x.where):esc(x.where))],["Faction",x.faction&&(WBY[x.faction]?wlink(x.faction):esc(x.faction))],["Stats",x.stats&&fmt(x.stats)],["Wants",x.wants&&fmt(x.wants)],["Handout",x.handout&&`<a href="../index.html#${esc(x.handout)}" target="_blank" rel="noopener">What the players' datapad says ↗</a>`]].filter(f=>f[1]);
+  const hooks=arr(x.hooks),seen=arr(x.seen),back=[...(BACK[x.id]||[])].filter(id=>!OUT[x.id].has(id)),out=[...OUT[x.id]].filter(id=>WBY[id]);
+  el.innerHTML=`<article class="wk-art" style="--c:${tc}">
+   <div class="wk-crumb"><a class="wk-back" href="#wiki">← All pages</a><span><a href="#wiki">Wiki</a> / ${esc(tl)}</span></div>
+   <h3 class="wk-t">${esc(x.name)}</h3>${x.sub?`<div class="wk-sub">${fmt(x.sub)}</div>`:""}
+   <div class="wk-tags"><span class="tag ty">${esc(tl.replace(/s$/,""))}</span>${x.tag?`<span class="tag ${esc(x.tag)}">${esc(x.tag==="draft"?"Draft":x.tag==="canon"?"Canon":x.tag==="played"?"Played":x.tag)}</span>`:""}${x.status?`<span class="tag st">${esc(x.status)}</span>`:""}${isMet?"":`<span class="tag nw">Not yet met</span>`}</div>
+   ${facts.length?`<dl class="wk-facts">${facts.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>`:""}
+   ${arr(x.known).map(k=>`<p class="players">${fmt(k)}</p>`).join("")}
+   ${arr(x.body).map(p=>`<p>${fmt(p)}</p>`).join("")}
+   ${arr(x.secrets).length?`<h4>Secrets</h4><ul>${arr(x.secrets).map(s=>`<li class="secret">${fmt(s)}</li>`).join("")}</ul>`:""}
+   ${seen.length?`<h4>At the table</h4><ul class="wk-seen">${seen.map(s=>`<li><span class="s">${sessLink(arr(s)[0])}</span><span>${fmt(arr(s)[1]||"")}</span></li>`).join("")}</ul>`:""}
+   ${arr(x.open).length?`<h4>To decide</h4><ul class="wk-open">${arr(x.open).map(s=>`<li>${fmt(s)}</li>`).join("")}</ul>`:""}
+   <div class="wk-hooks"><h4>${x.type==="session"?"Echoes: what can come back from this session":isMet?"Ways to bring it back":"Ways to introduce it"} <small>· suggestions</small></h4>
+    ${hooks.length?`<ul>${hooks.map(h=>typeof h==="object"&&h.used?`<li class="used" data-used="${esc(h.used)}">${fmt(hookT(h))}</li>`:`<li>${fmt(hookT(h))}</li>`).join("")}</ul>`:`<p class="dim">No hooks yet. Ask Claude for some.</p>`}</div>
+   ${out.length?`<h4>Connected</h4><div class="wk-links">${out.map(wlink).join("")}</div>`:""}
+   ${back.length?`<h4>Mentioned on</h4><div class="wk-links">${back.map(wlink).join("")}</div>`:""}
+  </article>`;
+ }
+ function homeHtml(){
+  const sessions=WIKI.filter(x=>x.type==="session"),last=sessions[sessions.length-1];
+  const lastId=last&&last.id.toUpperCase();
+  const touched=lastId?WIKI.filter(x=>x.type!=="session"&&arr(x.seen).some(s=>String(arr(s)[0]).toUpperCase()===lastId)):[];
+  const opens=WIKI.flatMap(x=>arr(x.open).map(o=>[x.id,o]));
+  const nMet=WIKI.filter(met).length;
+  const health=[BROKEN.length?`${BROKEN.length} broken link${BROKEN.length>1?"s":""}: ${BROKEN.map(([a,b])=>`${esc(b)} (on ${wlink(a)})`).join(", ")}`:"",NOHOOKS.length?`${NOHOOKS.length} page${NOHOOKS.length>1?"s":""} without hooks: ${NOHOOKS.map(wlink).join(", ")}`:""].filter(Boolean);
+  return `<article class="wk-art wk-home" style="--c:var(--amber)">
+   <h3 class="wk-t">The Drift, behind the screen</h3>
+   <div class="wk-stat" style="margin-top:8px"><span><b>${WIKI.length}</b> pages</span><span><b>${nMet}</b> met at the table</span><span><b>${WIKI.length-nMet}</b> waiting in the wings</span><span><b>${sessions.length}</b> sessions</span></div>
+   <h4>Roll a hook</h4>
+   <div class="wk-roll"><button class="btn" type="button" data-roll="new">Something new</button><button class="btn" type="button" data-roll="met">Bring something back</button></div>
+   <div class="wk-hook" id="wroll"><span class="dim">Pick one: a hook from a page the players haven't met yet, or one that brings back something they have.</span></div>
+   ${last?`<h4>Touched last session (${sessLink(lastId)})</h4><div class="wk-links">${touched.map(x=>wlink(x.id)).join("")||'<span class="dim">Nothing yet.</span>'}</div>`:""}
+   ${opens.length?`<h4>To decide · ${opens.length}</h4><ul class="wk-open">${opens.map(([id,o])=>`<li>${fmt(o)} <span class="dim">(${wlink(id)})</span></li>`).join("")}</ul>`:""}
+   ${health.length?`<h4>Housekeeping</h4><ul>${health.map(h=>`<li class="dim">${h}</li>`).join("")}</ul>`:""}
+  </article>`;
+ }
+ function rollHook(kind){
+  const pool=WIKI.filter(x=>x.type!=="session"&&(kind==="met")===met(x)).flatMap(x=>arr(x.hooks).filter(h=>!(typeof h==="object"&&h.used)).map(h=>[x.id,hookT(h)]));
+  const el=document.getElementById("wroll");if(!el)return;
+  if(!pool.length){el.innerHTML=`<span class="dim">No hooks to roll.</span>`;return}
+  const [id,t]=pool[Math.floor(Math.random()*pool.length)];
+  el.innerHTML=`${fmt(t)}<span class="from">From ${wlink(id)}</span>`;
+ }
+ function wikiRoute(){
+  const h=decodeURIComponent(location.hash||"");
+  if(h!=="#wiki"&&!h.startsWith("#wiki/"))return false;
+  const id=h.slice(6);wCur=WBY[id]?id:null;
+  drawWList();drawWPage();
+  (wCur?document.getElementById("wk"):document.getElementById("wiki")).scrollIntoView();
+  return true;
+ }
+ addEventListener("hashchange",()=>{if(!app.hidden)wikiRoute()});
  if(store.get()===PASS_HASH) open(); else document.getElementById("pw").focus();
 })();
 </script>
