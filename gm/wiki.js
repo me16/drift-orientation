@@ -77,7 +77,7 @@ window.GM_WIKI = [
   seen: [[`S0`, `Captained the Grave job and the ship fight.`]],
   hooks: [
     `His debt didn't die with him. [[marra-tesk]] calls it in, and since the crew shared the job, she says the crew shares the bill.`,
-    `His body is in the cockpit wreck at the Grave. The Ashborn who find it will strip it, tape his last comm, and know the Patience's crew.`,
+    `*If he died aboard:* his body is in the cockpit wreck at the Grave. The Ashborn who find it will strip it, tape his last comm, and know the Patience's crew.`,
     `Someone at Tamsin is still waiting for him: a partner, a creditor, a kid. They want to hear how he died from the people who were there.`,
     `The Patience is still registered to him. Its impound papers, his will (if he had one) or his berth at Tamsin come with strings the PCs could pull.`,
     `If the Lantern copies the dead, his voice could turn up on the [[the-broadcast|broadcast]].`] },
