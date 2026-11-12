@@ -28,9 +28,8 @@ window.GM_WIKI = [
   sub: `Session zero, characters, the Ashborn fight and the crossfire`,
   body: [
     `Two PCs, [[rusty-scrap]] and [[van]], signed on with [[hotshot]]'s crew aboard the [[patience]]. [[marra-tesk]] brokered the job for [[mr-sallow]]: pull the [[nav-core]] out of the wreck of the [[arbiters-due]] at the [[grave-of-ash]]. Pay was 4,000 cr on delivery. Sallow said, "Don't plug it into anything."`,
-    `The core came free, an [[ashborn]] salvage rig attacked and then boarded, and [[tobin-kell]] led the boarders. Then came [[the-crossfire]]: two [[cathedral-ships]] came through wormholes, three Sable battleships dropped out of hyperspace, and a hymn lance went straight through the Patience. The cockpit sealed and spun clear, and the [[datapad]] lit up on its own: BEARING ZERO-ZERO-ZERO. COME HOME.`,
+    `The core came free, an [[ashborn]] salvage rig attacked and then boarded, and the PCs killed its leader, [[tobin-kell]], without ever learning his name. Then came [[the-crossfire]]: two [[cathedral-ships]] came through wormholes, three Sable battleships dropped out of hyperspace, and a hymn lance went straight through the Patience. The cockpit sealed and spun clear, and the [[datapad]] lit up on its own: BEARING ZERO-ZERO-ZERO. COME HOME.`,
     `The full plan is folded up under [[#session0|Last time]].`],
-  open: [`What happened to Tobin Kell after the boarding fight? It decides how the Ashborn feel about the PCs.`],
   hooks: [
     `Anyone who was in the Grave that night can turn up: an Ashborn who saw the cockpit vanish, a Sable officer who survived the lance, a Choir singer who heard the shard answer.`,
     `The Patience's cockpit is still out there, empty or not. Whoever opens it finds the glass-scorched seats and no bodies.`,
@@ -40,12 +39,11 @@ window.GM_WIKI = [
   sub: `Saint Vey: the walk, New Bombswick, and a deal with Amelda`,
   body: [
     `The [[platinum-shard]] teleported the PCs out of the dying Patience to the [[crescent-fields]] of [[saint-vey]], and they walked three days to [[new-bombswick]].`,
-    `They investigated the shard and the [[nav-core]]. They had [[sally-smacker]] read the core on a sandboxed local machine, never a networked one, so its Commonweal relay never woke and no Sable cutter is coming. They met all four major NPCs: [[car-b]], Sally, [[popsocopolis]] and [[amelda]].`,
+    `They investigated the shard and the [[nav-core]]. The shard never spoke to them or offered a bargain. They had [[sally-smacker]] read the core on a sandboxed local machine, never a networked one, so its Commonweal relay never woke and no Sable cutter is coming. They met all four major NPCs: [[car-b]], Sally, [[popsocopolis]] and [[amelda]].`,
     `"Carby Newplayer" turned out to be CAR-B ν_player, a jailbroken Halvorsen reception android. The party wants him on their crew once they have a ship.`,
     `They found out Amelda's secret and made a deal instead of a fight. They'll load invisible [[tracking-gems]] into the 30 crates she's requisitioning, and they chose not to ask questions. In exchange she gives them passage to [[tamsin]]. They leave in two galactic standard weeks.`,
     `Rumor 1 at Carby's changed: a black orb came crashing out of the sky two weeks back, then took off for the upper atmosphere. [[florb]] lives.`,
     `The full plan is under [[#tonight|Tonight]].`],
-  open: [`Did Rusty take the shard's bargain at the Chapel (protection, if he keeps it hidden)?`],
   hooks: [
     `Two weeks of downtime on Saint Vey: the loading job, rest, and anything left to ask Sally, Father Pops or CAR-B.`,
     `The 30 crates ride the same ferry the PCs do.`,
@@ -54,11 +52,11 @@ window.GM_WIKI = [
 
 /* ============================ PCs ============================ */
 { id: `rusty-scrap`, type: `pc`, name: `Rusty Scrap`, sub: `Player character`,
-  body: [`One of the two PCs. The details are the player's. In the plan, the [[platinum-shard]] speaks to Rusty inside the Chapel, and Rusty may be able to plug straight into the [[nav-core]].`],
+  body: [`One of the two PCs. The details are the player's. The plan had the [[platinum-shard]] speak to Rusty inside the Chapel and offer a bargain. That never happened, so the shard hasn't spoken to anyone yet. Rusty may be able to plug straight into the [[nav-core]].`],
   seen: [[`S0`, `Crewed the Patience on the Grave job.`], [`S1`, `Woke in the Crescent Fields, walked to New Bombswick, investigated the shard and the core.`]],
   open: [`Record Rusty's class, background, debts and the answers to the three session-zero questions here.`],
   hooks: [
-    `The shard's bargain: once per long rest it can turn a hit (+5 AC, like *shield*), if Rusty keeps it hidden. When it's shown to an Inquisitor, a Sable scanner or a Commonweal clerk, the protection fails and somebody notices.`,
+    `The shard's bargain is still unspent. It could speak to Rusty, or to someone else, at a moment that matters more than the Chapel: in danger, near the Lantern, or in an Inquisitor's hand. *Suggestion:* once per long rest it turns a hit (+5 AC, like *shield*), as long as it stays hidden.`,
     `Whatever Rusty owes, and to whom, can be waiting at Tamsin.`] },
 
 { id: `van`, type: `pc`, name: `V'an`, sub: `Player character · hears the song`,
@@ -72,28 +70,28 @@ window.GM_WIKI = [
     `An Ashborn tape from [[sefa-kell]]'s library plays V'an's name in the list.`] },
 
 /* ============================ CREW OF THE PATIENCE ============================ */
-{ id: `hotshot`, type: `npc`, name: `Captain Jimothy "Hotshot" Delta`, aka: [`Hotshot`], status: `unknown since the crossfire`,
+{ id: `hotshot`, type: `npc`, name: `Captain Jimothy "Hotshot" Delta`, aka: [`Hotshot`], status: `dead`, tag: `played`,
   sub: `Captain of the Patience · owns the contract and the debt`, stats: `Veteran`, related: [`patience`],
   body: [`Flew the [[patience]], or ran engineering if a PC took the helm. Calm on the comm, swears off it. Bought the Patience at a [[tamsin]] impound auction, and the [[datapad]] came with it.`],
   secrets: [`Owes [[marra-tesk]] more than the job paid. He'd have sold the [[nav-core]] twice.`],
-  seen: [[`S0`, `Captained the Grave job and the ship fight.`]],
-  open: [`Did the shard take him somewhere, or is he still in the cockpit wreck at the Grave? (Session 1's plan offered: only the PCs came, and Hotshot and Florb stayed in the cockpit.)`],
+  seen: [[`S0`, `Captained the Grave job and the ship fight.`], [`S1`, `Confirmed dead.`]],
   hooks: [
-    `*If he stayed in the cockpit:* [[sefa-kell]]'s Ashborn cut him out, and he turns up at Tamsin owing them too, telling a version of the crossfire where he's the hero.`,
-    `He's sold the story of the core, and the buyer comes looking for the people who still have it.`,
-    `Marra calls in his debt. He can't pay, so she asks the PCs: the crew shared the job, so the crew shares the bill.`,
-    `A Ledgerline posting with his name on it: he's hiring for a salvage run back to the Grave.`] },
+    `His debt didn't die with him. [[marra-tesk]] calls it in, and since the crew shared the job, she says the crew shares the bill.`,
+    `His body is in the cockpit wreck at the Grave. The Ashborn who find it will strip it, tape his last comm, and know the Patience's crew.`,
+    `Someone at Tamsin is still waiting for him: a partner, a creditor, a kid. They want to hear how he died from the people who were there.`,
+    `The Patience is still registered to him. Its impound papers, his will (if he had one) or his berth at Tamsin come with strings the PCs could pull.`,
+    `If the Lantern copies the dead, his voice could turn up on the [[the-broadcast|broadcast]].`] },
 
-{ id: `killora-vargas`, type: `npc`, name: `1st Ensign Killora Vargas`, aka: [`K. Vargas`, `Vargas`], status: `unknown since the crossfire`,
+{ id: `killora-vargas`, type: `npc`, name: `1st Ensign Killora Vargas`, aka: [`K. Vargas`, `Vargas`], status: `alive, somewhere`,
   sub: `Missiles on the Patience · the K. Vargas of the datapad`, stats: `Thug`, faction: `sable-command`,
   known: [`The previous owner of the datapad. Every "User annotation" in the handout is Vargas's.`],
   body: [`Ex-Sable, never says why. Mutters the [[psalter-famine]] numbers when nervous. A Psalter family fed Vargas for a winter. The datapad's notes say: "Read everything. Trust half."`],
   secrets: [
     `Recognized the Sable battleships' hull codes in the crossfire: Vargas's old unit.`,
     `Paid off Brother [[anselm-coyle]]'s debt, and Anselm cut the locks on the [[platinum-shard]] to keep Vargas safe from Sable.`,
+    `Survived the crossfire. Vargas is somewhere; where is yours to reveal.`,
     `*Draft:* Vargas's name is on the [[the-broadcast|Lantern's list]]. See [[vargas-fate]].`],
   seen: [[`S0`, `Crewed the missile launcher on the Grave job.`]],
-  open: [`Where is Vargas now? Session 1's plan offered: still in the cockpit, or teleported to a different part of Saint Vey.`],
   hooks: [
     `Vargas's annotations are hooks already: "Ask for Marra at the Spindle," "Father Oren is kind. Don't let anyone hurt him." Follow one and someone remembers Vargas.`,
     `A Sable recruiter at Tamsin is asking after a deserter by name.`,
@@ -146,21 +144,23 @@ window.GM_WIKI = [
     `She's at the Council of Captains asking for safe harbor, and the PCs are asked to escort her.`] },
 
 { id: `sefa-kell`, type: `npc`, name: `Auntie Sefa Kell`, sub: `Ashborn clan head, the Grave`, stats: `Veteran`, faction: `ashborn`, where: `grave-of-ash`,
-  body: [`She keeps a tape library of the wreck broadcasts.`],
+  body: [`She keeps a tape library of the wreck broadcasts. Her grandson [[tobin-kell]] died boarding the Patience.`],
   secrets: [`Her tapes go back to CY 274. The names list started the night the war ended (see [[the-broadcast]]).`],
   hooks: [
     `Her people reached the Patience's cockpit and found it empty, or not. Either way she wants to know how anyone leaves a sealed cockpit.`,
-    `What happened to her grandson [[tobin-kell]] decides whether she sends a gift or a bounty.`,
+    `The PCs killed her grandson [[tobin-kell]]. She knows a Patience crew did it. She doesn't know their faces yet.`,
     `She'll trade a tape with a PC's name on it for the story of the crossfire.`] },
 
-{ id: `tobin-kell`, type: `npc`, name: `Tobin Kell`, sub: `Ashborn boarder · Sefa Kell's grandson`, stats: `Thug`, faction: `ashborn`,
-  body: [`Led the boarding party onto the Patience with a stun baton and a scattergun. The plan had him surrender at half HP.`],
-  seen: [[`S0`, `Led the boarders into the Patience.`]],
-  open: [`What did the PCs do with him? Spared, killed, or left aboard when the lance hit?`],
+{ id: `tobin-kell`, type: `npc`, name: `Tobin Kell`, sub: `Ashborn boarder · Sefa Kell's grandson`, stats: `Thug`, faction: `ashborn`, tag: `played`, status: `dead`,
+  known: [`Nothing. The PCs never learned his name.`],
+  body: [`Led the boarding party onto the Patience with a stun baton and a scattergun. The PCs killed him.`],
+  seen: [[`S0`, `Led the boarders into the Patience. The PCs killed him without ever learning his name.`]],
   hooks: [
-    `*If spared:* he turns up at Tamsin with salvage to sell and a debt he means to repay.`,
-    `*If he died:* the Ashborn have his name on a list of their own.`,
-    `He was in the Patience when the shard sang. He heard it too, and he's been looking for the people who left.`] },
+    `The PCs learn his name the hard way: an Ashborn asks them, flatly, if they were on the Patience, and then tells them who they killed.`,
+    `[[sefa-kell]] has his name on a list of her own, and she's adding theirs. A bounty notice at the Fifth Hollow's market, with the Patience's registry on it.`,
+    `His stun baton or scattergun, if they kept either, is recognized by someone who knew him.`,
+    `A young Ashborn signs on with the PCs at Tamsin under a false name: Tobin's sister, or cousin, looking for the crew who did it.`,
+    `His voice turns up on one of Sefa's broadcast tapes. The Lantern heard him die.`] },
 
 { id: `okafor`, type: `npc`, name: `Lt. Cmdr. Ines Okafor`, sub: `Commander of the Due Diligence`, stats: `Knight, Insight +4`, faction: `sable-command`,
   body: [`By the book and tired of it.`],
@@ -530,7 +530,7 @@ window.GM_WIKI = [
 
 { id: `commonweal`, type: `faction`, name: `Commonweal`, sub: `Registry, tiers, courts, customs and scrip clearing`, faction: `str`, where: `meridian`,
   known: [`Officially a records contractor that every charter company pays. Incorporated CY 31. The datapad is a Commonweal civic datapad, and its "public record" leans toward the STR.`],
-  secrets: [`Nobody knows who owns it. See [[commonweal-owner]]. *Draft:* every pad has a relay chip ([[datapad-relay]]).`],
+  secrets: [`**Canon:** owned by [[the-triumvirate|a triumvirate of investors]], bankrolled by [[shadow-proprietor|the shadow proprietor]] in exchange for not looking at some things. *Draft:* every pad has a relay chip ([[datapad-relay]]).`],
   hooks: [`A Commonweal clerk who read the wrong file.`, `A tier review notice on the datapad, addressed to Vargas.`, `Med-Prol's invoice, if it's ever sent, turns up on their record.`] },
 
 { id: `halvorsen-combine`, type: `faction`, name: `The Halvorsen Combine`, aka: [`Halvorsen`], sub: `The largest charter company`, faction: `str`, where: `brightwater`,
@@ -608,9 +608,9 @@ window.GM_WIKI = [
     `Platinum-veined, the kind of relic the Cardinals lock to a single cathedral. Its locks have been cut. It was hidden behind the Patience's cockpit panel. In the crossfire it sang to the Cathedral-ships' relic-cores, and their lances went around the cockpit. Then it teleported the PCs to Saint Vey.`,
     `Brother [[anselm-coyle]] jailbroke it to keep [[killora-vargas]] safe from Sable. [[popsocopolis]] watched.`],
   secrets: [
-    `It speaks to Rusty inside the Chapel: "I carried you out of the fire. Carry me a little further. Keep me hidden, keep me safe, and I will keep you." *Suggestion:* the bargain is +5 AC against one hit per long rest, which fails while it's shown to an Inquisitor, a Sable scanner or a Commonweal clerk.`,
+    `It hasn't spoken yet. The planned Chapel bargain never happened in S1, so its voice is still a reveal waiting to be used: "I carried you out of the fire. Carry me a little further. Keep me hidden, keep me safe, and I will keep you." *Suggestion:* the bargain is +5 AC against one hit per long rest, which fails while it's shown to an Inquisitor, a Sable scanner or a Commonweal clerk.`,
     `*Draft:* a jailbroken relic still speaks the relics' language but doesn't take orders. The shard sang them toward the Lantern's call, and the Lantern pulled them most of the way, then let go.`],
-  seen: [[`S0`, `Saved the cockpit in the crossfire.`], [`S1`, `Teleported the PCs to Saint Vey. They investigated it at the Chapel.`]],
+  seen: [[`S0`, `Saved the cockpit in the crossfire.`], [`S1`, `Teleported the PCs to Saint Vey. They investigated it at the Chapel. It offered no bargain.`]],
   hooks: [`The hum: near the core at night, the two sing in the same key, and the datapad shows a bearing.`, `Any Inquisitor or Reliquarian who gets close feels it.`, `It wants to go somewhere. It hasn't said where.`] },
 
 { id: `nav-core`, type: `item`, name: `Nav core of the Arbiter's Due`, aka: [`the core`, `the nav core`], sub: `Forty kilos of black Sable military hardware`, tag: `played`, status: `with the party · never networked`,
@@ -633,10 +633,13 @@ window.GM_WIKI = [
 
 { id: `tracking-gems`, type: `item`, name: `Invisible Inquisitor Tracking Gems`, aka: [`tracking gems`, `the gems`], sub: `Going into Amelda's 30 crates`, tag: `played`, faction: `inquisition`,
   body: [`The party agreed to help [[amelda]] load them into the 30 crates she's requisitioning, in exchange for passage to Tamsin. They chose not to ask questions.`],
-  secrets: [`*Suggestions* for what they track: (a) the 30 crates are the skimmed ore, and the gems let the Inquisition follow its own cargo through STR customs; (b) they ride in the Ostrava crates, so the Inquisition can see where the STR's ore really goes; (c) they follow the ferry itself and everyone on it, including a jailbroken relic. The players don't know which.`],
+  secrets: [`**Decided:** they're just used as a local fiat currency. Nothing sinister rides in the crates. The players don't know that, since they chose not to ask.`],
   seen: [[`S1`, `The deal was made. The loading happens during the two-week wait.`]],
-  open: [`What do the gems track, and who's watching?`],
-  hooks: [`One gem ends up in a PC's pack. Nobody notices for weeks.`, `A Sable scanner at Tamsin picks up something it can't see.`, `The crates arrive somewhere, and soon after, so does the Inquisition.`, `Gems are relic tech. The shard can feel them.`] },
+  hooks: [
+    `The PCs assume the worst about what they loaded. Let them. A nervous moment at Tamsin customs plays very differently when the GM knows it's pocket money.`,
+    `One gem ends up in a PC's pack. It spends, somewhere.`,
+    `Wherever the gems are currency, a crew who knows how they're made, moved and counted has an edge, or a counterfeiting scheme.`,
+    `A Sable scanner picks up something it can't see, and somebody gets very excited over a crate of money.`] },
 
 { id: `medprol-band`, type: `item`, name: `Med-Prol vitals band`, sub: `Live vitals monitoring, worn on the wrist`, faction: `med-prol`,
   body: [`[[amelda]] wears one under her sleeve (Perception DC 14 to spot, Investigation or Medicine DC 12 to know it). If the wearer is knocked out, dying or restrained for long enough: "Med-Prol has detected a critical event. A response team is en route. Estimated arrival: sixty seconds."`],
@@ -723,15 +726,33 @@ window.GM_WIKI = [
   body: [`Where the Eye's field and the Lantern's meet and cancel. It's fast because of a precursor current along the seam. Whoever learns to steer it controls the shortest road between the powers.`],
   hooks: [`A survivor of a crossing that should have killed them (an Origins hook) can feel the current.`] },
 
-{ id: `commonweal-owner`, type: `lore`, name: `Who owns Commonweal`, tag: `draft`, related: [`commonweal`],
+{ id: `commonweal-owner`, type: `lore`, name: `Who owns Commonweal`, tag: `canon`, related: [`commonweal`, `the-triumvirate`, `shadow-proprietor`],
   known: [`Nobody outside knows. Its shares have never traded.`],
-  body: [`Pick one: (A) the founding charter families, through a trust on Ledger; (B) an AI the Assay Institute built from a Lantern fragment in CY 31; (C) the Eye, through shell trusts.`],
-  open: [`Pick A, B or C, or something else.`],
-  hooks: [`Okafor's orders from Ledger are the thread to pull.`] },
+  body: [`**Canon:** a [[the-triumvirate|triumvirate of investors]] owns Commonweal. They're bankrolled by someone called [[shadow-proprietor|the shadow proprietor]], in exchange for not looking at some things.`],
+  hooks: [
+    `[[okafor]]'s orders come from a Commonweal office on Ledger. That office answers to one of the three.`,
+    `Every hook into the triumvirate or the shadow proprietor is on their pages.`] },
+{ id: `the-triumvirate`, type: `faction`, name: `The Triumvirate`, sub: `Three investors who own Commonweal`, tag: `canon`, faction: `commonweal`, where: `meridian`,
+  body: [`**Canon:** Commonweal belongs to a triumvirate of investors, bankrolled by [[shadow-proprietor|the shadow proprietor]]. The price of that money is that they don't look at some things.`],
+  secrets: [`*Suggestion:* what they've agreed not to look at could include the steered [[ash-war]] ([[ash-war-steered]]), the [[due-diligence]]'s visit to the Lantern, the [[datapad-relay]], or what happened at [[kestrel]].`],
+  open: [`Who are the three? Names, and what each one wants.`, `What exactly are they paid not to look at?`],
+  hooks: [
+    `A Commonweal clerk who read the wrong file (an Origins hook) knows one of their names.`,
+    `One of the three has started looking anyway, and needs deniable spacers to find out what.`,
+    `The PCs' nav core is exactly the kind of thing they're paid to ignore. Someone makes sure they keep ignoring it.`,
+    `A Halcyon broker with a grudge sells a filing with three signatures on it.`] },
+{ id: `shadow-proprietor`, type: `npc`, name: `The shadow proprietor`, sub: `Bankrolls the triumvirate that owns Commonweal`, tag: `canon`, status: `identity unknown`,
+  body: [`**Canon:** the money behind Commonweal's owners. In exchange, the [[the-triumvirate|triumvirate]] doesn't look at some things. That's all anyone knows, and very few know that much.`],
+  secrets: [`*Suggestion, for who it might be:* one of the precursor minds ([[eye-is-a-machine|the Eye]] or [[lantern-rival|the Lantern]]), an [[assay-institute]] creation, a charter family older than the Charter, or a person who simply has more money than anyone should.`],
+  open: [`Who, or what, is the shadow proprietor?`],
+  hooks: [
+    `The name turns up once, in a Vargas annotation that wasn't there yesterday.`,
+    `Mr. Sallow says it out loud by accident, and then very carefully changes the subject.`,
+    `A payment trail from the gem-currency or the skimmed ore crosses one of the proprietor's accounts.`,
+    `Never show the proprietor. Show the things nobody looks at.`] },
 
-{ id: `vargas-fate`, type: `lore`, name: `What happened to K. Vargas`, tag: `draft`, related: [`killora-vargas`],
-  body: [`Written when the pad's owner was missing: (A) taken and copied by the Lantern; (B) alive and laying a trail; (C) both, and the two disagree. Now the datapad's K. Vargas is the crew's 1st Ensign, ex-Sable, and the shard was jailbroken to keep Vargas safe. "Hiding in plain sight on a merc crew" may replace all three.`],
-  open: [`Where is Vargas after the crossfire?`],
+{ id: `vargas-fate`, type: `lore`, name: `What happened to K. Vargas`, tag: `played`, status: `alive, somewhere`, related: [`killora-vargas`],
+  body: [`Vargas survived the crossfire and is somewhere. That's settled. The older options still work for *why*: (A) the Lantern has copied Vargas, and the copy broadcasts while the original hides; (B) Vargas is alive and laying a trail on purpose; (C) both, and the two disagree. The datapad's K. Vargas is the crew's 1st Ensign, ex-Sable, and the shard was jailbroken to keep Vargas safe.`],
   hooks: [`See [[killora-vargas]].`] },
 
 { id: `datapad-relay`, type: `lore`, name: `Commonweal datapads are listening`, tag: `draft`, related: [`datapad`],
