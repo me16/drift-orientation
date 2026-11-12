@@ -148,14 +148,6 @@ nav.files{border-right:1px solid var(--rule);overflow:auto;padding:18px 0;backgr
 .card .lbl{display:block;margin-bottom:6px;color:var(--c,var(--dim))}
 .card p{margin:0;font-size:14.5px;color:#c8cbea}
 .card ul{margin:0;font-size:14.5px}
-.reg{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:12px;margin:14px 0 26px}
-.chr .code{display:block;font:400 10px var(--f-data);letter-spacing:.18em;text-transform:uppercase;color:var(--c);margin-bottom:6px}
-.chr .motto{font:italic 500 16px var(--f-lore);color:#cfd2f2;margin:0 0 6px}
-.chr .kv{grid-template-columns:92px 1fr;gap:4px 12px;margin:8px 0 10px;font-size:13.5px}
-.chr .kv dt{font-size:9.5px}
-.chr .kv dd{margin:0}
-.chr .note{margin:12px 0 0;font-size:12.5px}
-.st{font:400 12px var(--f-data);letter-spacing:.06em}.st.ok{color:var(--teal)}.st.warn{color:var(--amber)}.st.bad{color:var(--haz)}
 .classes{margin:16px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1px;background:var(--rule)}
 .classes > div{display:flex;flex-direction:column;padding:10px 14px;background:var(--panel)}
 .classes b{font:400 11.5px var(--f-disp);letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
@@ -365,11 +357,10 @@ body.mapfs .screen::after{display:none}
     <a href="#briefing" data-r="briefing"><span class="ic">01</span><span class="t">Briefing</span><span class="s">Start here</span></a>
     <a href="#history" data-r="history"><span class="ic">02</span><span class="t">History</span><span class="s">Public record</span></a>
     <a href="#factions" data-r="factions"><span class="ic">03</span><span class="t">Powers</span><span class="s">Factions · sub-factions</span></a>
-    <a href="#charters" data-r="charters"><span class="ic">04</span><span class="t">Charters</span><span class="s">Company register</span></a>
-    <a href="#chart" data-r="chart"><span class="ic">05</span><span class="t">Astrogation</span><span class="s">3D chart</span></a>
-    <a href="#gazetteer" data-r="gazetteer"><span class="ic">06</span><span class="t">Gazetteer</span><span class="s" id="gazCount">Systems</span></a>
-    <a href="#origins" data-r="origins"><span class="ic">07</span><span class="t">Origins</span><span class="s">Registry profiles</span></a>
-    <a href="#glossary" data-r="glossary"><span class="ic">08</span><span class="t">Glossary</span><span class="s">Terms</span></a>
+    <a href="#chart" data-r="chart"><span class="ic">04</span><span class="t">Astrogation</span><span class="s">3D chart</span></a>
+    <a href="#gazetteer" data-r="gazetteer"><span class="ic">05</span><span class="t">Gazetteer</span><span class="s" id="gazCount">Systems</span></a>
+    <a href="#origins" data-r="origins"><span class="ic">06</span><span class="t">Origins</span><span class="s">Registry profiles</span></a>
+    <a href="#glossary" data-r="glossary"><span class="ic">07</span><span class="t">Glossary</span><span class="s">Terms</span></a>
     <a href="gm/" class="gmx" aria-label="Restricted partition" title="Restricted partition"><span class="ic">▚</span></a>
     <div class="foot">Registered to:<br>K. VARGAS (TIER 3)<br>Transfer: unfiled<br><span style="color:var(--amber)">User annotations: <span id="annCount">—</span></span><br><a href="gm/" style="color:var(--faint);text-decoration:none">▚ Restricted partition</a></div>
    </nav>
@@ -405,7 +396,6 @@ body.mapfs .screen::after{display:none}
  <div class="note"><span class="lbl">User annotation · K. Vargas</span><p>Read everything. Trust half.</p></div>
  <div class="links">
   <a href="#factions"><b>Powers</b><span>Twenty factions and who answers to whom.</span></a>
-  <a href="#charters"><b>Charters</b><span>The companies that own the Republic.</span></a>
   <a href="#chart"><b>Astrogation</b><span>The navigable chart.</span></a>
   <a href="#gazetteer"><b>Gazetteer</b><span>Every system, planet, and moon.</span></a>
   <a href="#origins"><b>Origins</b><span>Who ends up in the Drift.</span></a>
@@ -474,7 +464,6 @@ body.mapfs .screen::after{display:none}
     <div><b>Sable Command</b><span>Private navy on a joint defense contract. Wants the treaty torn up.</span></div>
     <div><b>Free Labor League</b><span>Banned union. Growing in Varga and Brightwater.</span></div>
    </div>
-   <p style="margin:10px 0 0"><a href="#charters" style="color:var(--teal)">Full Charter Register ›</a></p>
    <div class="note"><span class="lbl">User annotation · K. Vargas</span><p>Half of Copperline owes the same three companies. All of them owe Commonweal.</p></div>
   </div>
  </article>
@@ -500,99 +489,6 @@ body.mapfs .screen::after{display:none}
   <div class="card" style="--c:var(--str)"><span class="lbl">Technology</span><h3>Machines</h3><p>Drives, implants, firearms, AI. STR-made is best, and licensed.</p></div>
   <div class="card" style="--c:var(--drift)"><span class="lbl">Travel</span><h3>Standard drive</h3><p>2.5 pc a day. About ten days across the Drift; six weeks end to end.</p></div>
   <div class="card" style="--c:var(--haz)"><span class="lbl">Exception</span><h3>Null Corridor</h3><p>Prayer and power both fail. Also the fastest way across.</p></div>
- </div>
-</section>
-
-<section class="doc" id="doc-charters" data-r="charters" hidden>
- <div class="dochead">
-  <div class="docid"><span>DOC <b>CW-REG-0412</b></span><span>CHARTER REGISTER · PUBLIC EXTRACT</span></div>
-  <h1>The Charter Register</h1>
-  <p class="lede">Every company lawfully doing business in the Syndicated Technocratic Republic, as filed with Commonweal.</p>
- </div>
- <p>A charter is a license to own. A charter company may hold systems, employ citizens, keep security, and write its own handbook. In exchange it files its contracts at Halcyon, accepts Commonweal's courts, and pays Commonweal's fees. A company that stops doing any of these stops being a company.</p>
- <p>This extract lists the larger registrants. The full Register runs to some forty thousand entries and is available at any Commonweal office, for a fee.</p>
- <p class="lbl" style="display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:18px"><span style="color:var(--teal)">◆ In good standing</span><span style="color:var(--amber)">◆ Under review</span><span style="color:var(--haz)">◆ Not registered</span></p>
-
- <h2>Registrar</h2>
- <div class="reg">
-  <article class="card chr" style="--c:var(--str)"><span class="code">CW-0001 · Registrar</span><h3>Commonweal</h3><p class="motto">"A record of everyone."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 31</dd><dt>Seat</dt><dd>Meridian Prime · Ledger moon</dd><dt>Holdings</dt><dd>Meridian Prime</dd><dt>Line</dt><dd>Registry, tiers, courts, customs, scrip clearing</dd><dt>Shareholders</dt><dd>Not disclosed</dd><dt>Standing</dt><dd>Not applicable</dd></dl>
-   <p>Not a charter company. A records contractor retained by all of them. Commonweal competes with no one, and so can favor no one.</p>
-   <div class="note"><span class="lbl">K. Vargas</span><p>Every other entry lists its shareholders. Go back and check.</p></div></article>
- </div>
-
- <h2>Holding charters</h2>
- <p>Companies that own systems outright.</p>
- <div class="reg">
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0058 · Holding charter</span><h3>The Halvorsen Combine</h3><p class="motto">"Every hand has a place."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 58, by merger of Brightwater Agrarian, Tally Mercantile and Halvorsen Hospitality</dd><dt>Seat</dt><dd>Tally, Brightwater's moon</dd><dt>Holdings</dt><dd>Brightwater and twelve minor worlds</dd><dt>Line</dt><dd>Colonies, farming, ore contracts, company stores, service androids, ferries</dd><dt>Divisions</dt><dd>Tally Stores · Halvorsen Hospitality · Combine Astro-Ferry</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>The Republic's largest employer. Combine workers are housed, fed, and paid in Combine scrip, good at any Combine store. Staff turnover is the lowest on the Register.</p>
-   <div class="note"><span class="lbl">K. Vargas</span><p>Low turnover. Nobody can afford the fare out.</p></div></article>
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0092 · Holding charter</span><h3>Ostrava Heavy Industries</h3><p class="motto">"Built to outlast the argument."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 92</dd><dt>Seat</dt><dd>Varga</dd><dt>Holdings</dt><dd>Varga and its moon Slag</dd><dt>Line</dt><dd>Warships, hulls, power cells, heavy plant</dd><dt>Divisions</dt><dd>Ostrava Yards · Varga Cell · Slag Reclamation</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Builds most of the Republic's warships and nearly all its power cells. Licensed to export to any buyer not under Commonweal sanction.</p></article>
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0104 · Research charter</span><h3>The Assay Institute</h3><p class="motto">"What can be measured can be owned."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 104</dd><dt>Seat</dt><dd>Assay, Meridian Prime's moon</dd><dt>Holdings</dt><dd>Assay campus · Kestrel Array</dd><dt>Line</dt><dd>Anomaly research, medicine, patents</dd><dt>Divisions</dt><dd>Assay Pharmaceutical · Kestrel Array · Med-Prol (joint)</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Holds more patents than the next three registrants combined. Its medicines are protected patterns and may not be duplicated. Kestrel Array is closed for maintenance.</p></article>
- </div>
-
- <h2>Licensing charters</h2>
- <p>Companies that own no worlds. They own the things worlds run on.</p>
- <div class="reg">
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0003 · Licensing charter</span><h3>Kairos Drive Concern</h3><p class="motto">"Two and a half parsecs a day. Guaranteed."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 3</dd><dt>Seat</dt><dd>Meridian Prime</dd><dt>Line</dt><dd>Drive patents, drive licensing, navigation firmware</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Holds the drive patent the Republic was founded on. Every licensed drive accepts Commonweal navigation updates automatically, for the safety of all travelers.</p>
-   <div class="note"><span class="lbl">K. Vargas</span><p>You can turn the updates off. Then your drive isn't licensed.</p></div></article>
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0077 · Licensing charter</span><h3>Verity Pattern Trust</h3><p class="motto">"Every copy, accounted for."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 77</dd><dt>Seat</dt><dd>Halcyon Exchange</dd><dt>Line</dt><dd>Duplicator firmware, the master pattern library, print royalties</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Keeps the master pattern library. Any registered Duplicator may print a public pattern at the published rate. Protected patterns (medicines, weapons, drive parts) print only under license.</p>
-   <div class="note"><span class="lbl">K. Vargas</span><p>Bread has a royalty. Paid it every morning for nine years.</p></div></article>
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0120 · Licensing charter</span><h3>Brannock Cognition</h3><p class="motto">"A mind you can trust, because we checked."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 120</dd><dt>Seat</dt><dd>Meridian Prime</dd><dt>Line</dt><dd>Licensed minds, android chassis, compliance governors</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Every artificial mind in the Republic is a Brannock mind or runs a Brannock governor. A mind without a governor is unlicensed. Unlicensed minds are salvage.</p></article>
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0145 · Licensing charter</span><h3>Greaves-Mott Ordnance</h3><p class="motto">"Licensed for your protection."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 145, during the Border Wars</dd><dt>Seat</dt><dd>Varga (leased from Ostrava)</dd><dt>Line</dt><dd>Firearms, personal armor, weapon license chips</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Every lawful firearm in the Republic carries a Greaves-Mott license chip. Commonweal courts do not recognize an unchipped weapon as property, and will not hear a claim for its theft.</p></article>
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0166 · Licensing charter</span><h3>Quillon Somatics</h3><p class="motto">"Become more. Pay monthly."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 166</dd><dt>Seat</dt><dd>Brightwater (leased from Halvorsen)</dd><dt>Line</dt><dd>Implants, prosthetics, augmentation leases</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Quillon implants are leased, never sold, so that every client receives every upgrade. Lapsed leases are recovered.</p>
-   <div class="note"><span class="lbl">K. Vargas</span><p>"Recovered." Don't ask how. Don't miss a payment.</p></div></article>
- </div>
-
- <h2>Service charters</h2>
- <div class="reg">
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0012 · Service charter</span><h3>Penrose &amp; Daughters Assurance</h3><p class="motto">"Whatever happens, it's covered."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 12, the oldest company on the Register</dd><dt>Seat</dt><dd>Halcyon Exchange · the Bond Yards (leased)</dd><dt>Line</dt><dd>Hull insurance, debt, bonds, recovery</dd><dt>Divisions</dt><dd>Penrose Recovery</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Insures nine hulls in ten in Republic space, and buys the debts other companies would rather not collect. Debts sold to Penrose are recovered by Penrose, wherever the debtor has gone.</p>
-   <div class="note"><span class="lbl">K. Vargas</span><p>Charter law stops at the Drift. Penrose repo crews don't.</p></div></article>
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0201 · Service charter</span><h3>The Caddis Line</h3><p class="motto">"On schedule, or your fare back in scrip."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 201</dd><dt>Seat</dt><dd>Halcyon Exchange</dd><dt>Line</dt><dd>Freight and passage, including the Halcyon–Tamsin lane</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>The largest carrier on the Drift lanes. Passengers of Tier 4 and below travel in steerage. Steerage fares are not refundable.</p>
-   <div class="note"><span class="lbl">K. Vargas</span><p>Steerage is a cargo hold with blankets.</p></div></article>
-  <article class="card chr" style="--c:var(--str)"><span class="code">CHR-0139 · Service charter</span><h3>Longreach Survey</h3><p class="motto">"Somebody has to go first."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 139. Filed the Republic's first survey of the Drift</dd><dt>Seat</dt><dd>None fixed. Offices at Halcyon and Tamsin</dd><dt>Line</dt><dd>Charting, prospecting, claims filing</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Sells surveys to any registered buyer, and hires freelance crews. Longreach accepts no liability for crews lost on contract. Its losses during the Ash War years are recorded as within tolerance.</p></article>
- </div>
-
- <h2>Contractors and joint ventures</h2>
- <div class="reg">
-  <article class="card chr" style="--c:var(--str)"><span class="code">JDC-0191 · Joint defense contractor</span><h3>Sable Command</h3><p class="motto">"Peace, on retainer."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 191, the year after the Border Wars</dd><dt>Seat</dt><dd>Sable Station</dd><dt>Funded by</dt><dd>Twelve charter companies under the Joint Defense Contract, renewed every decade</dd><dt>Line</dt><dd>The Republic's navy, by contract</dd><dt>Standing</dt><dd><span class="st warn">Under review: unscheduled movements</span></dd></dl>
-   <p>The Republic's only standing navy, and its largest single expense. Sable has filed eleven formal objections to the Treaty of the Lantern. Commonweal has answered each one.</p></article>
-  <article class="card chr" style="--c:var(--str)"><span class="code">JV-0288 · Joint venture</span><h3>Med-Prol</h3><p class="motto">"Someone is always watching over you."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 288</dd><dt>Partners</dt><dd>The Assay Institute · Sable Command</dd><dt>Line</dt><dd>Live vitals monitoring, emergency response from orbit</dd><dt>Standing</dt><dd><span class="st ok">In good standing</span></dd></dl>
-   <p>Clients wear a band. Med-Prol does the rest. Interfering with a client in distress is a breach of contract by the interfering party, and is answered on the spot.</p></article>
- </div>
-
- <h2>Outside the Register</h2>
- <div class="reg">
-  <article class="card chr" style="--c:var(--drift)"><span class="code">DRF-EXT · Foreign enterprise</span><h3>The Claims Syndicate</h3><p class="motto">"Stake it. File it. Work it."</p>
-   <dl class="kv"><dt>Seat</dt><dd>Copperline</dd><dt>Line</dt><dd>Mining claims, claim disputes, the Copperline sheriff</dd><dt>Creditors</dt><dd>The Halvorsen Combine · Ostrava Heavy Industries</dd><dt>Standing</dt><dd><span class="st warn">Not a charter company</span></dd></dl>
-   <p>An independent Drift enterprise and not subject to charter law. Its creditors are listed for completeness. Commonweal draws no conclusions from them.</p></article>
-  <article class="card chr" style="--c:var(--haz)"><span class="code">— · Unlawful association</span><h3>The Free Labor League</h3><p class="motto">"One shift, one voice."</p>
-   <dl class="kv"><dt>Founded</dt><dd>CY 298, at Varga</dd><dt>Seat</dt><dd>None known</dd><dt>Standing</dt><dd><span class="st bad">Not registered</span></dd></dl>
-   <p>Not a company. Banned by every charter company in the year of its founding. Membership is grounds for a tier review. Report organizers to any Commonweal office.</p>
-   <div class="note"><span class="lbl">K. Vargas</span><p>Commonweal gave a banned union a whole entry. Somebody is scared of it.</p></div></article>
  </div>
 </section>
 
@@ -670,21 +566,18 @@ body.mapfs .screen::after{display:none}
   <dt>Ash War</dt><dd>Last open war, CY 272–274.</dd>
   <dt>Ashborn</dt><dd>Drift salvage clans.</dd>
   <dt>Cathedral-ship</dt><dd>Consecrated Corinthian vessel with a choir crew.</dd>
-  <dt>Charter company</dt><dd>A corporation licensed under the Charter of Meridian. The largest own whole systems. See the Charter Register.</dd>
+  <dt>Charter company</dt><dd>A corporation that owns one or more systems in the Syndicated Technocratic Republic.</dd>
   <dt>Charter Year (CY)</dt><dd>Syndicated Technocratic Republic calendar. Now CY 312.</dd>
   <dt>Commonweal</dt><dd>The company that runs the Syndicated Technocratic Republic's registry, courts, and customs. The nearest thing it has to a government.</dd>
   <dt>Corinthia</dt><dd>Short for the Hallowed Dominion of Corinthia.</dd>
   <dt>Council of Captains</dt><dd>Tamsin's governing assembly.</dd>
-  <dt>Duplicator</dt><dd>Machine that prints small amounts of stable matter from a licensed pattern.</dd>
   <dt>The Drift</dt><dd>Neutral belt between the powers.</dd>
-  <dt>Governor</dt><dd>Brannock compliance module. Required in every licensed artificial mind.</dd>
   <dt>Halvorsen Combine</dt><dd>The Syndicated Technocratic Republic's largest charter company.</dd>
   <dt>Inquisitor</dt><dd>Corinthian enforcer of doctrine.</dd>
   <dt>The Lantern</dt><dd>Precursor megastructure. No landing.</dd>
   <dt>Null Corridor</dt><dd>Dead zone where power and prayer fail.</dd>
   <dt>Old Rite</dt><dd>Faith practiced without the Cardinals.</dd>
   <dt>Parsec (pc)</dt><dd>Chart distance. Drive speed: 2.5 a day.</dd>
-  <dt>Pattern</dt><dd>A Duplicator recipe. Public patterns print at the published rate; protected ones under license.</dd>
   <dt>Pontifex</dt><dd>Corinthian ruler. The Tenth reigns.</dd>
   <dt>Relic</dt><dd>Sacred dig find. Illegal to sell.</dd>
   <dt>Scrip</dt><dd>Company money.</dd>
@@ -841,7 +734,7 @@ renderGaz();
 $("#rumorList").innerHTML=DATA.map(d=>`<li id="rumor-${d.id}" style="--c:${colorOf(d)}"><span class="src">${d.code}</span><div><q>${esc(d.talk)}</q><span class="where">Re: <a href="#loc-${d.id}">${esc(d.name)}</a></span></div></li>`).join("")+
  [["GEN-01","Ships near the Throne hear singing on their comms."],["GEN-02","Someone at Tamsin is buying old Ash War charts. Paying well."],["GEN-03","A Sable cruiser visited the Lantern off-schedule. Commonweal filed no report."],["GEN-04","The Cardinals have stopped meeting in full session."]].map(([c,t])=>`<li style="--c:var(--amber)"><span class="src">${c}</span><div><q>${esc(t)}</q><span class="where">General</span></div></li>`).join("");
 
-const CRUMBS={briefing:"ORIENTATION / BRIEFING",history:"ARCHIVE / HISTORY",factions:"POLITICS / POWERS",charters:"POLITICS / CHARTER REGISTER",chart:"NAV / ASTROGATION",gazetteer:"NAV / GAZETTEER",origins:"CITIZENS / ORIGINS",rumors:"GAZETTEER / DOCKSIDE TALK",glossary:"REFERENCE / GLOSSARY"};
+const CRUMBS={briefing:"ORIENTATION / BRIEFING",history:"ARCHIVE / HISTORY",factions:"POLITICS / POWERS",chart:"NAV / ASTROGATION",gazetteer:"NAV / GAZETTEER",origins:"CITIZENS / ORIGINS",rumors:"GAZETTEER / DOCKSIDE TALK",glossary:"REFERENCE / GLOSSARY"};
 function route(){
  let h=location.hash.slice(1)||"briefing",loc=null;
  if(h.startsWith("loc-")){loc=h;h="gazetteer"}

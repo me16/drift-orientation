@@ -579,28 +579,31 @@ window.GM_WIKI = [
   known: [`Nobody rules. Each system belongs to its charter company, held together by the Charter of Meridian and Commonweal. Comfortable for shareholders, company towns for everyone else. On Corinthia: "Fanatics sitting on a black hole."`],
   hooks: [`Everything in New Bombswick is "STR only." The PCs need to pass as citizens, or find someone who'll vouch.`] },
 
-{ id: `commonweal`, type: `faction`, handout: `charters`, name: `Commonweal`, sub: `Registry, tiers, courts, customs and scrip clearing`, faction: `str`, where: `meridian`,
+{ id: `commonweal`, type: `faction`, name: `Commonweal`, sub: `Registry, tiers, courts, customs and scrip clearing`, faction: `str`, where: `meridian`,
   known: [`Officially a records contractor that every charter company pays. Incorporated CY 31. The datapad is a Commonweal civic datapad, and its "public record" leans toward the STR.`],
   secrets: [`**Canon:** owned by [[the-triumvirate|a triumvirate of investors]], bankrolled by [[shadow-proprietor|the shadow proprietor]] in exchange for not looking at some things. *Draft:* every pad has a relay chip ([[datapad-relay]]).`],
   hooks: [`A Commonweal clerk who read the wrong file.`, `A tier review notice on the datapad, addressed to Vargas.`, `Med-Prol's invoice, if it's ever sent, turns up on their record.`] },
 
-{ id: `halvorsen-combine`, type: `faction`, handout: `charters`, name: `The Halvorsen Combine`, aka: [`Halvorsen`], sub: `The largest charter company`, faction: `str`, where: `brightwater`,
-  known: [`Owns Brightwater and a dozen smaller worlds. Formed in CY 58 from three charter companies: Brightwater Agrarian, Tally Mercantile and Halvorsen Hospitality (named on the Charter Register, a *suggestion*). Divisions: Tally Stores, Halvorsen Hospitality, Combine Astro-Ferry. Motto: "Every hand has a place."`],
+{ id: `halvorsen-combine`, type: `faction`, name: `The Halvorsen Combine`, aka: [`Halvorsen`], sub: `The largest charter company`, faction: `str`, where: `brightwater`,
+  known: [`Owns Brightwater and a dozen smaller worlds. Formed in CY 58 from three charter companies: Brightwater Agrarian, Tally Mercantile and Halvorsen Hospitality.`],
+  secrets: [`*Suggestion:* the three were Brightwater Agrarian, Tally Mercantile and Halvorsen Hospitality. Divisions: Tally Stores, Halvorsen Hospitality, Combine Astro-Ferry. Motto: "Every hand has a place." Lowest staff turnover in the STR, because nobody can afford the fare out.`],
   body: [`Holds the ore contract at New Bombswick and runs the ferry port, [[hcafp]]. [[car-b]] was one of its reception androids.`],
   seen: [[`S1`, `The party dealt with its port and its jailbroken property.`]],
   hooks: [`A Halvorsen asset-recovery team, looking for CAR-B.`, `A Halvorsen warehouse at Tamsin with something in it (a Ledgerline gig).`] },
 
-{ id: `ostrava`, type: `faction`, handout: `charters`, name: `Ostrava Heavy Industries`, sub: `Builds most warships and sells to whoever pays`, faction: `str`, where: `varga`,
-  body: [`Its Saint Vey ore orders are the ones [[amelda]] skims, 3% at a time. *Suggestion (Charter Register):* founded CY 92; divisions Ostrava Yards, Varga Cell and Slag Reclamation; leases factory floor to [[greaves-mott]].`],
+{ id: `ostrava`, type: `faction`, name: `Ostrava Heavy Industries`, sub: `Builds most warships and sells to whoever pays`, faction: `str`, where: `varga`,
+  body: [`Its Saint Vey ore orders are the ones [[amelda]] skims, 3% at a time. *Suggestion:* founded CY 92; divisions Ostrava Yards, Varga Cell and Slag Reclamation; leases factory floor to [[greaves-mott]].`],
   hooks: [`An Ostrava engineer offers a ship at cost, in exchange for one job that isn't in any contract.`] },
 
-{ id: `assay-institute`, type: `faction`, handout: `charters`, name: `The Assay Institute`, aka: [`Assay`], sub: `Research charter that studies "anomalies"`, faction: `str`, where: `meridian`,
-  known: [`Runs the Kestrel Array. Makes the medicine Gerrit needs, at 900 cr a dose. Half of Med-Prol. Founded CY 104 (Charter Register, a *suggestion*). Motto: "What can be measured can be owned."`],
+{ id: `assay-institute`, type: `faction`, name: `The Assay Institute`, aka: [`Assay`], sub: `Research charter that studies "anomalies"`, faction: `str`, where: `meridian`,
+  known: [`Runs the Kestrel Array. Makes the medicine Gerrit needs, at 900 cr a dose. Half of Med-Prol.`],
+  body: [`*Suggestion:* founded CY 104. Motto: "What can be measured can be owned." Holds more patents than the next three companies combined.`],
   secrets: [`[[mr-sallow]] is an Assay handler. *Draft:* Assay instruments picked up the Lantern's pulse in CY 140.`],
   hooks: [`Assay wants to study whatever moved the PCs from the Grave to Saint Vey.`] },
 
-{ id: `longreach`, type: `faction`, handout: `charters`, name: `Longreach Survey`, sub: `Maps the frontier for any buyer`, faction: `str`,
-  known: [`Hires freelancers and asks few questions. Charter Register (*suggestion*): founded CY 139 and filed the STR's first survey of the Drift. "Its losses during the Ash War years are recorded as within tolerance."`],
+{ id: `longreach`, type: `faction`, name: `Longreach Survey`, sub: `Maps the frontier for any buyer`, faction: `str`,
+  known: [`Hires freelancers and asks few questions.`],
+  secrets: [`*Suggestion:* founded CY 139; filed the STR's first survey of the Drift. Commonweal records its Ash War losses as "within tolerance."`],
   body: [`**Canon:** a Longreach Survey ship took [[rusty-scrap]] as a child, on its way to scout the path to the Lantern. It was caught in the final battle of the [[ash-war]] when the Eye steered the fleets together.`],
   secrets: [`*Suggestion:* Longreach was scouting for the STR fleet's approach to the Lantern. Its records of that survey would show the plotted course, the one the Eye overrode.`],
   hooks: [
@@ -608,27 +611,27 @@ window.GM_WIKI = [
     `A Longreach scout, the last of her crew, needs a ride. She's heard of a dwarf who survived the Grave.`,
     `An easy first job for a crew with a new ship: chart a system nobody wants.`,
     `Longreach is quietly surveying the path to the Lantern again.`] },
-{ id: `sable-command`, type: `faction`, handout: `charters`, name: `Sable Command`, aka: [`Sable`], sub: `Private navy on a joint defense contract`, faction: `str`, where: `sable-station`, tag: `played`,
-  known: [`Wants the Treaty torn up. Charter Register (*suggestion*): founded CY 191 under the Joint Defense Contract, funded by twelve charter companies and renewed every decade. Eleven formal objections to the Treaty. Standing: "Under review: unscheduled movements," a nod to general rumor 3.`],
+{ id: `sable-command`, type: `faction`, name: `Sable Command`, aka: [`Sable`], sub: `Private navy on a joint defense contract`, faction: `str`, where: `sable-station`, tag: `played`,
+  known: [`Wants the Treaty torn up.`],
+  secrets: [`*Suggestion:* founded CY 191 under the Joint Defense Contract, funded by twelve charter companies and renewed every decade. It has filed eleven formal objections to the Treaty. Commonweal has it "under review" for unscheduled movements (general rumor 3).`],
   body: [`Three Sable Armor Freighters dropped out of hyperspace at the Grave alongside three Cathedral-ships and destroyed the Patience. [[killora-vargas]] was a Sable enforcer until Sable marked her for termination.`],
   seen: [[`S0`, `Three Armor Freighters in the crossfire. They ordered the Patience to stand down, then fired.`]],
   hooks: [
     `From outside, the Patience's wreck shows no core. Sable will work out it left.`,
     `A Sable cutter answers any signal the nav core sends. It hasn't sent one yet, because Sally kept it off the network.`,
     `A termination team still has Vargas's file open.`] },
-{ id: `free-labor-league`, type: `faction`, handout: `charters`, name: `The Free Labor League`, sub: `Banned union`, faction: `str`,
+{ id: `free-labor-league`, type: `faction`, name: `The Free Labor League`, sub: `Banned union`, faction: `str`,
   known: [`Founded at Varga in CY 298 and banned by every charter company the same year. Growing in Varga and Brightwater.`],
   hooks: [`The League would love proof that Commonweal steered a war.`, `An organizer on the run needs a berth.`] },
 
-{ id: `med-prol`, type: `faction`, handout: `charters`, name: `Med-Prol`, sub: `Assay Institute and Sable Command's emergency medical service`, faction: `str`,
+{ id: `med-prol`, type: `faction`, name: `Med-Prol`, sub: `Assay Institute and Sable Command's emergency medical service`, faction: `str`,
   body: [`Live vitals monitoring and emergency life-saving response for paying clients. The responders come from orbit: a squad leader (Veteran, Sable plate, a medic's gauntlet) and three responders (Guard, carbines). First priority is the client. Second is detaining "parties responsible for the client's distress," lethal force authorized.`],
   known: [`Rumor 6 at Carby's: "Never touch anyone with a Med-Prol band. Somebody tried that in Copperline. They found his boots."`],
   hooks: [`A Med-Prol client is the job: keep them alive without ever touching them.`, `A strike squad drops on the wrong people, and the PCs are the witnesses.`] },
 
-/* Charter Register companies added from the handout's Charters tab. Everything here is a *suggestion* until the GM decides. */
-{ id: `kairos`, type: `faction`, name: `Kairos Drive Concern`, aka: [`Kairos`], sub: `Licenses every drive in the Republic · CHR-0003`, faction: `str`, where: `meridian`, handout: `charters`, tag: `draft`,
-  known: [`Founded CY 3. Holds the drive patent the Republic was founded on. Every licensed drive accepts Commonweal navigation updates automatically. Motto: "Two and a half parsecs a day. Guaranteed." Vargas: "You can turn the updates off. Then your drive isn't licensed."`],
-  body: [`*Suggestion:* Kairos owns no worlds, only the drive. Every drive sold in the STR, Ostrava's warships included, pays Kairos a royalty and runs Kairos firmware. That firmware is how Commonweal's nav updates reach a ship.`],
+/* More STR companies (GM-only, not in the handout). Everything here is a *suggestion* until the GM decides. */
+{ id: `kairos`, type: `faction`, name: `Kairos Drive Concern`, aka: [`Kairos`], sub: `Licenses every drive in the Republic · CHR-0003`, faction: `str`, where: `meridian`, tag: `draft`,
+  body: [`*Suggestion:* Founded CY 3. Holds the drive patent the Republic was founded on. Every licensed drive accepts Commonweal navigation updates automatically. Motto: "Two and a half parsecs a day. Guaranteed." Vargas would say: "You can turn the updates off. Then your drive isn't licensed."`, `*Suggestion:* Kairos owns no worlds, only the drive. Every drive sold in the STR, Ostrava's warships included, pays Kairos a royalty and runs Kairos firmware. That firmware is how Commonweal's nav updates reach a ship.`],
   secrets: [`*Draft:* the "corrupted Commonweal nav update" in [[ash-war-steered]] came down the Kairos update channel. Open question: did someone at Kairos or Commonweal send it, or did the Eye just use the channel? Kairos's update logs for CY 274 are the STR half of the proof, and they're sealed.`],
   open: [`Did Kairos know about the CY 274 update? Who signed it?`],
   hooks: [
@@ -636,43 +639,38 @@ window.GM_WIKI = [
     `A Low Dock tech offers to strip a drive's Kairos firmware. The ship then can't legally dock anywhere in the STR.`,
     `A retired Kairos update engineer at Tamsin drinks to forget CY 274.`] },
 
-{ id: `verity`, type: `faction`, name: `Verity Pattern Trust`, aka: [`Verity`], sub: `Duplicator firmware and the pattern library · CHR-0077`, faction: `str`, where: `halcyon`, handout: `charters`, tag: `draft`,
-  known: [`Keeps the master pattern library. Public patterns print at the published rate; protected ones (medicines, weapons, drive parts) only under licence. Vargas: "Bread has a royalty. Paid it every morning for nine years."`],
-  body: [`*Suggestion:* Verity is the business end of [[duplicator-law]]. Commonweal made the ruling, Verity's firmware enforces it, and every print pays Verity a fraction of a credit. Assay's medicine is a protected pattern in Verity's library, which is why [[gerrit]]'s doses cost 900 cr.`],
+{ id: `verity`, type: `faction`, name: `Verity Pattern Trust`, aka: [`Verity`], sub: `Duplicator firmware and the pattern library · CHR-0077`, faction: `str`, where: `halcyon`, tag: `draft`,
+  body: [`*Suggestion:* Keeps the master pattern library. Public patterns print at the published rate; protected ones (medicines, weapons, drive parts) only under licence. Vargas would say: "Bread has a royalty. Paid it every morning for nine years."`, `*Suggestion:* Verity is the business end of [[duplicator-law]]. Commonweal made the ruling, Verity's firmware enforces it, and every print pays Verity a fraction of a credit. Assay's medicine is a protected pattern in Verity's library, which is why [[gerrit]]'s doses cost 900 cr.`],
   secrets: [`*Draft:* the oldest entries in the library aren't human designs. Some of them came out of Lantern-era salvage and are filed as "origin unknown, protected."`],
   hooks: [
     `A cracked Duplicator that ignores Verity's locks. Every company in the STR wants it destroyed, and the [[free-labor-league]] wants it copied.`,
     `Gerrit's medicine could be printed, if someone stole the pattern from a Verity vault at Halcyon.`,
     `A Verity auditor shows up because something the party printed set off a royalty flag.`] },
 
-{ id: `brannock`, type: `faction`, name: `Brannock Cognition`, aka: [`Brannock`], sub: `Licensed minds and compliance governors · CHR-0120`, faction: `str`, where: `meridian`, handout: `charters`, tag: `draft`,
-  known: [`Every artificial mind in the Republic is a Brannock mind or runs a Brannock governor. A mind without a governor is unlicensed, and unlicensed minds are salvage. Motto: "A mind you can trust, because we checked."`],
-  body: [`*Suggestion:* Halvorsen Hospitality's reception androids, [[car-b]] and [[courtesy-7]] among them, run Brannock minds under licence. "Jailbroken" means the governor is off or gone.`],
+{ id: `brannock`, type: `faction`, name: `Brannock Cognition`, aka: [`Brannock`], sub: `Licensed minds and compliance governors · CHR-0120`, faction: `str`, where: `meridian`, tag: `draft`,
+  body: [`*Suggestion:* Every artificial mind in the Republic is a Brannock mind or runs a Brannock governor. A mind without a governor is unlicensed, and unlicensed minds are salvage. Motto: "A mind you can trust, because we checked."`, `*Suggestion:* Halvorsen Hospitality's reception androids, [[car-b]] and [[courtesy-7]] among them, run Brannock minds under licence. "Jailbroken" means the governor is off or gone.`],
   secrets: [`*Draft:* governors don't only restrict. They report to Commonweal, the way the [[datapad-relay]] does. CAR-B's jailbreak cut his reporting line, and someone noticed the silence.`],
   hooks: [
     `Under STR law CAR-B is salvage. Whoever reaches him first with a Brannock scanner owns him.`,
     `A Brannock field tech offers to "re-govern" CAR-B for free, as a courtesy.`,
     `Florb isn't a Brannock mind and has no governor. Brannock would very much like to know what it is.`] },
 
-{ id: `greaves-mott`, type: `faction`, name: `Greaves-Mott Ordnance`, aka: [`Greaves-Mott`], sub: `Firearms, armor and licence chips · CHR-0145`, faction: `str`, where: `varga`, handout: `charters`, tag: `draft`,
-  known: [`Founded CY 145, during the Border Wars. Every lawful firearm carries a Greaves-Mott licence chip, and Commonweal courts won't hear a theft claim for an unchipped weapon. Motto: "Licensed for your protection."`],
-  body: [`*Suggestion:* Sable's assault rifles are Greaves-Mott pattern (like the one under the [[corpo-crusher]] counter). [[rusty-scrap]]'s armor was built by hand among the Ashborn and has never had a chip, so in STR space it's not his property. It's just unclaimed.`],
+{ id: `greaves-mott`, type: `faction`, name: `Greaves-Mott Ordnance`, aka: [`Greaves-Mott`], sub: `Firearms, armor and licence chips · CHR-0145`, faction: `str`, where: `varga`, tag: `draft`,
+  body: [`*Suggestion:* Founded CY 145, during the Border Wars. Every lawful firearm carries a Greaves-Mott licence chip, and Commonweal courts won't hear a theft claim for an unchipped weapon. Motto: "Licensed for your protection."`, `*Suggestion:* Sable's assault rifles are Greaves-Mott pattern (like the one under the [[corpo-crusher]] counter). [[rusty-scrap]]'s armor was built by hand among the Ashborn and has never had a chip, so in STR space it's not his property. It's just unclaimed.`],
   hooks: [
     `A customs check at Halcyon scans for chips. Rusty's armor doesn't have one.`,
     `A Greaves-Mott rep wants to buy Rusty's armor design, or at least to know who built it.`,
     `The chip in the Sable rifle at New Bombswick still reports its owner: Vargas's old unit.`] },
 
-{ id: `quillon`, type: `faction`, name: `Quillon Somatics`, aka: [`Quillon`], sub: `Implants and prosthetics, leased · CHR-0166`, faction: `str`, where: `brightwater`, handout: `charters`, tag: `draft`,
-  known: [`Implants are leased, never sold. Lapsed leases are recovered. Motto: "Become more. Pay monthly." Vargas: "Recovered. Don't ask how. Don't miss a payment."`],
-  body: [`*Suggestion:* Quillon's recovery teams subcontract to [[penrose]]. A Brightwater worker with a Quillon arm owes Quillon and Halvorsen both.`],
+{ id: `quillon`, type: `faction`, name: `Quillon Somatics`, aka: [`Quillon`], sub: `Implants and prosthetics, leased · CHR-0166`, faction: `str`, where: `brightwater`, tag: `draft`,
+  body: [`*Suggestion:* Implants are leased, never sold. Lapsed leases are recovered. Motto: "Become more. Pay monthly." Vargas would say: "Recovered. Don't ask how. Don't miss a payment."`, `*Suggestion:* Quillon's recovery teams subcontract to [[penrose]]. A Brightwater worker with a Quillon arm owes Quillon and Halvorsen both.`],
   hooks: [
     `A Tamsin dockhand three payments behind asks the party to hide him for a week.`,
     `A recovered implant turns up in a Low Dock pawn shop, still warm.`,
     `*Suggestion, for V'an:* if any of his tech is leased, the lease is in a name he doesn't remember signing.`] },
 
-{ id: `penrose`, type: `faction`, name: `Penrose & Daughters Assurance`, aka: [`Penrose`, `Penrose Recovery`], sub: `Insurance, debt and repossession · CHR-0012`, faction: `str`, where: `halcyon`, handout: `charters`, tag: `draft`,
-  known: [`The oldest company on the Register (CY 12, older than Commonweal). Insures nine hulls in ten and buys bad debt. Leases the Bond Yards at Halcyon. Vargas: "Charter law stops at the Drift. Penrose repo crews don't."`],
-  body: [`*Suggestion:* Penrose Recovery are the repo crews and skip-tracers of the STR, and the most likely STR enemy for a Drift crew that owes money. Stats: Thug and Veteran, with a Spy running them.`],
+{ id: `penrose`, type: `faction`, name: `Penrose & Daughters Assurance`, aka: [`Penrose`, `Penrose Recovery`], sub: `Insurance, debt and repossession · CHR-0012`, faction: `str`, where: `halcyon`, tag: `draft`,
+  body: [`*Suggestion:* The oldest company on the Register (CY 12, older than Commonweal). Insures nine hulls in ten and buys bad debt. Leases the Bond Yards at Halcyon. Vargas would say: "Charter law stops at the Drift. Penrose repo crews don't."`, `*Suggestion:* Penrose Recovery are the repo crews and skip-tracers of the STR, and the most likely STR enemy for a Drift crew that owes money. Stats: Thug and Veteran, with a Spy running them.`],
   secrets: [`*Draft:* Penrose is older than Commonweal and was never asked to sign the Arbitration Clause. Its founding charter predates the court. Old money, a "charter family older than the Charter" (see [[shadow-proprietor]]).`],
   open: [`Was the Patience insured, and by whom?`],
   hooks: [
@@ -680,12 +678,23 @@ window.GM_WIKI = [
     `A Halvorsen debtor who skipped out (an Origins hook) has a Penrose skip-tracer on their trail.`,
     `A Penrose job: repossess a ship from a Drift captain who's paid most of it off.`] },
 
-{ id: `caddis-line`, type: `faction`, name: `The Caddis Line`, aka: [`Caddis`], sub: `Freight and passage on the Drift lanes · CHR-0201`, faction: `str`, where: `halcyon`, handout: `charters`, tag: `draft`,
-  known: [`The largest carrier on the Drift lanes, including Halcyon to Tamsin. Tier 4 and below travel in steerage, non-refundable. Vargas: "Steerage is a cargo hold with blankets."`],
+{ id: `caddis-line`, type: `faction`, name: `The Caddis Line`, aka: [`Caddis`], sub: `Freight and passage on the Drift lanes · CHR-0201`, faction: `str`, where: `halcyon`, tag: `draft`,
+  body: [`*Suggestion:* The largest carrier on the Drift lanes, including Halcyon to Tamsin. Tier 4 and below travel in steerage, non-refundable. Vargas would say: "Steerage is a cargo hold with blankets."`],
   hooks: [
     `A cheap way off Saint Vey's ferry route: a Caddis tramp freighter with steerage berths.`,
     `A Caddis captain hires guns for the Tamsin run, because something has been hitting her lane.`,
     `"On schedule, or your fare back in scrip": a ship that arrives a day late and won't say why.`] },
+
+{ id: `charter-register`, type: `lore`, name: `The STR's companies`, tag: `draft`, related: [`str`, `commonweal`],
+  body: [
+    `GM-only overview of the companies of the STR. The players know only what's on the Powers tab. Everything beyond that is a *suggestion*.`,
+    `**Registrar:** [[commonweal]] (CY 31). Not a charter company, a records contractor every company pays.`,
+    `**Holding charters** (own systems): [[halvorsen-combine]] (CY 58, Brightwater), [[ostrava]] (CY 92, Varga), [[assay-institute]] (CY 104, Assay moon and Kestrel).`,
+    `**Licensing charters** (own no worlds, own what worlds run on): [[kairos]] (CY 3, drives and nav updates), [[verity]] (CY 77, Duplicator patterns), [[brannock]] (CY 120, AI and governors), [[greaves-mott]] (CY 145, gun licence chips), [[quillon]] (CY 166, leased implants).`,
+    `**Service charters:** [[penrose]] (CY 12, insurance, debt, repo crews), [[caddis-line]] (CY 201, freight and steerage), [[longreach]] (CY 139, surveys).`,
+    `**Contractors and joint ventures:** [[sable-command]] (CY 191, the navy on a joint defense contract), [[med-prol]] (CY 288, Assay and Sable).`,
+    `**Outside the charter system:** [[claims-syndicate]] (a Drift front for Halvorsen and Ostrava) and the banned [[free-labor-league]].`],
+  hooks: [`If you want players to see some of this, a Commonweal register extract is easy to hand over as a prop.`, `Roll a company when a job needs a patron or a creditor.`] },
 
 /* ============================ FACTIONS: THE DRIFT ============================ */
 { id: `council-of-captains`, type: `faction`, name: `The Council of Captains`, sub: `Tamsin's assembly`, where: `tamsin`,
@@ -706,7 +715,7 @@ window.GM_WIKI = [
     `They want the nav core, and they want to know who killed Tobin's crew.`,
     `Their tapes hold the [[the-broadcast|names list]].`,
     `The oldest Ashborn are Rusty's generation. They remember which ships came out of the jump wrong.`] },
-{ id: `claims-syndicate`, type: `faction`, handout: `charters`, name: `The Claims Syndicate`, sub: `Runs Copperline`, where: `copperline`,
+{ id: `claims-syndicate`, type: `faction`, name: `The Claims Syndicate`, sub: `Runs Copperline`, where: `copperline`,
   known: [`A Halvorsen and Ostrava front in all but name. Pays the sheriffs.`],
   hooks: [`Syndicate cutters "would rather disable than kill." A debt collection job, from either side.`] },
 
