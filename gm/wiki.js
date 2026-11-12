@@ -72,7 +72,7 @@ window.GM_WIKI = [
 /* ============================ CREW OF THE PATIENCE ============================ */
 { id: `hotshot`, type: `npc`, name: `Captain Jimothy "Hotshot" Delta`, aka: [`Hotshot`], status: `dead`, tag: `played`,
   sub: `Captain of the Patience · owns the contract and the debt`, stats: `Veteran`, related: [`patience`],
-  body: [`Dead: he didn't make it out of the Patience. Flew the [[patience]], or ran engineering if a PC took the helm. Calm on the comm, swears off it. Bought the Patience at a [[tamsin]] impound auction, and the [[datapad]] came with it.`],
+  body: [`Dead. Flew the [[patience]], or ran engineering if a PC took the helm. Calm on the comm, swears off it. Bought the Patience at a [[tamsin]] impound auction, and the [[datapad]] came with it.`],
   secrets: [`Owes [[marra-tesk]] more than the job paid. He'd have sold the [[nav-core]] twice.`],
   seen: [[`S0`, `Captained the Grave job and the ship fight.`]],
   hooks: [
