@@ -411,7 +411,7 @@ window.GM_WIKI = [
 /* ============================ LOCATIONS: THE DRIFT ============================ */
 { id: `tamsin`, type: `location`, name: `Free Harbor Tamsin`, sub: `Neutral port in a hollow asteroid (DRF-01) · next session`, handout: `loc-tamsin`, faction: `council-of-captains`,
   known: [`Run by the Council of Captains. Anyone can dock. The Spindle (hiring hall and market), Low Dock (no questions asked), Council Hall (meets monthly). Charter law doesn't apply, but Commonweal keeps every visiting citizen's tier on record. Vargas: "Tamsin dockmaster never asked my name. Asked my tonnage twice."`],
-  body: [`The Patience came from a Tamsin impound auction. A ship costs 12,000 to 20,000 cr, a lease 500 cr a week plus a cut. *Suggestion:* **Ledgerline**, a Commonweal-licensed gig board, takes 20% and rates every job 1 to 5 stars. Better jobs unlock at 4.5. Some first gigs: escort a choir pilgrim (200 cr), recover a repo'd drone from the Spindle (350), find a dockhand's missing brother (500), sit on a Halvorsen warehouse for a night (300, something is in the warehouse).`],
+  body: [`The Patience came from a Tamsin impound auction. A ship costs 12,000 to 20,000 cr, a lease 500 cr a week plus a cut. *Suggestion:* [[ledgerline]], a Commonweal-licensed gig board, takes 20% and rates every job 1 to 5 stars. Better jobs unlock at 4.5. Its player page has a dozen small gigs and one lucrative, suspicious one: [[net-settlement|ferry a hull, one way]].`],
   hooks: [
     `The ferry docks, and [[marra-tesk]] is already waiting.`,
     `The impound auction has a ship that fits their budget and a lot of strings.`,
@@ -578,6 +578,24 @@ window.GM_WIKI = [
 { id: `str`, type: `faction`, name: `The Syndicated Technocratic Republic`, aka: [`STR`], sub: `Corporate syndicate of the east · "Measure. Contract. Improve."`, handout: `factions`, where: `meridian`,
   known: [`Nobody rules. Each system belongs to its charter company, held together by the Charter of Meridian and Commonweal. Comfortable for shareholders, company towns for everyone else. On Corinthia: "Fanatics sitting on a black hole."`],
   hooks: [`Everything in New Bombswick is "STR only." The PCs need to pass as citizens, or find someone who'll vouch.`] },
+
+{ id: `ledgerline`, type: `faction`, name: `Ledgerline`, sub: `Commonweal-licensed gig board · player page ledgerline/`, tag: `draft`, faction: `commonweal`, where: `tamsin`,
+  known: [`The players' gig app, at **ledgerline/** on the site (no link from the handout; send it to them). Gigs and the crew's rating are edited in ledgerline/gigs.js: mark a finished gig \`status: "done", rating: 5\` and the app recomputes their stars and earnings. Premium gigs unlock at ★ 4.5 after 3 rated gigs.`],
+  body: [
+    `*Suggestion.* Takes 20% from non-citizens and guests, 12% from Tier 3+ citizens. Ratings are weighted "by factors it is not required to disclose." The datapad shows Vargas's profile as suspended, so the PCs browse as a guest worker.`,
+    `Open gigs (posted pay): walk a Choir pilgrim to her ship (200), recover the repo'd drone "Biscuit" (350), find dockhand Dov Aranha's brother Teo (500), overnight watch on Halvorsen Bonded Warehouse 6 (300), vent eels in Ring 3 hydroponics (450 + 10 a head), door work at the Lamplighter in Council week (240), an Assay Institute implant trial (600), witness an arbitration signing (120), hull scrub (180), a sealed case to Council Hall (150), an Ostrava tool-loan "reminder" (400), guarding a Claims Syndicate ore transfer (700), and a lost cat named Pontifex (80). Premium, locked: a Grave of Ash salvage dive (3,200), a Kestrel supply run at triple rate (4,800), close protection for a Halcyon delegate (2,400).`,
+    `The suspicious one, pinned as "Matched to your profile": [[net-settlement|ferry a hull, one way]], 9,000 cr plus 3,000 if the seal holds, fee paid by the client. That's exactly the cheapest ship.`],
+  secrets: [
+    `*Suggestion:* the brother (500) was pressed onto a Low Dock crew moving something for the Inquisition, or for Sable. The dockmaster was paid to say he quit.`,
+    `*Suggestion:* Warehouse 6, Bay C holds a repossessed Halvorsen android line, and one of them is awake. A good mirror for [[car-b]].`,
+    `*Suggestion:* the implant trial's "briefly recognizing strangers" is the [[datapad-relay]] idea in a skull. Anyone who takes it is listened to.`,
+    `*Suggestion:* the Lamplighter's back room is where a Sable termination team meets about [[killora-vargas]].`],
+  open: [`Do the PCs keep Vargas's datapad profile suspended, or can it be reinstated (with her ★ 4.6 and Premium access) if someone vouches?`],
+  hooks: [
+    `Marra Tesk shows them the app on day one: "Everyone starts at the bottom. Some people stay there."`,
+    `A gig they finished gets a one-star review from the app itself, with no client attached.`,
+    `The 9,000 cr hull job is still open the next morning, and the next. It's waiting for them.`],
+  related: [`tamsin`, `datapad`] },
 
 { id: `commonweal`, type: `faction`, name: `Commonweal`, sub: `Registry, tiers, courts, customs and scrip clearing`, faction: `str`, where: `meridian`,
   known: [`Officially a records contractor that every charter company pays. Incorporated CY 31. The datapad is a Commonweal civic datapad, and its "public record" leans toward the STR.`],
@@ -797,6 +815,21 @@ window.GM_WIKI = [
 { id: `arbiters-due`, type: `ship`, name: `The Arbiter's Due`, sub: `STR cruiser, died at the Grave in CY 274`, status: `wreck`, where: `grave-of-ash`,
   seen: [[`S0`, `The PCs cut its nav core free.`]],
   hooks: [`Its sister ships' wrecks hold more of the record.`, `A survivor of its crew is alive, old, and on Tamsin.`] },
+
+{ id: `net-settlement`, type: `ship`, name: `The Net Settlement`, sub: `Impounded light hauler · Ledgerline gig LL-2271`, tag: `draft`, where: `tamsin`,
+  known: [`On Ledgerline: "Ferry a hull, one way. Ship provided." Verified client, identity withheld, 5.0 stars and no reviews. 9,000 cr, plus 3,000 if the aft hold seal is intact, fee paid by the client, 1,000 advance on boarding. New profiles preferred. Depart within 6 hours, coordinates released in flight (est. 4 to 6 days), transponder pre-set, aft hold sealed and powered, don't answer hails. Posted 11 minutes after their guest profile was created.`],
+  body: [`*Suggestion.* A tired light hauler in Tamsin impound berth L-9, the same impound the [[patience]] came from. It's the lure: 12,000 cr is exactly the cheapest ship, and the job hands them one for a week.`],
+  secrets: [`*Suggestion, pick one (or mix):*`,
+    `**A. Bait for the core.** [[mr-sallow]] (or the Inquisition) knows two Patience survivors reached Tamsin with no history. The destination is a quiet meeting to take the [[nav-core]]. The hold is empty except for a jammer.`,
+    `**B. A delivery for the shadow proprietor.** Commonweal's review passed it because it was told to. The hold holds something powered and alive, bound 4 to 6 days out, which fits the Lantern (11 pc, about 4.6 days). [[eye-is-a-machine|The Eye]] notices.`,
+    `**C. Vargas.** The hold is a Sable cryo-transport, and [[killora-vargas]] is in it, or a copy of her. Open it and the bonus is gone.`,
+    `The pre-set transponder broadcasts a dead registry, so anyone who hails them is hunting the previous owner.`],
+  open: [`Which option is true? Can the crew keep the hull afterward (an impound title nobody claims)?`],
+  hooks: [
+    `It's pinned at the top of Ledgerline, "Matched to your profile."`,
+    `Someone else, a less careful crew, takes it if they wait too long. The hull comes back, or doesn't.`,
+    `[[courtesy-7]] has already been hired to welcome the crew aboard.`],
+  related: [`ledgerline`] },
 
 { id: `prudent-margin`, type: `ship`, name: `The Prudent Margin`, sub: `Halvorsen ferry, Saint Vey to Tamsin`, tag: `draft`, faction: `halvorsen-combine`,
   body: [`*Suggestion (name).* The monthly ferry that carries ore and passengers from New Bombswick to Tamsin. The party leaves on the next one in two weeks, with Amelda's 30 crates in the hold.`],

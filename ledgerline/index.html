@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Ledgerline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Exo+2:ital,wght@0,400;0,600;0,700;1,400&family=Michroma&family=Share+Tech+Mono&display=swap">
+<style>
+/* Ledgerline: a Commonweal-licensed gig board, as the app looks on a civic datapad.
+   Cleaner and more corporate than the handout: flat panels, one teal accent, stars in gold.
+   Gigs live in gigs.js. Phone first; from 900px the list and the open gig sit side by side. */
+:root{
+  --bg:#060a14; --bg-2:#0a1020; --panel:#0e1628; --panel-2:#13203a; --line:#1d2a46; --line-2:#2a3b60;
+  --fg:#e6edff; --dim:#94a3c8; --faint:#5f6d93;
+  --teal:#6ff3e0; --teal-ink:#03211d; --star:#ffd36b; --amber:#ffb35c; --haz:#ff6b7a; --ok:#7be3a0; --lil:#c9a6ff;
+  --f-disp:"Michroma","Eurostile","Arial Black",sans-serif;
+  --f-body:"Exo 2","Segoe UI",system-ui,sans-serif;
+  --f-lore:"Cormorant Garamond",Georgia,serif;
+  --f-data:"Share Tech Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100dvh;background:var(--bg);color:var(--fg);font:400 15px/1.55 var(--f-body);
+  background-image:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(111,243,224,.10),transparent 70%)}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--teal)}
+.mono{font-family:var(--f-data)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));
+  background:rgba(6,10,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg)}
+.logo svg{width:30px;height:30px;flex:none}
+.logo b{font:400 15px var(--f-disp);letter-spacing:.16em}
+.logo small{display:block;font:400 9.5px var(--f-data);letter-spacing:.18em;color:var(--faint);text-transform:uppercase}
+.top .sp{flex:1}
+.wallet{text-align:right;font:400 11px var(--f-data);color:var(--dim);letter-spacing:.06em;line-height:1.3}
+.wallet b{display:block;font:400 15px var(--f-data);color:var(--teal)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:16px 16px 60px}
+
+/* device banner + profile */
+.device{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;margin-bottom:14px;border:1px solid rgba(255,179,92,.35);border-radius:10px;
+  background:rgba(255,179,92,.06);font:400 12px/1.5 var(--f-data);color:var(--amber)}
+.device i{font-style:normal;flex:none}
+.prof{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);margin-bottom:14px}
+.ava{grid-row:span 2;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:var(--panel-2);border:1px dashed var(--line-2);font:400 18px var(--f-disp);color:var(--faint)}
+.prof h2{margin:0;font:600 16px var(--f-body);letter-spacing:.02em}
+.prof .meta{font:400 12px var(--f-data);color:var(--dim)}
+.prof .bars{grid-column:1/-1;display:grid;gap:10px;margin-top:8px}
+.bar .lbl{display:flex;justify-content:space-between;gap:10px;font:400 11px var(--f-data);color:var(--dim);letter-spacing:.04em;margin-bottom:5px}
+.bar .lbl b{color:var(--fg);font-weight:400;white-space:nowrap}
+.track{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.track i{display:block;height:100%;background:var(--teal);border-radius:3px}
+.track.st i{background:var(--star)}
+.nudge{grid-column:1/-1;margin:6px 0 0;font:italic 500 16px/1.35 var(--f-lore);color:#c3cbe8}
+
+/* layout */
+.cols{display:block}
+@media (min-width:900px){
+  .cols{display:grid;grid-template-columns:minmax(0,430px) minmax(0,1fr);gap:20px;align-items:start}
+  .side{position:sticky;top:76px}
+  .detail-pane{position:sticky;top:76px;max-height:calc(100dvh - 96px);overflow:auto;scrollbar-width:thin}
+}
+
+/* filters */
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none;margin:0 -16px;padding-left:16px;padding-right:16px}
+@media (min-width:900px){.chips{flex-wrap:wrap;margin:0;padding-left:0;padding-right:0}}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:6px 12px;border-radius:999px;border:1px solid var(--line-2);background:transparent;color:var(--dim);font:400 12px var(--f-data);letter-spacing:.04em}
+.chip[aria-pressed="true"]{background:var(--teal);color:var(--teal-ink);border-color:var(--teal)}
+.sortrow{display:flex;justify-content:space-between;align-items:center;margin:2px 0 10px;font:400 11px var(--f-data);color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+.sortrow select{background:var(--panel);color:var(--fg);border:1px solid var(--line-2);border-radius:8px;padding:4px 8px;font:400 12px var(--f-data)}
+
+/* cards */
+.sec{margin:18px 0 8px;font:400 10.5px var(--f-disp);letter-spacing:.22em;color:var(--faint);text-transform:uppercase}
+.list{display:grid;gap:10px}
+.card{position:relative;display:block;width:100%;text-align:left;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--panel);transition:border-color .15s,background .15s}
+.card:hover{border-color:var(--line-2)}
+.card[aria-current="true"]{border-color:var(--teal);background:var(--panel-2)}
+.card .row1{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.card h3{margin:0;font:600 15.5px/1.3 var(--f-body)}
+.card .pay{flex:none;text-align:right;font:400 16px var(--f-data);color:var(--teal);white-space:nowrap}
+.card .pay small{display:block;font-size:10.5px;color:var(--faint)}
+.card .cl{margin-top:3px;font:400 12px var(--f-data);color:var(--dim);display:flex;flex-wrap:wrap;gap:2px 8px}
+.card p{margin:8px 0 0;font-size:14px;color:#c8d1ee}
+.card .foot{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:6px;background:var(--bg-2);border:1px solid var(--line);font:400 11px var(--f-data);color:var(--dim);letter-spacing:.03em}
+.pill.req{color:var(--ok);border-color:rgba(123,227,160,.4)}
+.pill.warn{color:var(--amber);border-color:rgba(255,179,92,.4)}
+.stars{color:var(--star);letter-spacing:1px}
+.stars .off{color:#3a4566}
+
+.card.feat{border-color:rgba(111,243,224,.55);background:linear-gradient(160deg,rgba(111,243,224,.12),var(--panel) 55%)}
+.card.feat .pay{font-size:19px}
+.card.dead{opacity:.5}
+.card.dead .pay{color:var(--faint);text-decoration:line-through}
+.card.lock{background:repeating-linear-gradient(-45deg,rgba(255,211,107,.03) 0 8px,transparent 8px 16px),var(--panel)}
+.card.lock .pay{color:var(--star);filter:blur(5px);user-select:none}
+.card.lock h3::before{content:"🔒 ";font-size:12px}
+.card.done{border-color:rgba(123,227,160,.35)}
+.empty{padding:20px;text-align:center;color:var(--faint);font:400 13px var(--f-data);border:1px dashed var(--line);border-radius:14px}
+
+/* detail */
+.detail{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:18px}
+.detail .id{font:400 11px var(--f-data);color:var(--faint);letter-spacing:.14em}
+.detail h2{margin:6px 0 4px;font:400 20px/1.3 var(--f-disp);letter-spacing:.03em}
+.detail .who{font:400 13px var(--f-data);color:var(--dim)}
+.detail h4{margin:18px 0 6px;font:400 10.5px var(--f-disp);letter-spacing:.2em;color:var(--faint);text-transform:uppercase}
+.detail ul{margin:0;padding:0;list-style:none}
+.detail ul li{position:relative;padding-left:16px;margin-bottom:7px}
+.detail ul li::before{content:"";position:absolute;left:2px;top:.62em;width:5px;height:5px;transform:rotate(45deg);background:var(--teal)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border-radius:10px;overflow:hidden;margin-top:14px}
+.facts div{background:var(--bg-2);padding:9px 12px}
+.facts dt{font:400 10px var(--f-data);color:var(--faint);letter-spacing:.14em;text-transform:uppercase}
+.facts dd{margin:2px 0 0;font-size:14px}
+.ledger{margin-top:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden;font:400 13px var(--f-data)}
+.ledger div{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.ledger div span:last-child{white-space:nowrap;text-align:right}
+.ledger div:last-child{border-bottom:0;background:rgba(111,243,224,.07);color:var(--teal);font-size:15px}
+.ledger .neg{color:var(--haz)}
+.ledger .dim{color:var(--faint)}
+.flags li::before{background:var(--amber)!important}
+.flags li{color:var(--amber);font:400 13px/1.5 var(--f-data)}
+.flags li.ok{color:var(--dim)}
+.flags li.ok::before{background:var(--ok)!important}
+.act{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.btn{flex:1;min-width:150px;padding:12px 16px;border-radius:12px;border:1px solid var(--teal);background:var(--teal);color:var(--teal-ink);font:700 14px var(--f-body);letter-spacing:.06em;text-transform:uppercase}
+.btn.ghost{background:transparent;color:var(--teal)}
+.btn[disabled]{opacity:.45;cursor:not-allowed;background:transparent;color:var(--faint);border-color:var(--line-2)}
+.ok-msg{margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(123,227,160,.08);border:1px solid rgba(123,227,160,.35);color:var(--ok);font:400 13px/1.5 var(--f-data)}
+.back{display:none}
+.placeholder{padding:40px 20px;text-align:center;color:var(--faint);border:1px dashed var(--line);border-radius:16px}
+.placeholder .motto{font:italic 500 22px var(--f-lore);color:#c3cbe8;margin-bottom:6px}
+
+/* phone: the open gig is a full-screen sheet */
+@media (max-width:899px){
+  .detail-pane{position:fixed;inset:0;z-index:20;overflow:auto;background:var(--bg);padding:12px 16px 40px;padding-top:max(12px,env(safe-area-inset-top));transform:translateY(100%);transition:transform .25s ease-out;visibility:hidden}
+  .detail-pane.open{transform:none;visibility:visible}
+  .back{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;padding:6px 10px;border-radius:8px;border:1px solid var(--line-2);background:var(--panel);font:400 12px var(--f-data);color:var(--dim)}
+  .placeholder{display:none}
+}
+
+/* terms */
+.terms{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font:400 11px/1.7 var(--f-data);color:var(--faint);letter-spacing:.02em}
+.terms p{margin:0 0 6px;max-width:90ch}
+.terms .motto{font:italic 500 16px var(--f-lore);color:var(--dim);letter-spacing:0}
+</style>
+</head>
+<body>
+
+<header class="top">
+ <a class="logo" href="#" aria-label="Ledgerline, all gigs">
+  <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1.5" y="1.5" width="29" height="29" rx="8" fill="none" stroke="#6ff3e0" stroke-width="1.5"/><path d="M8 11h16M8 16h16M8 21h9" stroke="#6ff3e0" stroke-width="1.6" stroke-linecap="round" opacity=".55"/><path d="M18.5 21.5l2.5 2.5 4.5-6" fill="none" stroke="#6ff3e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span><b>LEDGERLINE</b><small>Free Harbor Tamsin · DRF-01</small></span>
+ </a>
+ <span class="sp"></span>
+ <div class="wallet">Earned<b id="earned">0 cr</b></div>
+</header>
+
+<main class="wrap">
+ <div class="device" id="device"></div>
+
+ <div class="cols">
+  <div class="side">
+   <section class="prof" id="prof"></section>
+   <div class="chips" id="chips" role="toolbar" aria-label="Filter by category"></div>
+   <div class="sortrow"><span id="count"></span>
+    <label>Sort <select id="sort"><option value="new">Recommended</option><option value="pay">Highest pay</option><option value="stars">Client rating</option></select></label>
+   </div>
+   <div id="lists"></div>
+  </div>
+  <div class="detail-pane" id="pane" aria-live="polite"></div>
+ </div>
+
+ <footer class="terms">
+  <p class="motto">Every obligation, met.</p>
+  <p>Ledgerline is operated under Commonweal license CW-LL-0044 and is available at all ports where Commonweal maintains a records presence.</p>
+  <p>Facilitation fee: 20% of posted pay for non-citizen and guest workers; 12% for citizens of Tier 3 and above. Fees are deducted at settlement.</p>
+  <p>Ratings are final. Ledgerline may weight a worker's rating by factors it is not required to disclose. Premium gigs are shown to profiles rated ★ 4.5 and above.</p>
+  <p>Ledgerline does not verify the contents of listings beyond automated review. Disputes between workers and clients resolve under the Arbitration Clause. Persons with unresolved obligations may find some gigs unavailable.</p>
+ </footer>
+</main>
+
+<script src="gigs.js"></script>
+<script>
+(()=>{
+const L=window.LEDGERLINE||{profile:{},gigs:[]};
+const P=Object.assign({name:"Guest worker",goal:12000,unlock:4.5,minRated:3},L.profile);
+const G=(L.gigs||[]).map((g,i)=>Object.assign({fee:.2,min:0,status:"open",cr:0,crn:0,notes:[],flags:[],order:i},g));
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=s=>esc(s).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>");
+const cr=n=>Math.round(n).toLocaleString("en-US")+" cr";
+const take=g=>g.pay*(1-g.fee);
+const starStr=v=>{const f=Math.round(v);return `<span class="stars" aria-label="${v.toFixed(1)} stars">${"★".repeat(f)}<span class="off">${"★".repeat(5-f)}</span></span>`};
+
+/* stored per viewer: which gigs this device has requested */
+let req={};try{req=JSON.parse(localStorage.getItem("ll-req")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("ll-req",JSON.stringify(req))}catch(e){}};
+
+/* the crew's profile is computed from gigs the GM marked done */
+const done=G.filter(g=>g.status==="done");
+const rated=done.filter(g=>g.rating>0);
+const stars=rated.length?rated.reduce((a,g)=>a+g.rating,0)/rated.length:0;
+const shown=rated.length>=P.minRated;
+const earned=done.reduce((a,g)=>a+take(g)+(g.bonusPaid&&g.bonus?g.bonus[0]:0),0);
+const premium=shown&&stars>=P.unlock;
+const locked=g=>g.min>0&&!(shown&&stars>=g.min);
+
+$("#earned").textContent=cr(earned);
+$("#device").innerHTML=`<i>⚠</i><span>This device is registered to ${esc(P.device||"another holder")}. ${esc(P.holder||"")} You are browsing as a guest worker. Ratings earned on a guest profile are held for 30 days.</span>`;
+const pct=Math.min(100,earned/P.goal*100);
+$("#prof").innerHTML=`<div class="ava">${esc((P.name||"G")[0])}</div>
+ <h2>${esc(P.name)}</h2>
+ <div class="meta">${shown?`${starStr(stars)} ${stars.toFixed(2)}`:`Unrated`} · ${done.length} gig${done.length===1?"":"s"} completed</div>
+ <div class="bars">
+  <div class="bar"><div class="lbl"><span>Savings goal: a hull</span><b>${cr(earned)} / ${cr(P.goal)}</b></div><div class="track"><i style="width:${pct}%"></i></div></div>
+  <div class="bar"><div class="lbl"><span>Premium gigs</span><b>${premium?"Unlocked":shown?`★ ${stars.toFixed(2)} / ${P.unlock}`:`${rated.length} / ${P.minRated} rated gigs`}</b></div><div class="track st"><i style="width:${shown?Math.min(100,stars/P.unlock*100):rated.length/P.minRated*100}%"></i></div></div>
+ </div>
+ <p class="nudge">${premium?"Premium gigs are now visible on this profile. Ledgerline thanks you for your reliability.":"Workers like you save for a hull in as few as forty gigs. Every five-star rating brings Premium gigs closer."}</p>`;
+
+/* filters */
+const cats=["All",...new Set(G.filter(g=>g.status!=="closed").map(g=>g.cat))];
+let cat="All";
+try{const s=localStorage.getItem("ll-sort");if(s)$("#sort").value=s}catch(e){}
+$("#chips").innerHTML=cats.map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${c===cat}">${esc(c)}</button>`).join("");
+$("#chips").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;cat=b.dataset.c;$("#chips").querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));renderList()};
+$("#sort").onchange=()=>{try{localStorage.setItem("ll-sort",$("#sort").value)}catch(e){}renderList()};
+
+function card(g){
+  const lk=locked(g),dead=g.status==="taken",dn=g.status==="done";
+  const cls=["card",g.featured&&!dead&&!dn?"feat":"",lk?"lock":"",dead?"dead":"",dn?"done":""].join(" ");
+  const pills=[`<span class="pill">${esc(g.cat)}</span>`,`<span class="pill">${esc(g.where)}</span>`];
+  if(dn)pills.push(`<span class="pill req">✓ Completed${g.rating?` · ${"★".repeat(g.rating)}`:""}</span>`);
+  else if(dead)pills.push(`<span class="pill">Taken by another worker</span>`);
+  else if(lk)pills.push(`<span class="pill warn">Requires ★ ${g.min}</span>`);
+  else if(req[g.id])pills.push(`<span class="pill req">Requested</span>`);
+  else pills.push(`<span class="pill">Expires ${esc(g.expires||"soon")}</span>`);
+  return `<button class="${cls}" data-id="${esc(g.id)}" aria-current="${cur===g.id}">
+   <div class="row1"><h3>${fmt(g.title)}</h3><div class="pay">${lk?"0,000 cr":cr(g.pay)}${g.bonus&&!lk?`<small>+${cr(g.bonus[0])} bonus</small>`:""}</div></div>
+   <div class="cl"><span>${esc(g.client)}</span><span>${g.crn?`${starStr(g.cr)} ${g.cr.toFixed(1)} (${g.crn})`:`${starStr(g.cr)} ${g.cr.toFixed(1)} · no reviews`}</span></div>
+   ${lk?"":`<p>${fmt(g.blurb)}</p>`}
+   <div class="foot">${pills.join("")}</div></button>`;
+}
+function renderList(){
+  const sort=$("#sort").value;
+  const vis=G.filter(g=>g.status!=="closed"&&(cat==="All"||g.cat===cat));
+  const by={new:(a,b)=>a.order-b.order,pay:(a,b)=>b.pay-a.pay,stars:(a,b)=>b.cr-a.cr}[sort];
+  const grp=(t,arr)=>arr.length?`<div class="sec">${t}</div><div class="list">${arr.sort(by).map(card).join("")}</div>`:"";
+  const open=vis.filter(g=>(g.status==="open")&&!locked(g));
+  const feat=open.filter(g=>g.featured),rest=open.filter(g=>!g.featured);
+  const html=grp("Matched to your profile",feat)+grp("Open near you",rest)
+    +grp("Premium · ★ "+P.unlock+"+",vis.filter(g=>g.status==="open"&&locked(g)))
+    +grp("Recently filled",vis.filter(g=>g.status==="taken"))
+    +grp("Your completed gigs",vis.filter(g=>g.status==="done"));
+  $("#lists").innerHTML=html||`<div class="empty">No gigs in this category right now.</div>`;
+  $("#count").textContent=`${open.length} open gig${open.length===1?"":"s"}`;
+}
+$("#lists").onclick=e=>{const c=e.target.closest(".card");if(c)location.hash=c.dataset.id};
+
+/* the open gig */
+let cur=null;
+function renderDetail(){
+  const g=G.find(x=>x.id===cur);
+  const pane=$("#pane");
+  if(!g){pane.classList.remove("open");document.body.style.overflow="";
+    pane.innerHTML=`<div class="placeholder"><div class="motto">Work, settled.</div><div class="mono">Select a gig to see the full listing.</div></div>`;return}
+  const lk=locked(g),dead=g.status==="taken",dn=g.status==="done";
+  const fee=g.pay*g.fee;
+  const ledger=lk?"":`<div class="ledger">
+    <div><span>Posted pay</span><span>${cr(g.pay)}</span></div>
+    ${g.fee>0?`<div><span>Ledgerline facilitation fee (${Math.round(g.fee*100)}%)</span><span class="neg">−${cr(fee)}</span></div>`:`<div><span>Ledgerline facilitation fee</span><span class="dim">paid by client</span></div>`}
+    ${g.bonus?`<div><span>Bonus, ${esc(g.bonus[1])}</span><span>+${cr(g.bonus[0])}</span></div>`:""}
+    <div><span>You take home</span><span>${g.bonus?`${cr(take(g))} to ${cr(take(g)+g.bonus[0])}`:cr(take(g))}</span></div></div>`;
+  const autoFlags=[];
+  if(!lk&&!g.flags.length&&!dn&&!dead)autoFlags.push(["ok","This listing passed automated review."]);
+  const flags=[...autoFlags,...g.flags.map(f=>[/passed automated review/.test(f)?"ok":"",f])];
+  let act;
+  if(dn)act=`<div class="ok-msg">✓ Completed and settled.${g.rating?` Client rating: ${"★".repeat(g.rating)}.`:""}</div>`;
+  else if(dead)act=`<div class="act"><button class="btn" disabled>Taken by another worker</button></div>`;
+  else if(lk)act=`<div class="act"><button class="btn" disabled>Requires ★ ${g.min}</button></div>`;
+  else if(req[g.id])act=`<div class="ok-msg">Request sent ${esc(req[g.id])}. The client has been notified and will contact you through Ledgerline. Please remain available.</div>
+    <div class="act"><button class="btn ghost" data-do="withdraw">Withdraw request</button></div>`;
+  else act=`<div class="act"><button class="btn" data-do="request">Request this gig</button></div>`;
+  pane.innerHTML=`<button class="back" data-do="back">‹ All gigs</button>
+   <article class="detail">
+    <div class="id">${esc(g.id)} · ${esc(g.cat).toUpperCase()} · POSTED ${esc(g.posted||"").toUpperCase()}</div>
+    <h2>${fmt(g.title)}</h2>
+    <div class="who">${esc(g.client)} · ${starStr(g.cr)} ${g.cr.toFixed(1)} ${g.crn?`(${g.crn} reviews)`:`· no reviews yet`}</div>
+    <dl class="facts">
+     <div><dt>Where</dt><dd>${esc(g.where)}</dd></div>
+     <div><dt>When</dt><dd>${esc(g.when||"—")}</dd></div>
+     <div><dt>Expires</dt><dd>${esc(g.expires||"—")}</dd></div>
+     <div><dt>Eligible</dt><dd>${g.min?`★ ${g.min} and above`:"Any profile"}</dd></div>
+    </dl>
+    ${ledger}
+    ${lk?`<h4>Listing</h4><p class="mono" style="color:var(--faint)">Details are visible to Premium profiles (★ ${g.min}+). Complete gigs and earn five-star ratings to unlock.</p>`
+       :`<h4>From the client</h4><ul>${g.notes.map(n=>`<li>${fmt(n)}</li>`).join("")}</ul>`}
+    ${flags.length&&!lk?`<h4>Ledgerline notices</h4><ul class="flags">${flags.map(([c,f])=>`<li class="${c}">${fmt(f)}</li>`).join("")}</ul>`:""}
+    ${act}
+   </article>`;
+  if(matchMedia("(max-width:899px)").matches){pane.classList.add("open");pane.scrollTop=0;document.body.style.overflow="hidden"}
+}
+$("#pane").onclick=e=>{const b=e.target.closest("[data-do]");if(!b)return;
+  const d=b.dataset.do;
+  if(d==="back"){location.hash="";return}
+  if(d==="request"){req[cur]="at "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});save()}
+  if(d==="withdraw"){delete req[cur];save()}
+  renderList();renderDetail();
+};
+function route(){
+  const id=decodeURIComponent(location.hash.slice(1));
+  cur=G.some(g=>g.id===id)?id:null;
+  if(!cur){$("#pane").classList.remove("open");document.body.style.overflow=""}
+  renderList();renderDetail();
+}
+addEventListener("hashchange",route);
+addEventListener("keydown",e=>{if(e.key==="Escape"&&cur)location.hash=""});
+route();
+})();
+</script>
+</body></html>
