@@ -155,6 +155,12 @@ code{font-family:var(--f-data);color:var(--teal)}
 .wk-list a:hover{background:var(--panel-2)}
 .wk-list a[aria-current="page"]{background:var(--panel-2);box-shadow:inset 2px 0 var(--amber)}
 .wk-list a .nm{flex:1;min-width:0}
+.wk-list h6{margin:8px 14px 2px;padding-left:calc(var(--d,0) * 12px);font:400 10px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--faint);display:flex;gap:8px;align-items:baseline}
+.wk-list h6 a{display:inline;padding:0;color:inherit;font:inherit;text-decoration:none}
+.wk-list h6 a:hover{color:var(--amber);background:none}
+.wk-list h6 .n{margin-left:auto;opacity:.7}
+.wk-list a.ind{padding-left:calc(14px + var(--d,0) * 12px)}
+.wk-list a .ty{font:400 9.5px var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);flex:none}
 .wk-list a.new .nm{color:var(--dim)}
 .wk-list .dot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--ok)}
 .wk-list a.new .dot{background:transparent;border:1px solid var(--faint)}
@@ -599,6 +605,7 @@ a.wl:hover{color:#fff}
   <input id="wq" type="search" placeholder="Search names, places, secrets, hooks" aria-label="Search the wiki" autocomplete="off" enterkeyhint="search">
   <div class="chips" id="wtypes"></div>
   <div class="chips" id="wmet"></div>
+  <div class="chips" id="wgroup"></div>
   <span id="wcount" aria-live="polite"></span>
  </div>
  <div class="wk" id="wk">
@@ -1218,7 +1225,25 @@ a.wl:hover{color:#fff}
  }
  const wlink=id=>{const e=WBY[id];return e?`<a href="#wiki/${id}">${esc(e.name)}</a>`:""};
  const sessLink=s=>{const id=String(s).toLowerCase();return WBY[id]?`<a href="#wiki/${id}">${esc(s)}</a>`:esc(s)};
- let wType="all",wMet="all",wCur=null,wBuilt=false;
+ let wType="all",wMet="all",wGroup=(()=>{try{return localStorage.getItem("gm.wgroup")==="faction"?"faction":"type"}catch(_){return"type"}})(),wCur=null,wBuilt=false;
+ /* Faction grouping. A page belongs to its own faction field; a location with none takes its place's (via where).
+    People, items, ships, events and lore are never inferred: no faction field means Unaligned.
+    A faction's power is the top of its faction chain: corinthia, str, or (any other root) the Drift. */
+ const POWERS=[["corinthia","Corinthia","var(--lil)"],["str","The STR","var(--teal)"],["drift","The Drift","var(--amber)"],["none","No faction","var(--dim)"]];
+ const facOf=x=>{if(x.type==="faction")return x.id;let c=x,n=0;while(c&&n++<8){if(c.faction&&WBY[c.faction])return c.faction;if(x.type!=="location"||c.type!=="location")return null;c=WBY[c.where]}return null};
+ const facParent=f=>{const p=WBY[f]&&WBY[f].faction;return p&&WBY[p]&&p!==f?p:null};
+ const facChain=f=>{const ch=[];let c=f,n=0;while(c&&n++<8){ch.unshift(c);c=facParent(c)}return ch};
+ const powerOf=f=>{if(!f)return"none";const r=facChain(f)[0];return r==="corinthia"||r==="str"?r:"drift"};
+ const FKEY={};WIKI.forEach(x=>{const f=facOf(x),ch=f?facChain(f):[];FKEY[x.id]={f,p:powerOf(f),ch}});
+ /* faction tree order: depth-first, roots corinthia, str, then the rest by name; children by name */
+ const FACS=WIKI.filter(x=>x.type==="faction");
+ const byName=(a,b)=>a.name.replace(/^The /,"").localeCompare(b.name.replace(/^The /,""));
+ const FORDER=[];{const kids=f=>FACS.filter(x=>facParent(x.id)===f).sort(byName);
+  const walk=(x,d)=>{FORDER.push([x.id,d]);kids(x.id).forEach(k=>walk(k,d+1))};
+  const roots=FACS.filter(x=>!facParent(x.id)).sort((a,b)=>(a.id==="corinthia"?0:a.id==="str"?1:2)-(b.id==="corinthia"?0:b.id==="str"?1:2)||byName(a,b));
+  roots.forEach(r=>walk(r,0))}
+ const FRANK={};FORDER.forEach(([id],i)=>FRANK[id]=i);
+ const fRank=x=>{const k=FKEY[x.id];return k.f?FRANK[k.f]:1e4};
  const whay={};WIKI.forEach(x=>whay[x.id]=[x.id,x.type,...textsOf(x)].join(" ").toLowerCase());
  function renderWiki(){
   if(wBuilt)return;wBuilt=true;
@@ -1227,6 +1252,9 @@ a.wl:hover{color:#fff}
   me.innerHTML=[["all","Any"],["met","Met at the table"],["new","Not yet met"]].map(([t,l])=>`<button class="chip" type="button" data-m="${t}" aria-pressed="${t==="all"}">${l}</button>`).join("");
   te.addEventListener("click",e=>{const b=e.target.closest("[data-t]");if(!b)return;wType=b.dataset.t;te.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));drawWList()});
   me.addEventListener("click",e=>{const b=e.target.closest("[data-m]");if(!b)return;wMet=b.dataset.m;me.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));drawWList()});
+  const ge=document.getElementById("wgroup");
+  ge.innerHTML=[["type","Group by type"],["faction","Group by faction"]].map(([t,l])=>`<button class="chip" type="button" data-g="${t}" aria-pressed="${t===wGroup}">${l}</button>`).join("");
+  ge.addEventListener("click",e=>{const b=e.target.closest("[data-g]");if(!b)return;wGroup=b.dataset.g;try{localStorage.setItem("gm.wgroup",wGroup)}catch(_){}ge.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));drawWList()});
   document.getElementById("wq").addEventListener("input",drawWList);
   document.getElementById("wpage").addEventListener("click",e=>{const b=e.target.closest("[data-roll]");if(b)rollHook(b.dataset.roll)});
   drawWList();drawWPage();
@@ -1237,8 +1265,28 @@ a.wl:hover{color:#fff}
   document.getElementById("wcount").textContent=`${list.length} of ${WIKI.length} pages`;
   const el=document.getElementById("wlist");
   if(!list.length){el.innerHTML=`<div class="empty" style="border:0">Nothing matches.</div>`;return}
-  el.innerHTML=WORDER.map(t=>{const g=list.filter(x=>x.type===t).sort((a,b)=>t==="session"?0:a.name.localeCompare(b.name));if(!g.length)return"";
-   return `<h5 style="--c:${tInfo(t)[1]}">${esc(tInfo(t)[0])} · ${g.length}</h5>`+g.map(x=>`<a href="#wiki/${esc(x.id)}" class="${met(x)?"":"new"}"${x.id===wCur?' aria-current="page"':""}><span class="dot" title="${met(x)?"Met at the table":"Not yet met"}"></span><span class="nm">${esc(x.name)}</span></a>`).join("")}).join("");
+  const row=(x,cls="",d=0,ty=false)=>`<a href="#wiki/${esc(x.id)}" class="${met(x)?"":"new"} ${cls}"${d?` style="--d:${d}"`:""}${x.id===wCur?' aria-current="page"':""}><span class="dot" title="${met(x)?"Met at the table":"Not yet met"}"></span><span class="nm">${esc(x.name)}</span>${ty?`<span class="ty">${esc(x.type==="npc"?"NPC":x.type==="pc"?"PC":x.type)}</span>`:""}</a>`;
+  const fname=f=>WBY[f]?WBY[f].name.replace(/^The /,""):f;
+  if(wGroup==="faction"){
+   /* power > faction (nested by its faction chain) > pages, the faction's own page first, then by type and name */
+   const tRank=t=>t==="faction"?-1:WORDER.indexOf(t);
+   el.innerHTML=POWERS.map(([p,pl,pc])=>{const g=list.filter(x=>FKEY[x.id].p===p);if(!g.length)return"";
+    let h=`<h5 style="--c:${pc}">${esc(pl)} · ${g.length}</h5>`;
+    if(p==="none"){WORDER.forEach(t=>{const m=g.filter(x=>x.type===t).sort((a,b)=>t==="session"?0:byName(a,b));if(m.length)h+=`<h6>${esc(tInfo(t)[0])}<span class="n">${m.length}</span></h6>`+m.map(x=>row(x)).join("")});return h}
+    FORDER.forEach(([f,d])=>{if(powerOf(f)!==p)return;
+     const m=g.filter(x=>FKEY[x.id].f===f).sort((a,b)=>tRank(a.type)-tRank(b.type)||byName(a,b));
+     const sub=g.some(x=>FKEY[x.id].ch.includes(f));if(!sub)return;
+     h+=`<h6 style="--d:${d}"><a href="#wiki/${esc(f)}">${esc(fname(f))}</a><span class="n">${m.filter(x=>x.id!==f).length||""}</span></h6>`+m.filter(x=>x.id!==f).map(x=>row(x,"ind",d,true)).join("")});
+    return h}).join("");
+   return;
+  }
+  /* by type; inside each type, sorted by power and faction with a small label per faction */
+  el.innerHTML=WORDER.map(t=>{const g=list.filter(x=>x.type===t).sort((a,b)=>t==="session"?0:POWERS.findIndex(q=>q[0]===FKEY[a.id].p)-POWERS.findIndex(q=>q[0]===FKEY[b.id].p)||(t==="faction"?0:fRank(a)-fRank(b))||(t==="faction"?FRANK[a.id]-FRANK[b.id]:byName(a,b)));if(!g.length)return"";
+   let last=null,out=`<h5 style="--c:${tInfo(t)[1]}">${esc(tInfo(t)[0])} · ${g.length}</h5>`;
+   g.forEach(x=>{const k=FKEY[x.id],lab=t==="session"?null:t==="faction"?POWERS.find(q=>q[0]===k.p)[1]:k.f?k.ch.map((f,i)=>i===0&&f==="str"?"STR":i===0&&f==="corinthia"?"Corinthia":fname(f)).join(" › "):"No faction";
+    if(lab&&lab!==last){out+=`<h6>${esc(lab)}</h6>`;last=lab}
+    out+=row(x)});
+   return out}).join("");
  }
  function drawWPage(){
   const el=document.getElementById("wpage"),wk=document.getElementById("wk");
