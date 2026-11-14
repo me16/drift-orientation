@@ -1,6 +1,7 @@
 /* Ledgerline gigs for the player page (ledgerline/index.html). Players see everything in this file,
    so keep GM secrets in gm/wiki.js (page `ledgerline`). Use backticks around text so quotes are safe.
 
+   TICKER    lines for the scrolling port strip, `LABEL · text`. Keep secrets out.
    PROFILE   who is browsing. stars and earnings are computed from gigs marked done.
              goals: the Wallet's savings milestones. extra: cr the crew has saved outside Ledgerline
              (sold loot, Marra's jobs), added to the Wallet balance so the milestones show real progress.
@@ -36,6 +37,16 @@ profile: {
   unlock: 4.5,                 // stars needed for Premium gigs
   minRated: 3                  // rated gigs before a star rating shows
 },
+
+ticker: [                      // the scrolling port strip under the app bar. `LABEL · text`
+  `TRAFFIC · Docking queue 14 hulls · Low Dock berths 2 free`,
+  `DRIVE ADVISORY · Spool lockout in Ring 2 until 18:00 GST`,
+  `COUNCIL OF CAPTAINS · Sits in 3 days · Petitions close tomorrow`,
+  `EXCHANGE · 1 cr = 0.88 Corinthian tithe-marks · Copperline scrip suspended`,
+  `MED-PROL · Live vitals coverage for guest workers from 40 cr a week`,
+  `MARROW · Skim season storm index 7 of 10`,
+  `TREATY ZONE · The Lantern is closed to landing. Approach logs are retained.`,
+  `IMPOUND · Auction this cycle: 3 light haulers, 1 dropship, sold as is`],
 
 gigs: [
 

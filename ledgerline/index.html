@@ -219,13 +219,75 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .cta .msg{display:flex;gap:8px;align-items:center;margin-bottom:10px;padding:9px 12px;border-radius:10px;background:var(--ok-bg);color:var(--ok);font:600 13px var(--f-ui)}
 .blur{filter:blur(5px);user-select:none}
 
+/* boot screen */
+.boot{position:absolute;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:30px;color:#cfe0f5;overflow:hidden;
+  background:radial-gradient(ellipse 70% 50% at 50% 40%,#16345e,#071122 75%);transition:opacity .45s,visibility .45s}
+.boot.gone{opacity:0;visibility:hidden}
+.boot::before{content:"";position:absolute;inset:-50%;background-image:radial-gradient(1px 1px at 20% 30%,#fff8,transparent),radial-gradient(1px 1px at 70% 60%,#fff6,transparent),radial-gradient(1.5px 1.5px at 40% 80%,#6ff3e0aa,transparent),radial-gradient(1px 1px at 85% 20%,#fff7,transparent),radial-gradient(1px 1px at 10% 70%,#fff5,transparent);background-size:180px 180px;animation:drift 40s linear infinite;opacity:.7}
+.boot::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(111,243,224,.04) 0 1px,transparent 1px 4px);pointer-events:none}
+@keyframes drift{to{transform:translate(180px,90px)}}
+.boot .orb{position:relative;width:118px;height:118px}
+.boot .orb svg{position:absolute;inset:0;width:100%;height:100%}
+.boot .r1{animation:spin 6s linear infinite}.boot .r2{animation:spin 9s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.boot .core{animation:pulse 1.6s ease-in-out infinite;transform-origin:50% 50%}
+@keyframes pulse{50%{opacity:.55;transform:scale(.94)}}
+.boot .wm{position:relative;font:400 18px var(--f-mark);letter-spacing:.3em;color:#fff;text-shadow:0 0 18px rgba(111,243,224,.6)}
+.boot .by{position:relative;margin-top:-10px;font:500 10px var(--f-ui);letter-spacing:.2em;text-transform:uppercase;color:#8fb0d8}
+.boot .log{position:relative;width:min(300px,100%);min-height:118px;font:400 11px/1.6 var(--f-mono);color:#8fb0d8;letter-spacing:.04em}
+.boot .log div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:typein .25s ease-out}
+.boot .log .ok{color:var(--mint)}.boot .log .warn{color:#ffd18a}
+@keyframes typein{from{opacity:0;transform:translateX(-6px)}}
+.boot .bar{position:relative;width:min(300px,100%);height:3px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
+.boot .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teal),var(--mint));box-shadow:0 0 10px var(--mint);transition:width .3s}
+.boot .skip{position:absolute;bottom:max(18px,env(safe-area-inset-bottom));font:500 10.5px var(--f-ui);letter-spacing:.14em;text-transform:uppercase;color:#5f7aa0}
+
+/* port ticker */
+.ticker{display:flex;align-items:center;gap:10px;height:26px;overflow:hidden;background:#091a33;color:#8fb0d8;font:400 11px var(--f-mono);letter-spacing:.06em;border-top:1px solid rgba(111,243,224,.15)}
+.ticker .lbl{position:relative;z-index:1;box-shadow:6px 0 8px #091a33;flex:none;height:100%;display:flex;align-items:center;gap:6px;padding:0 10px;background:#0c2547;color:var(--mint);font-size:10px;letter-spacing:.14em}
+.ticker .lbl i{width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 6px var(--mint);animation:pulse 1.6s infinite}
+.ticker .run{display:flex;white-space:nowrap;animation:tick 70s linear infinite}
+.ticker .run span{padding-right:44px}
+.ticker .run b{color:#cfe0f5;font-weight:400}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* holo + sci-fi accents */
+.appbar{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='24' viewBox='0 0 28 24'%3E%3Cpath d='M7 0l7 4v8l-7 4-7-4V4zM21 12l7 4v8M14 12l7 4v8' fill='none' stroke='%23ffffff' stroke-opacity='.045'/%3E%3C/svg%3E")}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.13) 48%,rgba(111,243,224,.12) 52%,transparent 65%);background-size:250% 100%;animation:sheen 5s ease-in-out infinite;pointer-events:none}
+@keyframes sheen{0%,40%{background-position:120% 0}100%{background-position:-120% 0}}
+.wcard{position:relative;overflow:hidden}
+.wcard::after{content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;background:conic-gradient(from 0deg,#6ff3e033,#8fb4ff33,#c9a6ff33,#ffb35c33,#6ff3e033);filter:blur(8px);animation:spin 12s linear infinite}
+.wcard .chipx{position:absolute;right:18px;top:18px;width:34px;height:26px;border-radius:6px;background:linear-gradient(135deg,#ffd98a,#c9962f);opacity:.9;z-index:1}
+.wcard .chipx::before{content:"";position:absolute;inset:5px 8px;border:1px solid rgba(0,0,0,.25);border-radius:3px}
+.wcard .q{margin-top:6px;font:400 10px var(--f-mono);letter-spacing:.1em;color:#9fd8cf}
+.contract{margin:12px 16px 0;padding:10px 12px;border-radius:12px;background:#0f2747;color:#8fb0d8;font:400 11px/1.6 var(--f-mono);letter-spacing:.05em}
+.contract b{color:var(--mint);font-weight:400}
+.cta .hold{position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+.cta .hold::before{content:"";position:absolute;inset:0;width:0;background:rgba(255,255,255,.25);transition:width .1s}
+.cta .hold.holding::before{width:100%;transition:width .9s linear}
+.cta .hold span{position:relative;display:inline-flex;align-items:center;gap:8px}
+.cta .hold svg{width:20px;height:20px}
+.cta .hint{margin-top:6px;text-align:center;font:500 11px var(--f-ui);color:var(--faint)}
+.sbar .sd{font:400 11px var(--f-mono);letter-spacing:.06em}
+@media (prefers-reduced-motion:reduce){.ticker .run,.hero::after,.wcard::after,.boot::before,.boot .r1,.boot .r2,.boot .core{animation:none}}
+
 .toast{position:absolute;left:50%;bottom:84px;z-index:30;transform:translate(-50%,20px);opacity:0;transition:.2s;padding:10px 16px;border-radius:12px;background:var(--navy);color:#fff;font:600 13px var(--f-ui);white-space:nowrap;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
 <div class="app" id="app">
- <div class="sbar"><span id="clock">09:41</span><span class="cw">COMMONWEAL NET · TAMSIN</span><span>▂▄▆ ▮</span></div>
+ <div class="boot" id="boot" role="status" aria-label="Connecting to Ledgerline">
+  <div class="orb"><svg viewBox="0 0 120 120" aria-hidden="true">
+   <g class="r1" style="transform-origin:60px 60px"><circle cx="60" cy="60" r="56" fill="none" stroke="#6ff3e0" stroke-width="1" stroke-dasharray="40 14 4 14" opacity=".8"/></g>
+   <g class="r2" style="transform-origin:60px 60px"><circle cx="60" cy="60" r="46" fill="none" stroke="#8fb4ff" stroke-width=".8" stroke-dasharray="2 5" opacity=".7"/><circle cx="60" cy="14" r="2.5" fill="#6ff3e0"/></g>
+   <g class="core"><circle cx="60" cy="60" r="30" fill="#0f2747" stroke="#6ff3e0" stroke-width="1.2"/><path d="M46 52h28M46 60h28M46 68h14" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M63 68.5l4 4 7-9" fill="none" stroke="#6ff3e0" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div>
+  <div class="wm">LEDGERLINE</div><div class="by">Commonweal Civic Net</div>
+  <div class="log" id="bootlog"></div>
+  <div class="bar"><i id="bootbar"></i></div>
+  <div class="skip">Tap to skip</div>
+ </div>
+ <div class="sbar"><span id="clock">09:41</span><span class="sd" id="sdate">CY 312</span><span>Q-RELAY ▂▄▆</span></div>
  <header class="appbar" id="appbar">
   <div class="brand">
    <svg class="seal" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15.5" fill="none" stroke="#6ff3e0" stroke-width="1.2"/><circle cx="17" cy="17" r="12" fill="none" stroke="#6ff3e0" stroke-width=".6" stroke-dasharray="1.5 1.5" opacity=".6"/><path d="M10 13h14M10 17h14M10 21h7" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><path d="M19 21.5l2 2 3.5-4.5" fill="none" stroke="#6ff3e0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -237,6 +299,7 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stro
   <label class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg><input id="q" type="search" placeholder="Search gigs at Free Harbor Tamsin" autocomplete="off"></label>
   <div class="guest"><b>GUEST</b><span>Browsing as a guest worker on a registered device</span></div>
  </header>
+ <div class="ticker" aria-hidden="true"><span class="lbl"><i></i>TAMSIN</span><div class="run" id="ticker"></div></div>
 
  <main class="scroll" id="scroll">
   <section class="screen" data-s="gigs">
@@ -291,9 +354,17 @@ const ICON={
  ok:'<circle cx="12" cy="12" r="8.5"/><path d="M8.5 12l2.4 2.4 4.6-4.8"/>',
  lock:'<rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>',
  back:'<path d="M15 5l-7 7 7 7"/>',
+ palm:'<path d="M8 13V6.5a1.5 1.5 0 0 1 3 0V12M11 11V5a1.5 1.5 0 0 1 3 0v6M14 11V6.5a1.5 1.5 0 0 1 3 0V14c0 4-2.5 6.5-6 6.5-2.5 0-4-1.2-5.3-3.2L4 14.5a1.5 1.5 0 0 1 2.5-1.7L8 15"/>',
  share:'<path d="M12 4v11M7.5 8.5L12 4l4.5 4.5M5 13v5.5h14V13"/>',
  in:'<path d="M12 4v12M7 11l5 5 5-5M5 20h14"/>'};
 const ic=(k,cls="i")=>`<svg class="${cls}" viewBox="0 0 24 24">${ICON[k]||ICON.Courier}</svg>`;
+
+/* far-future flavor: hashes, stardate, relay lag */
+const hash=s=>{let h=2166136261;for(const c of String(s)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0};
+const contractId=g=>`CW-${g.id}-${hash(g.id+g.title).toString(16).toUpperCase().padStart(8,"0").slice(0,4)}·${hash(g.client).toString(16).toUpperCase().slice(0,4)}`;
+const blockNo=()=>(1204880000+Math.floor(Date.now()/60000)%100000).toLocaleString("en-US");
+const lag=()=>(0.3+(hash(Math.floor(Date.now()/20000))%70)/100).toFixed(2);
+const stardate=()=>{const d=new Date(),doy=Math.floor((d-new Date(d.getFullYear(),0,0))/864e5);return `CY 312.${String(doy).padStart(3,"0")}`};
 
 /* per-viewer state */
 const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
@@ -384,8 +455,8 @@ function renderWallet(){
   const pct=Math.min(100,saved/top*100);
   const next=goals.find(m=>saved<m[0]);
   const fees=done.reduce((a,g)=>a+g.pay*g.fee,0);
-  $("#wallet").innerHTML=`<div class="wcard"><small>Available balance</small><div class="big">${cr(saved)}</div>
-    <div class="num">CW-LL · GUEST · ●●●● ${esc(String(Math.abs([...P.name].reduce((a,c)=>a*31+c.charCodeAt(0),7))%10000).padStart(4,"0"))}</div></div>
+  $("#wallet").innerHTML=`<div class="wcard"><span class="chipx"></span><small>Available balance</small><div class="big">${cr(saved)}</div>
+    <div class="num">CW-LL · GUEST · ●●●● ${esc(String(Math.abs([...P.name].reduce((a,c)=>a*31+c.charCodeAt(0),7))%10000).padStart(4,"0"))}</div><div class="q">QUANTUM LEDGER · BLOCK ${blockNo()} · VERIFIED</div></div>
    <div class="panel"><h3>Savings goal: a hull</h3><p>${next?`${cr(next[0]-saved)} to go until: ${esc(next[1])}.`:"Every milestone reached. Ledgerline thanks you for your diligence."}</p>
     <div class="prog ms"><i style="width:${pct}%"></i>${goals.map(m=>`<b style="left:${m[0]/top*100}%"></b>`).join("")}</div>
     <div class="mil">${goals.map(m=>`<div class="${saved>=m[0]?"hit":""}"><span>${saved>=m[0]?"✓":"○"} ${esc(m[1])}</span><span>${cr(m[0])}</span></div>`).join("")}</div></div>
@@ -413,6 +484,10 @@ function renderMe(){
     <div class="r"><span>Worker category</span><span>Guest (non-citizen)</span></div>
     <div class="r"><span>Facilitation fee</span><span>20% of posted pay</span></div>
     <div class="r"><span>Port of work</span><span>Free Harbor Tamsin · DRF-01</span></div>
+    <div class="r"><span>Neural link</span><span>No implant detected · touch input</span></div>
+    <div class="r"><span>Biometric signature</span><span>Palm, unverified (guest)</span></div>
+    <div class="r"><span>Translation layer</span><span>Standard ⇄ Liturgical Corinthian</span></div>
+    <div class="r"><span>Relay</span><span>Tamsin node 3 · lag ${lag()} s</span></div>
     <details><summary>Terms of service</summary><div class="legal">
      <p>Ledgerline is operated under Commonweal license CW-LL-0044 at all ports where Commonweal maintains a records presence.</p>
      <p>Facilitation fee: 20% of posted pay for non-citizen and guest workers; 12% for citizens of Tier 3 and above. Fees are deducted at settlement.</p>
@@ -442,13 +517,14 @@ function renderSheet(){
   else if(dead)cta=`<button disabled>Filled by another worker</button>`;
   else if(lk)cta=`<button disabled>${"🔒"} Requires ★ ${g.min}</button>`;
   else if(req[g.id])cta=`<div class="msg">${ic("ok")}Requested ${esc(req[g.id])} · the client will contact you</div><button class="ghost" data-do="withdraw">Withdraw request</button>`;
-  else cta=`<button data-do="request">Request gig · ${g.bonus?"up to "+cr(take(g)+g.bonus[0]):cr(take(g))}</button>`;
+  else cta=`<button class="hold" data-hold="request"><span>${ic("palm")}Hold to sign · ${g.bonus?"up to "+cr(take(g)+g.bonus[0]):cr(take(g))}</span></button><div class="hint">Press and hold to apply your biometric signature</div>`;
   sh.innerHTML=`<div class="bar"><button data-do="back" aria-label="Back">${ic("back")}</button><span class="ref">${esc(g.id)}</span><button data-do="share" aria-label="Copy link">${ic("share")}</button></div>
    <div class="body">
     <div class="dtop"><span class="cat">${ic(g.cat)}${esc(g.cat)} · posted ${esc(g.posted||"")}</span>
      <h2>${fmt(g.title)}</h2>
      <div class="pay ${lk?"blur":""}">${lk?"0,000 cr":cr(g.pay)}${g.bonus&&!lk?` <small>+ ${cr(g.bonus[0])} bonus</small>`:""}</div></div>
     <div class="client"><span class="av${anon?" anon":""}">${anon?"?":esc(initials(g.client))}</span><div><b>${esc(g.client)}</b><span>${stars(g.cr)} ${g.cr.toFixed(1)} · ${g.crn?`${g.crn.toLocaleString("en-US")} reviews`:"no reviews yet"}</span></div></div>
+    ${lk?"":`<div class="contract">CONTRACT <b>${contractId(g)}</b><br>ESCROW ${g.status==="taken"?"released":dn?"settled":`<b>funded</b> · held by Ledgerline`} · SEALED ${esc(g.posted||"")}</div>`}
     <dl class="grid2"><div><dt>Where</dt><dd>${esc(g.where)}</dd></div><div><dt>When</dt><dd>${esc(g.when||"—")}</dd></div>
      <div><dt>Expires</dt><dd>${esc(g.expires||"—")}</dd></div><div><dt>Eligible</dt><dd>${g.min?`★ ${g.min}+ profiles`:"Any profile"}</dd></div></dl>
     ${notes}
@@ -461,10 +537,18 @@ function renderSheet(){
 $("#sheet").onclick=e=>{const b=e.target.closest("[data-do]");if(!b)return;const d=b.dataset.do;
   if(d==="back"){go(tab==="gigs"?"":tab);return}
   if(d==="share"){const u=location.href;(navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>toast("Link copied"),()=>toast(u));return}
-  if(d==="request"){req[cur]=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});store.set("ll-req",req);toast("Request sent to client")}
+  if(d==="request"){req[cur]=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});store.set("ll-req",req);toast("Signed · transmitted via Commonweal relay")}
   if(d==="withdraw"){delete req[cur];store.set("ll-req",req);toast("Request withdrawn")}
   renderAll();renderSheet();
 };
+/* press-and-hold signature (keyboard: Enter or Space signs at once) */
+let holdT=null;
+const holdEnd=()=>{clearTimeout(holdT);holdT=null;document.querySelectorAll(".hold.holding").forEach(b=>b.classList.remove("holding"))};
+const sign=()=>{holdEnd();if(navigator.vibrate)try{navigator.vibrate(30)}catch(e){}req[cur]=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});store.set("ll-req",req);toast("Signed · transmitted via Commonweal relay");renderAll();renderSheet()};
+$("#sheet").addEventListener("pointerdown",e=>{const b=e.target.closest(".hold");if(!b)return;e.preventDefault();b.classList.add("holding");holdT=setTimeout(sign,900)});
+["pointerup","pointerleave","pointercancel"].forEach(t=>$("#sheet").addEventListener(t,()=>{if(holdT)holdEnd()}));
+$("#sheet").addEventListener("click",e=>{const b=e.target.closest(".hold");if(b&&e.detail===0)sign()});
+$("#sheet").addEventListener("contextmenu",e=>{if(e.target.closest(".hold"))e.preventDefault()});
 document.addEventListener("click",e=>{const c=e.target.closest(".gig,.hero");if(c&&c.dataset.id)go(c.dataset.id)});
 
 /* tabs + routing */
@@ -488,7 +572,34 @@ function route(){
 }
 addEventListener("hashchange",route);
 addEventListener("keydown",e=>{if(e.key==="Escape"&&cur)go(tab==="gigs"?"":tab)});
-const tick=()=>{$("#clock").textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})};tick();setInterval(tick,30000);
+const tick=()=>{$("#clock").textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});$("#sdate").textContent=stardate()+" GST"};tick();setInterval(tick,30000);
+
+/* port ticker (gigs.js: ticker) */
+const TK=(L.ticker||[]).map(t=>{const m=String(t).match(/^([^·]+)·(.*)$/);return `<span>${m?`<b>${esc(m[1].trim())}</b> ·${esc(m[2])}`:esc(t)}</span>`}).join("");
+$("#ticker").innerHTML=TK+TK;
+if(!TK)document.querySelector(".ticker").hidden=true;
+
+/* boot sequence: once per browser tab, tap to skip */
+(function boot(){
+  const el=$("#boot"),log=$("#bootlog"),bar=$("#bootbar");
+  let seen=false;try{seen=sessionStorage.getItem("ll-boot")==="1"}catch(e){}
+  const done=()=>{el.classList.add("gone");try{sessionStorage.setItem("ll-boot","1")}catch(e){}clearInterval(iv)};
+  if(seen||/[?&]noboot/.test(location.search)){el.classList.add("gone");el.style.transition="none";return}
+  const lines=[
+    ["","COMMONWEAL CIVIC NET · LEDGERLINE 4.12"],
+    ["","Handshake · Tamsin relay node 3"],
+    ["ok","Link established · lag "+lag()+" s"],
+    ["","Ledger sync · block "+blockNo()],
+    ["ok","Ledger verified"],
+    ["","Reading device registration"],
+    ["warn","Holder: "+(P.device||"unknown")],
+    ["warn","Holder profile: SUSPENDED"],
+    ["ok","Guest session granted · "+stardate()]];
+  let i=0;const iv=setInterval(()=>{
+    if(i<lines.length){const [c,t]=lines[i++];const d=document.createElement("div");d.className=c;d.textContent=(c==="ok"?"✓ ":c==="warn"?"! ":"› ")+t;log.appendChild(d);bar.style.width=(i/lines.length*100)+"%"}
+    else done()},matchMedia("(prefers-reduced-motion:reduce)").matches?120:260);
+  el.addEventListener("click",done);
+})();
 renderAll();route();
 })();
 </script>
