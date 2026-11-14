@@ -71,7 +71,7 @@ Rules for the player handout:
 
 - `ledgerline/index.html` is a player page: Ledgerline, the Commonweal-licensed gig board, as it looks on the datapad at Tamsin. **Nothing on the handout or anywhere players browse links to it**; the GM sends the URL. The GM page links it from the Tamsin plan.
 - It's styled as a phone app in Commonweal livery (light civic theme, navy brand bar, teal accent), full screen on phones and in a handheld frame on desktop. Tabs: Gigs, My gigs, Wallet, Profile; `#LL-xxxx` opens a gig's detail sheet, `#mine` / `#wallet` / `#me` pick a tab. Legal text lives under Profile → Terms of service, not on the main screens.
-- Gigs live in `ledgerline/gigs.js` (`window.LEDGERLINE`, fields documented in its header). Players can read that file, so GM secrets go on the wiki pages `ledgerline` and `net-settlement`. The profile's stars, earnings and Premium unlock (★ 4.5 after 3 rated gigs) are computed from gigs with `status: "done"` and a `rating`. "Request" is stored per browser only.
+- The Wallet shows hull-price milestones (`profile.goals`; outside savings go in `profile.extra`), and the economy is on the GM Tamsin plan. Gigs live in `ledgerline/gigs.js` (`window.LEDGERLINE`, fields documented in its header). Players can read that file, so GM secrets go on the wiki pages `ledgerline` and `net-settlement`. The profile's stars, earnings and Premium unlock (★ 4.5 after 3 rated gigs) are computed from gigs with `status: "done"` and a `rating`. "Request" is stored per browser only.
 - Voice: Ledgerline's own copy is Commonweal (dry, faintly condescending to guests and non-citizens); client listings are first-person in each client's voice.
 
 ## Tactical plot (`combat/`)

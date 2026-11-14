@@ -121,6 +121,14 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .prog{height:8px;border-radius:4px;background:#e6ebf2;overflow:hidden;margin:10px 0 6px}
 .prog i{display:block;height:100%;border-radius:4px;background:var(--teal)}
 .prog.gold i{background:var(--star)}
+.prog.ms{position:relative;overflow:visible}
+.prog.ms b{position:absolute;top:-3px;width:2px;height:14px;margin-left:-1px;background:var(--line-2);border-radius:1px}
+.mil{margin-top:12px}
+.mil div{display:flex;justify-content:space-between;padding:5px 0;font:500 13px var(--f-ui);color:var(--sub);border-top:1px solid var(--line)}
+.mil div:first-child{border-top:0}
+.mil .hit{color:var(--ok);font-weight:600}
+.panel.ad{background:linear-gradient(140deg,#f6f9fd,#eaf1fa);border-color:var(--line-2)}
+.spon{display:block;margin-bottom:4px;font:600 10px var(--f-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
 .pl{display:flex;justify-content:space-between;font:500 12px var(--f-ui);color:var(--sub)}
 .tx{display:grid;grid-template-columns:36px 1fr auto;gap:0 12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
 .tx:last-child{border-bottom:0}
@@ -259,7 +267,7 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 <script>
 (()=>{
 const L=window.LEDGERLINE||{profile:{},gigs:[]};
-const P=Object.assign({name:"Guest worker",goal:12000,unlock:4.5,minRated:3},L.profile);
+const P=Object.assign({name:"Guest worker",goals:[[10000,"A hull"]],extra:0,unlock:4.5,minRated:3},L.profile);
 const G=(L.gigs||[]).map((g,i)=>Object.assign({fee:.2,min:0,status:"open",cr:0,crn:0,notes:[],flags:[],order:i},g));
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -299,6 +307,7 @@ const avg=rated.length?rated.reduce((a,g)=>a+g.rating,0)/rated.length:0;
 const shown=rated.length>=P.minRated;
 const earnOf=g=>take(g)+(g.bonusPaid&&g.bonus?g.bonus[0]:0);
 const earned=done.reduce((a,g)=>a+earnOf(g),0);
+const saved=earned+(+P.extra||0);
 const locked=g=>g.min>0&&!(shown&&avg>=g.min);
 const live=g=>g.status!=="closed";
 
@@ -371,12 +380,18 @@ function renderMine(){
 
 /* Wallet */
 function renderWallet(){
-  const pct=Math.min(100,earned/P.goal*100);
+  const goals=[...P.goals].sort((a,b)=>a[0]-b[0]),top=goals[goals.length-1][0];
+  const pct=Math.min(100,saved/top*100);
+  const next=goals.find(m=>saved<m[0]);
   const fees=done.reduce((a,g)=>a+g.pay*g.fee,0);
-  $("#wallet").innerHTML=`<div class="wcard"><small>Available balance</small><div class="big">${cr(earned)}</div>
+  $("#wallet").innerHTML=`<div class="wcard"><small>Available balance</small><div class="big">${cr(saved)}</div>
     <div class="num">CW-LL · GUEST · ●●●● ${esc(String(Math.abs([...P.name].reduce((a,c)=>a*31+c.charCodeAt(0),7))%10000).padStart(4,"0"))}</div></div>
-   <div class="panel"><h3>Savings goal: a hull</h3><p>Ledgerline helps workers like you reach their goals.</p>
-    <div class="prog"><i style="width:${pct}%"></i></div><div class="pl"><span>${cr(earned)}</span><span>${cr(P.goal)}</span></div></div>
+   <div class="panel"><h3>Savings goal: a hull</h3><p>${next?`${cr(next[0]-saved)} to go until: ${esc(next[1])}.`:"Every milestone reached. Ledgerline thanks you for your diligence."}</p>
+    <div class="prog ms"><i style="width:${pct}%"></i>${goals.map(m=>`<b style="left:${m[0]/top*100}%"></b>`).join("")}</div>
+    <div class="mil">${goals.map(m=>`<div class="${saved>=m[0]?"hit":""}"><span>${saved>=m[0]?"✓":"○"} ${esc(m[1])}</span><span>${cr(m[0])}</span></div>`).join("")}</div></div>
+   <div class="panel ad"><span class="spon">Sponsored · Commonweal Hull Finance</span><h3>Own a licensed hull from 3,000 cr down</h3>
+    <p>Then 280 cr a week for 52 weeks. Approval in one cycle. Guest workers welcome with a co-signer of Tier 3 or above. Missed payments are referred for recovery.</p></div>
+   ${P.extra?`<div class="panel"><div class="brk"><span>Ledgerline settlements</span><span>${cr(earned)}</span></div><div class="brk"><span>Other deposits</span><span>${cr(P.extra)}</span></div></div>`:""}
    ${sect("Settlements",done.length?`<span>Fees to date ${cr(fees)}</span>`:"")}
    ${done.length?`<div class="list">${done.map(g=>`<div class="tx"><span class="ic">${ic("in")}</span><div><div class="t">${fmt(g.title)}</div><div class="d">${esc(g.id)} · ${esc(g.client)}</div></div>
      <div class="a">+${cr(earnOf(g))}${g.fee?`<small>fee −${cr(g.pay*g.fee)}</small>`:""}</div></div>`).join("")}</div>`
@@ -464,7 +479,7 @@ function setTab(t){
   $("#appbar").classList.toggle("title-only",t!=="gigs");
   $("#scrtitle").textContent=TITLES[t]||"";
 }
-function renderAll(){$("#bal").textContent=cr(earned);renderGigs();renderMine();renderWallet();renderMe()}
+function renderAll(){$("#bal").textContent=cr(saved);renderGigs();renderMine();renderWallet();renderMe()}
 function route(){
   const h=decodeURIComponent(location.hash.slice(1));
   if(G.some(g=>g.id===h)){cur=h;renderSheet();return}
