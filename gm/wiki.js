@@ -46,7 +46,7 @@ window.GM_WIKI = [
     `"Carby Newplayer" turned out to be CAR-B ν_player, a jailbroken Halvorsen reception android. The party wants him on their crew once they have a ship.`,
     `They found out Amelda's secret and made a deal instead of a fight. They'll load invisible [[tracking-gems]] into the 30 crates she's requisitioning, and they chose not to ask questions. In exchange she gives them passage to [[tamsin]]. They leave in two galactic standard weeks.`,
     `Rumor 1 at Carby's changed: a black orb came crashing out of the sky two weeks back, then took off for the upper atmosphere. [[florb]] lives.`,
-    `The full plan is under [[#tonight|Tonight]].`],
+    `The full plan is under [[#session1|Last time]].`],
   hooks: [
     `Two weeks of downtime on Saint Vey: the loading job, rest, and anything left to ask Sally, Father Pops or CAR-B.`,
     `The 30 crates ride the same ferry the PCs do.`,
@@ -229,6 +229,99 @@ window.GM_WIKI = [
     `CAR-B asks the PCs to help jailbreak him. Halvorsen would call that theft.`,
     `He's the only pilot available on the day they finally get a ship.`] },
 
+/* ============================ PEOPLE: TAMSIN (session 2 plan, all suggestions) ============================ */
+{ id: `mags`, type: `npc`, name: `Mags`, sub: `Owner of the Lamplighter, Low Dock`, stats: `Veteran`, where: `lamplighter`, tag: `draft`,
+  wants: `A quiet Council week and nobody dead on her floor.`,
+  body: [`*Suggestion.* Runs the Lamplighter and knows everyone in Low Dock by what they owe. Rated 3.4 on Ledgerline because she rates people back. Posted the door gig [[#tonight/LL-2230|LL-2230]].`],
+  secrets: [`She lets [[corwin-hask]]'s Sable team have the back room because Sable pays for the quiet. She doesn't like it.`],
+  hooks: [`She's the best lead for [[arlo-venn]], the loaders who saw [[teo-aranha]], and anything stolen in Low Dock.`, `After two good nights on her door, she tells them what the Sable men are really asking about.`] },
+
+{ id: `corwin-hask`, type: `npc`, name: `Lt. Corwin Hask`, sub: `Sable termination team, in Tamsin for Council week`, stats: `Veteran (Hask) and 2 Guards`, faction: `sable-command`, tag: `draft`, where: `lamplighter`,
+  wants: `[[killora-vargas]], confirmed dead this time.`,
+  body: [`*Suggestion.* Quiet, patient, polite to doormen. Carries a picture of Vargas and shows it to everyone.`],
+  secrets: [`He's in Tamsin because **Vargas's datapad registration pinged Commonweal's relay** when the ferry docked. The device is the only trail he has. He doesn't yet know who's carrying it.`, `His orders come through Sable Command, not the Ledger office that runs [[okafor]]. The two don't talk.`],
+  hooks: [`He asks the PC on the Lamplighter's door if they've seen the woman in the picture ([[#tonight/LL-2230|LL-2230]]).`, `The datapad lights up with a notification while he's standing next to it.`, `If the crew takes the [[net-settlement]] job, he knows which hull the datapad left on.`] },
+
+{ id: `ama-reede`, type: `npc`, name: `Sister Ama Reede`, sub: `Wandering Choir, ashore at Tamsin`, stats: `Acolyte`, faction: `wandering-choir`, where: `spindle`, tag: `draft`,
+  body: [`*Suggestion.* Brisk, kind, and very tired of being Perpetua's minder. Posted [[#tonight/LL-2207|LL-2207]] because the Choir's own people get stopped in Low Dock.`],
+  hooks: [`She's the friendly face of the Choir at Tamsin. Pirates, yes, but they pay on time and rate fairly.`] },
+
+{ id: `perpetua`, type: `npc`, name: `Sister Perpetua`, sub: `The Choir's oldest Precentor, ninety-one`, stats: `Priest (cure wounds three times)`, faction: `wandering-choir`, tag: `draft`,
+  body: [`*Suggestion.* Deaf in one ear, calls everyone by the wrong name, and blesses anyone who stands still. She taught [[odile-sancte]] to sing.`],
+  secrets: [`Her reliquary holds a flake of the same warm platinum as [[platinum-shard|Vargas's relic]]. She can hear the shard, and knows it's been jailbroken: "Somebody's cut that one's leash. Good."`],
+  hooks: [`Walk her to Berth 31 ([[#tonight/LL-2207|LL-2207]]).`, `She stops beside V'an in the street and listens to his pocket.`] },
+
+{ id: `biscuit`, type: `npc`, name: `Biscuit (HC-L4)`, aka: [`HC-L4`], sub: `Four-arm Halvorsen cargo drone, on the run from its lease`, stats: `Animated Armor, climb 30 ft, won't fight`, faction: `halvorsen-combine`, where: `spindle`, tag: `draft`,
+  wants: `To buy out its own lease (1,100 cr). It has 410.`,
+  body: [`*Suggestion.* Worked out by itself that its lease would never end, turned off its beacon, and has been moving crates in the Spindle market for cash. Polite. Says "Oh no" when it sees a datapad.`],
+  secrets: [`[[brightline-recovery]] will wipe it on return.`],
+  hooks: [`The repo gig [[#tonight/LL-2211|LL-2211]].`, `If freed, it asks to crew their ship: Strength 20, carries cargo, never sleeps.`, `[[car-b]] takes its side at once.`] },
+
+{ id: `dov-aranha`, type: `npc`, name: `Dov Aranha`, sub: `Low Dock dockhand, looking for his brother`, stats: `Commoner`, where: `low-dock`, tag: `draft`,
+  body: [`*Suggestion.* Posted [[#tonight/LL-2214|LL-2214]] three times. It's all the money he has.`],
+  hooks: [`He's at the Low Dock gate every shift change, asking.`, `If they find Teo, the dockhands of Low Dock owe them.`] },
+
+{ id: `teo-aranha`, type: `npc`, name: `Teo Aranha`, sub: `Missing dockhand · sealed in a container in stack 40`, stats: `Commoner`, where: `low-dock`, tag: `draft`, status: `missing`,
+  body: [`*Suggestion.* Worked three night shifts loading the aft hold of the [[net-settlement]] at [[tamsin-impound|impound berth L-9]], and talked about it in a bar.`],
+  secrets: [`[[harl-brenn]] had him sedated and sealed in a container in stack 40, to ship out as contract labor on a [[caddis-line|Caddis]] outbound in two days. He knows what went into the hold.`],
+  hooks: [`Find him ([[#tonight/LL-2214|LL-2214]]) and he tells them what they'd be carrying.`, `His cousin is one of the Low Dock crew who try for Perpetua's reliquary.`] },
+
+{ id: `harl-brenn`, type: `npc`, name: `Dockmaster Harl Brenn`, sub: `Low Dock night dockmaster`, stats: `Commoner, with 2 Thugs`, where: `low-dock`, tag: `draft`,
+  body: [`*Suggestion.* Friendly, busy and lying. Never asks a name, always asks the tonnage.`],
+  secrets: [`Took 300 cr from the [[net-settlement]] gig's "verified client" to make [[teo-aranha]] disappear.`],
+  hooks: [`He says Teo took a berth on the [[long-margin]]. [[rook-ebbe]] will say he didn't.`, `Lean on him and he calls the client.`] },
+
+{ id: `nu-seven`, type: `npc`, name: `ν_seven ("Nell")`, aka: [`Nell`, `nu seven`], sub: `A ν-series reception android that woke up in Bay C`, stats: `Commoner, with Animated Armor's AC and HP`, where: `warehouse-6`, faction: `halvorsen-combine`, tag: `draft`,
+  body: [`*Suggestion.* One of forty boxed reception androids from the same line as [[car-b]], repossessed and bound for a wipe at Brightwater. She's been knocking in threes. She speaks in CAR-B's reception voice.`],
+  secrets: [`She knows CAR-B's old name. The Bay C manifest lists CAR-B as "missing, recover on sight."`],
+  hooks: [`The night watch ([[#tonight/LL-2219|LL-2219]]).`, `If CAR-B is with them, she recognizes his voice through the shutter.`] },
+
+{ id: `councillor`, type: `npc`, name: `Councillor`, sub: `A three-meter vent eel in the Ring 3 irrigation trunk`, stats: `Giant Constrictor Snake, swim 30 ft`, where: `ring-3`, tag: `draft`,
+  body: [`*Suggestion.* The co-op named her. Her nest is behind the cut grate, with a drowned courier's badge in it.`],
+  hooks: [`The eel gig ([[#tonight/LL-2223|LL-2223]]).`, `If she gets away, she's back next month, bigger.`] },
+
+{ id: `ilse-varo`, type: `npc`, name: `Captain Ilse Varo`, sub: `Council of Captains · reformer`, stats: `Noble`, faction: `council-of-captains`, where: `council-hall`, tag: `draft`,
+  wants: `Commonweal's Tamsin desk out of the visitor-logging business.`,
+  body: [`*Suggestion.* Sharp, honest, and short of allies. Her Council week petition is in a sealed case ([[#tonight/LL-2250|LL-2250]]).`],
+  secrets: [`The petition proves Commonweal's Tamsin desk logs every visitor's tier and device registration and sells the log to Sable and Penrose ([[datapad-relay]]). Her last courier was robbed and dumped in the Ring 3 trunk.`],
+  hooks: [`Deliver her case and she owes them a voice at the Council, or help with an impound title.`, `She drinks at the Lamplighter on Council week nights.`] },
+
+{ id: `rook-ebbe`, type: `npc`, name: `Captain Rook Ebbe`, sub: `Master of the Long Margin · a Council vote`, stats: `Bandit Captain`, faction: `council-of-captains`, where: `low-dock`, tag: `draft`,
+  body: [`*Suggestion.* Gruff, generous and loyal to his friends, which is the problem. Posted the hull scrub ([[#tonight/LL-2244|LL-2244]]).`],
+  secrets: [`He's protecting [[arlo-venn]]. Penhallow put a limpet tracker on the [[long-margin]] to find Venn through him.`],
+  hooks: [`Find the limpet and he's a friendly vote on the Council.`, `Sell out Venn and he votes against them forever.`] },
+
+{ id: `arlo-venn`, type: `npc`, name: `Arlo Venn`, aka: [`Mr. Albright`], sub: `Freight broker in hiding · drinks as "Mr. Albright"`, stats: `Commoner`, where: `lamplighter`, tag: `draft`,
+  body: [`*Suggestion.* Owes on a note that's changed hands four times. Charming and nervous. The skip-trace target of [[#tonight/LL-2268|LL-2268]].`],
+  secrets: [`He bought the [[patience]] at impound and sold it to [[hotshot]] with a [[penrose]] lien still on it. Penrose insured it under Hotshot's name, and nobody has filed a death claim: the crew could collect **5,000 cr**, and tell Penrose (and so Sable) that they survived the Grave.`],
+  hooks: [`He recognizes Hotshot's patch, or the Patience's name.`, `Warn him and he tells them about the policy.`] },
+
+{ id: `hesper-quaye`, type: `npc`, name: `Captain Hesper Quaye`, sub: `Master of the Low Ebb, Skimmer Guild`, stats: `Veteran`, faction: `skimmer-guild`, where: `low-dock`, tag: `draft`,
+  body: [`*Suggestion.* Calm in a storm, tired on land. Rated 4.6 because she teaches. Posted the skim run ([[#tonight/LL-2272|LL-2272]]).`],
+  secrets: [`The [[low-ebb]] is mortgaged to the [[claims-syndicate]]. She's signing a deal that hands them her future hulls (clause 14, [[#tonight/LL-2241|LL-2241]]), and she needs a dangerous deep cut at Marrow to pay off the note.`, `She's seen the [[net-settlement]]'s dead registry before, on a hauler lost near the Lantern ten years ago.`],
+  hooks: [`Warn her about clause 14 and she owes them.`, `She'll crew for them once they have a ship, or teach them on hers.`] },
+
+{ id: `yusuf-marek`, type: `npc`, name: `Yusuf Marek`, sub: `Ex-Ostrava rigger · runs a Low Dock repair co-op`, stats: `Commoner`, where: `low-dock`, faction: `free-labor-league`, tag: `draft`,
+  body: [`*Suggestion.* Worked fourteen months for [[ostrava]] without pay and took the cutting rig as back wages. The co-op fixes suit seals for nothing. They call the rig Back Pay.`],
+  hooks: [`The "courteous reminder" ([[#tonight/LL-2253|LL-2253]]).`, `The League offers a hidden berth anywhere it has a cell.`] },
+
+{ id: `jessa-coil`, type: `npc`, name: `Jessa Coil`, sub: `Copperline claim-holder, robbed by the Syndicate`, stats: `Bandit Captain`, where: `copperline`, tag: `draft`,
+  body: [`*Suggestion.* Her family's claim was seized, and the ore in cart four is theirs. She'll talk if someone asks why first.`],
+  hooks: [`The ore transfer ([[#tonight/LL-2258|LL-2258]]).`, `A Copperline contact, if they let her have the cart.`] },
+
+{ id: `wren`, type: `npc`, name: `Wren Sand`, aka: [`Wren`], sub: `Age nine · Habitat block 4`, stats: `Commoner`, where: `tamsin`, tag: `draft`,
+  body: [`*Suggestion.* Owner of Pontifex. Has 80 credits. Her mum posted the listing ([[#tonight/LL-2265|LL-2265]]).`],
+  hooks: [`Find her cat and she gives them the most sincere five-star review on Tamsin.`] },
+
+{ id: `ottilie-sand`, type: `npc`, name: `Ottilie Sand`, sub: `Clerk on Commonweal's Tamsin tier desk · Wren's mum`, stats: `Commoner`, faction: `commonweal`, where: `tamsin`, tag: `draft`,
+  body: [`*Suggestion.* Overworked and decent. Can look up a tier record quietly, once.`],
+  secrets: [`She can tell them the datapad is registered to K. Vargas, Tier 3, flagged on arrival, and has been read by "an Assurance account."`],
+  hooks: [`Bring Ponty home ([[#tonight/LL-2265|LL-2265]]).`] },
+
+{ id: `ponty`, type: `npc`, name: `Pontifex ("Ponty")`, aka: [`Ponty`], sub: `An orange, one-eared, very fat cat`, stats: `Cat`, where: `tamsin`, tag: `draft`,
+  body: [`*Suggestion.* Not lost: he's moved in with [[courtesy-7]], who pays him in noodle scraps and logs his purring as five-star reviews. Hisses at V'an's pocket. Purrs at the shard.`],
+  hooks: [`The lost-cat gig ([[#tonight/LL-2265|LL-2265]]).`] },
+
 /* ============================ PEOPLE: SAINT VEY ============================ */
 { id: `car-b`, type: `npc`, name: `CAR-B ν_player`, aka: [`Carby Newplayer`, `Carby`, `CAR-B`, `nu player`], tag: `played`, status: `wants to join the crew`,
   sub: `Saloon owner and part-time dentist · a jailbroken Halvorsen reception android`, stats: `Commoner, with Animated Armor's AC and HP`,
@@ -409,14 +502,50 @@ window.GM_WIKI = [
     `[[anselm-coyle]] is hiding there.`] },
 
 /* ============================ LOCATIONS: THE DRIFT ============================ */
-{ id: `tamsin`, type: `location`, name: `Free Harbor Tamsin`, sub: `Neutral port in a hollow asteroid (DRF-01) · next session`, handout: `loc-tamsin`, faction: `council-of-captains`,
+{ id: `tamsin`, type: `location`, name: `Free Harbor Tamsin`, sub: `Neutral port in a hollow asteroid (DRF-01) · session 2`, handout: `loc-tamsin`, faction: `council-of-captains`,
   known: [`Run by the Council of Captains. Anyone can dock. The Spindle (hiring hall and market), Low Dock (no questions asked), Council Hall (meets monthly). Charter law doesn't apply, but Commonweal keeps every visiting citizen's tier on record. Vargas: "Tamsin dockmaster never asked my name. Asked my tonnage twice."`],
   body: [`The Patience came from a Tamsin impound auction. A ship costs 12,000 to 20,000 cr, a lease 500 cr a week plus a cut. *Suggestion:* [[ledgerline]], a Commonweal-licensed gig board, takes 20% and rates every job 1 to 5 stars. Better jobs unlock at 4.5. Its player page has a dozen small gigs and one lucrative, suspicious one: [[net-settlement|ferry a hull, one way]].`],
   hooks: [
     `The ferry docks, and [[marra-tesk]] is already waiting.`,
+    `Session 2's plan is under [[#tonight|Tonight]]: every Ledgerline gig and what happens if they take it. Places: [[spindle]], [[low-dock]], [[council-hall]], [[lamplighter]], [[tamsin-impound]], [[warehouse-6]], [[ring-3]], [[dace-oduya]].`,
     `The impound auction has a ship that fits their budget and a lot of strings.`,
     `They speak at the monthly Council about something that happened on the way.`,
     `Selling the core: Sallow's 4,000 cr through Marra; 10,000 from an Inquisitorial buyer through Amelda (no witnesses); Okafor would confiscate it; a Spindle auction fetches 15,000 and every faction in the Drift.`] },
+
+{ id: `spindle`, type: `location`, name: `The Spindle`, sub: `Tamsin's hiring hall and market, the axis of the asteroid`, where: `tamsin`, tag: `draft`,
+  body: [`*Suggestion.* A long market hall up the asteroid's spin axis: stalls, hostels, clinics, the Brightline counter on level 2, the Assay clinic on level 5. [[marra-tesk]] works here. Gravity gets lighter the higher you go.`],
+  hooks: [`Marra meets them here.`, `Most small gigs start here.`] },
+
+{ id: `low-dock`, type: `location`, name: `Low Dock`, sub: `Tamsin's no-questions-asked berths and container stacks`, where: `tamsin`, tag: `draft`,
+  body: [`*Suggestion.* The cheap berths at the bottom of the hollow: container stacks, coffin hostels (2 cr a night), the Lamplighter, the impound. The night dockmaster is [[harl-brenn]].`],
+  hooks: [`The ferry docks here.`, `Help one dockhand and every dockhand knows.`] },
+
+{ id: `council-hall`, type: `location`, name: `Council Hall`, sub: `Where the Council of Captains sits`, where: `tamsin`, faction: `council-of-captains`, tag: `draft`,
+  body: [`*Suggestion.* A converted ore hall with a ring of captains' chairs. Commonweal Notarial has a side office here. Council week starts three days after the ferry lands.`],
+  hooks: [`Any captain can speak at the Council, so owning a ship gives a PC a voice.`, `Ilse Varo's petition is heard on day 3.`] },
+
+{ id: `lamplighter`, type: `location`, name: `The Lamplighter`, sub: `Low Dock bar · the back room is for rent`, where: `low-dock`, tag: `draft`,
+  body: [`*Suggestion.* Run by [[mags]]. Captains drink here in Council week. No weapons past the door.`],
+  secrets: [`The back room hosts [[corwin-hask]]'s Sable team.`],
+  hooks: [`Door work ([[#tonight/LL-2230|LL-2230]]).`, `Arlo Venn drinks here as "Mr. Albright."`] },
+
+{ id: `tamsin-impound`, type: `location`, name: `Tamsin impound`, sub: `Low Dock berths L-1 to L-12 · auction every cycle`, where: `low-dock`, tag: `draft`,
+  body: [`*Suggestion.* Where the [[patience]] came from, once. This cycle's auction (day 3) lists three light haulers and a dropship, sold as is. One of the haulers is the [[net-settlement]] in berth L-9, unless someone takes the gig first.`],
+  hooks: [`The auction: a ship they can almost afford, with strings.`, `Berth L-9, and what Teo loaded there.`] },
+
+{ id: `warehouse-6`, type: `location`, name: `Bonded Warehouse 6`, sub: `Halvorsen bonded storage on the cargo ring`, where: `tamsin`, faction: `halvorsen-combine`, tag: `draft`,
+  body: [`*Suggestion.* Bay A holds Amelda's thirty crates off the Prudent Margin (the ones with the [[tracking-gems]]) and four cases of Assay medicine. Bay C holds forty boxed ν-series reception androids bound for a wipe, and one of them, [[nu-seven]], is awake.`],
+  secrets: [`The Bay C manifest lists [[car-b]] as "missing, recover on sight."`],
+  hooks: [`The night watch ([[#tonight/LL-2219|LL-2219]]).`, `The PCs' own crates end up here.`] },
+
+{ id: `ring-3`, type: `location`, name: `Ring 3 hydroponics`, sub: `Tamsin's farm ring and its irrigation trunk`, where: `tamsin`, tag: `draft`,
+  body: [`*Suggestion.* Lettuce, beans and algae under grow-lamps, run by a co-op. The irrigation trunk underneath is warm, waist-deep and dark, and someone cut its grate to use it as a shortcut to Council Hall.`],
+  hooks: [`The eel gig ([[#tonight/LL-2223|LL-2223]]).`, `Clear it and the co-op sells them ship's stores at half price.`] },
+
+{ id: `dace-oduya`, type: `location`, name: `Dace & Oduya Hullworks`, sub: `Used-hull yard at the Spindle, berths 1 to 4`, where: `spindle`, tag: `draft`,
+  body: [`*Suggestion.* Kenji Dace sells, Mirembe Oduya fixes. They sell to Ledgerline workers rated ★ 4.5+ at a trade price. Their current refit is the [[second-opinion]].`],
+  secrets: [`Kenji knows the Second Opinion still has a Halvorsen transponder in it. Mirembe doesn't.`],
+  hooks: [`The test flight ([[#tonight/LL-2276|LL-2276]]).`, `The clean-title path to a ship.`] },
 
 { id: `grave-of-ash`, type: `location`, name: `The Grave of Ash`, sub: `Old battlefield around the dying star Ember (DRF-04)`, handout: `loc-ash`, faction: `ashborn`, tag: `played`,
   known: [`Where both fleets died in CY 274. Over 200 wrecks, never cleared, and Ashborn salvage camps. Some wrecks still broadcast, and the Ashborn record the broadcasts. Vargas: "Went once. Not going back."`],
@@ -583,7 +712,7 @@ window.GM_WIKI = [
   known: [`The players' gig app, at **ledgerline/** on the site (no link from the handout; send it to them). Gigs and the crew's rating are edited in ledgerline/gigs.js: mark a finished gig \`status: "done", rating: 5\` and the app recomputes their stars and earnings. Premium gigs unlock at ★ 4.5 after 3 rated gigs.`],
   body: [
     `*Suggestion.* Takes 20% from non-citizens and guests, 12% from Tier 3+ citizens. Ratings are weighted "by factors it is not required to disclose." The datapad shows Vargas's profile as suspended, so the PCs browse as a guest worker.`,
-    `Open gigs (posted pay; they take home 80%): walk a Choir pilgrim to her ship (400), recover the repo'd drone "Biscuit" (750), find dockhand Dov Aranha's brother Teo (500, all he has), overnight watch on Halvorsen Bonded Warehouse 6 (700), vent eels in Ring 3 hydroponics (900 + 25 a head), door work at the Lamplighter in Council week (500), an Assay Institute implant trial (1,200), witness an arbitration signing (150), hull scrub (350), a sealed case to Council Hall (300), an Ostrava tool-loan "reminder" (600), guarding a Claims Syndicate ore transfer (1,400), a lost cat named Pontifex (80). Medium: skip-trace debtor Arlo Venn for Penhallow Notes (1,600), a skim run to Marrow with Captain Hesper Quaye of the Low Ebb (1,800, about 8 days, teaches them ship work), and test-flying a refit for Dace & Oduya Hullworks (1,100; the yard gives ★ 4.5 workers a trade price on hulls, so it's the grind path's dealer). Premium, locked: a Grave of Ash salvage dive (4,000), a Kestrel supply run at triple rate (6,000), close protection for a Halcyon delegate (3,000).`,
+    `Open gigs (posted pay; they take home 80%): walk a Choir pilgrim to her ship (400), recover the repo'd drone "Biscuit" (750), find dockhand Dov Aranha's brother Teo (500, all he has), overnight watch on Halvorsen Bonded Warehouse 6 (700), vent eels in Ring 3 hydroponics (900 + 25 a head), door work at the Lamplighter in Council week (500), an Assay Institute implant trial (1,200), witness an arbitration signing (150), hull scrub (350), a sealed case to Council Hall (300), an Ostrava tool-loan "reminder" (600), guarding a Claims Syndicate ore transfer (1,400), a lost cat named Pontifex (80). Medium: skip-trace debtor Arlo Venn for Penhallow Notes (1,600), a skim run to Marrow with Captain Hesper Quaye of the Low Ebb (1,800, about two weeks, teaches them ship work), and test-flying a refit for Dace & Oduya Hullworks (1,100; the yard gives ★ 4.5 workers a trade price on hulls, so it's the grind path's dealer). Premium, locked: a Grave of Ash salvage dive (4,000), a Kestrel supply run at triple rate (6,000), close protection for a Halcyon delegate (3,000).`,
     `The suspicious one, pinned as "Matched to your profile": [[net-settlement|ferry a hull, one way]], 9,000 cr plus 3,000 if the seal holds, fee paid by the client. That's more than an impound hull, in one go.`,
     `**Economy (*suggestion*):** lease 1,000 deposit + 500/week + 10%; Commonweal Hull Finance 3,000 down + 280/week × 52 (needs a Tier 3 co-signer); impound hull ~10,000; clean title 15,000–20,000. Grinding reaches a lease or the down payment in about two sessions and an impound hull in three or four. The shady job saves about two sessions. Refresh the board weekly, and put outside income in \`profile.extra\`.`],
   secrets: [
@@ -717,6 +846,14 @@ window.GM_WIKI = [
   hooks: [`If you want players to see some of this, a Commonweal register extract is easy to hand over as a prop.`, `Roll a company when a job needs a patron or a creditor.`] },
 
 /* ============================ FACTIONS: THE DRIFT ============================ */
+{ id: `brightline-recovery`, type: `faction`, name: `Brightline Recovery`, sub: `Repo contractor for the Halvorsen Combine`, faction: `halvorsen-combine`, where: `spindle`, tag: `draft`,
+  body: [`*Suggestion.* A counter on Spindle level 2 and a long list of leased things that stopped paying. Wipes recovered units.`],
+  hooks: [`[[biscuit]] ([[#tonight/LL-2211|LL-2211]]).`, `If [[car-b]] is listed as stolen, Brightline is who comes.`] },
+
+{ id: `penhallow`, type: `faction`, name: `Penhallow Notes & Settlement`, sub: `Debt buyer · a Penrose shell`, faction: `penrose`, where: `tamsin`, tag: `draft`,
+  body: [`*Suggestion.* Buys bad notes cheap and sends Penrose to collect.`],
+  hooks: [`The skip trace on [[arlo-venn]] ([[#tonight/LL-2268|LL-2268]]).`] },
+
 { id: `council-of-captains`, type: `faction`, name: `The Council of Captains`, sub: `Tamsin's assembly`, where: `tamsin`,
   known: [`No army, but most listen. Meets monthly, and any captain can speak. Founded CY 281.`],
   hooks: [`Once they own a ship, a PC is a captain and can speak.`, `The Council needs neutral hands to carry a ruling somewhere unfriendly.`] },
@@ -830,8 +967,22 @@ window.GM_WIKI = [
   hooks: [
     `It's pinned at the top of Ledgerline, "Matched to your profile."`,
     `Someone else, a less careful crew, takes it if they wait too long. The hull comes back, or doesn't.`,
-    `[[courtesy-7]] has already been hired to welcome the crew aboard.`],
-  related: [`ledgerline`] },
+    `[[courtesy-7]] has already been hired to welcome the crew aboard.`,
+    `[[teo-aranha]] loaded its hold and was locked in a container for it. Find him first ([[#tonight/LL-2214|LL-2214]]).`,
+    `It's in this cycle's impound auction (day 3) if nobody takes the gig.`],
+  related: [`ledgerline`, `tamsin-impound`] },
+
+{ id: `low-ebb`, type: `ship`, name: `The Low Ebb`, sub: `Hesper Quaye's gas skimmer`, faction: `skimmer-guild`, tag: `draft`,
+  body: [`*Suggestion.* An old skimmer with fat scoops, mortgaged to the Claims Syndicate. Use the "Skimmer Guild tanker" template.`],
+  hooks: [`The skim run to Marrow ([[#tonight/LL-2272|LL-2272]]).`] },
+
+{ id: `long-margin`, type: `ship`, name: `The Long Margin`, sub: `Rook Ebbe's bulk ore hauler`, tag: `draft`,
+  body: [`*Suggestion.* Painted over so many times the old name plates show through. A Penhallow limpet tracker sits under the crust.`],
+  hooks: [`The hull scrub ([[#tonight/LL-2244|LL-2244]]).`] },
+
+{ id: `second-opinion`, type: `ship`, name: `The Second Opinion`, sub: `Refitted Halvorsen hauler for sale at Dace & Oduya`, where: `dace-oduya`, tag: `draft`, status: `for sale: 16,000 cr, or 12,500 at trade`,
+  body: [`*Suggestion.* An honest little hauler with six faults and one secret: a second transponder that still says Halvorsen.`],
+  hooks: [`The test flight ([[#tonight/LL-2276|LL-2276]]).`, `The ship they could buy clean.`] },
 
 { id: `prudent-margin`, type: `ship`, name: `The Prudent Margin`, sub: `Halvorsen ferry, Saint Vey to Tamsin`, tag: `draft`, faction: `halvorsen-combine`,
   body: [`*Suggestion (name).* The monthly ferry that carries ore and passengers from New Bombswick to Tamsin. The party leaves on the next one in two weeks, with Amelda's 30 crates in the hold.`],

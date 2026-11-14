@@ -1,5 +1,6 @@
 /* Ledgerline gigs for the player page (ledgerline/index.html). Players see everything in this file,
-   so keep GM secrets in gm/wiki.js (page `ledgerline`). Use backticks around text so quotes are safe.
+   so keep GM secrets out: what happens on each gig goes in gm/jobs.js (same id), shown on the GM page under Tonight → Gigs.
+   Other GM notes live on the wiki pages `ledgerline` and `net-settlement`. Use backticks around text so quotes are safe.
 
    TICKER    lines for the scrolling port strip, `LABEL · text`. Keep secrets out.
    PROFILE   who is browsing. stars and earnings are computed from gigs marked done.
@@ -221,7 +222,7 @@ gigs: [
 
 { id: `LL-2272`, cat: `Labor`, title: `Skim crew, one run to Marrow`,
   client: `Captain Hesper Quaye, the Low Ebb (Skimmer Guild)`, cr: 4.6, crn: 140,
-  pay: 1800, where: `Departs Dock 3 · Marrow and back`, when: `About 8 days`,
+  pay: 1800, where: `Departs Dock 3 · Marrow and back`, when: `About two weeks`,
   posted: `1 day ago`, expires: `in 2 days`,
   blurb: `Two hands for a gas-skimming run. Ship, bunks and food provided. You'll learn a lot.`,
   notes: [

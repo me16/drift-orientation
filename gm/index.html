@@ -209,6 +209,83 @@ a.wl:hover{color:#fff}
   .wk-back{display:inline}
   .wk-list a{padding:8px 14px}
 }
+/* session hub (Tonight): tabs, gig board, gig pages */
+.hub-tabs{position:sticky;top:calc(48px + env(safe-area-inset-top,0px));z-index:4;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;background:rgba(5,6,15,.96);border-bottom:1px solid var(--rule);margin:14px 0 18px;padding-top:6px}
+.hub-tabs::-webkit-scrollbar{display:none}
+.hub-tabs a{flex:none;font:400 11.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:9px 13px;border:1px solid transparent;border-bottom:0;white-space:nowrap}
+.hub-tabs a:hover{color:var(--fg)}
+.hub-tabs a[aria-current="page"]{color:var(--amber);background:var(--panel);border-color:var(--rule);box-shadow:inset 0 2px var(--amber)}
+.hub-tabs .n{color:var(--faint);margin-left:4px}
+.hub-panel>h3:first-child{margin-top:4px}
+ol.run{padding-left:20px}ol.run li{margin-bottom:6px}
+.gig-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+#gq{flex:1 1 240px;min-width:0;background:var(--panel);border:1px solid var(--rule-2);padding:9px 12px;font:400 16px var(--f-data)}
+#gcount{font:400 12px var(--f-data);color:var(--faint);letter-spacing:.08em}
+.gig-sec{margin:20px 0 8px;font:400 11px var(--f-data);letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.gig-sec:first-child{margin-top:0}
+.gig-grid .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:12px}
+.gc{display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--rule);border-left:3px solid var(--c,var(--teal));padding:12px 14px;text-decoration:none;color:var(--fg);min-width:0}
+.gc:hover{border-color:var(--rule-2);background:var(--panel-2)}
+.gc.k-pinned{--c:var(--haz)}.gc.k-premium{--c:var(--lan)}.gc.k-taken,.gc.k-closed{--c:var(--faint);opacity:.75}.gc.k-done{--c:var(--ok)}.gc.k-medium{--c:var(--amber)}
+.gc-top{display:flex;gap:8px;align-items:baseline;font:400 11px var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.gc-top .k{color:var(--c)}
+.gc-top .mk2{margin-left:auto;color:var(--ok)}
+.gc h4{margin:0;font:600 15.5px/1.3 var(--f-body);letter-spacing:0;text-transform:none;color:#fff}
+.gc .cl{font-size:13px;color:var(--dim)}
+.gc .pitch{margin:0;font-size:14px;color:#cfd2f2}
+.gc-ft{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:auto;padding-top:4px;font:400 12.5px var(--f-data);color:var(--dim)}
+.gc-ft .pay{color:var(--amber)}
+.gc-tags{display:flex;flex-wrap:wrap;gap:4px}
+.gc-tags span{font:400 10px var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--faint);border:1px solid var(--rule);padding:1px 6px}
+.gc-tags span.warn{color:var(--haz);border-color:currentColor}
+.gv-nav{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+.gv-nav a{font:400 11.5px var(--f-data);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border:1px solid var(--rule-2);padding:6px 10px;color:var(--fg)}
+.gv-nav a:hover{border-color:var(--amber);color:var(--amber)}
+.gv-nav .sp{flex:1}
+.gv{background:var(--panel);border:1px solid var(--rule);border-top:3px solid var(--c,var(--teal));padding:18px 22px}
+.gv-h .eyebrow{color:var(--c)}
+.gv-h h3{margin:4px 0 2px;font:400 20px/1.3 var(--f-disp);letter-spacing:.04em;color:#fff}
+.gv-h .cl{color:var(--dim);font-size:14.5px}
+.gv-facts{display:flex;flex-wrap:wrap;gap:6px 18px;margin:10px 0 12px;font:400 13px var(--f-data);color:var(--dim)}
+.gv-facts b{color:var(--fg);font-weight:400}
+.gv-facts .pay b{color:var(--amber)}
+.gv .pitch{font:italic 500 18px/1.4 var(--f-lore);color:#e3e0fb;margin:0 0 14px;max-width:72ch}
+.gv-cols{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
+.gv-main>h4:first-child{margin-top:0}
+.gv-main h4{margin:20px 0 6px}
+.gv-side{display:grid;gap:12px}
+.gv-side .box{background:#0a0d26;border:1px solid var(--rule);padding:12px 14px;font-size:14px}
+.gv-side .box h4{margin:0 0 6px}
+.gv-side .box p{margin:0 0 8px}
+.gv-side .box .flag{font:400 12px var(--f-data);color:var(--faint);margin:0 0 4px}
+.gv-side .box>:last-child{margin-bottom:0}
+.gv .tbl td:first-child{min-width:12em}
+.gv ul.secret-list li{color:#ffd9ad}
+.br{border:1px solid var(--rule-2);border-left:3px solid var(--lan);padding:10px 14px;margin:0 0 10px;background:rgba(255,240,194,.03)}
+.br h5{margin:0 0 6px;font:400 12px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--lan)}
+.br ul{margin-bottom:0}
+.outs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.out{display:flex;flex-direction:column;gap:6px;border:1px solid var(--rule-2);padding:10px 12px;background:#0a0d26}
+.out.on{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+.out .ol{font:600 14px var(--f-body);color:#fff}
+.out .os{font:400 12px var(--f-data);color:var(--amber)}
+.out p{margin:0;font-size:14px;color:#cfd2f2}
+.out .btn{margin-top:auto;align-self:flex-start;padding:5px 9px;font-size:10.5px}
+.out.on .btn{color:var(--ok);border-color:var(--ok)}
+.tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px;margin:0 0 14px}
+.tally .t{background:var(--panel);border:1px solid var(--rule);padding:10px 14px}
+.tally .t b{display:block;font:400 22px var(--f-disp);color:var(--amber)}
+.tally .t span{font:400 11px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.goal{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;margin:0 0 8px;font-size:14px}
+.goal .bar2{grid-column:1/-1;height:6px;background:#0a0d26;border:1px solid var(--rule)}
+.goal .bar2 i{display:block;height:100%;background:var(--amber)}
+.goal.done .bar2 i{background:var(--ok)}
+pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);padding:12px;font:400 13px/1.5 var(--f-data);color:#cfd3f5;white-space:pre}
+@media (max-width:760px){
+  .gv{padding:16px}
+  .gv-cols{grid-template-columns:1fr}
+  .hub-tabs a{padding:9px 10px}
+}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head><body>
@@ -230,7 +307,7 @@ a.wl:hover{color:#fff}
 <div id="app" hidden>
 <div class="bar"><div class="bar-in">
  <span class="brand">GM · DRIFT</span>
- <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#session0">Last time</a><a href="#wiki">Wiki</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
+ <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#session1">Last time</a><a href="#wiki">Wiki</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
  <button class="btn" id="lockBtn" type="button">Lock</button>
 </div></div>
 
@@ -243,9 +320,263 @@ a.wl:hover{color:#fff}
 
 <!-- ============================ TONIGHT ============================ -->
 <section id="tonight">
- <h2><span class="k">S1</span>Session 1, the Crescent Fields <span class="tag draft">Played</span></h2>
+ <h2><span class="k">S2</span>Session 2, Free Harbor Tamsin <span class="tag draft">Plan</span></h2>
+ <p>The ferry docks at Tamsin with two survivors, a stolen nav core, a singing relic and no money. They need work, then a ship. Every gig on <a href="../ledgerline/" target="_blank" rel="noopener">Ledgerline</a> is here, with what happens if they take it, and each one ties into something bigger.</p>
+ <p class="dim">Everything in this plan is a <em>suggestion</em> built from your Tamsin sketch. Nothing here is Canon, and the Net Settlement's secret is still yours to pick. Use the tabs: each gig has its own page (<code>#tonight/LL-2207</code>), and the Money tab adds up whatever you mark at the table.</p>
+
+ <div class="hub" id="hub">
+  <nav class="hub-tabs" id="hubTabs" aria-label="Session 2">
+   <a href="#tonight/overview" data-tab="overview" aria-current="page">Overview</a><a href="#tonight/arrival" data-tab="arrival">Arrival</a><a href="#tonight/gigs" data-tab="gigs">Gigs <span class="n" id="gigN"></span></a><a href="#tonight/port" data-tab="port">The port</a><a href="#tonight/people" data-tab="people">People</a><a href="#tonight/money" data-tab="money">Money <span class="n" id="moneyN"></span></a><a href="#tonight/threads" data-tab="threads">Threads</a>
+  </nav>
+
+  <!-- ---------------- OVERVIEW ---------------- -->
+  <div class="hub-panel" data-tab="overview">
+   <div class="grid">
+    <div class="panel">
+     <h4>The night at a glance · about 4 hours</h4>
+     <ol class="run">
+      <li><b>The Lantern pass</b> on the ferry · 15 min · <a href="#tonight/arrival">Arrival</a></li>
+      <li><b>Docking at Low Dock</b>, the datapad wakes up · 15 min</li>
+      <li><b>Marra at the Spindle</b>: the debt, the core, Ledgerline · 20 min</li>
+      <li><b>The board</b>: two or three gigs · 2 to 2½ hours · <a href="#tonight/gigs">Gigs</a></li>
+      <li><b>One evening</b> at the Lamplighter or the impound auction · 20 min</li>
+      <li><b>End</b> on a ramp: the Net Settlement, the Low Ebb, or a ship they nearly own · <a href="#tonight/threads">Threads</a></li>
+     </ol>
+    </div>
+    <div class="panel">
+     <h4>Where they stand</h4>
+     <ul>
+      <li><b>Money:</b> nothing on Ledgerline, and whatever they carried off Saint Vey. Put any cash in <code>profile.extra</code>.</li>
+      <li><b>They have:</b> the <a href="#wiki/nav-core">nav core</a> (never networked), <a href="#wiki/platinum-shard">Vargas's relic</a>, <a href="#wiki/datapad">Vargas's datapad</a>.</li>
+      <li><b>They owe:</b> <a href="#wiki/marra-tesk">Marra</a> 600 cr.</li>
+      <li><b>With them:</b> <a href="#wiki/car-b">CAR-B</a>, if he came, wanting a berth.</li>
+      <li><b>Came with them:</b> <a href="#wiki/amelda">Amelda</a>'s 30 crates, now in <a href="#wiki/warehouse-6">Warehouse 6</a>.</li>
+     </ul>
+    </div>
+   </div>
+
+   <h3>Clocks</h3>
+   <p class="dim">What happens whether they act or not. Day 1 is the day the ferry docks.</p>
+   <div class="tbl"><table>
+    <tr><th>When</th><th>What happens</th><th>Changes if</th></tr>
+    <tr><td class="n">Day 1</td><td>The datapad's registration pings Commonweal on docking. 11 minutes after their guest profile exists, <a href="#tonight/LL-2271">LL-2271</a> appears, pinned.</td><td>They keep the pad switched off. Then the gig appears when they first open Ledgerline.</td></tr>
+    <tr><td class="n">Day 1 eve</td><td><a href="#wiki/mr-sallow">Mr. Sallow</a> learns from the ferry manifest that two Patience crew are in Tamsin.</td><td>Marra tells him first, if they don't pay her.</td></tr>
+    <tr><td class="n">Day 2</td><td><a href="#wiki/corwin-hask">Hask's Sable team</a> takes the Lamplighter's back room and starts showing Vargas's picture.</td><td>—</td></tr>
+    <tr><td class="n">Day 2</td><td><a href="#wiki/teo-aranha">Teo</a>'s container ships out on a Caddis outbound at midnight.</td><td>They free him first (<a href="#tonight/LL-2214">LL-2214</a>).</td></tr>
+    <tr><td class="n">Day 3</td><td><b>LL-2271 expires</b> (47 hours). The impound auction lists the Net Settlement with two other haulers and a dropship.</td><td>They take the gig. Then the hull is withdrawn.</td></tr>
+    <tr><td class="n">Day 3</td><td><b>Council week opens.</b> <a href="#wiki/ilse-varo">Varo</a>'s petition is heard if her case arrived.</td><td>They lost the case (<a href="#tonight/LL-2250">LL-2250</a>).</td></tr>
+    <tr><td class="n">Any day</td><td>A Halvorsen asset-recovery notice with CAR-B's serial reaches Brightline.</td><td>Sooner if they open Bay C (<a href="#tonight/LL-2219">LL-2219</a>) or test-fly the Second Opinion.</td></tr>
+   </table></div>
+
+   <div class="grid">
+    <div class="panel">
+     <h4>Good first gigs</h4>
+     <p>Premium unlocks at ★ 4.5 after three rated gigs. The fastest five-star ratings are <a href="#tonight/LL-2265">the lost cat</a> (80 cr), <a href="#tonight/LL-2241">the witness job</a> (150) and <a href="#tonight/LL-2236">the implant trial</a> (1,200, with a cost). For a fight, try <a href="#tonight/LL-2223">the eels</a> or <a href="#tonight/LL-2258">the ore carts</a>. For the plot, try <a href="#tonight/LL-2214">Teo</a> (it explains the pinned gig) or <a href="#tonight/LL-2230">the Lamplighter door</a> (it explains who's hunting Vargas).</p>
+    </div>
+    <div class="panel">
+     <h4>Before the players arrive</h4>
+     <ul class="todo">
+      <li>Send the players the <a href="../ledgerline/" target="_blank" rel="noopener">Ledgerline</a> link.</li>
+      <li><b>Owlbear</b> (<a href="#library">Library</a>): Final Journey Cantina (the Lamplighter), Sci-fi outpost (the Spindle market), Repair bay (Warehouse 6, the yard), Metro station (Low Dock, the tram), Cargo Hauler (armed) (the Net Settlement).</li>
+      <li><b>SRD stat blocks:</b> Bandit, Bandit Captain, Thug, Veteran, Guard, Spy, Commoner, Swarm of Quippers, Giant Constrictor Snake, Animated Armor, Cat.</li>
+      <li><b>combat/</b> for the test flight (no foes) or Marrow's storm.</li>
+     </ul>
+    </div>
+   </div>
+  </div>
+
+  <!-- ---------------- ARRIVAL ---------------- -->
+  <div class="hub-panel" data-tab="arrival" hidden>
+   <div class="beat" style="--c:var(--lan)">
+    <div class="beat-h"><h3>1 · The Lantern pass</h3><span class="t">15 min · on the ferry</span></div>
+    <p>Saint Vey to Tamsin is 27 parsecs, about 11 days on the <a href="#wiki/prudent-margin">Prudent Margin</a>. The straight line passes <b>under 2 parsecs from the Lantern</b>, the closest the PCs have been to it.</p>
+    <ul>
+     <li>On the last night of the pass, the datapad wakes by itself and shows the chart, centered on the Lantern, for one second.</li>
+     <li class="secret"><a href="#wiki/van-artifact">V'an's artifact</a> pulls at him like a hand on a sleeve. Don't explain it. Ask V'an's player which way he turns in his sleep.</li>
+     <li class="secret">The <a href="#wiki/platinum-shard">shard</a> stops singing for the whole pass, as if it's holding its breath.</li>
+     <li><em>Optional:</em> the <a href="#wiki/due-diligence">Due Diligence</a> hails the ferry and asks for its passenger list. <a href="#wiki/okafor">Okafor</a> reads it, says "Thank you," and lets them go. She now knows they're alive.</li>
+    </ul>
+   </div>
+   <div class="beat">
+    <div class="beat-h"><h3>2 · Docking at Low Dock</h3><span class="t">15 min</span></div>
+    <p class="read">Tamsin is a hollow rock spinning slowly enough to walk in. The ferry noses into Low Dock between a Choir corsair and an ore hauler painted so many times it has no colour left, and the dockmaster comes aboard and asks your tonnage. Twice.</p>
+    <ul>
+     <li><a href="#wiki/harl-brenn">Dockmaster Brenn</a> doesn't ask names. Amelda's crates go on a Halvorsen float to <a href="#wiki/warehouse-6">Bonded Warehouse 6</a>.</li>
+     <li><a href="#wiki/courtesy-7">COURTESY-7</a> greets the ferry with a laminated welcome card. If CAR-B is with them, he goes very quiet.</li>
+     <li>There are no customs at a free harbor, but the Halvorsen ferry files its manifest with Commonweal. The nav core is "40 kg, personal effects."</li>
+    </ul>
+   </div>
+   <div class="beat" style="--c:var(--teal)">
+    <div class="beat-h"><h3>3 · The datapad wakes up</h3><span class="t">5 min</span></div>
+    <p>The first time they open Ledgerline, it runs its boot handshake, reads the device registration (<b>K. VARGAS · Tier 3 · suspended</b>), and makes them a guest profile. <b>Eleven minutes later, <a href="#tonight/LL-2271">LL-2271</a> appears at the top of the board</b>, "Matched to your profile." Let them notice the timestamp.</p>
+    <p class="secret">That ping is also why Hask's Sable team comes to Tamsin, and Ottilie Sand (<a href="#tonight/LL-2265">LL-2265</a>) can tell them an "Assurance account" has been reading it.</p>
+   </div>
+   <div class="beat">
+    <div class="beat-h"><h3>4 · Marra at the Spindle</h3><span class="t">20 min</span></div>
+    <p><a href="#wiki/marra-tesk">Marra</a> is waiting at the top of the Low Dock lift, because she reads the passenger manifests.</p>
+    <ul>
+     <li>She wants her <b>600 cr</b>. She'll wait a week, at 10%.</li>
+     <li>She still has <b>Sallow's 4,000 cr</b> for the core. She doesn't know he's Assay and doesn't want to.</li>
+     <li>She wants to know about <b>Vargas</b> more than the money. If they say Vargas may be alive, she forgives the debt.</li>
+     <li>She shows them Ledgerline on the datapad: "Everyone starts at the bottom. Some people stay there." Then she points at the pinned gig: "Don't."</li>
+    </ul>
+   </div>
+   <div class="beat">
+    <div class="beat-h"><h3>5 · A place to sleep</h3><span class="t">for you</span></div>
+    <p>A coffin bunk in Low Dock costs 2 cr a night. A Spindle hostel room costs 5 cr. A meal is 1 cr. A vac suit is 50. None of it matters much next to the price of a ship, so roll it into the day.</p>
+   </div>
+  </div>
+
+  <!-- ---------------- GIGS ---------------- -->
+  <div class="hub-panel" data-tab="gigs" hidden>
+   <div id="gigBoard">
+    <div class="gig-tools">
+     <input id="gq" type="search" placeholder="Search gigs, clients, secrets" aria-label="Search gigs" autocomplete="off" enterkeyhint="search">
+     <div class="chips" id="gtags"></div>
+     <span id="gcount" aria-live="polite"></span>
+    </div>
+    <div class="gig-grid" id="gigGrid"></div>
+   </div>
+   <div id="gigView" hidden></div>
+  </div>
+
+  <!-- ---------------- PORT ---------------- -->
+  <div class="hub-panel" data-tab="port" hidden>
+   <p>Tamsin is a hollow asteroid, about 300,000 people. The <b>Spindle</b> runs up the spin axis, <b>Low Dock</b> sits at the bottom, and the rings in between are farms, habitats and cargo. Every place has a wiki page.</p>
+   <div class="tbl"><table>
+    <tr><th>Place</th><th>What's there</th><th>Gigs</th></tr>
+    <tr><td><a href="#wiki/spindle">The Spindle</a></td><td>Market, hostels, Marra, the Brightline counter (level 2), the Assay clinic (level 5). Lighter gravity the higher you go.</td><td><a href="#tonight/LL-2211">2211</a> · <a href="#tonight/LL-2236">2236</a> · <a href="#tonight/LL-2258">2258</a></td></tr>
+    <tr><td><a href="#wiki/low-dock">Low Dock</a></td><td>Cheap berths, container stacks, coffin hostels, the night dockmaster.</td><td><a href="#tonight/LL-2207">2207</a> · <a href="#tonight/LL-2214">2214</a> · <a href="#tonight/LL-2244">2244</a> · <a href="#tonight/LL-2253">2253</a> · <a href="#tonight/LL-2272">2272</a></td></tr>
+    <tr><td><a href="#wiki/lamplighter">The Lamplighter</a></td><td>Mags's bar. Captains in Council week, Sable in the back room, "Mr. Albright" at the bar.</td><td><a href="#tonight/LL-2230">2230</a> · <a href="#tonight/LL-2268">2268</a></td></tr>
+    <tr><td><a href="#wiki/tamsin-impound">Impound</a></td><td>Berths L-1 to L-12. Auction on day 3. The Net Settlement in L-9.</td><td><a href="#tonight/LL-2271">2271</a></td></tr>
+    <tr><td><a href="#wiki/council-hall">Council Hall</a></td><td>The captains' ring, Commonweal Notarial's side office. Council week from day 3.</td><td><a href="#tonight/LL-2241">2241</a> · <a href="#tonight/LL-2250">2250</a></td></tr>
+    <tr><td><a href="#wiki/warehouse-6">Warehouse 6</a></td><td>Halvorsen bonded storage. Bay A: Amelda's crates and Assay medicine. Bay C: forty androids.</td><td><a href="#tonight/LL-2219">2219</a></td></tr>
+    <tr><td><a href="#wiki/ring-3">Ring 3</a></td><td>Hydroponics co-op and the irrigation trunk.</td><td><a href="#tonight/LL-2223">2223</a></td></tr>
+    <tr><td><a href="#wiki/dace-oduya">Dace &amp; Oduya</a></td><td>The used-hull yard. The Second Opinion, for sale.</td><td><a href="#tonight/LL-2276">2276</a></td></tr>
+    <tr><td>Habitat blocks</td><td>Block 4 (Wren and Ponty), block 9 (Marek's co-op).</td><td><a href="#tonight/LL-2265">2265</a> · <a href="#tonight/LL-2253">2253</a></td></tr>
+   </table></div>
+   <div class="grid">
+    <div class="panel"><h4>Getting around</h4><p>The tram runs ring to ring in ten minutes and is where things get stolen. Walking takes half an hour. The Ring 3 irrigation trunk is a shortcut under the tram line, and nobody should use it.</p></div>
+    <div class="panel"><h4>Dockside rumors (roll d6)</h4><ol>
+     <li>"The Council's going to vote on Commonweal's desk this week. They won't win."</li>
+     <li>"Somebody's buying old Ash War charts. Grey coat."</li>
+     <li>"There's a hauler in L-9 that hums at night."</li>
+     <li>"Sable's in town, and they're not on leave."</li>
+     <li>"Halvorsen lost a whole crate of reception droids. Or found one."</li>
+     <li>"The Choir's docked. Watch your pockets and your soul."</li></ol></div>
+   </div>
+  </div>
+
+  <!-- ---------------- PEOPLE ---------------- -->
+  <div class="hub-panel" data-tab="people" hidden>
+   <h3>Already in play</h3>
+   <div class="tbl"><table>
+    <tr><th>Who</th><th>Wants this session</th><th>Stats</th></tr>
+    <tr><td><a href="#wiki/marra-tesk">Marra Tesk</a></td><td>Her 600 cr, and news of Vargas.</td><td>Spy</td></tr>
+    <tr><td><a href="#wiki/mr-sallow">Mr. Sallow</a></td><td>The core. Raises his offer if he reads V'an's scan (<a href="#tonight/LL-2236">2236</a>).</td><td>Spy</td></tr>
+    <tr><td><a href="#wiki/car-b">CAR-B</a></td><td>A berth. Takes the side of every machine they're hired to catch.</td><td>Commoner (Animated Armor AC/HP)</td></tr>
+    <tr><td><a href="#wiki/courtesy-7">COURTESY-7</a></td><td>Five-star reviews. Has a cat (<a href="#tonight/LL-2265">2265</a>), and a job on the Net Settlement (<a href="#tonight/LL-2271">2271</a>).</td><td>Commoner</td></tr>
+    <tr><td><a href="#wiki/okafor">Lt. Cmdr. Okafor</a></td><td>To read the core before Ledger does. Hails the ferry (optional).</td><td>Knight</td></tr>
+   </table></div>
+   <h3>New at Tamsin</h3>
+   <div class="tbl"><table>
+    <tr><th>Who</th><th>Where</th><th>Gig</th><th>Stats</th></tr>
+    <tr><td><a href="#wiki/mags">Mags</a></td><td>The Lamplighter</td><td><a href="#tonight/LL-2230">2230</a></td><td>Veteran</td></tr>
+    <tr><td><a href="#wiki/corwin-hask">Lt. Corwin Hask</a> <span class="secret">· Sable, hunting Vargas</span></td><td>The Lamplighter's back room</td><td><a href="#tonight/LL-2230">2230</a></td><td>Veteran + 2 Guards</td></tr>
+    <tr><td><a href="#wiki/ama-reede">Sister Ama Reede</a>, <a href="#wiki/perpetua">Sister Perpetua</a></td><td>Spindle hostel, Berth 31</td><td><a href="#tonight/LL-2207">2207</a></td><td>Acolyte, Priest</td></tr>
+    <tr><td><a href="#wiki/biscuit">Biscuit</a></td><td>Spindle market</td><td><a href="#tonight/LL-2211">2211</a></td><td>Animated Armor</td></tr>
+    <tr><td><a href="#wiki/dov-aranha">Dov</a> and <a href="#wiki/teo-aranha">Teo Aranha</a></td><td>Low Dock, stack 40</td><td><a href="#tonight/LL-2214">2214</a></td><td>Commoner</td></tr>
+    <tr><td><a href="#wiki/harl-brenn">Dockmaster Brenn</a> <span class="secret">· paid to lose Teo</span></td><td>Low Dock</td><td><a href="#tonight/LL-2214">2214</a></td><td>Commoner + 2 Thugs</td></tr>
+    <tr><td><a href="#wiki/nu-seven">ν_seven ("Nell")</a></td><td>Warehouse 6, Bay C</td><td><a href="#tonight/LL-2219">2219</a></td><td>Commoner (Animated Armor AC/HP)</td></tr>
+    <tr><td><a href="#wiki/councillor">Councillor</a></td><td>Ring 3 trunk</td><td><a href="#tonight/LL-2223">2223</a></td><td>Giant Constrictor Snake</td></tr>
+    <tr><td><a href="#wiki/hesper-quaye">Capt. Hesper Quaye</a></td><td>The Low Ebb, Dock 3</td><td><a href="#tonight/LL-2241">2241</a> · <a href="#tonight/LL-2272">2272</a></td><td>Veteran</td></tr>
+    <tr><td><a href="#wiki/rook-ebbe">Capt. Rook Ebbe</a></td><td>The Long Margin, Dock 14</td><td><a href="#tonight/LL-2244">2244</a> · <a href="#tonight/LL-2268">2268</a></td><td>Bandit Captain</td></tr>
+    <tr><td><a href="#wiki/ilse-varo">Capt. Ilse Varo</a></td><td>Council Hall</td><td><a href="#tonight/LL-2250">2250</a></td><td>Noble</td></tr>
+    <tr><td><a href="#wiki/yusuf-marek">Yusuf Marek</a></td><td>Habitat block 9</td><td><a href="#tonight/LL-2253">2253</a></td><td>Commoner</td></tr>
+    <tr><td><a href="#wiki/jessa-coil">Jessa Coil</a></td><td>Spindle market (ambush)</td><td><a href="#tonight/LL-2258">2258</a></td><td>Bandit Captain + 4 Bandits, Thug</td></tr>
+    <tr><td><a href="#wiki/wren">Wren</a>, <a href="#wiki/ottilie-sand">Ottilie Sand</a>, <a href="#wiki/ponty">Ponty</a></td><td>Habitat block 4, Commonweal tier desk</td><td><a href="#tonight/LL-2265">2265</a></td><td>Commoner, Cat</td></tr>
+    <tr><td><a href="#wiki/arlo-venn">Arlo Venn</a> ("Mr. Albright")</td><td>The Lamplighter</td><td><a href="#tonight/LL-2268">2268</a></td><td>Commoner</td></tr>
+    <tr><td><a href="#wiki/dace-oduya">Kenji Dace, Mirembe Oduya</a></td><td>The Spindle yard</td><td><a href="#tonight/LL-2276">2276</a></td><td>Commoner</td></tr>
+   </table></div>
+  </div>
+
+  <!-- ---------------- MONEY ---------------- -->
+  <div class="hub-panel" data-tab="money" hidden>
+   <h3>The purse, as marked</h3>
+   <p class="dim">Mark an outcome on any gig's page and it's counted here. Marks are saved in this browser only. When the session's over, copy the lines below into <code>ledgerline/gigs.js</code> so the players' app shows the same purse and stars.</p>
+   <div id="tally"></div>
+   <div class="grid">
+    <div class="panel">
+     <h4>What a ship costs</h4>
+     <ul>
+      <li><b>Lease:</b> 1,000 cr deposit, then 500 a week plus 10% of every job. Miss a week and it's repossessed.</li>
+      <li><b>Commonweal Hull Finance:</b> 3,000 down, 280 a week for 52 weeks. Needs a Tier 3 co-signer.</li>
+      <li><b>Impound auction</b> (day 3): about 10,000 for a light hauler, as is.</li>
+      <li><b>Clean title:</b> the <a href="#wiki/second-opinion">Second Opinion</a> at 16,000, or 12,500 at the ★ 4.5 trade price.</li>
+      <li><b>The Net Settlement:</b> free, if they deliver and nobody claims it (<a href="#tonight/LL-2271">2271</a>).</li>
+     </ul>
+    </div>
+    <div class="panel">
+     <h4>Money outside the app</h4>
+     <ul>
+      <li><b>The core:</b> Sallow pays 4,000 through Marra. An Inquisitorial buyer through Amelda pays 10,000 and leaves no witnesses. A Spindle auction fetches 15,000 and brings every faction in the Drift. Okafor would confiscate it.</li>
+      <li><b>Hotshot's Penrose policy:</b> 5,000 cr to surviving crew, if they file. Filing tells Penrose, and then Sable, that they survived (<a href="#tonight/LL-2268">2268</a>).</li>
+      <li><b>Halvorsen's night contract:</b> 500 a night through Council week, after a clean watch (<a href="#tonight/LL-2219">2219</a>).</li>
+      <li><b>Marra's debt:</b> −600, or forgiven for news of Vargas.</li>
+     </ul>
+    </div>
+   </div>
+  </div>
+
+  <!-- ---------------- THREADS ---------------- -->
+  <div class="hub-panel" data-tab="threads" hidden>
+   <div class="grid">
+    <div class="panel">
+     <h4>Ways the session can end</h4>
+     <ul>
+      <li><b>On the Net Settlement's ramp</b>, coordinates arriving. The best cliffhanger.</li>
+      <li><b>Strapped in on the Low Ebb</b>, two weeks from Tamsin, with Hesper saying "strap in."</li>
+      <li><b>At the impound auction</b>, one bid short of a hull.</li>
+      <li><b>At the Lamplighter</b>, with Hask's picture of Vargas on the bar and the datapad lighting up beside it.</li>
+     </ul>
+    </div>
+    <div class="panel">
+     <h4>Carried over</h4>
+     <ul>
+      <li><a href="#wiki/car-b">CAR-B</a> wants a berth, and Halvorsen lists him as missing (<a href="#tonight/LL-2219">2219</a>).</li>
+      <li><a href="#wiki/florb">Florb</a> is somewhere above Saint Vey.</li>
+      <li><a href="#wiki/killora-vargas">Vargas</a> is alive. Sable is hunting her through the datapad, and the Net Settlement may be carrying her (option C).</li>
+      <li><a href="#wiki/sally-smacker">Sally</a> has read the core's blackbox. Sallow will want her name.</li>
+      <li>The <a href="#wiki/tracking-gems">gems</a> are in Warehouse 6, Bay A.</li>
+     </ul>
+    </div>
+    <div class="panel">
+     <h4>How the gigs connect</h4>
+     <ul>
+      <li><b>The datapad:</b> the pinned gig (2271), Sable at the Lamplighter (2230), Varo's petition (2250), Ottilie's look-up (2265).</li>
+      <li><b>The Net Settlement:</b> Teo loaded it (2214), the loaders saw him (2199), Hesper knows its registry (2272).</li>
+      <li><b>Machines that want out:</b> Biscuit (2211), Nell and CAR-B's serial (2219), COURTESY-7 (2265, 2271).</li>
+      <li><b>Council week:</b> Rook's vote (2244, 2268), Varo's case (2250, with the eel nest's warning in 2223), Hesper's contract (2241).</li>
+      <li><b>Assay is watching:</b> the implant trial (2236) and Sallow.</li>
+     </ul>
+    </div>
+    <div class="panel">
+     <h4>After the session</h4>
+     <ul class="todo">
+      <li>Copy the lines from the <a href="#tonight/money">Money</a> tab into <code>ledgerline/gigs.js</code>.</li>
+      <li>Refresh the board: retire done gigs, add a few new ones, and give each one notes in <code>gm/jobs.js</code>.</li>
+      <li>Send Claude the recap for the wiki (an <code>s2</code> page, <code>seen</code> lines, used hooks).</li>
+     </ul>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ LAST TIME ============================ -->
+<section id="session1">
+ <h2><span class="k">S1</span>Last session: session 1, the Crescent Fields <span class="tag draft">Played</span></h2>
  <p>The shard teleports them out of the dying Patience and drops them on Saint Vey. The party has three days of walking to do, a town that won't sell to them, and a supplies manager with a secret. It runs about <strong>3½ hours</strong>: waking up (15 min), the walk (45 min), New Bombswick (60–90 min), and the ferry port, which ends in a fight, a getaway or a deal. Free Harbor Tamsin is next session.</p>
- <p class="dim">This is your plan. The names and facts you wrote are yours. Anything marked <em>suggestion</em> was filled in for you, so keep it, change it or drop it. Nothing here is promoted to Canon. <a href="#session0">Last session's plan</a> is folded up below this one.</p>
 
  <div class="beat" style="--c:var(--ok)">
   <div class="beat-h"><h3>What happened at the table</h3><span class="t">played</span></div>
@@ -268,6 +599,9 @@ a.wl:hover{color:#fff}
   </ul>
  </div>
 
+ <details class="howto">
+  <summary>Open session 1's plan</summary>
+ <p class="dim">The plan as written. The names and facts you wrote are yours; anything marked <em>suggestion</em> was filled in. Session 0's plan is folded up <a href="#session0">below this one</a>.</p>
  <h3>Before the players arrive</h3>
  <ul class="todo">
   <li><strong>Owlbear</strong> (from the <a href="#library">Library</a>): <b>Final Journey Cantina</b> for Carby's saloon, <b>Landing pad</b> and <b>Repair bay</b> for the ferry port and its loading floor, and <b>Sci-fi outpost</b> or <b>Junkyard City tiles</b> for the town.</li>
@@ -474,11 +808,13 @@ a.wl:hover{color:#fff}
    <li><strong>The funny robot man.</strong> CAR-B now fills this slot, so you may not need <b>COURTESY-7</b>: a decommissioned Halvorsen customer-service android working the Tamsin docks for tips. He's stuck in his old script ("Your satisfaction is our currency!") and asks to be paid in five-star reviews. <em>Suggestion:</em> keep him as a mirror of what CAR-B was before he was jailbroken. CAR-B may find that hard to watch.</li>
    <li><strong>Carried over from Saint Vey:</strong> CAR-B wants a berth once they have a ship, Amelda's 30 crates ride the same ferry they do, and somewhere above Saint Vey there's an orb.</li>
   </ul>
+  <p class="dim">Superseded by the full Tamsin plan in <a href="#tonight">Tonight</a>.</p>
  </div>
+ </details>
 </section>
 
 <section id="session0">
- <h2><span class="k">S0</span>Last session: session 0 and the Grave <span class="tag draft">Played</span></h2>
+ <h2><span class="k">S0</span>Session 0 and the Grave <span class="tag draft">Played</span></h2>
  <div class="beat" style="--c:var(--ok)">
   <div class="beat-h"><h3>What happened at the table</h3><span class="t">played</span></div>
   <ul>
@@ -715,7 +1051,7 @@ a.wl:hover{color:#fff}
 <!-- ============================ CAST ============================ -->
 <section id="cast">
  <h2><span class="k">02</span>Cast and secrets</h2>
- <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description. New Bombswick's people are in <a href="#tonight">Tonight</a>. Everyone has a fuller page, with hooks, in the <a href="#wiki">Wiki</a>. The party: <a href="#wiki/rusty-scrap">Rusty Scrap</a> (dwarven Armorer artificer, Ashborn) and <a href="#wiki/van">V'an Ski-born</a> (Talisman warlock from Meridian Prime).</p>
+ <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description. New Bombswick's people are in <a href="#session1">Last time</a>, Tamsin's in <a href="#tonight/people">Tonight → People</a>. Everyone has a fuller page, with hooks, in the <a href="#wiki">Wiki</a>. The party: <a href="#wiki/rusty-scrap">Rusty Scrap</a> (dwarven Armorer artificer, Ashborn) and <a href="#wiki/van">V'an Ski-born</a> (Talisman warlock from Meridian Prime).</p>
  <div class="grid">
   <div class="stat"><h4>Marra Tesk</h4><div class="sub">Fixer, the Spindle, Tamsin</div><div class="line">Spy. Dry, quick, loyal to Vargas in her own way. Wants her 600 cr and to know what happened.</div><div class="line secret">Takes 10% from Sallow. Doesn't know who he works for, and doesn't want to.</div></div>
   <div class="stat"><h4>"Mr. Sallow"</h4><div class="sub">The buyer</div><div class="line">Spy. Grey coat, perfect manners.</div><div class="line secret">Assay Institute handler. Needs the Ash War charts to prove the fleets were steered. Afraid of whatever silenced Kestrel.</div></div>
@@ -1151,7 +1487,7 @@ a.wl:hover{color:#fff}
 
 <!-- Load library.js with a fresh URL every time so edits show up right after a deploy
      (GitHub Pages lets browsers cache it for ~10 minutes otherwise). -->
-<script>document.write('<script src="library.js?v=' + Date.now() + '"><\/script><script src="wiki.js?v=' + Date.now() + '"><\/script>')</script>
+<script>document.write(["library.js","wiki.js","jobs.js","../ledgerline/gigs.js"].map(f=>'<script src="'+f+'?v='+Date.now()+'"><\/script>').join(""))</script>
 <script>
 (function(){
  /* Soft lock. The phrase is checked against a hash so it isn't sitting in the source as plain text,
@@ -1164,7 +1500,7 @@ a.wl:hover{color:#fff}
  window.gmHash = p => cyrb53(String(p).trim().toLowerCase());
  const gate=document.getElementById("gate"), app=document.getElementById("app");
  const store={get(){try{return localStorage.getItem(KEY)}catch(e){return null}},set(v){try{v?localStorage.setItem(KEY,v):localStorage.removeItem(KEY)}catch(e){}}};
- function open(){gate.hidden=true;app.hidden=false;renderLib();renderWiki();if(!wikiRoute()&&location.hash){const el=document.getElementById(location.hash.slice(1));el&&el.scrollIntoView()}}
+ function open(){gate.hidden=true;app.hidden=false;renderLib();renderWiki();if(!wikiRoute()&&!hubRoute()&&location.hash){const el=document.getElementById(location.hash.slice(1));el&&el.scrollIntoView()}}
  document.getElementById("gateForm").addEventListener("submit",e=>{e.preventDefault();
   const h=gmHash(document.getElementById("pw").value);
   if(h===PASS_HASH){store.set(h);open()} else {document.getElementById("gateErr").textContent="That phrase doesn't open this partition.";document.getElementById("pw").select()}});
@@ -1351,7 +1687,137 @@ a.wl:hover{color:#fff}
   (wCur?document.getElementById("wk"):document.getElementById("wiki")).scrollIntoView();
   return true;
  }
- addEventListener("hashchange",()=>{if(!app.hidden)wikiRoute()});
+ /* Session hub (Tonight). Tabs are #tonight/<tab>; a gig page is #tonight/LL-xxxx.
+    The board joins the players' listings (ledgerline/gigs.js, window.LEDGERLINE) with GM notes (gm/jobs.js, window.GM_JOBS). */
+ const LLD=window.LEDGERLINE||{}, LLP=Object.assign({goals:[],extra:0,unlock:4.5,minRated:3},LLD.profile);
+ const LLG=(LLD.gigs||[]).map(g=>Object.assign({fee:.2,min:0,status:"open",notes:[],flags:[]},g));
+ const JOBS=(window.GM_JOBS||[]).filter(j=>j&&j.id), JBY={};JOBS.forEach(j=>JBY[j.id]=j);
+ const GIGS=[...LLG.map(g=>({id:g.id,g,j:JBY[g.id]})),...JOBS.filter(j=>!LLG.some(g=>g.id===j.id)).map(j=>({id:j.id,g:null,j}))];
+ const GBY={};GIGS.forEach(x=>GBY[x.id]=x);
+ const kindOf=x=>{const g=x.g;if(!g)return"orphan";if(g.status==="done")return"done";if(g.status==="taken")return"taken";if(g.status==="closed")return"closed";if(g.featured)return"pinned";if(g.min>0)return"premium";return g.pay>=1000?"medium":"small"};
+ const KIND={pinned:"Pinned",small:"Small",medium:"Medium",premium:"Premium · locked",taken:"Taken",closed:"Closed",done:"Done",orphan:"Not on the board"};
+ const KORDER=["pinned","small","medium","premium","done","taken","closed","orphan"];
+ const SECT={pinned:"Matched to your profile",small:"Open · small",medium:"Open · medium",premium:"Premium (★ "+LLP.unlock+"+)",done:"Done",taken:"Taken by someone else",closed:"Closed",orphan:"GM notes with no listing on Ledgerline"};
+ const crf=n=>Math.round(n).toLocaleString("en-US")+" cr";
+ const takeOf=g=>g?g.pay*(1-g.fee):0;
+ const MKEY="gm.s2.marks";
+ let MARKS=(()=>{try{return JSON.parse(localStorage.getItem(MKEY))||{}}catch(_){return{}}})();
+ const saveMarks=()=>{try{localStorage.setItem(MKEY,JSON.stringify(MARKS))}catch(_){}};
+ const outOf=x=>{const k=MARKS[x.id];return k&&x.j&&arr(x.j.out).find(o=>o.k===k)||null};
+ /* what an outcome is worth: app take-home, bonus, cash */
+ function worth(x,o){const g=x.g||{pay:0,fee:0};
+  const app=o.paid===false?0:typeof o.paid==="number"?o.paid:takeOf(g);
+  const bonus=o.bonus===true?(g.bonus?g.bonus[0]:0):typeof o.bonus==="number"?o.bonus:0;
+  return{app,bonus,cash:o.cash||0,stars:o.stars||0}}
+ const TABS=["overview","arrival","gigs","port","people","money","threads"];
+ let gTag="all",hubBuilt=false;
+ const hayG=x=>[x.id,x.g&&x.g.title,x.g&&x.g.client,x.g&&x.g.cat,x.g&&x.g.where,x.g&&x.g.blurb,x.j&&x.j.pitch,...arr(x.j&&x.j.truth),...arr(x.j&&x.j.tags)].filter(Boolean).join(" ").toLowerCase();
+ function buildHub(){
+  if(hubBuilt)return;hubBuilt=true;
+  const tags=[...new Set(JOBS.flatMap(j=>arr(j.tags)))];
+  const extra=[["marked","Marked"],...(GIGS.some(x=>!x.j)?[["nonotes","No GM notes"]]:[])];
+  document.getElementById("gtags").innerHTML=[["all","All"],...tags.map(t=>[t,t]),...extra].map(([t,l])=>`<button class="chip" type="button" data-t="${esc(t)}" aria-pressed="${t==="all"}">${esc(l)}</button>`).join("");
+  document.getElementById("gtags").addEventListener("click",e=>{const b=e.target.closest("[data-t]");if(!b)return;gTag=b.dataset.t;document.querySelectorAll("#gtags .chip").forEach(c=>c.setAttribute("aria-pressed",c===b));drawBoard()});
+  document.getElementById("gq").addEventListener("input",drawBoard);
+  document.getElementById("hub").addEventListener("click",e=>{
+   const m=e.target.closest("[data-mark]");if(m){const id=m.dataset.id,k=m.dataset.mark;if(MARKS[id]===k)delete MARKS[id];else MARKS[id]=k;saveMarks();drawGig(id);drawTally();drawBoard();return}
+   if(e.target.closest("[data-reset]")){if(confirm("Clear every outcome you've marked this session?")){MARKS={};saveMarks();drawTally();drawBoard()}}});
+  document.getElementById("gigN").textContent=GIGS.filter(x=>x.g&&!["taken","closed"].includes(x.g.status)).length;
+  drawBoard();drawTally();
+ }
+ function cardHtml(x){const g=x.g,j=x.j,k=kindOf(x),o=outOf(x);
+  const pay=g?(k==="premium"?`${crf(g.pay)}`:`${crf(g.pay)}${g.bonus?` <small>+${crf(g.bonus[0]).replace(" cr","")}</small>`:""}`):"";
+  return `<a class="gc k-${k}" href="#tonight/${esc(x.id)}">
+   <div class="gc-top"><span>${esc(x.id)}</span><span class="k">${esc(KIND[k])}</span>${g?`<span>${esc(g.cat)}</span>`:""}${o?`<span class="mk2">✓ ${o.stars?o.stars+"★":"marked"}</span>`:""}</div>
+   <h4>${esc(g?g.title:"(no listing)")}</h4>
+   ${g?`<div class="cl">${esc(g.client)}</div>`:""}
+   <p class="pitch">${j&&j.pitch?fmt(j.pitch):g?esc(g.blurb):""}</p>
+   <div class="gc-ft">${pay?`<span class="pay">${pay}</span>`:""}${j&&j.time?`<span>${esc(j.time)}</span>`:""}</div>
+   <div class="gc-tags">${j?arr(j.tags).map(t=>`<span>${esc(t)}</span>`).join(""):`<span class="warn">No GM notes yet</span>`}</div></a>`}
+ function drawBoard(){
+  const words=document.getElementById("gq").value.toLowerCase().split(/\s+/).filter(Boolean);
+  const list=GIGS.filter(x=>(gTag==="all"||(gTag==="marked"?!!outOf(x):gTag==="nonotes"?!x.j:arr(x.j&&x.j.tags).includes(gTag)))&&words.every(w=>hayG(x).includes(w)));
+  document.getElementById("gcount").textContent=`${list.length} of ${GIGS.length}`;
+  const el=document.getElementById("gigGrid");
+  if(!list.length){el.innerHTML=`<div class="empty">No gigs match.</div>`;return}
+  el.innerHTML=KORDER.map(k=>{const l=list.filter(x=>kindOf(x)===k);return l.length?`<h5 class="gig-sec">${esc(SECT[k])} · ${l.length}</h5><div class="cards">${l.map(cardHtml).join("")}</div>`:""}).join("");
+ }
+ function drawGig(id){
+  const x=GBY[id],el=document.getElementById("gigView");if(!x){el.innerHTML="";return}
+  const g=x.g,j=x.j||{},k=kindOf(x),i=GIGS.indexOf(x),prev=GIGS[(i-1+GIGS.length)%GIGS.length],next=GIGS[(i+1)%GIGS.length];
+  const col={pinned:"var(--haz)",premium:"var(--lan)",medium:"var(--amber)",done:"var(--ok)",taken:"var(--faint)",closed:"var(--faint)"}[k]||"var(--teal)";
+  const li=a=>arr(a).map(t=>`<li>${fmt(t)}</li>`).join("");
+  const facts=g?[`<span class="pay">Posted <b>${crf(g.pay)}</b></span>`,g.fee>0?`<span>Take-home <b>${crf(takeOf(g))}</b></span>`:`<span>Fee paid by client</span>`,g.bonus?`<span>Bonus <b>${crf(g.bonus[0])}</b> ${esc(g.bonus[1])}</span>`:"",`<span><b>${esc(g.where)}</b></span>`,`<span>${esc(g.when)}</span>`,`<span>Expires ${esc(g.expires)}</span>`,g.min>0?`<span>Needs <b>★ ${g.min}</b></span>`:"",j.time?`<span>At the table <b>${esc(j.time)}</b></span>`:""].filter(Boolean).join(""):"";
+  let main="";
+  if(!x.j)main+=`<div class="empty">No GM notes yet. Add an entry with id <code>${esc(id)}</code> to <code>gm/jobs.js</code>.</div>`;
+  if(j.truth)main+=`<h4>What's really going on</h4><ul class="secret-list">${li(j.truth)}</ul>`;
+  if(j.read)main+=`<p class="read">${fmt(j.read)}</p>`;
+  if(j.run)main+=`<h4>How it plays</h4><ol class="run">${li(j.run)}</ol>`;
+  if(j.checks)main+=`<h4>Rolls</h4><div class="tbl"><table><tr><th>Check</th><th>DC</th><th>On a fail</th></tr>${arr(j.checks).map(c=>`<tr><td>${fmt(c[0]||"")}</td><td class="n">${esc(c[1]||"")}</td><td>${fmt(c[2]||"")}</td></tr>`).join("")}</table></div>`;
+  if(j.foes)main+=`<h4>Foes</h4><p>${fmt(j.foes)}</p>`;
+  if(j.branches)main+=`<h4>The secret: pick one</h4>${arr(j.branches).map(b=>`<div class="br"><h5>${esc(b.name)}</h5><ul>${li(b.t)}</ul></div>`).join("")}`;
+  if(j.twist)main+=`<h4>Complications <small>use one</small></h4><ul>${li(j.twist)}</ul>`;
+  if(j.out)main+=`<h4>Outcomes <small>mark what happened</small></h4><div class="outs">${arr(j.out).map(o=>{const w=worth(x,o),on=MARKS[id]===o.k;
+    const sum=[w.stars?`${w.stars}★`:"no rating",w.app?`${crf(w.app)}`:"no pay",w.bonus?`+${crf(w.bonus)} bonus`:"",w.cash?`+${crf(w.cash)} cash`:""].filter(Boolean).join(" · ");
+    return `<div class="out${on?" on":""}"><span class="ol">${esc(o.label||o.k)}</span><span class="os">${sum}</span><p>${fmt(o.t||"")}</p><button class="btn" type="button" data-id="${esc(id)}" data-mark="${esc(o.k)}" aria-pressed="${on}">${on?"✓ Marked":"Mark this"}</button></div>`}).join("")}</div>`;
+  let side="";
+  if(g)side+=`<div class="box"><h4>What the players see</h4><p>${fmt(g.blurb)}</p>${arr(g.notes).map(n=>`<p>${fmt(n)}</p>`).join("")}${arr(g.flags).map(f=>`<p class="flag">⚑ ${esc(f)}</p>`).join("")}<p class="flag"><a href="../ledgerline/#${esc(id)}" target="_blank" rel="noopener">Open on Ledgerline</a></p></div>`;
+  if(j.ties)side+=`<div class="box"><h4>Wiki</h4><div class="wk-links">${arr(j.ties).map(t=>WBY[t]?`<a href="#wiki/${esc(t)}">${esc(WBY[t].name)}</a>`:`<span class="wl broken">${esc(t)}</span>`).join("")}</div></div>`;
+  if(j.maps)side+=`<div class="box"><h4>Maps</h4><p>${fmt(j.maps)}</p></div>`;
+  el.innerHTML=`<div class="gv-nav"><a href="#tonight/gigs">← All gigs</a><span class="sp"></span><a href="#tonight/${esc(prev.id)}">‹ ${esc(prev.id)}</a><a href="#tonight/${esc(next.id)}">${esc(next.id)} ›</a></div>
+   <article class="gv" style="--c:${col}">
+    <div class="gv-h"><span class="eyebrow">${esc(id)} · ${esc(KIND[k])}${g?" · "+esc(g.cat):""}</span><h3>${esc(g?g.title:"(no listing on Ledgerline)")}</h3>${g?`<div class="cl">${esc(g.client)} · ${g.crn?`★ ${g.cr} (${g.crn} reviews)`:"no reviews yet"}</div>`:""}</div>
+    ${facts?`<div class="gv-facts">${facts}</div>`:""}
+    ${j.pitch?`<p class="pitch">${fmt(j.pitch)}</p>`:""}
+    <div class="gv-cols"><div class="gv-main">${main}</div><aside class="gv-side">${side}</aside></div>
+   </article>`;
+ }
+ function drawTally(){
+  const el=document.getElementById("tally");if(!el)return;
+  const done=LLG.filter(g=>g.status==="done").map(g=>({x:GBY[g.id],w:{app:takeOf(g),bonus:g.bonusPaid&&g.bonus?g.bonus[0]:0,cash:0,stars:g.rating||0},o:null,pre:true}));
+  const marked=GIGS.map(x=>({x,o:outOf(x)})).filter(r=>r.o&&!(r.x.g&&r.x.g.status==="done")).map(r=>({x:r.x,o:r.o,w:worth(r.x,r.o)}));
+  const rows=[...done,...marked];
+  const sum=f=>rows.reduce((a,r)=>a+r.w[f],0);
+  const rated=rows.filter(r=>r.w.stars>0),avg=rated.length?rated.reduce((a,r)=>a+r.w.stars,0)/rated.length:0,shown=rated.length>=LLP.minRated;
+  const app=sum("app")+sum("bonus"),cash=sum("cash"),total=app+cash+(+LLP.extra||0);
+  document.getElementById("moneyN").textContent=marked.length?marked.length:"";
+  let h=`<div class="tally">
+   <div class="t"><b>${crf(app)}</b><span>Through Ledgerline</span></div>
+   <div class="t"><b>${crf(cash+(+LLP.extra||0))}</b><span>Cash and savings</span></div>
+   <div class="t"><b>${shown?"★ "+avg.toFixed(2):rated.length+" of "+LLP.minRated}</b><span>${shown?"Rating":"Rated gigs"}</span></div>
+   <div class="t"><b>${shown&&avg>=LLP.unlock?"Open":"Locked"}</b><span>Premium (★ ${LLP.unlock})</span></div></div>`;
+  h+=arr(LLP.goals).map(([n,l])=>`<div class="goal${total>=n?" done":""}"><span>${esc(l)}</span><span class="dim">${crf(Math.min(total,n))} / ${crf(n)}</span><div class="bar2"><i style="width:${Math.min(100,total/n*100)}%"></i></div></div>`).join("");
+  if(!rows.length){el.innerHTML=h+`<div class="empty">Nothing marked yet. Open a gig on the <a href="#tonight/gigs">Gigs</a> tab and mark its outcome.</div>`;return}
+  h+=`<div class="tbl"><table><tr><th>Gig</th><th>Outcome</th><th>Stars</th><th>App</th><th>Cash</th></tr>${rows.map(r=>`<tr><td><a href="#tonight/${esc(r.x.id)}">${esc(r.x.id)}</a> ${esc(r.x.g?r.x.g.title:"")}</td><td>${r.pre?"done on Ledgerline":esc(r.o.label||r.o.k)}</td><td class="n">${r.w.stars?r.w.stars+"★":"—"}</td><td class="n">${crf(r.w.app+r.w.bonus)}</td><td class="n">${r.w.cash?crf(r.w.cash):"—"}</td></tr>`).join("")}</table></div>`;
+  /* lines for ledgerline/gigs.js */
+  const lines=[];let extra=+LLP.extra||0;
+  marked.forEach(({x,o,w})=>{const g=x.g;if(!g)return;const parts=[];
+   if(w.stars)parts.push("status: `done`",`rating: ${w.stars}`);else parts.push("status: `closed`");
+   const def=takeOf(g);if(w.stars&&Math.round(w.app)!==Math.round(def))parts.push(`pay: ${g.fee<1?Math.round(w.app/(1-g.fee)):0}`);
+   if(o.bonus===true)parts.push("bonusPaid: true");else if(w.bonus)extra+=w.bonus;
+   if(!w.stars&&w.app)extra+=w.app;
+   extra+=w.cash;
+   lines.push(`${g.id}:  ${parts.join(", ")}`)});
+  if(lines.length)h+=`<h4>Paste into ledgerline/gigs.js</h4><p class="dim">Add these fields to each gig's object. A changed <code>pay</code> means partial pay; bonuses that aren't the listing's own, and cash, go into <code>profile.extra</code>.</p><pre class="paste">${esc(lines.join("\n"))}${extra!==(+LLP.extra||0)?`\n\nprofile.extra: ${Math.round(extra)}`:""}</pre>`;
+  h+=`<p><button class="btn" type="button" data-reset>Clear all marks</button></p>`;
+  el.innerHTML=h;
+ }
+ function hubRoute(){
+  const h=decodeURIComponent(location.hash||"");
+  if(h!=="#tonight"&&!h.startsWith("#tonight/"))return false;
+  buildHub();
+  const rest=h.slice(9);let tab=TABS.includes(rest)?rest:"overview",gig=null;
+  if(GBY[rest]){tab="gigs";gig=rest}
+  document.querySelectorAll("#hub .hub-panel").forEach(p=>p.hidden=p.dataset.tab!==tab);
+  document.querySelectorAll("#hubTabs a").forEach(a=>a.dataset.tab===tab?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+  document.getElementById("gigBoard").hidden=!!gig;
+  const gv=document.getElementById("gigView");gv.hidden=!gig;if(gig)drawGig(gig);
+  const hub=document.getElementById("hub"),r=hub.getBoundingClientRect();
+  if(h==="#tonight"&&!rest)document.getElementById("tonight").scrollIntoView();
+  else if(r.top<0||r.top>innerHeight*.5)hub.scrollIntoView();
+  return true;
+ }
+ addEventListener("hashchange",()=>{if(!app.hidden)wikiRoute()||hubRoute()});
  if(store.get()===PASS_HASH) open(); else document.getElementById("pw").focus();
 })();
 </script>
