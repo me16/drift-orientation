@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tamsin Cost Schedule</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700&family=Share+Tech+Mono&family=Michroma&display=swap" rel="stylesheet">
+<style>
+/* Player handout: what living and owning a hull cost at Free Harbor Tamsin. Commonweal livery, like ledgerline/.
+   Each .card is sized to screenshot on its own. Numbers are the GM's (session 2 plan); keep them in sync with gm/index.html#tonight/money. */
+:root{
+  --bg:#e9edf2; --card:#fff; --ink:#132033; --sub:#5a6779; --line:#d8dee6; --soft:#f4f6f9;
+  --navy:#0f2747; --navy-2:#173a66; --teal:#0b9e8f; --teal-2:#08786d; --teal-soft:#e0f5f2; --amber:#a86b00; --amber-soft:#fff4dc;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Exo 2",system-ui,sans-serif;padding:24px 16px 48px}
+.wrap{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+.card{background:var(--card);border-radius:14px;box-shadow:0 1px 2px rgba(15,39,71,.08),0 8px 24px rgba(15,39,71,.08);overflow:hidden}
+.bar{background:var(--navy);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.bar .seal{width:30px;height:30px;border-radius:50%;border:2px solid var(--teal);display:grid;place-items:center;font:700 13px Michroma,sans-serif;color:#6ff3e0;flex:none}
+.bar b{font:13px Michroma,sans-serif;letter-spacing:.08em}
+.bar span{display:block;font:12px "Share Tech Mono",monospace;color:#9fb3cf}
+.bar .ref{margin-left:auto;text-align:right}
+.in{padding:18px 20px 20px}
+h1{font:600 20px/1.25 "Exo 2",sans-serif;margin:0 0 4px}
+.lede{color:var(--sub);margin:0 0 14px;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:12px "Share Tech Mono",monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);background:var(--soft)}
+td.n,th.n{text-align:right;font-family:"Share Tech Mono",monospace;font-size:15px;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.tier{font-weight:700}
+.unit{font:12px "Share Tech Mono",monospace;color:var(--sub)}
+.box{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--teal-soft);font-size:14px}
+.box h2{font:600 13px "Exo 2",sans-serif;text-transform:uppercase;letter-spacing:.06em;color:var(--teal-2);margin:0 0 6px}
+.box ul{margin:0;padding-left:18px}
+.box li{margin:3px 0}
+.fine{margin:14px 0 0;color:var(--sub);font-size:12px}
+.mono{font-family:"Share Tech Mono",monospace}
+.order dl{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0 0 4px;font-size:14px}
+.order dt{font:12px "Share Tech Mono",monospace;color:var(--sub);text-transform:uppercase;letter-spacing:.06em;padding-top:2px}
+.order dd{margin:0}
+.amt{font:700 28px "Share Tech Mono",monospace;color:var(--navy)}
+.blank{display:inline-block;min-width:150px;border-bottom:1px dashed var(--sub);color:var(--sub);font-style:italic}
+.warn{margin-top:14px;padding:10px 14px;border-radius:10px;background:var(--amber-soft);color:var(--amber);font-size:13px}
+.hull{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:12px}
+.hull-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.hull h2{margin:0;font:13px Michroma,sans-serif;letter-spacing:.04em}
+.price{font:700 20px "Share Tech Mono",monospace;color:var(--teal-2)}
+.hull p{margin:6px 0 10px;color:var(--sub);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:0 0 10px}
+.stats div{background:var(--soft);border-radius:8px;padding:6px 4px;text-align:center}
+.stats b{display:block;font:700 17px "Share Tech Mono",monospace}
+.stats span{font:11px "Share Tech Mono",monospace;color:var(--sub);text-transform:uppercase}
+.seats{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.seats span{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--teal-soft);color:var(--teal-2);font-weight:600}
+.seats span.no{background:var(--soft);color:var(--sub);text-decoration:line-through}
+.wpn{font-size:13px;margin:2px 0}
+.wpn .mono{color:var(--sub)}
+@media (max-width:520px){.stats{grid-template-columns:repeat(3,1fr)} .bar .ref{display:none}}
+@media print{body{background:#fff;padding:0}.card{box-shadow:none;border:1px solid var(--line);break-inside:avoid}}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<!-- ============ CARD 1: COST OF RESIDENCE ============ -->
+<section class="card" id="living">
+ <div class="bar"><div class="seal">C</div><div><b>COMMONWEAL</b><span>Free Harbor Tamsin · Residency desk</span></div><div class="ref"><span>FORM R-12 · CY 312</span><span>GUEST WORKER COPY</span></div></div>
+ <div class="in">
+  <h1>Schedule of residence costs</h1>
+  <p class="lede">Persons residing at Free Harbor Tamsin are expected to meet the following costs each galactic standard month (GSM). Commonweal does not set these prices. Commonweal records whether they are met.</p>
+  <table>
+   <tr><th>Per GSM</th><th class="n">High</th><th class="n">Average</th><th class="n">Low</th></tr>
+   <tr><td class="tier">Food</td><td class="n">50 cr</td><td class="n">30 cr</td><td class="n">10 cr</td></tr>
+   <tr><td class="tier">Accommodations</td><td class="n">80 cr</td><td class="n">50 cr</td><td class="n">30 cr</td></tr>
+  </table>
+  <div class="box">
+   <h2>Vessel owners</h2>
+   <ul>
+    <li><b>Food:</b> a Duplicator installed aboard meets the Low tier automatically. A <span class="mono">25 cr/GSM</span> subscription raises it to Average.</li>
+    <li><b>Accommodations:</b> a registered vessel meets the Low tier. A one-time fit-out of <span class="mono">100 cr</span> raises it to Average, or <span class="mono">500 cr</span> to High.</li>
+   </ul>
+  </div>
+  <p class="fine">Tiers are self-declared and may be reviewed. Residents who fall below the Low tier are referred to the Spindle level 2 desk as persons with unresolved obligations. Your satisfaction is not a Commonweal service.</p>
+ </div>
+</section>
+
+<!-- ============ CARD 2: V'AN'S STANDING ORDER ============ -->
+<section class="card order" id="standing-order">
+ <div class="bar"><div class="seal">C</div><div><b>COMMONWEAL</b><span>Remittance services · Standing order</span></div><div class="ref"><span>SO-3318-MP</span><span>ACTIVE</span></div></div>
+ <div class="in">
+  <h1>Standing order: family support</h1>
+  <p class="lede">A recurring transfer registered to this account. It will be drawn each GSM until cancelled by the account holder.</p>
+  <dl>
+   <dt>Account holder</dt><dd>V'an Ski-born</dd>
+   <dt>Amount</dt><dd><span class="amt">800 cr</span> <span class="unit">per GSM</span></dd>
+   <dt>Purpose</dt><dd>Medical support, sibling</dd>
+   <dt>Beneficiary</dt><dd><span class="blank">name not on file</span></dd>
+   <dt>Destination</dt><dd>Meridian Prime · routed</dd>
+  </dl>
+  <div class="warn">Beneficiary record incomplete. Please supply the beneficiary's name at your earliest convenience. Transfers will continue in the meantime.</div>
+ </div>
+</section>
+
+<!-- ============ CARD 3: HULLS FOR SALE ============ -->
+<section class="card" id="hulls">
+ <div class="bar"><div class="seal">C</div><div><b>COMMONWEAL</b><span>Spindle crown · Hull-sale board</span></div><div class="ref"><span>OUTRIGHT PURCHASE</span><span>SOLD AS IS</span></div></div>
+ <div class="in">
+  <h1>Hulls for sale, outright</h1>
+  <p class="lede">Title transfers on full payment. Leases and Commonweal Hull Finance are available at the counter. Owner-operators earn higher rates on Ledgerline.</p>
+
+  <div class="hull">
+   <div class="hull-h"><h2>NASTY NANCY</h2><span class="price">9,000 cr</span></div>
+   <p>Light hauler. Honest, cramped, and fragrant. Barebones bunk-bed berths for four, 20 tons of cargo.</p>
+   <div class="stats"><div><b>12</b><span>AC</span></div><div><b>20</b><span>Hull</span></div><div><b>5</b><span>Shields</span></div><div><b>+2</b><span>Pilot</span></div><div><b>7</b><span>Speed</span></div><div><b>0</b><span>Armor</span></div></div>
+   <div class="seats"><span>Pilot seat</span><span>Gunner seat</span><span>Engineer's seat</span><span class="no">Sensors</span></div>
+   <div class="wpn"><b>Chin turret (lasers)</b> <span class="mono">+4 to hit · 2d8 · range 20/32</span></div>
+  </div>
+
+  <div class="hull">
+   <div class="hull-h"><h2>TRASH HEAP</h2><span class="price">10,000 cr</span></div>
+   <p>Gunship-hauler, welded together from at least three other ships. Tougher than it looks, slower than anything. No berths fitted; hammocks in the hold.</p>
+   <div class="stats"><div><b>11</b><span>AC</span></div><div><b>26</b><span>Hull</span></div><div><b>5</b><span>Shields</span></div><div><b>+1</b><span>Pilot</span></div><div><b>6</b><span>Speed</span></div><div><b>1</b><span>Armor</span></div></div>
+   <div class="seats"><span>Pilot seat</span><span>Gunner seat</span><span>Missile turret</span><span>Engineer's seat</span><span class="no">Sensors</span></div>
+   <div class="wpn"><b>Scrap turret (lasers)</b> <span class="mono">+3 to hit · 2d8 · range 20/32</span></div>
+   <div class="wpn"><b>Missile turret</b> <span class="mono">+4 to hit · 3d8 · range 32 · not inside 10 · 4 missiles</span></div>
+  </div>
+  <p class="fine">Shields do not regenerate on either hull. Armor reduces each hit's hull damage. Commonweal makes no representation as to airworthiness, smell, or previous owners.</p>
+ </div>
+</section>
+
+</main>
+</body>
+</html>

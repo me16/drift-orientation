@@ -11,6 +11,14 @@
  *   The note shows on a hit.
  */
 window.GM_SHIPS = [
+  // ---------- For sale at Tamsin (session 2). Prices and seats are the GM's; stats are suggestions. ----------
+  { name: "Nasty Nancy", side: "party", group: "For sale at Tamsin", model: "dropship", blurb: "9,000 cr. Pilot, gunner, engineer. Bunk beds. No sensors seat: leave Sensors empty.",
+    ac: 12, maxHull: 20, maxSh: 5, regen: 0, pilot: 2, spd: 7, ai: "hold",
+    weapons: ["Chin turret (lasers) | +4 | 2d8 | 20/32"] },
+  { name: "Trash Heap", side: "party", group: "For sale at Tamsin", model: "hauler", blurb: "10,000 cr. Pilot, gunner, missile turret, engineer. Welded from three ships. No sensors seat.",
+    ac: 11, maxHull: 26, maxSh: 5, regen: 0, pilot: 1, spd: 6, ai: "hold", traits: "armor:1",
+    weapons: ["Scrap turret (lasers) | +3 | 2d8 | 20/32", "Missile turret | +4 | 3d8 | 32 | min:10 missile ammo:4 | 4 missiles, no spares."] },
+
   // ---------- Named ships ----------
   { name: "Benediction", side: "enemy", group: "Named ships", model: "corsair", blurb: "Precentor Odile's corsair. Polite, merciless, fair.",
     tactics: "Hails first, politely. Closes, harpoons the nearest ship and boards. Fair: it doesn't shoot disabled ships.",

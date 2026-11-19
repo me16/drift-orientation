@@ -21,6 +21,8 @@
      blurb    one line on the card          notes    [`...`] the client's listing text
      flags    [`...`] Ledgerline's automated notices on the listing
      featured true pins it to the top as "Matched to your profile"
+     own      optional owner-operator rate [cr, `what changes`]: what the gig pays a crew that brings its own hull.
+              The app shows it beside the posted pay. Pay it by marking the gig's "own hull" outcome on the GM page.
    To mark a gig the crew finished: status: `done`, rating: 5. To let one vanish: status: `closed`.
 */
 window.LEDGERLINE = {
@@ -33,7 +35,8 @@ profile: {
   goals: [                     // Wallet milestones, in cr: what a hull costs at Tamsin
     [1000,  `Lease deposit`],
     [3000,  `Hull Finance down payment`],
-    [10000, `Impound hull, as is`],
+    [9000,  `Nasty Nancy, outright`],
+    [10000, `Trash Heap, outright`],
     [16000, `Used hull, clean title`]],
   unlock: 4.5,                 // stars needed for Premium gigs
   minRated: 3                  // rated gigs before a star rating shows
@@ -47,32 +50,33 @@ ticker: [                      // the scrolling port strip under the app bar. `L
   `MED-PROL · Live vitals coverage for guest workers from 40 cr a week`,
   `MARROW · Skim season storm index 7 of 10`,
   `TREATY ZONE · The Lantern is closed to landing. Approach logs are retained.`,
-  `IMPOUND · Auction this cycle: 3 light haulers, 1 dropship, sold as is`],
+  `IMPOUND · Auction this cycle: 3 light haulers, 1 dropship, sold as is`,
+  `ORBITAL OBITUARY · The Requiem Table sits Council week's opening night · Tether lifts every 40 minutes from the Spindle crown`,
+  `HULLS · Nasty Nancy 9,000 · Trash Heap 10,000 · Owner-operators earn more on Ledgerline`],
 
 gigs: [
 
 /* ---------------- matched to your profile ---------------- */
-{ id: `LL-2271`, featured: true, cat: `Courier`,
-  title: `Ferry a hull, one way. Ship provided.`,
+{ id: `LL-2271`, featured: true, cat: `Retrieval`,
+  title: `Recover four heirlooms from a guest suite. One evening.`,
   client: `Verified client (identity withheld)`, cr: 5.0, crn: 0,
-  pay: 9000, fee: 0, bonus: [3000, `if the aft hold seal is intact on arrival`],
-  where: `Impound berth L-9, Low Dock`, when: `Depart within 6 hours of acceptance · est. 4 to 6 days`,
+  pay: 8000, fee: 0, bonus: [2000, `if all four pieces arrive in their case, unopened`],
+  where: `The Orbital Obituary, above the Spindle`, when: `Council week's opening night, from 20:00 GST · one window of about 5 hours`,
   posted: `11 min ago`, expires: `in 47 hours`, min: 0,
-  blurb: `Light hauler, released to you from impound on acceptance. Fly it where we say. Return passage paid.`,
+  blurb: `A guest is holding property that isn't his. He'll be at the card table all night. Bring it home.`,
   notes: [
-    `Crew of two or three. New profiles preferred. No Ledgerline history required.`,
-    `Hull: light hauler *Net Settlement*, held at Tamsin impound, berth L-9. Released to you on acceptance. Fuel and stores are aboard.`,
-    `Destination coordinates are released once you've cleared Tamsin traffic control.`,
-    `The transponder is pre-set. Do not alter it.`,
-    `The aft hold is sealed. Do not open it. Do not power it down.`,
-    `Do not answer hails.`,
-    `1,000 cr advance on boarding. Balance and bonus on arrival. Return passage on the next outbound hull.`],
+    `Four pieces in one travelling case: a lamp, a vial, a string of beads, and a small bone set in silver. The case is the size of a hymnal and heavier than it looks.`,
+    `The current holder is a guest of the Orbital Obituary. He takes his seat at the Requiem Table at 20:00 and doesn't leave it until he has won or lost.`,
+    `The case stays in his suite on the Mausoleum Deck. So does his household. They are armed, and devout.`,
+    `On-station work only. No vessels. Nobody harmed who doesn't insist. The Obituary is a free-harbor venue under Council protection.`,
+    `Do not open the case. Do not handle the contents.`,
+    `Deliver to a locker at the Low Dock tram terminus. The locker code is released once you've boarded the tether.`],
   flags: [
     `This listing passed automated review.`,
     `Ledgerline facilitation fee paid by client.`,
+    `Title to the listed items has been verified by Commonweal Notarial.`,
     `Ledgerline Assurance does not cover this listing (client waiver on file).`,
-    `Posted 11 minutes after this guest profile was created.`,
-    `This gig alone covers an impound hull.`] },
+    `Posted 11 minutes after this guest profile was created.`] },
 
 /* ---------------- open: small ---------------- */
 { id: `LL-2207`, cat: `Escort`, title: `Walk a pilgrim to her ship`,
@@ -222,7 +226,8 @@ gigs: [
 
 { id: `LL-2272`, cat: `Labor`, title: `Skim crew, one run to Marrow`,
   client: `Captain Hesper Quaye, the Low Ebb (Skimmer Guild)`, cr: 4.6, crn: 140,
-  pay: 1800, where: `Departs Dock 3 · Marrow and back`, when: `About two weeks`,
+  pay: 1800, own: [4000, `skim alongside the Low Ebb in your own hull and sell her your load`],
+  where: `Departs Dock 3 · Marrow and back`, when: `About two weeks`,
   posted: `1 day ago`, expires: `in 2 days`,
   blurb: `Two hands for a gas-skimming run. Ship, bunks and food provided. You'll learn a lot.`,
   notes: [
@@ -240,6 +245,18 @@ gigs: [
     `One pilot, one mechanic. Find the faults before a buyer does and we'll pay a bonus for each one, at our discretion.`,
     `Workers rated ★ 4.5 and up get our trade price on any hull in the yard.`] },
 
+{ id: `LL-2281`, cat: `Courier`, title: `Cold-chain medicine to Copperline`,
+  client: `Free Labor League · Tamsin hall`, cr: 4.5, crn: 58,
+  pay: 900, own: [2800, `fly it in your own hull: we skip the ferry and the ferry's questions`],
+  where: `Low Dock to Copperline`, when: `About two weeks there and back`,
+  posted: `4h ago`, expires: `in 3 days`,
+  blurb: `Six insulated cases to a mining camp. Ride the Halvorsen ferry with them, or bring your own hull and get there first.`,
+  notes: [
+    `Six cases of fever medicine for a Free Labor League camp on Copperline. They must stay cold. They must stay together.`,
+    `Without a hull: we book you on the Halvorsen ferry as couriers, and you sit on the cases for seven days each way.`,
+    `With a hull: you go when you're ready, you come back when you're done, and we pay the difference we'd have paid Halvorsen.`,
+    `Every case is licensed. We have the paperwork. Ask to see it if you like.`] },
+
 /* ---------------- taken by someone else ---------------- */
 { id: `LL-2199`, cat: `Labor`, title: `Cargo loaders, overnight`, status: `taken`,
   client: `Dockmaster's Office, Low Dock`, cr: 3.8, crn: 402,
@@ -249,13 +266,15 @@ gigs: [
 /* ---------------- premium (locked below the unlock rating) ---------------- */
 { id: `LL-2180`, cat: `Retrieval`, title: `Salvage dive, the Grave of Ash`, min: 4.5,
   client: `Claims Syndicate · salvage desk`, cr: 4.4, crn: 61,
-  pay: 4000, where: `The Grave of Ash`, when: `About 2 weeks`, posted: `2 days ago`, expires: `in 9 days`,
+  pay: 4000, own: [7000, `owner-operator: your hull, your hold, and a salvage share`],
+  where: `The Grave of Ash`, when: `About 2 weeks`, posted: `2 days ago`, expires: `in 9 days`,
   blurb: `Licensed salvage, one Ash War wreck, ship provided by client.`,
   notes: [`Details visible to Premium profiles.`] },
 
 { id: `LL-2186`, cat: `Courier`, title: `Supply run to Kestrel Array, triple rate`, min: 4.5,
   client: `Commonweal Facilities`, cr: 4.9, crn: 12,
-  pay: 6000, where: `Kestrel Array`, when: `About 3 weeks`, posted: `3 days ago`, expires: `in 11 days`,
+  pay: 6000, own: [9000, `owner-operator: fly it yourself, no client hull`],
+  where: `Kestrel Array`, when: `About 3 weeks`, posted: `3 days ago`, expires: `in 11 days`,
   blurb: `Routine resupply of a Commonweal installation.`,
   notes: [`Details visible to Premium profiles.`] },
 

@@ -321,12 +321,12 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
 <!-- ============================ TONIGHT ============================ -->
 <section id="tonight">
  <h2><span class="k">S2</span>Session 2, Free Harbor Tamsin <span class="tag draft">Plan</span></h2>
- <p>The ferry docks at Tamsin with two survivors, a stolen nav core, a singing relic and no money. They need work, then a ship. Every gig on <a href="../ledgerline/" target="_blank" rel="noopener">Ledgerline</a> is here, with what happens if they take it, and each one ties into something bigger.</p>
- <p class="dim">Everything in this plan is a <em>suggestion</em> built from your Tamsin sketch. Nothing here is Canon, and the Net Settlement's secret is still yours to pick. Use the tabs: each gig has its own page (<code>#tonight/LL-2207</code>), and the Money tab adds up whatever you mark at the table.</p>
+ <p>Wrap up New Bombswick, ride the ferry past the Lantern, dock at Tamsin without CAR-B, and choose what to do with the core. Then the city, <a href="../ledgerline/" target="_blank" rel="noopener">Ledgerline</a>, and the pinned gig: steal a Cardinal's reliquary from a casino in orbit.</p>
+ <p class="dim">Built from your session 2 notes. Lines marked <b>Canon</b> or "your notes" are yours; everything else is a <em>suggestion</em>. Use the tabs: each gig has its own page (<code>#tonight/LL-2271</code>), the Money tab adds up whatever you mark at the table, and the <a href="../handouts/tamsin-costs.html" target="_blank" rel="noopener">cost sheet</a> is ready to screenshot for the players.</p>
 
  <div class="hub" id="hub">
   <nav class="hub-tabs" id="hubTabs" aria-label="Session 2">
-   <a href="#tonight/overview" data-tab="overview" aria-current="page">Overview</a><a href="#tonight/arrival" data-tab="arrival">Arrival</a><a href="#tonight/gigs" data-tab="gigs">Gigs <span class="n" id="gigN"></span></a><a href="#tonight/port" data-tab="port">The port</a><a href="#tonight/people" data-tab="people">People</a><a href="#tonight/money" data-tab="money">Money <span class="n" id="moneyN"></span></a><a href="#tonight/threads" data-tab="threads">Threads</a>
+   <a href="#tonight/overview" data-tab="overview" aria-current="page">Overview</a><a href="#tonight/journey" data-tab="journey">Journey</a><a href="#tonight/arrival" data-tab="arrival">Arrival</a><a href="#tonight/core" data-tab="core">The core</a><a href="#tonight/city" data-tab="city">The city</a><a href="#tonight/gigs" data-tab="gigs">Gigs <span class="n" id="gigN"></span></a><a href="#tonight/people" data-tab="people">People</a><a href="#tonight/money" data-tab="money">Money <span class="n" id="moneyN"></span></a><a href="#tonight/threads" data-tab="threads">Threads</a>
   </nav>
 
   <!-- ---------------- OVERVIEW ---------------- -->
@@ -335,22 +335,23 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
     <div class="panel">
      <h4>The night at a glance · about 4 hours</h4>
      <ol class="run">
-      <li><b>The Lantern pass</b> on the ferry · 15 min · <a href="#tonight/arrival">Arrival</a></li>
-      <li><b>Docking at Low Dock</b>, the datapad wakes up · 15 min</li>
-      <li><b>Marra at the Spindle</b>: the debt, the core, Ledgerline · 20 min</li>
-      <li><b>The board</b>: two or three gigs · 2 to 2½ hours · <a href="#tonight/gigs">Gigs</a></li>
-      <li><b>One evening</b> at the Lamplighter or the impound auction · 20 min</li>
-      <li><b>End</b> on a ramp: the Net Settlement, the Low Ebb, or a ship they nearly own · <a href="#tonight/threads">Threads</a></li>
+      <li><b>Wrap up New Bombswick</b> · 15–20 min, skip the last two days · <a href="#tonight/journey">Journey</a></li>
+      <li><b>Transit:</b> the Lantern pass, then the Due Diligence's hail · 15 min</li>
+      <li><b>Docking</b> at Low Dock and the datapad check-in · 10 min · <a href="#tonight/arrival">Arrival</a></li>
+      <li><b>Freedom to choose:</b> Marra's ping, the meeting, the core · 20–30 min · <a href="#tonight/core">The core</a></li>
+      <li><b>The city and Ledgerline</b>: a walk, the ads, the app · 10–15 min · <a href="#tonight/city">The city</a></li>
+      <li><b>Gigs:</b> one or two small ones, or straight to the heist · about 2 hours · <a href="#tonight/gigs">Gigs</a></li>
+      <li><b>End</b> mid-heist, on the locker, or with a hull they can afford · <a href="#tonight/threads">Threads</a></li>
      </ol>
     </div>
     <div class="panel">
-     <h4>Where they stand</h4>
+     <h4>Where they stand when they dock</h4>
      <ul>
-      <li><b>Money:</b> nothing on Ledgerline, and whatever they carried off Saint Vey. Put any cash in <code>profile.extra</code>.</li>
+      <li><b>Money:</b> none on Ledgerline (they don't have it yet), and whatever they carried off Saint Vey. Put any cash in <code>profile.extra</code>.</li>
       <li><b>They have:</b> the <a href="#wiki/nav-core">nav core</a> (never networked), <a href="#wiki/platinum-shard">Vargas's relic</a>, <a href="#wiki/datapad">Vargas's datapad</a>.</li>
-      <li><b>They owe:</b> <a href="#wiki/marra-tesk">Marra</a> 600 cr.</li>
-      <li><b>With them:</b> <a href="#wiki/car-b">CAR-B</a>, if he came, wanting a berth.</li>
-      <li><b>Came with them:</b> <a href="#wiki/amelda">Amelda</a>'s 30 crates, now in <a href="#wiki/warehouse-6">Warehouse 6</a>.</li>
+      <li><b>They owe:</b> <a href="#wiki/marra-tesk">Marra</a> 600 cr. V'an owes his "sister" 800 cr.</li>
+      <li><b>Not with them:</b> <a href="#wiki/car-b">CAR-B</a>. He stayed on Saint Vey.</li>
+      <li><b>Came with them:</b> <a href="#wiki/amelda">Amelda</a>'s 30 crates of <a href="#wiki/tracking-gems">tracking gems</a>, now in <a href="#wiki/warehouse-6">Warehouse 6</a>.</li>
      </ul>
     </div>
    </div>
@@ -359,71 +360,248 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
    <p class="dim">What happens whether they act or not. Day 1 is the day the ferry docks.</p>
    <div class="tbl"><table>
     <tr><th>When</th><th>What happens</th><th>Changes if</th></tr>
-    <tr><td class="n">Day 1</td><td>The datapad's registration pings Commonweal on docking. 11 minutes after their guest profile exists, <a href="#tonight/LL-2271">LL-2271</a> appears, pinned.</td><td>They keep the pad switched off. Then the gig appears when they first open Ledgerline.</td></tr>
-    <tr><td class="n">Day 1 eve</td><td><a href="#wiki/mr-sallow">Mr. Sallow</a> learns from the ferry manifest that two Patience crew are in Tamsin.</td><td>Marra tells him first, if they don't pay her.</td></tr>
+    <tr><td class="n">Day 1</td><td>The datapad checks in with the port registry. <b>Within the hour</b>, Marra pings them. That evening <a href="#wiki/mr-sallow">Sallow</a> knows, the <a href="#wiki/corwin-hask">Sable team</a> knows, and so does whoever reads the registry for <a href="#wiki/shadow-proprietor">the shadow proprietor</a>.</td><td>They keep the pad off. The port fines them 50 cr for an unregistered arrival on day 2, and the check-in happens anyway.</td></tr>
+    <tr><td class="n">When they install Ledgerline</td><td>Eleven minutes later, <a href="#tonight/LL-2271">LL-2271</a> appears, pinned and "matched to your profile." It expires 47 hours later.</td><td>—</td></tr>
     <tr><td class="n">Day 2</td><td><a href="#wiki/corwin-hask">Hask's Sable team</a> takes the Lamplighter's back room and starts showing Vargas's picture.</td><td>—</td></tr>
-    <tr><td class="n">Day 2</td><td><a href="#wiki/teo-aranha">Teo</a>'s container ships out on a Caddis outbound at midnight.</td><td>They free him first (<a href="#tonight/LL-2214">LL-2214</a>).</td></tr>
-    <tr><td class="n">Day 3</td><td><b>LL-2271 expires</b> (47 hours). The impound auction lists the Net Settlement with two other haulers and a dropship.</td><td>They take the gig. Then the hull is withdrawn.</td></tr>
-    <tr><td class="n">Day 3</td><td><b>Council week opens.</b> <a href="#wiki/ilse-varo">Varo</a>'s petition is heard if her case arrived.</td><td>They lost the case (<a href="#tonight/LL-2250">LL-2250</a>).</td></tr>
-    <tr><td class="n">Any day</td><td>A Halvorsen asset-recovery notice with CAR-B's serial reaches Brightline.</td><td>Sooner if they open Bay C (<a href="#tonight/LL-2219">LL-2219</a>) or test-fly the Second Opinion.</td></tr>
+    <tr><td class="n">Day 2, midnight</td><td><a href="#wiki/teo-aranha">Teo</a>'s container ships out on a Caddis outbound, and with him the best way to case the heist.</td><td>They free him first (<a href="#tonight/LL-2214">LL-2214</a>).</td></tr>
+    <tr><td class="n">Day 3</td><td><b>Council week opens.</b> The impound auction (the <a href="#wiki/net-settlement">Net Settlement</a> among the lots). Sallow's offer for the core lapses at sundown.</td><td>They've sold the core already, or Marra stalls him for them.</td></tr>
+    <tr><td class="n">Day 3, 20:00</td><td><b>The Requiem Table sits</b> at the <a href="#wiki/orbital-obituary">Orbital Obituary</a>. <a href="#wiki/pompelius-rex">Cardinal Rex</a> plays until he's lost (the Rex clock). This is the heist window.</td><td>—</td></tr>
+    <tr><td class="n">Day 5</td><td>Rex's yacht leaves Tamsin, with or without his relics.</td><td>The relics are gone. Then he stays, and posts a recovery gig.</td></tr>
    </table></div>
 
    <div class="grid">
     <div class="panel">
      <h4>Good first gigs</h4>
-     <p>Premium unlocks at ★ 4.5 after three rated gigs. The fastest five-star ratings are <a href="#tonight/LL-2265">the lost cat</a> (80 cr), <a href="#tonight/LL-2241">the witness job</a> (150) and <a href="#tonight/LL-2236">the implant trial</a> (1,200, with a cost). For a fight, try <a href="#tonight/LL-2223">the eels</a> or <a href="#tonight/LL-2258">the ore carts</a>. For the plot, try <a href="#tonight/LL-2214">Teo</a> (it explains the pinned gig) or <a href="#tonight/LL-2230">the Lamplighter door</a> (it explains who's hunting Vargas).</p>
+     <p>Premium unlocks at ★ 4.5 after three rated gigs. The fastest five stars are <a href="#tonight/LL-2265">the lost cat</a> (80 cr), <a href="#tonight/LL-2241">the witness job</a> (150) and <a href="#tonight/LL-2236">the implant trial</a> (1,200, and a scam that eats Rusty). For a fight, try <a href="#tonight/LL-2223">the eels</a> or <a href="#tonight/LL-2258">the ore carts</a>. To case the heist, free <a href="#tonight/LL-2214">Teo</a>. With a ship, look at <a href="#tonight/LL-2281">the medicine run</a> and <a href="#tonight/LL-2272">the skim</a>.</p>
     </div>
     <div class="panel">
      <h4>Before the players arrive</h4>
      <ul class="todo">
-      <li>Send the players the <a href="../ledgerline/" target="_blank" rel="noopener">Ledgerline</a> link.</li>
-      <li><b>Owlbear</b> (<a href="#library">Library</a>): Final Journey Cantina (the Lamplighter), Sci-fi outpost (the Spindle market), Repair bay (Warehouse 6, the yard), Metro station (Low Dock, the tram), Cargo Hauler (armed) (the Net Settlement).</li>
-      <li><b>SRD stat blocks:</b> Bandit, Bandit Captain, Thug, Veteran, Guard, Spy, Commoner, Swarm of Quippers, Giant Constrictor Snake, Animated Armor, Cat.</li>
-      <li><b>combat/</b> for the test flight (no foes) or Marrow's storm.</li>
+      <li>Screenshot the <a href="../handouts/tamsin-costs.html" target="_blank" rel="noopener">cost sheet</a> (living costs, V'an's standing order, hulls for sale) and send it when they dock.</li>
+      <li>Have the <a href="../ledgerline/" target="_blank" rel="noopener">Ledgerline</a> link ready, but don't send it until they install the app.</li>
+      <li><b>Owlbear</b> (<a href="#library">Library</a>): Space station set (the Obituary's decks), Final Journey Cantina (the gaming nave, and the Lamplighter), Airlock 4 (the hull walk), Secret lab (Rex's suite, and the Assay clinic), Metro station (Low Dock).</li>
+      <li><b>SRD stat blocks:</b> Noble (Rex, Vesper Lyle), Veteran (Dunmore), Guard (Lictors), Priest (Deacon Quill), Thug (Undertakers), Spy (Marra, Sallow), Commoner.</li>
      </ul>
     </div>
    </div>
   </div>
 
-  <!-- ---------------- ARRIVAL ---------------- -->
-  <div class="hub-panel" data-tab="arrival" hidden>
-   <div class="beat" style="--c:var(--lan)">
-    <div class="beat-h"><h3>1 · The Lantern pass</h3><span class="t">15 min · on the ferry</span></div>
-    <p>Saint Vey to Tamsin is 27 parsecs, about 11 days on the <a href="#wiki/prudent-margin">Prudent Margin</a>. The straight line passes <b>under 2 parsecs from the Lantern</b>, the closest the PCs have been to it.</p>
+  <!-- ---------------- JOURNEY ---------------- -->
+  <div class="hub-panel" data-tab="journey" hidden>
+   <div class="beat" style="--c:var(--ok)">
+    <div class="beat-h"><h3>1 · Wrapping up New Bombswick</h3><span class="t">15–20 min · skip the last two days</span></div>
+    <p>Two galactic standard weeks between the deal and the ferry. Montage most of it. Ask each player for one thing they did, then run one or two short scenes and cut to the pad.</p>
     <ul>
-     <li>On the last night of the pass, the datapad wakes by itself and shows the chart, centered on the Lantern, for one second.</li>
-     <li class="secret"><a href="#wiki/van-artifact">V'an's artifact</a> pulls at him like a hand on a sleeve. Don't explain it. Ask V'an's player which way he turns in his sleep.</li>
-     <li class="secret">The <a href="#wiki/platinum-shard">shard</a> stops singing for the whole pass, as if it's holding its breath.</li>
-     <li><em>Optional:</em> the <a href="#wiki/due-diligence">Due Diligence</a> hails the ferry and asks for its passenger list. <a href="#wiki/okafor">Okafor</a> reads it, says "Thank you," and lets them go. She now knows they're alive.</li>
+     <li><b>The loading job.</b> Thirty crates, invisible gems, one long night on the <a href="#wiki/hcafp">HCAFP</a> floor with <a href="#wiki/amelda">Amelda</a> counting. A good place for a nervous moment: a Med-Prol patrol walks through mid-load.</li>
+     <li><b>Loose ends.</b> Anything they still want from <a href="#wiki/sally-smacker">Sally</a> (she's read the blackbox) or <a href="#wiki/popsocopolis">Father Pops</a> (who knows where Anselm went, and won't say).</li>
+     <li><b>Rumor of the orb.</b> One more sighting of <a href="#wiki/florb">Florb</a>, high up, at dusk. Nobody can reach it.</li>
+     <li><b>CAR-B stays (your notes).</b> At the pad he doesn't board. Let the table decide why, or offer one: he won't leave the saloon unsold, he won't fly on a Halvorsen ferry with a Halvorsen serial, or "Call me when you've got a hull, patients." He presses a bag of glams on them for the road.</li>
+     <li><b>Skip the last two days.</b> Cut from the farewell to the ferry's ramp closing.</li>
     </ul>
    </div>
+   <div class="beat" style="--c:var(--lan)">
+    <div class="beat-h"><h3>2 · The Lantern pass</h3><span class="t">10 min · days 5 to 7 aboard</span></div>
+    <p>Saint Vey to Tamsin is 27 parsecs, about 11 days on the <a href="#wiki/prudent-margin">Prudent Margin</a>. The straight line passes <b>under 2 parsecs from the Lantern</b> (closest on day 6, about 1.7 pc), the closest the PCs have ever been to it.</p>
+    <p class="read">On the sixth night the ferry's lights dim by themselves, just for a moment, and every screen aboard flickers. Through the observation port, off to one side, there's a light that isn't a star. It's too steady for a star, and it's the colour of a candle seen through a closed eyelid.</p>
+    <ul>
+     <li><b>Interference (your notes).</b> Comms crackle, the datapad's clock skips, and the ferry's nav keeps correcting a drift nobody can find.</li>
+     <li class="secret"><b>V'an's artifact pulls (your notes)</b>, beckoning him almost imperceptibly towards the Lantern. Don't explain it. Ask V'an's player which way he turns in his sleep, and which window he keeps finding himself at.</li>
+     <li class="secret"><b>The shard stops singing (your notes)</b>, for the whole pass. For the first time since the Grave, V'an hears nothing from it.</li>
+    </ul>
+   </div>
+   <div class="beat" style="--c:var(--haz)">
+    <div class="beat-h"><h3>3 · The hail</h3><span class="t">5–10 min · day 7, just past halfway</span></div>
+    <p>Midway through the journey, the <a href="#wiki/due-diligence">Due Diligence</a> hails the Prudent Margin and asks for a passenger list.</p>
+    <p class="read">A shape slides out of the dark alongside you: long, grey, unlit except for the running lights along its spine. The ferry's speakers crackle. "Prudent Margin, this is Sable cruiser Due Diligence. Transmit your passenger manifest. Hold your course." On the bridge, the captain sighs, wipes his hands on his trousers, and reaches for the comm.</p>
+    <ul>
+     <li><b>As the captain responds, the shard begins to sing (your notes)</b>, loud and sudden after days of silence, as if it had been holding its breath.</li>
+     <li><b>The Due Diligence moves on (your notes).</b> No boarding and no reply. Its running lights fall behind, and it's gone.</li>
+     <li class="secret"><em>Suggestion:</em> <a href="#wiki/okafor">Okafor</a> read the manifest, and her sensors logged "relic emission, brief, not pursued." She heard it and chose to let them go. She'll remember the names.</li>
+     <li>If the players want to act: the crew's names are on the manifest only as "passengers (2), Saint Vey." Amelda booked them. There's nothing to do but listen.</li>
+    </ul>
+   </div>
+  </div>
+
+  <!-- ---------------- ARRIVAL ---------------- -->
+  <div class="hub-panel" data-tab="arrival" hidden>
    <div class="beat">
-    <div class="beat-h"><h3>2 · Docking at Low Dock</h3><span class="t">15 min</span></div>
+    <div class="beat-h"><h3>1 · Docking at Low Dock</h3><span class="t">10 min · as before, without CAR-B</span></div>
     <p class="read">Tamsin is a hollow rock spinning slowly enough to walk in. The ferry noses into Low Dock between a Choir corsair and an ore hauler painted so many times it has no colour left, and the dockmaster comes aboard and asks your tonnage. Twice.</p>
     <ul>
      <li><a href="#wiki/harl-brenn">Dockmaster Brenn</a> doesn't ask names. Amelda's crates go on a Halvorsen float to <a href="#wiki/warehouse-6">Bonded Warehouse 6</a>.</li>
-     <li><a href="#wiki/courtesy-7">COURTESY-7</a> greets the ferry with a laminated welcome card. If CAR-B is with them, he goes very quiet.</li>
+     <li><a href="#wiki/courtesy-7">COURTESY-7</a> greets the ferry with a laminated welcome card. With CAR-B back on Saint Vey, the PCs are the only ones who'll notice what he used to be.</li>
      <li>There are no customs at a free harbor, but the Halvorsen ferry files its manifest with Commonweal. The nav core is "40 kg, personal effects."</li>
     </ul>
    </div>
    <div class="beat" style="--c:var(--teal)">
-    <div class="beat-h"><h3>3 · The datapad wakes up</h3><span class="t">5 min</span></div>
-    <p>The first time they open Ledgerline, it runs its boot handshake, reads the device registration (<b>K. VARGAS · Tier 3 · suspended</b>), and makes them a guest profile. <b>Eleven minutes later, <a href="#tonight/LL-2271">LL-2271</a> appears at the top of the board</b>, "Matched to your profile." Let them notice the timestamp.</p>
-    <p class="secret">That ping is also why Hask's Sable team comes to Tamsin, and Ottilie Sand (<a href="#tonight/LL-2265">LL-2265</a>) can tell them an "Assurance account" has been reading it.</p>
-   </div>
-   <div class="beat">
-    <div class="beat-h"><h3>4 · Marra at the Spindle</h3><span class="t">20 min</span></div>
-    <p><a href="#wiki/marra-tesk">Marra</a> is waiting at the top of the Low Dock lift, because she reads the passenger manifests.</p>
+    <div class="beat-h"><h3>2 · The datapad checks in</h3><span class="t">5 min</span></div>
+    <p><b>Your notes:</b> they have to check in with the datapad, which lets certain key players know they're on-world. They don't have Ledgerline yet.</p>
+    <p class="read">At the bottom of the ferry ramp there's a yellow line on the deck and a Commonweal kiosk the height of a child. WELCOME TO FREE HARBOR TAMSIN. ALL ARRIVALS MUST REGISTER A DEVICE. NON-CITIZENS: PLEASE HOLD YOUR DEVICE TO THE PLATE. The datapad chimes. DEVICE REGISTERED: K. VARGAS · TIER 3 · STATUS UNDER REVIEW. ENJOY YOUR STAY.</p>
     <ul>
-     <li>She wants her <b>600 cr</b>. She'll wait a week, at 10%.</li>
-     <li>She still has <b>Sallow's 4,000 cr</b> for the core. She doesn't know he's Assay and doesn't want to.</li>
-     <li>She wants to know about <b>Vargas</b> more than the money. If they say Vargas may be alive, she forgives the debt.</li>
-     <li>She shows them Ledgerline on the datapad: "Everyone starts at the bottom. Some people stay there." Then she points at the pinned gig: "Don't."</li>
+     <li><b>Who learns they're here</b> (<em>suggestion</em>): <a href="#wiki/marra-tesk">Marra</a> (she reads the registry and the manifests), <a href="#wiki/mr-sallow">Sallow</a> (through Marra, by evening), <a href="#wiki/corwin-hask">Hask's Sable team</a> (they've had an alert on Vargas's pad since the Grave), and <a href="#wiki/shadow-proprietor">the shadow proprietor</a>, which always knows.</li>
+     <li>The pad's home screen now shows a single new tile: a Commonweal notice, "Ledgerline: Tamsin works here. Install?" They can ignore it. The city will keep asking (see <a href="#tonight/city">The city</a>).</li>
     </ul>
    </div>
    <div class="beat">
-    <div class="beat-h"><h3>5 · A place to sleep</h3><span class="t">for you</span></div>
-    <p>A coffin bunk in Low Dock costs 2 cr a night. A Spindle hostel room costs 5 cr. A meal is 1 cr. A vac suit is 50. None of it matters much next to the price of a ship, so roll it into the day.</p>
+    <div class="beat-h"><h3>3 · A place to sleep</h3><span class="t">for you</span></div>
+    <p>Living costs are on the players' <a href="../handouts/tamsin-costs.html" target="_blank" rel="noopener">cost sheet</a>, per galactic standard month (GSM): Low food 10 cr, a Low bunk 30 cr. A coffin bunk in Low Dock is the Low tier; a Spindle hostel room is Average (50 cr); the Mausoleum Deck is very much High. Send the sheet as they step off the ramp.</p>
+   </div>
+  </div>
+
+  <!-- ---------------- THE CORE ---------------- -->
+  <div class="hub-panel" data-tab="core" hidden>
+   <div class="beat" style="--c:var(--amber)">
+    <div class="beat-h"><h3>Freedom to choose</h3><span class="t">20–30 min</span></div>
+    <p><b>Your notes:</b> they get a ping from <a href="#wiki/marra-tesk">Marra</a>, their fixer. She wants to meet. The offer on the nav core is <b>4,000 cr each, to every member of the crew</b>, with a larger cut to the fixer. They can try to undercut her and find a better deal, at significant risk.</p>
+    <p class="read">The datapad buzzes before you've reached the top of the Low Dock lift. A message, no sender name, just a string of numbers you'd recognize if you'd ever owed Marra Tesk money: "Heard you were dead. Glad you're not. Noodle stall, Spindle level 1, the one with the red lamp. Bring nothing. I know what you've got."</p>
+    <ul>
+     <li><b>The meeting.</b> A noodle stall, steam, and Marra with her back to the wall. She wants the <b>600 cr</b> she's owed (she'll wait a week, at 10%), and she wants to know about <a href="#wiki/killora-vargas">Vargas</a> more than either. If they tell her Vargas may be alive, she forgives the debt.</li>
+     <li><b>The offer.</b> Sallow still wants the core. <b>4,000 cr to each of them</b> (8,000 for the two), paid the moment it changes hands. <em>Suggestion:</em> her cut is 5,000, which she'll justify as "the shares of the people who didn't make it." It's a lot. She knows it's a lot.</li>
+     <li><b>Ledgerline.</b> She can be the one who tells them about it: "If you're not selling, you're working. Everyone starts at the bottom. Some people stay there." If the heist is already pinned when she sees their screen, she says, "Don't."</li>
+    </ul>
+   </div>
+   <h3>The options</h3>
+   <div class="tbl"><table>
+    <tr><th>Deal</th><th>Pays</th><th>How</th><th>The risk</th></tr>
+    <tr><td><b>Marra's deal</b> (your notes)</td><td class="n">4,000 each</td><td>Hand it over at the noodle stall. Sallow never appears. Money on the datapad the same hour.</td><td>Almost none, today. <span class="secret">Assay gets the blackbox. Later, Sallow wants to know who else has read it (<a href="#wiki/sally-smacker">Sally</a>).</span></td></tr>
+    <tr><td><b>An Inquisitor</b> (your notes)</td><td class="n"><em>sugg.</em> 12,000</td><td>Through Amelda's buyer: <a href="#wiki/the-inquisitor">the Inquisitor who came asking</a> is in Tamsin to sign for her crates. Or through Cardinal Rex's household, which is right here.</td><td>High. <span class="secret">The core proves the Eye steered the Ash War. The Inquisition wants it buried, and the people who carried it too. The buyer pays, then sends Lictors to "recover the payment." Marra is cut out and knows it.</span></td></tr>
+    <tr><td><b>An auction</b> (your notes)</td><td class="n"><em>sugg.</em> 15,000+</td><td>A Spindle broker runs a sealed-bid sale, three days out. Bidders: Sallow, the Inquisition, Okafor (through a proxy), an Ashborn clan, the Claims Syndicate.</td><td>Very high. Every faction in the Drift learns the core is at Tamsin, and who's selling. Someone tries to steal it before the bids open. Marra is cut out and tells Sallow.</td></tr>
+    <tr><td><b>Keep it</b></td><td class="n">0</td><td>Forty kilos in a Low Dock locker, or under a bunk.</td><td>Sallow's offer lapses on day 3. Then someone stops asking.</td></tr>
+   </table></div>
+   <div class="grid">
+    <div class="panel">
+     <h4>Undercutting Marra</h4>
+     <ul>
+      <li>She'll know within a day: she reads the manifests, and the brokers talk to her.</li>
+      <li>She doesn't threaten. She stops helping, and she tells Sallow exactly who has the core and where they sleep.</li>
+      <li>Persuasion DC 15 (advantage with news of Vargas) gets her to take a smaller cut on a bigger deal instead. She'd rather be part of it than in its way.</li>
+     </ul>
+    </div>
+    <div class="panel">
+     <h4>What it buys</h4>
+     <p>Marra's 8,000 is just short of the <a href="#wiki/nasty-nancy">Nasty Nancy</a> (9,000). Any one small gig closes the gap. That's your notes' "world where they use their core money to get one early": with a hull, the travel gigs pay owner-operator rates (<a href="#tonight/LL-2281">2281</a>, <a href="#tonight/LL-2272">2272</a>, and the Premium runs).</p>
+    </div>
+   </div>
+  </div>
+
+  <!-- ---------------- THE CITY ---------------- -->
+  <div class="hub-panel" data-tab="city" hidden>
+   <p>Tamsin is a hollow asteroid of about 300,000 people. The <b>Spindle</b> runs up the spin axis, <b>Low Dock</b> sits at the bottom, and the rings in between are farms, habitats and cargo. Above it all, on a tether, hangs the <b>Orbital Obituary</b>. Each place below has a read-aloud, what's there, the gigs, and the Ledgerline ads they'll see (your notes: the ads are plastered everywhere, and they're one way to find the app). Every place has a wiki page.</p>
+
+   <div class="beat" style="--c:var(--amber)">
+    <div class="beat-h"><h3>The first look up</h3><span class="t">read once, the first time they leave Low Dock</span></div>
+    <p class="read">You step out of the lift into the inside of a world. The ground curves up in front of you and keeps curving, up the walls, overhead, and down again behind you, so that the far side of Tamsin hangs above your head like a ceiling made of streets. Fields, rooftops, a river of trams, a thousand lit windows, all of it upside down and two kilometers away. Down the middle, from your feet to the far end, runs the Spindle: a long tower of lights threaded along the axis, where nothing weighs anything. The air smells of rust, frying oil and cut grass, and the light comes from a string of suns hung along the Spindle, dimming now toward evening, one by one.</p>
+   </div>
+
+   <div class="beat">
+    <div class="beat-h"><h3><a href="#wiki/low-dock">Low Dock</a></h3><span class="t">berths, stacks, coffin bunks</span></div>
+    <p class="read">Low Dock is the bottom of the world, and it feels like it. The gravity here is full and heavy, the ceiling is a black lattice of gantries, and the air tastes of hot metal and other people's exhaust. Container stacks rise forty high in rusted primary colours, stencilled in a dozen alphabets, with cargo drones crawling up them like beetles. Between the stacks: coffin hostels with their hatches open like drawers, a man selling fried something on a stick, a priest of no faith you recognize blessing a forklift. Every berth is lit sodium-orange. Somebody is always shouting a tonnage.</p>
+    <ul>
+     <li><b>What's here:</b> the cheap berths, the impound (berths L-1 to L-12), stack 40, the night dockmaster, the Lamplighter, the tram terminus (and its lockers).</li>
+     <li><b>Gigs:</b> <a href="#tonight/LL-2207">2207</a> · <a href="#tonight/LL-2214">2214</a> · <a href="#tonight/LL-2244">2244</a> · <a href="#tonight/LL-2253">2253</a> · <a href="#tonight/LL-2272">2272</a> · <a href="#tonight/LL-2281">2281</a></li>
+     <li><b>Ledgerline ad:</b> a cracked screen bolted to a container, looping a smiling dockhand in a clean vest: "<i>Thirty-one gigs posted in Low Dock today. How many did you take? Ledgerline. Tamsin works here.</i>" Someone has scratched "AND TAKES 20%" across the glass.</li>
+    </ul>
+   </div>
+
+   <div class="beat">
+    <div class="beat-h"><h3>The tram</h3><span class="t">ring to ring in ten minutes</span></div>
+    <p class="read">The tram runs along the inside of the rock in a single, endless loop, and it never stops; you step on at a walk and it carries you. The cars are open-sided, packed with shift workers, pilgrims and spacers asleep on their duffels. As it climbs toward the Spindle you get lighter, and the coins in your pocket start to drift. A child lets go of a ball and watches it float out of the car and fall, very slowly, toward the farms below.</p>
+    <ul>
+     <li><b>What's here:</b> pickpockets (everything gets stolen on the tram), and the fastest way across town. The Ring 3 irrigation trunk runs under it, and nobody should use it as a shortcut.</li>
+     <li><b>Ledgerline ad:</b> every seat-back screen: "<i>Your commute is unpaid time. Ledgerline Micro-Gigs: deliver a parcel on your way. 4 cr average.</i>"</li>
+    </ul>
+   </div>
+
+   <div class="beat">
+    <div class="beat-h"><h3><a href="#wiki/spindle">The Spindle</a></h3><span class="t">market, clinics, Marra, the crown</span></div>
+    <p class="read">The Spindle is a market hall built up the axis of the world, and the higher you climb, the less you weigh. <b>Level 1</b> is a roaring bazaar: noodle stalls under red lamps, spice sellers, a Choir busker singing for coins, gun licences sold beside rosaries. <b>Level 2</b> is offices and counters, Brightline Recovery's among them, all frosted glass and queues. By <b>level 5</b> you're walking in long, slow bounds, past white clinics with names like promises, and the Assay Institute's door opens before you touch it. At the very top, the <b>crown</b>, nothing weighs anything at all. People pull themselves along handrails past the hull-sale board, the tailors who rent finery by the hour, and the gilded lift doors of the tether to the Orbital Obituary.</p>
+    <ul>
+     <li><b>What's here:</b> Marra's noodle stall (level 1), Brightline (level 2), the Assay clinic (level 5), the Dace &amp; Oduya yard, the <b>hull-sale board</b> (the <a href="#wiki/nasty-nancy">Nasty Nancy</a> and the <a href="#wiki/trash-heap">Trash Heap</a>), and the tether lift (crown).</li>
+     <li><b>Gigs:</b> <a href="#tonight/LL-2211">2211</a> · <a href="#tonight/LL-2236">2236</a> · <a href="#tonight/LL-2258">2258</a> · <a href="#tonight/LL-2276">2276</a> · <a href="#tonight/LL-2271">2271</a> (the tether)</li>
+     <li><b>Ledgerline ads:</b> a hologram three storeys tall turning slowly over the bazaar, a Commonweal-blue figure holding out a hand: "<i>Guest workers welcome. Ratings are forever.</i>" On level 5, beside the Assay door: "<i>Get paid to get smarter. Clinical gigs on Ledgerline.</i>" At the crown, in gold: "<i>Fortune favors the departed. The Orbital Obituary. Dress for the occasion.</i>"</li>
+    </ul>
+   </div>
+
+   <div class="beat">
+    <div class="beat-h"><h3><a href="#wiki/ring-3">Ring 3</a></h3><span class="t">hydroponics</span></div>
+    <p class="read">Ring 3 is green. After Low Dock it's almost too much: terraces of lettuce and beans under grow-lamps the colour of a bruise, water running down channels in the walls, the air thick and wet and smelling of soil. The farmers wear rubber boots to the knee and look at your boots first. Somewhere under your feet, in the dark of the irrigation trunk, something large moves through the water, and every farmer in earshot stops talking until it passes.</p>
+    <ul>
+     <li><b>What's here:</b> the Growers' Co-op, the irrigation trunk, Councillor. The Obituary's burial caskets land here in an emergency.</li>
+     <li><b>Gig:</b> <a href="#tonight/LL-2223">2223</a></li>
+     <li><b>Ledgerline ad:</b> on the co-op's noticeboard, between hand-written notes: "<i>Seasonal labor? Ledgerline matches growers with guest workers. Ask about our Assurance plans.</i>"</li>
+    </ul>
+   </div>
+
+   <div class="beat">
+    <div class="beat-h"><h3>The cargo ring and <a href="#wiki/warehouse-6">Warehouse 6</a></h3><span class="t">bonded storage</span></div>
+    <p class="read">The cargo ring is all right angles. Warehouses the size of cathedrals, painted company grey, each with a number three meters tall and a Halvorsen or Ostrava logo above the door. Loader mechs walk the lanes on their own, and the only sound is the hum of refrigeration and the tick of cooling metal. Bonded Warehouse 6 has a chair, a lamp and a kettle outside it, and a door marked BAY C that someone has bolted from the outside.</p>
+    <ul>
+     <li><b>What's here:</b> Amelda's 30 crates (Bay A), forty androids (Bay C).</li>
+     <li><b>Gig:</b> <a href="#tonight/LL-2219">2219</a></li>
+     <li><b>Ledgerline ad:</b> stencilled on a loading door: "<i>Night shift? Day rate. Security gigs on Ledgerline.</i>"</li>
+    </ul>
+   </div>
+
+   <div class="beat">
+    <div class="beat-h"><h3>The habitat blocks</h3><span class="t">where Tamsin lives</span></div>
+    <p class="read">The habitat blocks are stacked up the inside wall like shelves in a pantry, twenty storeys of balconies hung with laundry, plants and little satellite dishes all aimed at the Spindle. The corridors are narrow and loud with radios. Kids race scooters along the walkways, a grandmother is frying fish on a hotplate in her doorway, and every third door has a Ledgerline sticker on it with a star rating in marker pen.</p>
+    <ul>
+     <li><b>What's here:</b> block 4 (Wren and Ponty, Ottilie Sand), block 9 (Marek's co-op).</li>
+     <li><b>Gigs:</b> <a href="#tonight/LL-2265">2265</a> · <a href="#tonight/LL-2253">2253</a></li>
+     <li><b>Ledgerline ad:</b> on every lift door: "<i>Your neighbors are earning. Refer a guest worker and earn 1% of their first year.</i>"</li>
+    </ul>
+   </div>
+
+   <div class="beat">
+    <div class="beat-h"><h3><a href="#wiki/council-hall">Council Hall</a></h3><span class="t">the captains' ring</span></div>
+    <p class="read">Council Hall is a ring of old ship hulls, beached, gutted and welded together nose to tail around a circular floor, so that each captain's seat is the bridge of a ship that used to be theirs. Flags hang from the ceiling, faded and singed. This week it's full of captains in their best coats, shaking hands and keeping score. In a side office with frosted glass, Commonweal Notarial has a desk, a queue and a very patient clerk.</p>
+    <ul>
+     <li><b>What's here:</b> the Council of Captains (Council week opens day 3), Commonweal Notarial.</li>
+     <li><b>Gigs:</b> <a href="#tonight/LL-2241">2241</a> · <a href="#tonight/LL-2250">2250</a></li>
+     <li><b>Ledgerline ad:</b> none. The Council banned them from the hall. A Commonweal drone hovers just outside the door, playing one anyway.</li>
+    </ul>
+   </div>
+
+   <div class="beat">
+    <div class="beat-h"><h3><a href="#wiki/lamplighter">The Lamplighter</a></h3><span class="t">Mags's bar, Low Dock</span></div>
+    <p class="read">The Lamplighter is a bar built into the hull of a dead ore tug, and you can still see the rivets. Brass lamps hang from chains over every table, each one lit by hand at shift change, and the place smells of cheap spirits and lamp oil. Captains drink at the front, crews at the back, and between them a long bar where Mags pours without asking and listens without seeming to. There's a door at the rear marked PRIVATE, and this week it's always shut.</p>
+    <ul>
+     <li><b>What's here:</b> Mags, captains in Council week, Sable in the back room, "Mr. Albright" at the bar, a homesick Lictor from the Cardinal's household.</li>
+     <li><b>Gigs:</b> <a href="#tonight/LL-2230">2230</a> · <a href="#tonight/LL-2268">2268</a></li>
+     <li><b>Ledgerline ad:</b> on a coaster: "<i>Rate your bartender!</i>" Mags uses them to level the tables.</li>
+    </ul>
+   </div>
+
+   <div class="beat">
+    <div class="beat-h"><h3><a href="#wiki/tamsin-impound">The impound</a> and <a href="#wiki/dace-oduya">Dace &amp; Oduya</a></h3><span class="t">where ships are for sale</span></div>
+    <p class="read">The impound is twelve berths behind a chain-link fence, each holding a ship nobody came back for. Some are tagged with auction numbers; one has a bunch of dried flowers tied to its landing strut. At night, one of them hums. Up at the Spindle's crown, Dace &amp; Oduya's yard is cleaner and much louder: a hauler up on blocks with its panels off, Kenji Dace in a good coat talking, and Mirembe Oduya underneath it with a welding torch, saying nothing at all.</p>
+    <ul>
+     <li><b>What's here:</b> the day 3 auction (the <a href="#wiki/net-settlement">Net Settlement</a>, two other haulers, a dropship), the <a href="#wiki/second-opinion">Second Opinion</a>, and the hull-sale board (the Nasty Nancy and the Trash Heap).</li>
+     <li><b>Gig:</b> <a href="#tonight/LL-2276">2276</a></li>
+     <li><b>Ledgerline ad:</b> on the fence: "<i>Owner-operators earn more. Ask about Commonweal Hull Finance.</i>"</li>
+    </ul>
+   </div>
+
+   <div class="beat" style="--c:var(--lil)">
+    <div class="beat-h"><h3><a href="#wiki/orbital-obituary">The Orbital Obituary</a></h3><span class="t">the casino on the tether</span></div>
+    <p class="read">The tether lift climbs out of the Spindle's crown in total silence. Below you, Tamsin turns. Above you, the Orbital Obituary hangs on its cable like a lantern on a string: a black cathedral of a station, its windows lit gold, its hull still carved with the names of ten thousand dead spacers it once sent into the dark. A sign over the lift doors reads, in gilt: THE HOUSE WISHES YOU A GOOD DEATH.</p>
+    <p class="read">Inside, it's a funeral that never ends, and everyone is having a wonderful time. The Gaming Nave was a chapel of rest: tables stand where biers stood, under stained-glass windows of saints nobody prays to any more. Croupiers in black deal cards with white gloves. Silent "mutes" in mourning veils glide between the tables with trays of drinks, like pallbearers. Somewhere an organ plays something slow. At the top of the nave, under a dome of glass with all of space behind it, is the Requiem Table, and the people sitting at it don't look up.</p>
+    <ul>
+     <li><b>What's here:</b> the Narthex (lift lobby and weapons scan), the Gaming Nave, the Requiem Table, the Columbarium service ring, the Mausoleum Deck (guest suites). Owner: <a href="#wiki/vesper-lyle">Vesper Lyle</a>.</li>
+     <li><b>Gig:</b> <a href="#tonight/LL-2271">2271</a>, the heist.</li>
+     <li><b>Ledgerline ad:</b> none inside. The Obituary doesn't allow screens. A mute hands each guest a black card: "<i>The house does not rate. The house remembers.</i>"</li>
+    </ul>
+   </div>
+
+   <div class="grid">
+    <div class="panel"><h4>Getting around</h4><p>The tram runs ring to ring in ten minutes. Walking takes half an hour. The tether lift leaves the Spindle's crown every 40 minutes (20 cr). The Ring 3 irrigation trunk is a shortcut under the tram line, and nobody should use it.</p></div>
+    <div class="panel"><h4>Dockside rumors (roll d6)</h4><ol>
+     <li>"The Council's going to vote on Commonweal's desk this week. They won't win."</li>
+     <li>"There's a Cardinal up at the Obituary losing the Church's money. Took four boxes of saints up the tether with him."</li>
+     <li>"There's a hauler in L-9 that hums at night."</li>
+     <li>"Sable's in town, and they're not on leave."</li>
+     <li>"Assay's paying people to take an implant. My cousin did it. He's very tired."</li>
+     <li>"The Choir's docked. Watch your pockets and your soul."</li></ol></div>
    </div>
   </div>
 
@@ -440,43 +618,25 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
    <div id="gigView" hidden></div>
   </div>
 
-  <!-- ---------------- PORT ---------------- -->
-  <div class="hub-panel" data-tab="port" hidden>
-   <p>Tamsin is a hollow asteroid, about 300,000 people. The <b>Spindle</b> runs up the spin axis, <b>Low Dock</b> sits at the bottom, and the rings in between are farms, habitats and cargo. Every place has a wiki page.</p>
-   <div class="tbl"><table>
-    <tr><th>Place</th><th>What's there</th><th>Gigs</th></tr>
-    <tr><td><a href="#wiki/spindle">The Spindle</a></td><td>Market, hostels, Marra, the Brightline counter (level 2), the Assay clinic (level 5). Lighter gravity the higher you go.</td><td><a href="#tonight/LL-2211">2211</a> · <a href="#tonight/LL-2236">2236</a> · <a href="#tonight/LL-2258">2258</a></td></tr>
-    <tr><td><a href="#wiki/low-dock">Low Dock</a></td><td>Cheap berths, container stacks, coffin hostels, the night dockmaster.</td><td><a href="#tonight/LL-2207">2207</a> · <a href="#tonight/LL-2214">2214</a> · <a href="#tonight/LL-2244">2244</a> · <a href="#tonight/LL-2253">2253</a> · <a href="#tonight/LL-2272">2272</a></td></tr>
-    <tr><td><a href="#wiki/lamplighter">The Lamplighter</a></td><td>Mags's bar. Captains in Council week, Sable in the back room, "Mr. Albright" at the bar.</td><td><a href="#tonight/LL-2230">2230</a> · <a href="#tonight/LL-2268">2268</a></td></tr>
-    <tr><td><a href="#wiki/tamsin-impound">Impound</a></td><td>Berths L-1 to L-12. Auction on day 3. The Net Settlement in L-9.</td><td><a href="#tonight/LL-2271">2271</a></td></tr>
-    <tr><td><a href="#wiki/council-hall">Council Hall</a></td><td>The captains' ring, Commonweal Notarial's side office. Council week from day 3.</td><td><a href="#tonight/LL-2241">2241</a> · <a href="#tonight/LL-2250">2250</a></td></tr>
-    <tr><td><a href="#wiki/warehouse-6">Warehouse 6</a></td><td>Halvorsen bonded storage. Bay A: Amelda's crates and Assay medicine. Bay C: forty androids.</td><td><a href="#tonight/LL-2219">2219</a></td></tr>
-    <tr><td><a href="#wiki/ring-3">Ring 3</a></td><td>Hydroponics co-op and the irrigation trunk.</td><td><a href="#tonight/LL-2223">2223</a></td></tr>
-    <tr><td><a href="#wiki/dace-oduya">Dace &amp; Oduya</a></td><td>The used-hull yard. The Second Opinion, for sale.</td><td><a href="#tonight/LL-2276">2276</a></td></tr>
-    <tr><td>Habitat blocks</td><td>Block 4 (Wren and Ponty), block 9 (Marek's co-op).</td><td><a href="#tonight/LL-2265">2265</a> · <a href="#tonight/LL-2253">2253</a></td></tr>
-   </table></div>
-   <div class="grid">
-    <div class="panel"><h4>Getting around</h4><p>The tram runs ring to ring in ten minutes and is where things get stolen. Walking takes half an hour. The Ring 3 irrigation trunk is a shortcut under the tram line, and nobody should use it.</p></div>
-    <div class="panel"><h4>Dockside rumors (roll d6)</h4><ol>
-     <li>"The Council's going to vote on Commonweal's desk this week. They won't win."</li>
-     <li>"Somebody's buying old Ash War charts. Grey coat."</li>
-     <li>"There's a hauler in L-9 that hums at night."</li>
-     <li>"Sable's in town, and they're not on leave."</li>
-     <li>"Halvorsen lost a whole crate of reception droids. Or found one."</li>
-     <li>"The Choir's docked. Watch your pockets and your soul."</li></ol></div>
-   </div>
-  </div>
-
   <!-- ---------------- PEOPLE ---------------- -->
   <div class="hub-panel" data-tab="people" hidden>
    <h3>Already in play</h3>
    <div class="tbl"><table>
     <tr><th>Who</th><th>Wants this session</th><th>Stats</th></tr>
-    <tr><td><a href="#wiki/marra-tesk">Marra Tesk</a></td><td>Her 600 cr, and news of Vargas.</td><td>Spy</td></tr>
-    <tr><td><a href="#wiki/mr-sallow">Mr. Sallow</a></td><td>The core. Raises his offer if he reads V'an's scan (<a href="#tonight/LL-2236">2236</a>).</td><td>Spy</td></tr>
-    <tr><td><a href="#wiki/car-b">CAR-B</a></td><td>A berth. Takes the side of every machine they're hired to catch.</td><td>Commoner (Animated Armor AC/HP)</td></tr>
-    <tr><td><a href="#wiki/courtesy-7">COURTESY-7</a></td><td>Five-star reviews. Has a cat (<a href="#tonight/LL-2265">2265</a>), and a job on the Net Settlement (<a href="#tonight/LL-2271">2271</a>).</td><td>Commoner</td></tr>
-    <tr><td><a href="#wiki/okafor">Lt. Cmdr. Okafor</a></td><td>To read the core before Ledger does. Hails the ferry (optional).</td><td>Knight</td></tr>
+    <tr><td><a href="#wiki/marra-tesk">Marra Tesk</a></td><td>Her 600 cr, her cut of the core (4,000 each to the crew, more to her), and news of Vargas. Pings them on day 1.</td><td>Spy</td></tr>
+    <tr><td><a href="#wiki/mr-sallow">Mr. Sallow</a></td><td>The core, through Marra, by day 3. Very interested in V'an's scan (<a href="#tonight/LL-2236">2236</a>).</td><td>Spy</td></tr>
+    <tr><td><a href="#wiki/okafor">Lt. Cmdr. Okafor</a></td><td>Hails the ferry, hears the shard, moves on.</td><td>Knight</td></tr>
+    <tr><td><a href="#wiki/the-inquisitor">The Inquisitor who came asking</a></td><td>Signs for Amelda's crates. Would buy the core, and bury it, and them.</td><td>Spy, or Priest</td></tr>
+    <tr><td><a href="#wiki/courtesy-7">COURTESY-7</a></td><td>Five-star reviews. Has a cat (<a href="#tonight/LL-2265">2265</a>).</td><td>Commoner</td></tr>
+    <tr><td><a href="#wiki/car-b">CAR-B</a> <span class="dim">(not here)</span></td><td>Stayed on Saint Vey. Waiting for a call, and a hull.</td><td>—</td></tr>
+   </table></div>
+   <h3>The heist (<a href="#tonight/LL-2271">LL-2271</a>)</h3>
+   <div class="tbl"><table>
+    <tr><th>Who</th><th>Where</th><th>Stats</th></tr>
+    <tr><td><a href="#wiki/pompelius-rex">Cardinal Pompelius Rex</a></td><td>The Requiem Table, from 20:00 on day 3. His yacht at Low Dock, Dock 1.</td><td>Noble, ring of <i>hold person</i></td></tr>
+    <tr><td><a href="#wiki/severa-dunmore">Lictor-Captain Severa Dunmore</a> and 4 Lictors</td><td>The Mausoleum Deck, walking the corridor on the hour</td><td>Veteran, Guards</td></tr>
+    <tr><td><a href="#wiki/deacon-quill">Deacon Absalom Quill</a></td><td>Beside the case. Sings to the lock every hour, then drinks.</td><td>Priest</td></tr>
+    <tr><td><a href="#wiki/vesper-lyle">Vesper Lyle</a>, the Undertaker</td><td>Owner of the Obituary. Holds Rex's markers.</td><td>Noble, Undertakers (Thugs)</td></tr>
    </table></div>
    <h3>New at Tamsin</h3>
    <div class="tbl"><table>
@@ -485,12 +645,12 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
     <tr><td><a href="#wiki/corwin-hask">Lt. Corwin Hask</a> <span class="secret">· Sable, hunting Vargas</span></td><td>The Lamplighter's back room</td><td><a href="#tonight/LL-2230">2230</a></td><td>Veteran + 2 Guards</td></tr>
     <tr><td><a href="#wiki/ama-reede">Sister Ama Reede</a>, <a href="#wiki/perpetua">Sister Perpetua</a></td><td>Spindle hostel, Berth 31</td><td><a href="#tonight/LL-2207">2207</a></td><td>Acolyte, Priest</td></tr>
     <tr><td><a href="#wiki/biscuit">Biscuit</a></td><td>Spindle market</td><td><a href="#tonight/LL-2211">2211</a></td><td>Animated Armor</td></tr>
-    <tr><td><a href="#wiki/dov-aranha">Dov</a> and <a href="#wiki/teo-aranha">Teo Aranha</a></td><td>Low Dock, stack 40</td><td><a href="#tonight/LL-2214">2214</a></td><td>Commoner</td></tr>
-    <tr><td><a href="#wiki/harl-brenn">Dockmaster Brenn</a> <span class="secret">· paid to lose Teo</span></td><td>Low Dock</td><td><a href="#tonight/LL-2214">2214</a></td><td>Commoner + 2 Thugs</td></tr>
+    <tr><td><a href="#wiki/dov-aranha">Dov</a> and <a href="#wiki/teo-aranha">Teo Aranha</a> <span class="secret">· Teo carried the reliquary</span></td><td>Low Dock, stack 40</td><td><a href="#tonight/LL-2214">2214</a></td><td>Commoner</td></tr>
+    <tr><td><a href="#wiki/harl-brenn">Dockmaster Brenn</a> <span class="secret">· paid by the Cardinal's household</span></td><td>Low Dock</td><td><a href="#tonight/LL-2214">2214</a></td><td>Commoner + 2 Thugs</td></tr>
     <tr><td><a href="#wiki/nu-seven">ν_seven ("Nell")</a></td><td>Warehouse 6, Bay C</td><td><a href="#tonight/LL-2219">2219</a></td><td>Commoner (Animated Armor AC/HP)</td></tr>
     <tr><td><a href="#wiki/councillor">Councillor</a></td><td>Ring 3 trunk</td><td><a href="#tonight/LL-2223">2223</a></td><td>Giant Constrictor Snake</td></tr>
     <tr><td><a href="#wiki/hesper-quaye">Capt. Hesper Quaye</a></td><td>The Low Ebb, Dock 3</td><td><a href="#tonight/LL-2241">2241</a> · <a href="#tonight/LL-2272">2272</a></td><td>Veteran</td></tr>
-    <tr><td><a href="#wiki/rook-ebbe">Capt. Rook Ebbe</a></td><td>The Long Margin, Dock 14</td><td><a href="#tonight/LL-2244">2244</a> · <a href="#tonight/LL-2268">2268</a></td><td>Bandit Captain</td></tr>
+    <tr><td><a href="#wiki/rook-ebbe">Capt. Rook Ebbe</a></td><td>The Long Margin, Dock 14 · the Requiem Table</td><td><a href="#tonight/LL-2244">2244</a> · <a href="#tonight/LL-2268">2268</a></td><td>Bandit Captain</td></tr>
     <tr><td><a href="#wiki/ilse-varo">Capt. Ilse Varo</a></td><td>Council Hall</td><td><a href="#tonight/LL-2250">2250</a></td><td>Noble</td></tr>
     <tr><td><a href="#wiki/yusuf-marek">Yusuf Marek</a></td><td>Habitat block 9</td><td><a href="#tonight/LL-2253">2253</a></td><td>Commoner</td></tr>
     <tr><td><a href="#wiki/jessa-coil">Jessa Coil</a></td><td>Spindle market (ambush)</td><td><a href="#tonight/LL-2258">2258</a></td><td>Bandit Captain + 4 Bandits, Thug</td></tr>
@@ -505,21 +665,48 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
    <h3>The purse, as marked</h3>
    <p class="dim">Mark an outcome on any gig's page and it's counted here. Marks are saved in this browser only. When the session's over, copy the lines below into <code>ledgerline/gigs.js</code> so the players' app shows the same purse and stars.</p>
    <div id="tally"></div>
+
+   <h3>Financial obligations <span class="tag canon">Your numbers</span></h3>
+   <p>The players' version, ready to screenshot: <a href="../handouts/tamsin-costs.html" target="_blank" rel="noopener"><b>the Tamsin cost sheet</b></a> (open it, screenshot each card). Costs are per galactic standard month (GSM).</p>
    <div class="grid">
     <div class="panel">
-     <h4>What a ship costs</h4>
+     <h4>Living costs, per GSM</h4>
+     <div class="tbl"><table>
+      <tr><th></th><th>High</th><th>Average</th><th>Low</th></tr>
+      <tr><td><b>Food</b></td><td class="n">50</td><td class="n">30</td><td class="n">10</td></tr>
+      <tr><td><b>Accommodations</b></td><td class="n">80</td><td class="n">50</td><td class="n">30</td></tr>
+     </table></div>
+     <ul>
+      <li><b>With a ship:</b> a Duplicator aboard covers Low food automatically; a 25 cr/GSM subscription makes it Average. The ship itself is Low accommodations; a one-time 100 cr fit-out makes it Average, 500 cr High.</li>
+      <li><b>V'an:</b> 800 cr to his "sick sister." He can't remember her name.</li>
+     </ul>
+    </div>
+    <div class="panel">
+     <h4>Hulls for sale</h4>
+     <div class="tbl"><table>
+      <tr><th>Hull</th><th>Price</th><th>Seats</th><th>Stats <em>(sugg.)</em></th></tr>
+      <tr><td><a href="#wiki/nasty-nancy">Nasty Nancy</a></td><td class="n">9,000</td><td>Pilot, gunner, engineer. Barebones bunk beds.</td><td>AC 12 · hull 20 · shields 5 · pilot +2 · speed 7 · chin turret +4, 2d8, 20/32</td></tr>
+      <tr><td><a href="#wiki/trash-heap">Trash Heap</a></td><td class="n">10,000</td><td>Pilot, (slightly worse) gunner, missile turret, engineer.</td><td>AC 11 · hull 26 · armor 1 · shields 5 · pilot +1 · speed 6 · scrap turret +3, 2d8, 20/32 · missiles +4, 3d8, 32 (min 10, 4 shots)</td></tr>
+     </table></div>
+     <p class="dim">Both are presets in the <a href="../combat/" target="_blank" rel="noopener">tactical plot</a> (Add ship → "For sale at Tamsin"). Neither has a sensors seat, so leave that station empty.</p>
+    </div>
+   </div>
+   <div class="grid">
+    <div class="panel">
+     <h4>Other ways to a hull</h4>
      <ul>
       <li><b>Lease:</b> 1,000 cr deposit, then 500 a week plus 10% of every job. Miss a week and it's repossessed.</li>
       <li><b>Commonweal Hull Finance:</b> 3,000 down, 280 a week for 52 weeks. Needs a Tier 3 co-signer.</li>
       <li><b>Impound auction</b> (day 3): about 10,000 for a light hauler, as is.</li>
       <li><b>Clean title:</b> the <a href="#wiki/second-opinion">Second Opinion</a> at 16,000, or 12,500 at the ★ 4.5 trade price.</li>
-      <li><b>The Net Settlement:</b> free, if they deliver and nobody claims it (<a href="#tonight/LL-2271">2271</a>).</li>
+      <li><b>With a hull,</b> travel gigs pay the owner-operator rate (the "own hull" outcome on <a href="#tonight/LL-2272">2272</a>, <a href="#tonight/LL-2281">2281</a>, and the Premium runs).</li>
      </ul>
     </div>
     <div class="panel">
      <h4>Money outside the app</h4>
      <ul>
-      <li><b>The core:</b> Sallow pays 4,000 through Marra. An Inquisitorial buyer through Amelda pays 10,000 and leaves no witnesses. A Spindle auction fetches 15,000 and brings every faction in the Drift. Okafor would confiscate it.</li>
+      <li><b>The core:</b> Marra's deal, 4,000 cr to each of them. An Inquisitor or an auction pays more, with risk (<a href="#tonight/core">The core</a>).</li>
+      <li><b>The relics:</b> kept and fenced, about 16,000 for all four, and the Inquisition on their trail (<a href="#tonight/LL-2271">2271</a>).</li>
       <li><b>Hotshot's Penrose policy:</b> 5,000 cr to surviving crew, if they file. Filing tells Penrose, and then Sable, that they survived (<a href="#tonight/LL-2268">2268</a>).</li>
       <li><b>Halvorsen's night contract:</b> 500 a night through Council week, after a clean watch (<a href="#tonight/LL-2219">2219</a>).</li>
       <li><b>Marra's debt:</b> −600, or forgiven for news of Vargas.</li>
@@ -534,30 +721,40 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
     <div class="panel">
      <h4>Ways the session can end</h4>
      <ul>
-      <li><b>On the Net Settlement's ramp</b>, coordinates arriving. The best cliffhanger.</li>
-      <li><b>Strapped in on the Low Ebb</b>, two weeks from Tamsin, with Hesper saying "strap in."</li>
-      <li><b>At the impound auction</b>, one bid short of a hull.</li>
-      <li><b>At the Lamplighter</b>, with Hask's picture of Vargas on the bar and the datapad lighting up beside it.</li>
+      <li><b>Mid-heist</b>, under the glass bell, with Dunmore's footsteps in the corridor. The best cliffhanger.</li>
+      <li><b>In a burial casket</b>, falling toward Ring 3 with four relics in their lap.</li>
+      <li><b>At the locker</b>, 0-0-0, and nobody comes to collect it.</li>
+      <li><b>V'an on his knees</b> in the Cardinal's suite, saying a word he doesn't know.</li>
+      <li><b>At the hull-sale board</b>, with the core money in hand, choosing between the Nasty Nancy and the Trash Heap.</li>
      </ul>
     </div>
     <div class="panel">
      <h4>Carried over</h4>
      <ul>
-      <li><a href="#wiki/car-b">CAR-B</a> wants a berth, and Halvorsen lists him as missing (<a href="#tonight/LL-2219">2219</a>).</li>
+      <li><a href="#wiki/car-b">CAR-B</a> stayed on Saint Vey, waiting for a hull.</li>
       <li><a href="#wiki/florb">Florb</a> is somewhere above Saint Vey.</li>
-      <li><a href="#wiki/killora-vargas">Vargas</a> is alive. Sable is hunting her through the datapad, and the Net Settlement may be carrying her (option C).</li>
-      <li><a href="#wiki/sally-smacker">Sally</a> has read the core's blackbox. Sallow will want her name.</li>
-      <li>The <a href="#wiki/tracking-gems">gems</a> are in Warehouse 6, Bay A.</li>
+      <li><a href="#wiki/killora-vargas">Vargas</a> is alive. Sable is hunting her through the datapad.</li>
+      <li><a href="#wiki/sally-smacker">Sally</a> has read the core's blackbox. Whoever buys the core will want her name.</li>
+      <li>The <a href="#wiki/tracking-gems">gems</a> are in Warehouse 6, Bay A, waiting for the Inquisitor to sign.</li>
+     </ul>
+    </div>
+    <div class="panel">
+     <h4>Secrets in play <span class="tag canon">Canon</span></h4>
+     <ul>
+      <li class="secret"><b>The artifact is the shadow proprietor.</b> It mines the bodies it's put into for <a href="#wiki/crypto-creds">Crypto-Creds</a> and funds itself that way. V'an's "sister" money is part of it.</li>
+      <li class="secret"><b>The uplift implant</b> is a scam that mines its host. Hard save for Rusty; V'an is already mined.</li>
+      <li class="secret"><b>The artifact's last bearer was the Ninth Pontifex.</b> His memories are buried in V'an's head. Touching a relic: a vision of the Eye, and the word "Pontifex."</li>
+      <li class="secret">Why the shard falls silent at the Lantern and sings at the Due Diligence's hail: unexplained, on purpose.</li>
      </ul>
     </div>
     <div class="panel">
      <h4>How the gigs connect</h4>
      <ul>
-      <li><b>The datapad:</b> the pinned gig (2271), Sable at the Lamplighter (2230), Varo's petition (2250), Ottilie's look-up (2265).</li>
-      <li><b>The Net Settlement:</b> Teo loaded it (2214), the loaders saw him (2199), Hesper knows its registry (2272).</li>
-      <li><b>Machines that want out:</b> Biscuit (2211), Nell and CAR-B's serial (2219), COURTESY-7 (2265, 2271).</li>
-      <li><b>Council week:</b> Rook's vote (2244, 2268), Varo's case (2250, with the eel nest's warning in 2223), Hesper's contract (2241).</li>
+      <li><b>The heist:</b> Teo carried the case (2214), the loaders saw him go (2199), Rook Ebbe sits at the Requiem Table (2244, 2268), Perpetua's flake and Ponty's name echo the vision (2207, 2265).</li>
+      <li><b>The datapad:</b> the check-in, Sable at the Lamplighter (2230), Varo's petition (2250), Ottilie's look-up (2265).</li>
+      <li><b>Machines that want out:</b> Biscuit (2211), Nell and the Bay C androids (2219), COURTESY-7 (2265).</li>
       <li><b>Assay is watching:</b> the implant trial (2236) and Sallow.</li>
+      <li><b>Owning a hull:</b> the medicine run (2281), the skim (2272), the test flight (2276).</li>
      </ul>
     </div>
     <div class="panel">
@@ -572,6 +769,7 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
   </div>
  </div>
 </section>
+
 
 <!-- ============================ LAST TIME ============================ -->
 <section id="session1">
@@ -985,6 +1183,7 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
   <div class="truth-h"><h3>The Lantern is the Eye's rival</h3><span class="tag canon">Canon: the observer</span><span class="tag draft">The rest: Draft</span></div>
   <p class="players">A precursor structure nobody can enter.</p>
   <p><strong>Canon:</strong> for some reason, <strong>the Eye does not want a conscious observer on the Lantern</strong>. Nobody knows why yet, the GM included. <a href="#wiki/van-artifact">V'an's artifact</a> is tied to the Lantern's true nature, in competition with the Eye and working in tandem with it.</p>
+  <p><strong>Canon:</strong> the artifact's last bearer was the missing <a href="#wiki/ninth-pontifex">Ninth Pontifex</a>, and his memories are still buried in V'an's head. When V'an touches a relic, he's pulled into a vision of the Eye and hears the word "Pontifex."</p>
   <h4>Why the Eye fears an observer <span class="tag draft">Draft</span></h4>
   <ul>
    <li><strong>Being seen wakes it.</strong> The Lantern finishes waking only when a mind observes it from inside. Until then it can only sample ships from a distance.</li>
@@ -1017,7 +1216,8 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
  <article class="truth" style="--c:var(--teal)">
   <div class="truth-h"><h3>Who owns Commonweal</h3><span class="tag canon">Canon</span></div>
   <p class="players">Nobody outside knows. Its shares have never traded.</p>
-  <p>A <strong>triumvirate of investors</strong> owns Commonweal. They're bankrolled by someone called <strong>the shadow proprietor</strong>, in exchange for not looking at some things. Who the three are, who the proprietor is, and what they don't look at are still open. See the <a href="#wiki/the-triumvirate">Triumvirate</a> and <a href="#wiki/shadow-proprietor">shadow proprietor</a> pages.</p>
+  <p>A <strong>triumvirate of investors</strong> owns Commonweal. They're bankrolled by someone called <strong>the shadow proprietor</strong>, in exchange for not looking at some things.</p>
+  <p><strong>Canon:</strong> the shadow proprietor is <a href="#wiki/van-artifact">V'an's artifact</a>. It mines the bodies it's put into for <a href="#wiki/crypto-creds">Crypto-Creds</a>, and that's how it funds its own machinations under that title. Assay's <a href="#wiki/uplift-implant">cognitive uplift implant</a> does the same thing, crudely: it converts its host's body into RAM. Who the three investors are, and exactly what they don't look at, are still open. See the <a href="#wiki/the-triumvirate">Triumvirate</a> and <a href="#wiki/shadow-proprietor">shadow proprietor</a> pages.</p>
  </article>
 
  <article class="truth">
@@ -1059,6 +1259,7 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
   <div class="stat"><h4>Auntie Sefa Kell</h4><div class="sub">Ashborn clan head, the Grave</div><div class="line">Veteran. Keeps a tape library of the broadcasts.</div><div class="line secret">Her tapes go back to CY 274. The names list started the night the war ended.</div></div>
   <div class="stat"><h4>Lt. Cmdr. Ines Okafor</h4><div class="sub">Sable Command, the Due Diligence</div><div class="line">Knight, Insight +4. By the book and tired of it.</div><div class="line secret">Her orders bypass Sable Command and come straight from a Commonweal office on Ledger.</div></div>
   <div class="stat"><h4>CAR-B &nu;_player</h4><div class="sub">"Carby Newplayer," New Bombswick · would-be crew</div><div class="line">Commoner, with Animated Armor's AC and HP. A jailbroken Halvorsen Combine reception android who runs a saloon and pulls teeth. The party found him out in session 1.</div><div class="line"><b>Wants:</b> a berth on the party's ship, once they have one.</div></div>
+  <div class="stat"><h4>Cardinal Pompelius Rex</h4><div class="sub">At Tamsin for Council week · the heist's mark</div><div class="line">Noble, with a ring of <i>hold person</i> (DC 15, once). Gambles at the Orbital Obituary. His reliquary holds four relics.</div><div class="line secret">If V'an touches one: a vision of the Eye, and the word "Pontifex."</div></div>
   <div class="stat"><h4>Father Oren</h4><div class="sub">Old Rite priest, Saint Vey</div><div class="line">Priest. Kind. Heals miners for free.</div><div class="line secret">His miracles prove the Eye answers without the Church. The Inquisition would kill him for it.</div></div>
  </div>
 </section>
@@ -1709,7 +1910,7 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
   const app=o.paid===false?0:typeof o.paid==="number"?o.paid:takeOf(g);
   const bonus=o.bonus===true?(g.bonus?g.bonus[0]:0):typeof o.bonus==="number"?o.bonus:0;
   return{app,bonus,cash:o.cash||0,stars:o.stars||0}}
- const TABS=["overview","arrival","gigs","port","people","money","threads"];
+ const TABS=["overview","journey","arrival","core","city","gigs","people","money","threads"];
  let gTag="all",hubBuilt=false;
  const hayG=x=>[x.id,x.g&&x.g.title,x.g&&x.g.client,x.g&&x.g.cat,x.g&&x.g.where,x.g&&x.g.blurb,x.j&&x.j.pitch,...arr(x.j&&x.j.truth),...arr(x.j&&x.j.tags)].filter(Boolean).join(" ").toLowerCase();
  function buildHub(){
@@ -1747,12 +1948,13 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
   const g=x.g,j=x.j||{},k=kindOf(x),i=GIGS.indexOf(x),prev=GIGS[(i-1+GIGS.length)%GIGS.length],next=GIGS[(i+1)%GIGS.length];
   const col={pinned:"var(--haz)",premium:"var(--lan)",medium:"var(--amber)",done:"var(--ok)",taken:"var(--faint)",closed:"var(--faint)"}[k]||"var(--teal)";
   const li=a=>arr(a).map(t=>`<li>${fmt(t)}</li>`).join("");
-  const facts=g?[`<span class="pay">Posted <b>${crf(g.pay)}</b></span>`,g.fee>0?`<span>Take-home <b>${crf(takeOf(g))}</b></span>`:`<span>Fee paid by client</span>`,g.bonus?`<span>Bonus <b>${crf(g.bonus[0])}</b> ${esc(g.bonus[1])}</span>`:"",`<span><b>${esc(g.where)}</b></span>`,`<span>${esc(g.when)}</span>`,`<span>Expires ${esc(g.expires)}</span>`,g.min>0?`<span>Needs <b>★ ${g.min}</b></span>`:"",j.time?`<span>At the table <b>${esc(j.time)}</b></span>`:""].filter(Boolean).join(""):"";
+  const facts=g?[`<span class="pay">Posted <b>${crf(g.pay)}</b></span>`,g.fee>0?`<span>Take-home <b>${crf(takeOf(g))}</b></span>`:`<span>Fee paid by client</span>`,g.bonus?`<span>Bonus <b>${crf(g.bonus[0])}</b> ${esc(g.bonus[1])}</span>`:"",`<span><b>${esc(g.where)}</b></span>`,`<span>${esc(g.when)}</span>`,`<span>Expires ${esc(g.expires)}</span>`,g.min>0?`<span>Needs <b>★ ${g.min}</b></span>`:"",g.own?`<span>Own hull <b>${crf(g.own[0])}</b></span>`:"",j.time?`<span>At the table <b>${esc(j.time)}</b></span>`:""].filter(Boolean).join(""):"";
   let main="";
   if(!x.j)main+=`<div class="empty">No GM notes yet. Add an entry with id <code>${esc(id)}</code> to <code>gm/jobs.js</code>.</div>`;
   if(j.truth)main+=`<h4>What's really going on</h4><ul class="secret-list">${li(j.truth)}</ul>`;
   if(j.read)main+=`<p class="read">${fmt(j.read)}</p>`;
   if(j.run)main+=`<h4>How it plays</h4><ol class="run">${li(j.run)}</ol>`;
+  arr(j.sections).forEach(x=>{main+=`<h4>${esc(x.h||"")}</h4><ul>${li(x.t)}</ul>`});
   if(j.checks)main+=`<h4>Rolls</h4><div class="tbl"><table><tr><th>Check</th><th>DC</th><th>On a fail</th></tr>${arr(j.checks).map(c=>`<tr><td>${fmt(c[0]||"")}</td><td class="n">${esc(c[1]||"")}</td><td>${fmt(c[2]||"")}</td></tr>`).join("")}</table></div>`;
   if(j.foes)main+=`<h4>Foes</h4><p>${fmt(j.foes)}</p>`;
   if(j.branches)main+=`<h4>The secret: pick one</h4>${arr(j.branches).map(b=>`<div class="br"><h5>${esc(b.name)}</h5><ul>${li(b.t)}</ul></div>`).join("")}`;

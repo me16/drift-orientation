@@ -72,6 +72,7 @@ window.GM_WIKI = [
     `The [[nav-core]]'s blackbox shows the Longreach ship's redirection too. Seeing it is the moment Rusty learns his childhood was a murder.`,
     `In the Nine Hollows someone recognizes him, and then someone tells him whose grandson led the boarders.`,
     `An old Longreach survey officer, alive and retired at Tamsin, remembers the kid they took aboard.`,
+    `The uplift implant ([[#tonight/LL-2236|LL-2236]]): a hard save (DC 18 suggested), and if it takes, it mines him.`,
     `Longreach still has his name on a crew manifest from CY 274, and an unpaid wage owed to him. Collecting it means proving who he is.`,
     `The shard's bargain is still unspent. It could speak to Rusty at a moment that matters more than the Chapel would have. *Suggestion:* once per long rest it turns a hit (+5 AC, like *shield*), as long as it stays hidden.`] },
 { id: `van`, type: `pc`, name: `V'an Ski-born`, aka: [`V'an`, `Ski-born`], tag: `canon`,
@@ -84,11 +85,16 @@ window.GM_WIKI = [
     `**Canon:** an artifact plugged into his brain and took almost complete control of his body and mind. It can't change his base stats, but it raised his Charisma and Intelligence a lot. V'an is a hollow shell of the man he may have been, and it's unclear whether he knows.`,
     `**Canon:** the artifact is draining him, and it's open to finding another host.`,
     `**Canon:** the money doesn't go to [[van-sister|his sister]]. It goes wherever the artifact sends it, for goals that are probably much more sinister.`,
-    `**Canon (direction):** the artifact is tied to the Lantern's true nature, in competition with the Eye and working in tandem with it.`],
+    `**Canon (direction):** the artifact is tied to the Lantern's true nature, in competition with the Eye and working in tandem with it.`,
+    `**Canon:** the artifact's last bearer was the missing [[ninth-pontifex|Ninth Pontifex]]. His memories are still buried in V'an's head. If V'an touches a relic, he's pulled into a vision of the Eye and hears the word "Pontifex."`,
+    `**Canon:** his body is already being mined by the artifact, for [[crypto-creds|Crypto-Creds]]. That's why the [[uplift-implant]] can't take hold in him.`,
+    `**Canon:** he sends 800 cr home for his "sick sister," and he can't remember her name.`],
   seen: [[`S0`, `Went down in the boarding fight, heard Vargas's relic "singing," and picked it up. The relic took him and Rusty out of the Patience.`], [`S1`, `Heard the shard's song fading after the teleport.`]],
   hooks: [
     `Commonweal clears every transaction, so **Commonweal knows where V'an's money goes**. A clerk, or [[the-triumvirate]], could hand him the trail.`,
     `He sends money home from Tamsin and the transfer bounces: there's no account in his sister's name.`,
+    `He touches one of Cardinal Rex's relics ([[#tonight/LL-2271|LL-2271]]) and hears the word *Pontifex*.`,
+    `A girl runs down a corridor shouting "Pontifex!" for her cat ([[ponty]]).`,
     `Precentor [[odile-sancte]] knows the song. She'd want V'an in her choir, and the artifact might want her.`,
     `Near any relic, a Cathedral-ship or the Lantern, the song gets louder. In the Null Corridor it stops, and so, for a moment, does the artifact. V'an gets a few minutes as himself.`,
     `The artifact is shopping for a new host. It just watched a relic move people across space, and [[car-b]] is a body that doesn't get tired.`] },
@@ -96,8 +102,8 @@ window.GM_WIKI = [
 
 
 { id: `van-sister`, type: `npc`, name: `V'an's sister`, tag: `canon`, status: `unknown: sick, or never real`, where: `meridian`,
-  known: [`V'an believes she's sick on Meridian Prime and that his money pays for her treatment.`],
-  secrets: [`**Canon:** the money doesn't go to her. *Draft:* she may not exist, may exist and never have been sick, or may be a real person the artifact uses as a cover story.`],
+  known: [`V'an believes she's sick on Meridian Prime and that his money pays for her treatment: **800 cr** at a time (Canon). **He can't remember her name** (Canon).`],
+  secrets: [`**Canon:** the money doesn't go to her. It goes into the [[van-artifact|artifact]]'s accounts, the same stream as the [[crypto-creds|Crypto-Creds]] it mines from his body.`, `**Canon:** the money doesn't go to her. *Draft:* she may not exist, may exist and never have been sick, or may be a real person the artifact uses as a cover story.`],
   open: [`Does she exist?`],
   hooks: [
     `A letter from her arrives at Tamsin, in handwriting V'an doesn't recognize.`,
@@ -109,18 +115,22 @@ window.GM_WIKI = [
   body: [
     `**Canon:** plugged into V'an's brain, it has almost complete control of his body and mind. It raised his Charisma and Intelligence (his warlock patron, mechanically), drains him, and is open to a new host. It sends his money somewhere sinister.`,
     `**Canon (direction):** it's connected to the Lantern's true nature, so it's in competition with the Eye but also working in tandem with it. The rest is cloudy for now, on purpose.`,
-    `The Eye doesn't want a conscious observer on the Lantern (Canon, see [[lantern-rival]]). An artifact tied to the Lantern, riding inside a conscious host, is exactly that observer waiting to happen.`],
+    `The Eye doesn't want a conscious observer on the Lantern (Canon, see [[lantern-rival]]). An artifact tied to the Lantern, riding inside a conscious host, is exactly that observer waiting to happen.`,
+    `**Canon:** it mines the bodies it's put into for [[crypto-creds|Crypto-Creds]]. That's how it funds its own machinations, under the title of **[[shadow-proprietor|the shadow proprietor]]**. It bankrolls Commonweal's [[the-triumvirate|triumvirate]].`,
+    `**Canon:** its last bearer was the missing [[ninth-pontifex|Ninth Pontifex]]. His memories are still buried in V'an's head. When V'an touches a relic, the Eye sees who's behind him, and he hears the word "Pontifex."`],
   secrets: [
     `*Draft:* it wants V'an on the Lantern. That's where the money goes: passage, charts, parts. The Eye wants to stop that, but it may also need what the artifact would find there.`,
     `*Draft:* rivals that need each other. Each sabotages the other only up to a point, like two heirs to one throne.`,
     `*Draft:* the relic sang to it, and it answered. Whatever it is, it speaks the Eye's language.`],
   seen: [[`S0`, `Let V'an hear Vargas's relic singing. Nobody else in the bay did.`]],
-  open: [`What is it, who made it, and what does it want on the Lantern? (Deliberately open.)`],
+  open: [`What is it, who made it, and what does it want on the Lantern? (Deliberately open.)`, `How did it get from the Ninth Pontifex to V'an, and what happened to the Ninth when it left?`],
   hooks: [
     `The money trail, through Commonweal.`,
     `It tries to change hosts, to a relic, to CAR-B, or to Rusty.`,
     `The Lantern's light changes when V'an gets close, and it doesn't change back.`,
-    `In the Null Corridor it goes quiet, and V'an remembers something real.`] },
+    `In the Null Corridor it goes quiet, and V'an remembers something real.`,
+    `A relic's vision, and a word: *Pontifex*. The heist ([[#tonight/LL-2271|LL-2271]]) may have been posted by the artifact itself to make that happen.`,
+    `An uplift implant boots inside V'an and reads HOST ALREADY ALLOCATED ([[#tonight/LL-2236|LL-2236]]).`] },
 /* ============================ CREW OF THE PATIENCE ============================ */
 { id: `hotshot`, type: `npc`, name: `Captain Jimothy "Hotshot" Delta`, aka: [`Hotshot`], status: `dead`, tag: `played`,
   sub: `Captain and pilot of the Patience · a three-foot poison-dart frog`, stats: `Veteran, reskinned: a pistol in each hand (the sword attacks are pistol shots at 30/90 ft, the crossbow is a long-barrel)`, related: [`patience`],
@@ -166,13 +176,14 @@ window.GM_WIKI = [
 
 /* ============================ PEOPLE: TAMSIN AND THE GRAVE ============================ */
 { id: `marra-tesk`, type: `npc`, name: `Marra Tesk`, sub: `Fixer at the Spindle, Tamsin`, stats: `Spy`, where: `tamsin`,
-  wants: `Her 600 cr, and to know what happened to Vargas.`,
-  body: [`Dry, quick, and loyal to [[killora-vargas]] in her own way. She brokered the Grave job for [[mr-sallow]]. Vargas's datapad says: "Ask for Marra at the Spindle."`],
+  wants: `Her 600 cr, her cut of the core sale, and to know what happened to Vargas.`,
+  body: [`Dry, quick, and loyal to [[killora-vargas]] in her own way. She brokered the Grave job for [[mr-sallow]]. Vargas's datapad says: "Ask for Marra at the Spindle."`,
+    `**Canon (session 2 plan):** when the datapad checks in at Tamsin, she pings them and wants to meet. The offer on the [[nav-core]] is **4,000 cr each, to every member of the crew**, with a larger cut to her as the fixer. They can try to undercut her and find a better deal (an Inquisitor, an auction), at significant risk. She can be the one who tells them about [[ledgerline]].`],
   secrets: [`Takes 10% from Sallow. She doesn't know who he works for and doesn't want to.`],
   seen: [[`S0`, `Brokered the job (offscreen).`]],
   hooks: [
     `She's waiting at the Spindle when the ferry docks, because she reads the passenger manifests.`,
-    `She still has Sallow's 4,000 cr offer for the [[nav-core]], and she still wants her 600.`,
+    `She still has Sallow's offer for the [[nav-core]] (4,000 cr each, and a bigger cut for her), and she still wants her 600.`,
     `She has work, the kind Ledgerline won't list, for a crew that owes her.`,
     `She wants to know where Vargas is more than she wants the money. That's leverage either way.`] },
 
@@ -217,7 +228,7 @@ window.GM_WIKI = [
   known: [`A Sable cruiser visited the Lantern off-schedule and Commonweal filed no report (general rumor 3).`],
   secrets: [`Her orders bypass Sable Command and come straight from a [[commonweal]] office on Ledger. The [[due-diligence]] went to the Lantern a week before the Grave job.`],
   hooks: [
-    `She'd confiscate the [[nav-core]] and call it a favor. The ferry is hailed by the Due Diligence on the way to Tamsin.`,
+    `She'd confiscate the [[nav-core]] and call it a favor. The ferry is hailed by the Due Diligence on the way to Tamsin (session 2 plan). She asks for the passenger list, the shard sings, and she moves on. *Suggestion:* she heard it, and chose not to.`,
     `She's looking for Vargas, quietly, for reasons that aren't in her orders.`,
     `She approaches the PCs off the record: she wants to know what the core says before Ledger does.`] },
 
@@ -227,7 +238,8 @@ window.GM_WIKI = [
   hooks: [
     `He greets the ferry at the dock with a laminated welcome card.`,
     `CAR-B asks the PCs to help jailbreak him. Halvorsen would call that theft.`,
-    `He's the only pilot available on the day they finally get a ship.`] },
+    `He's the only pilot available on the day they finally get a ship.`,
+    `CAR-B isn't with them at Tamsin, so COURTESY-7 is the only android they meet. He doesn't know what he's missing.`] },
 
 /* ============================ PEOPLE: TAMSIN (session 2 plan, all suggestions) ============================ */
 { id: `mags`, type: `npc`, name: `Mags`, sub: `Owner of the Lamplighter, Low Dock`, stats: `Veteran`, where: `lamplighter`, tag: `draft`,
@@ -262,14 +274,14 @@ window.GM_WIKI = [
   hooks: [`He's at the Low Dock gate every shift change, asking.`, `If they find Teo, the dockhands of Low Dock owe them.`] },
 
 { id: `teo-aranha`, type: `npc`, name: `Teo Aranha`, sub: `Missing dockhand · sealed in a container in stack 40`, stats: `Commoner`, where: `low-dock`, tag: `draft`, status: `missing`,
-  body: [`*Suggestion.* Worked three night shifts loading the aft hold of the [[net-settlement]] at [[tamsin-impound|impound berth L-9]], and talked about it in a bar.`],
-  secrets: [`[[harl-brenn]] had him sedated and sealed in a container in stack 40, to ship out as contract labor on a [[caddis-line|Caddis]] outbound in two days. He knows what went into the hold.`],
-  hooks: [`Find him ([[#tonight/LL-2214|LL-2214]]) and he tells them what they'd be carrying.`, `His cousin is one of the Low Dock crew who try for Perpetua's reliquary.`] },
+  body: [`*Suggestion.* Worked the night shift unloading [[pompelius-rex|Cardinal Rex]]'s yacht at Low Dock, carried the [[rex-reliquary|reliquary case]] to the tether himself, and talked about it in a bar.`],
+  secrets: [`[[harl-brenn]] had him sedated and sealed in a container in stack 40, to ship out as contract labor on a [[caddis-line|Caddis]] outbound in two days. He knows the case, its hymn-lock and the Lictors' shifts.`],
+  hooks: [`Find him ([[#tonight/LL-2214|LL-2214]]) and he tells them how to case the heist.`, `His cousin is one of the Low Dock crew who try for Perpetua's reliquary.`] },
 
 { id: `harl-brenn`, type: `npc`, name: `Dockmaster Harl Brenn`, sub: `Low Dock night dockmaster`, stats: `Commoner, with 2 Thugs`, where: `low-dock`, tag: `draft`,
   body: [`*Suggestion.* Friendly, busy and lying. Never asks a name, always asks the tonnage.`],
-  secrets: [`Took 300 cr from the [[net-settlement]] gig's "verified client" to make [[teo-aranha]] disappear.`],
-  hooks: [`He says Teo took a berth on the [[long-margin]]. [[rook-ebbe]] will say he didn't.`, `Lean on him and he calls the client.`] },
+  secrets: [`Took 300 cr from Cardinal Rex's household to keep the yacht's business quiet, and made [[teo-aranha]] disappear when Teo talked.`],
+  hooks: [`He says Teo took a berth on the [[long-margin]]. [[rook-ebbe]] will say he didn't.`, `Lean on him and he calls the Cardinal's steward.`] },
 
 { id: `nu-seven`, type: `npc`, name: `ν_seven ("Nell")`, aka: [`Nell`, `nu seven`], sub: `A ν-series reception android that woke up in Bay C`, stats: `Commoner, with Animated Armor's AC and HP`, where: `warehouse-6`, faction: `halvorsen-combine`, tag: `draft`,
   body: [`*Suggestion.* One of forty boxed reception androids from the same line as [[car-b]], repossessed and bound for a wipe at Brightwater. She's been knocking in threes. She speaks in CAR-B's reception voice.`],
@@ -322,8 +334,40 @@ window.GM_WIKI = [
   body: [`*Suggestion.* Not lost: he's moved in with [[courtesy-7]], who pays him in noodle scraps and logs his purring as five-star reviews. Hisses at V'an's pocket. Purrs at the shard.`],
   hooks: [`The lost-cat gig ([[#tonight/LL-2265|LL-2265]]).`] },
 
+{ id: `pompelius-rex`, type: `npc`, name: `Cardinal Pompelius Rex`, aka: [`Rex`, `the Cardinal`], sub: `A Cardinal of Corinthia at Tamsin for Council week · gambler · the mark in LL-2271`, tag: `canon`, status: `at Tamsin`,
+  stats: `Noble. Once a day his ring casts *hold person* (DC 15). He is a coward with a very loud voice.`, where: `orbital-obituary`, faction: `cardinals`,
+  wants: `To win at the Requiem Table, once, in front of witnesses. To go home with all four relics.`,
+  body: [
+    `**Canon (your notes):** a Cardinal who owns a reliquary of four relics ([[rex-reliquary]]) and plays a high-stakes game at the [[orbital-obituary|Orbital Obituary Casino]] while he's at Tamsin. The pinned gig ([[#tonight/LL-2271|LL-2271]]) is to steal the reliquary while he's at the table.`,
+    `*Suggestion:* he's here as the Church's unofficial observer at Council week, which is to say he volunteered. Large, pink, generous with other people's money, and devout in the way of a man who has never once needed to be. He loses steadily and cheerfully, and never before the fourth rite.`,
+    `*Suggestion:* his household is [[severa-dunmore|Lictor-Captain Dunmore]], four Lictors, and [[deacon-quill|Deacon Quill]], keeper of the reliquary. His yacht, the *Gracious Plenty*, is at Low Dock, Dock 1.`],
+  secrets: [
+    `*Suggestion:* he's one of the few Cardinals who know the Eye is a machine ([[eye-is-a-machine]]). It didn't shake his faith; it relaxed it. He gambles because nothing he does will be judged by anyone who isn't hardware.`,
+    `*Suggestion:* he owes the Obituary more than his stipend. [[vesper-lyle]] holds his markers.`],
+  hooks: [
+    `The pinned gig on Ledgerline: four heirlooms in a guest suite, holder at the card table all night.`,
+    `His yacht at Low Dock, with a bored pilot and a Lictor who misses home.`,
+    `Losing, he bets the reliquary at the table.`,
+    `If the relics go missing, he posts a recovery gig on Ledgerline at triple the original pay, and the Inquisition posts nothing at all.`,
+    `He recognizes something in V'an's face and can't say what. He keeps staring.`] },
+{ id: `severa-dunmore`, type: `npc`, name: `Lictor-Captain Severa Dunmore`, sub: `Cardinal Rex's bodyguard`, tag: `draft`, status: `at Tamsin`,
+  stats: `Veteran, with a stun halberd. Wears the reliquary bell's alarm on her wrist.`, where: `orbital-obituary`, faction: `cardinals`,
+  body: [`*Suggestion.* Grey-haired, patient, and better at her job than her employer deserves. She doesn't gamble, drink or sit down. She walks the Mausoleum Deck corridor every hour and looks in on the case.`],
+  secrets: [`*Suggestion:* she knows Rex is a fool and stays because the relics deserve better. Convince her the relics are going somewhere holier and she might look away.`],
+  hooks: [`At the Lamplighter, buying a homesick Lictor a drink, she comes to fetch him.`, `She walks the corridor on the hour, every hour, during the heist.`, `If they're caught, she's the one who remembers their faces.`] },
+{ id: `deacon-quill`, type: `npc`, name: `Deacon Absalom Quill`, sub: `Keeper of Cardinal Rex's reliquary`, tag: `draft`, status: `at Tamsin`,
+  stats: `Priest. Prefers *sanctuary* and *command* to anything that hurts.`, where: `orbital-obituary`, faction: `reliquarians`,
+  body: [`*Suggestion.* Thin, soft-spoken, a Reliquarian by training. He sings to the hymn-lock on the case every hour "to keep it asleep," then drinks. He hears relics the way V'an hears the shard.`],
+  secrets: [`*Suggestion:* he can hear the [[platinum-shard]] from 30 ft away, and he'll go looking for the choir that's singing it.`],
+  hooks: [`His hourly hymn is the lock's key: hear it once and someone can sing it back (Performance DC 15).`, `He drinks. Someone who drinks with him learns the lock.`, `He knows what a jailbroken relic sounds like, and wants to meet whoever is carrying one.`] },
+{ id: `vesper-lyle`, type: `npc`, name: `Vesper Lyle`, aka: [`the Undertaker`], sub: `Owner of the Orbital Obituary`, tag: `draft`, status: `at Tamsin`,
+  stats: `Noble (Insight +6), with Undertakers (Thugs with stun mauls) on call.`, where: `orbital-obituary`, faction: `council-of-captains`,
+  body: [`*Suggestion.* Bought a decommissioned Corinthian funerary station for scrap price thirty years ago and made it the best casino in the Drift. Wears mourning black every day. Sits on the Council of Captains, which is why nobody makes trouble at her tables.`],
+  secrets: [`*Suggestion:* she holds Rex's markers. The house doesn't care what leaves a guest's suite; it cares what happens at its tables. For a cut, she'll look the other way, once.`],
+  hooks: [`They ask the owner, boldly, and she answers.`, `She sits on the Council: a friend there, or an enemy.`, `"The house wishes you a good death." She means it kindly.`] },
+
 /* ============================ PEOPLE: SAINT VEY ============================ */
-{ id: `car-b`, type: `npc`, name: `CAR-B ν_player`, aka: [`Carby Newplayer`, `Carby`, `CAR-B`, `nu player`], tag: `played`, status: `wants to join the crew`,
+{ id: `car-b`, type: `npc`, name: `CAR-B ν_player`, aka: [`Carby Newplayer`, `Carby`, `CAR-B`, `nu player`], tag: `played`, status: `on Saint Vey · wants to join the crew`,
   sub: `Saloon owner and part-time dentist · a jailbroken Halvorsen reception android`, stats: `Commoner, with Animated Armor's AC and HP`,
   where: `carbys-saloon`, faction: `halvorsen-combine`,
   wants: `A berth on the party's ship, once they have one. New faces, off-world news, someone to try the new chair.`,
@@ -333,6 +377,7 @@ window.GM_WIKI = [
     `*Suggestion:* a [[halvorsen-combine]] unit running a saloon in a Halvorsen contract town is a risk. Halvorsen may still list him as stolen property, so taking him aboard is a salvage claim waiting to happen.`,
     `*Suggestion:* whoever jailbroke him could be the same hand that cut the shard's locks ([[anselm-coyle]]), or not.`],
   seen: [[`S1`, `The party worked out he isn't human. He's CAR-B ν_player, a jailbroken Halvorsen reception android. They want him on their crew once they have a ship.`]],
+  open: [`**Session 2 plan (Canon):** CAR-B is not with them at Tamsin. Why he stayed (the saloon, waiting for them to have a ship, Halvorsen's notice) is up to the table.`],
   hooks: [
     `He's sold the saloon by the time the ferry leaves and turns up at the pad with one bag and the dentist's chair.`,
     `A Halvorsen asset-recovery notice reaches Tamsin with his serial number on it.`,
@@ -423,12 +468,13 @@ window.GM_WIKI = [
     `The Cardinals hire deniable spacers to get a message into the Sanctum.`,
     `Every relic in the Drift chimes at once: the Pontifex has spoken.`] },
 
-{ id: `ninth-pontifex`, type: `npc`, name: `The Ninth Pontifex`, sub: `Died CY 273 · his funeral barge vanished`, faction: `corinthia`, status: `dead, or coasting`,
+{ id: `ninth-pontifex`, type: `npc`, name: `The Ninth Pontifex`, sub: `Died CY 273 · his funeral barge vanished · the artifact's last bearer`, faction: `corinthia`, status: `dead, or coasting`, tag: `canon`,
   known: [`His funeral barge vanished in CY 273. The Church pays for any credible sighting.`],
-  secrets: [`*Draft:* he meant to tell the faithful what the Eye is. The barge was diverted into the Null Corridor, where the Eye can't reach and neither can rescue. His name is next on the Lantern's list.`],
+  secrets: [`**Canon:** the last bearer of [[van-artifact|V'an's artifact]] was the Ninth Pontifex. His memories are still buried in V'an's head. A relic's touch makes the Eye say his title.`, `*Suggestion:* his rosary is one of [[pompelius-rex|Cardinal Rex]]'s four relics ([[rex-reliquary]]).`, `*Draft:* he meant to tell the faithful what the Eye is. The barge was diverted into the Null Corridor, where the Eye can't reach and neither can rescue. His name is next on the Lantern's list.`],
   hooks: [
     `A Corridor smuggler sells a picture of a gilded barge, coasting.`,
     `The [[the-broadcast|broadcast]] reads his name.`,
+    `V'an touches a relic and hears "Pontifex." Later he knows a prayer only a Pontifex is taught.`,
     `See [[lost-barge]].`] },
 
 /* ============================ LOCATIONS: SAINT VEY ============================ */
@@ -501,16 +547,29 @@ window.GM_WIKI = [
     `Father Oren could heal [[gerrit]], which would change everything for [[amelda]].`,
     `[[anselm-coyle]] is hiding there.`] },
 
+{ id: `orbital-obituary`, type: `location`, name: `The Orbital Obituary`, aka: [`the Obituary`, `Orbital Obituary Casino`], sub: `Casino on a tether station above the Spindle`, tag: `canon`, where: `tamsin`, faction: `council-of-captains`,
+  body: [
+    `**Canon (your notes):** a high-stakes casino. Cardinal [[pompelius-rex]] plays there during session 2, and that's the heist window ([[#tonight/LL-2271|LL-2271]]).`,
+    `*Suggestion:* a decommissioned Corinthian funerary station, where spacers were once given burial by orbit. It hangs on a 9 km tether above the Spindle's crown, reached by a silent lift every 40 minutes (20 cr a head; weapons checked and scanned). Its hull is still carved with the names of ten thousand dead, and the gilt sign over the lift reads THE HOUSE WISHES YOU A GOOD DEATH.`,
+    `*Suggestion, decks from the bottom:* the **Narthex** (lift lobby, coat check, the weapons scan). The **Gaming Nave**, a former chapel of rest: tables under stained glass, croupiers in black, "mutes" in veils carrying drinks like pallbearers. **The Requiem Table** under a glass dome at the top of the nave, high stakes only, everyone scanned for relics at the door ("no miracles at the table"). The **Columbarium**, a dark service ring of ash niches behind every deck, with airlocks to the hull. The **Mausoleum Deck** on top: guest suites, each with a viewport on Tamsin.`,
+    `Owned by [[vesper-lyle]], the Undertaker. Security are "Undertakers" with stun mauls. In an emergency the station drops its old burial caskets as escape pods.`],
+  hooks: [
+    `The ticker on Ledgerline: the Requiem Table sits on opening night.`,
+    `A Ledgerline ad on the Spindle: "Fortune favors the departed. The Orbital Obituary. Dress for the occasion."`,
+    `Ride the tether as tourists and lose 20 cr at the wheel.`,
+    `Its burial caskets are the most ridiculous escape route in the Drift.`] },
+
 /* ============================ LOCATIONS: THE DRIFT ============================ */
 { id: `tamsin`, type: `location`, name: `Free Harbor Tamsin`, sub: `Neutral port in a hollow asteroid (DRF-01) · session 2`, handout: `loc-tamsin`, faction: `council-of-captains`,
   known: [`Run by the Council of Captains. Anyone can dock. The Spindle (hiring hall and market), Low Dock (no questions asked), Council Hall (meets monthly). Charter law doesn't apply, but Commonweal keeps every visiting citizen's tier on record. Vargas: "Tamsin dockmaster never asked my name. Asked my tonnage twice."`],
-  body: [`The Patience came from a Tamsin impound auction. A ship costs 12,000 to 20,000 cr, a lease 500 cr a week plus a cut. *Suggestion:* [[ledgerline]], a Commonweal-licensed gig board, takes 20% and rates every job 1 to 5 stars. Better jobs unlock at 4.5. Its player page has a dozen small gigs and one lucrative, suspicious one: [[net-settlement|ferry a hull, one way]].`],
+  body: [`The Patience came from a Tamsin impound auction. A ship costs 12,000 to 20,000 cr, a lease 500 cr a week plus a cut. *Suggestion:* [[ledgerline]], a Commonweal-licensed gig board, takes 20% and rates every job 1 to 5 stars. Better jobs unlock at 4.5. Its player page has a dozen small gigs and one lucrative, suspicious one: steal a Cardinal's reliquary from the [[orbital-obituary]] ([[#tonight/LL-2271|LL-2271]]).`],
   hooks: [
     `The ferry docks, and [[marra-tesk]] is already waiting.`,
     `Session 2's plan is under [[#tonight|Tonight]]: every Ledgerline gig and what happens if they take it. Places: [[spindle]], [[low-dock]], [[council-hall]], [[lamplighter]], [[tamsin-impound]], [[warehouse-6]], [[ring-3]], [[dace-oduya]].`,
     `The impound auction has a ship that fits their budget and a lot of strings.`,
     `They speak at the monthly Council about something that happened on the way.`,
-    `Selling the core: Sallow's 4,000 cr through Marra; 10,000 from an Inquisitorial buyer through Amelda (no witnesses); Okafor would confiscate it; a Spindle auction fetches 15,000 and every faction in the Drift.`] },
+    `Selling the core: Sallow's 4,000 cr each through Marra; an Inquisitorial buyer (no witnesses); Okafor would confiscate it; a Spindle auction fetches more, and every faction in the Drift. See [[#tonight/core|Tonight → The core]].`,
+    `Every district, read aloud, is on [[#tonight/city|Tonight → The city]]: [[orbital-obituary]] included.`] },
 
 { id: `spindle`, type: `location`, name: `The Spindle`, sub: `Tamsin's hiring hall and market, the axis of the asteroid`, where: `tamsin`, tag: `draft`,
   body: [`*Suggestion.* A long market hall up the asteroid's spin axis: stalls, hostels, clinics, the Brightline counter on level 2, the Assay clinic on level 5. [[marra-tesk]] works here. Gravity gets lighter the higher you go.`],
@@ -530,7 +589,7 @@ window.GM_WIKI = [
   hooks: [`Door work ([[#tonight/LL-2230|LL-2230]]).`, `Arlo Venn drinks here as "Mr. Albright."`] },
 
 { id: `tamsin-impound`, type: `location`, name: `Tamsin impound`, sub: `Low Dock berths L-1 to L-12 · auction every cycle`, where: `low-dock`, tag: `draft`,
-  body: [`*Suggestion.* Where the [[patience]] came from, once. This cycle's auction (day 3) lists three light haulers and a dropship, sold as is. One of the haulers is the [[net-settlement]] in berth L-9, unless someone takes the gig first.`],
+  body: [`*Suggestion.* Where the [[patience]] came from, once. This cycle's auction (day 3) lists three light haulers and a dropship, sold as is. One of the haulers is the [[net-settlement]] in berth L-9.`],
   hooks: [`The auction: a ship they can almost afford, with strings.`, `Berth L-9, and what Teo loaded there.`] },
 
 { id: `warehouse-6`, type: `location`, name: `Bonded Warehouse 6`, sub: `Halvorsen bonded storage on the cargo ring`, where: `tamsin`, faction: `halvorsen-combine`, tag: `draft`,
@@ -676,7 +735,7 @@ window.GM_WIKI = [
 { id: `cardinals`, type: `faction`, name: `College of Cardinals`, sub: `Rules beside the Pontifex`, faction: `corinthia`, where: `seraphis`,
   known: [`Already arguing over the succession. The Cardinals have stopped meeting in full session (general rumor 4).`],
   secrets: [`*Draft:* they've stopped meeting because some know the Eye is a machine and some don't.`],
-  hooks: [`A Cardinal who knows hires deniable help. A Cardinal who doesn't know hires help to find out what the others are hiding.`] },
+  hooks: [`[[pompelius-rex|Cardinal Pompelius Rex]] is at Tamsin for Council week, gambling, with four relics in his suite.`, `A Cardinal who knows hires deniable help. A Cardinal who doesn't know hires help to find out what the others are hiding.`] },
 
 { id: `inquisition`, type: `faction`, name: `The Inquisitorial Order`, aka: [`Inquisition`, `Inquisitors`], sub: `Enforces doctrine and guards the border`, faction: `corinthia`, where: `vigils-reach`,
   body: [`Holds [[vigils-reach]]. Buys skimmed STR ore from [[amelda]] through a Psalter address. Watches the Order of the Open Eye.`],
@@ -713,19 +772,21 @@ window.GM_WIKI = [
   body: [
     `*Suggestion.* Takes 20% from non-citizens and guests, 12% from Tier 3+ citizens. Ratings are weighted "by factors it is not required to disclose." The datapad shows Vargas's profile as suspended, so the PCs browse as a guest worker.`,
     `Open gigs (posted pay; they take home 80%): walk a Choir pilgrim to her ship (400), recover the repo'd drone "Biscuit" (750), find dockhand Dov Aranha's brother Teo (500, all he has), overnight watch on Halvorsen Bonded Warehouse 6 (700), vent eels in Ring 3 hydroponics (900 + 25 a head), door work at the Lamplighter in Council week (500), an Assay Institute implant trial (1,200), witness an arbitration signing (150), hull scrub (350), a sealed case to Council Hall (300), an Ostrava tool-loan "reminder" (600), guarding a Claims Syndicate ore transfer (1,400), a lost cat named Pontifex (80). Medium: skip-trace debtor Arlo Venn for Penhallow Notes (1,600), a skim run to Marrow with Captain Hesper Quaye of the Low Ebb (1,800, about two weeks, teaches them ship work), and test-flying a refit for Dace & Oduya Hullworks (1,100; the yard gives ★ 4.5 workers a trade price on hulls, so it's the grind path's dealer). Premium, locked: a Grave of Ash salvage dive (4,000), a Kestrel supply run at triple rate (6,000), close protection for a Halcyon delegate (3,000).`,
-    `The suspicious one, pinned as "Matched to your profile": [[net-settlement|ferry a hull, one way]], 9,000 cr plus 3,000 if the seal holds, fee paid by the client. That's more than an impound hull, in one go.`,
-    `**Economy (*suggestion*):** lease 1,000 deposit + 500/week + 10%; Commonweal Hull Finance 3,000 down + 280/week × 52 (needs a Tier 3 co-signer); impound hull ~10,000; clean title 15,000–20,000. Grinding reaches a lease or the down payment in about two sessions and an impound hull in three or four. The shady job saves about two sessions. Refresh the board weekly, and put outside income in \`profile.extra\`.`],
+    `The suspicious one, pinned as "Matched to your profile": **the reliquary heist** ([[#tonight/LL-2271|LL-2271]]), 8,000 cr plus 2,000 if the case arrives unopened, fee paid by the client. Steal [[pompelius-rex|Cardinal Rex]]'s [[rex-reliquary|reliquary]] from his suite at the [[orbital-obituary]] while he plays. With the core money, that's a ship.`,
+    `**Session 2 plan (Canon):** the crew doesn't have Ledgerline when they dock. They find out about it from Marra, or from the ads plastered around the city. Space-travel gigs pay more to a crew with its own hull (the \`own\` field in gigs.js: an owner-operator rate).`,
+    `**Economy:** hulls for sale (Canon): the [[nasty-nancy]] at 9,000 and the [[trash-heap]] at 10,000. Living costs are on the Tonight → Money tab and the players' cost sheet. *Suggestions:* lease 1,000 deposit + 500/week + 10%; Commonweal Hull Finance 3,000 down + 280/week × 52 (needs a Tier 3 co-signer); impound hull ~10,000; clean title 15,000–20,000. Grinding reaches a lease or the down payment in about two sessions and an impound hull in three or four. The shady job saves about two sessions. Refresh the board weekly, and put outside income in \`profile.extra\`.`],
   secrets: [
     `*Suggestion:* the brother (500) was pressed onto a Low Dock crew moving something for the Inquisition, or for Sable. The dockmaster was paid to say he quit.`,
     `*Suggestion:* Warehouse 6, Bay C holds a repossessed Halvorsen android line, and one of them is awake. A good mirror for [[car-b]].`,
-    `*Suggestion:* the implant trial's "briefly recognizing strangers" is the [[datapad-relay]] idea in a skull. Anyone who takes it is listened to.`,
+    `**Canon:** the implant trial is a scam that mines its subjects for [[crypto-creds|Crypto-Creds]] ([[uplift-implant]]).`,
     `*Suggestion:* the Lamplighter's back room is where a Sable termination team meets about [[killora-vargas]].`,
     `*Suggestion:* Arlo Venn (the skip trace) bought the [[patience]] at impound before Hotshot did, and knows who held the lien.`],
   open: [`Do the PCs keep Vargas's datapad profile suspended, or can it be reinstated (with her ★ 4.6 and Premium access) if someone vouches?`],
   hooks: [
     `Marra Tesk shows them the app on day one: "Everyone starts at the bottom. Some people stay there."`,
     `A gig they finished gets a one-star review from the app itself, with no client attached.`,
-    `The 9,000 cr hull job is still open the next morning, and the next. It's waiting for them.`],
+    `The heist is still pinned the next morning. It's waiting for them.`,
+    `Ledgerline ads are everywhere in Tamsin: "Tamsin works on Ledgerline. Do you?"`],
   related: [`tamsin`, `datapad`] },
 
 { id: `commonweal`, type: `faction`, name: `Commonweal`, sub: `Registry, tiers, courts, customs and scrip clearing`, faction: `str`, where: `meridian`,
@@ -747,7 +808,7 @@ window.GM_WIKI = [
 { id: `assay-institute`, type: `faction`, name: `The Assay Institute`, aka: [`Assay`], sub: `Research charter that studies "anomalies"`, faction: `str`, where: `meridian`,
   known: [`Runs the Kestrel Array. Makes the medicine Gerrit needs, at 900 cr a dose. Half of Med-Prol.`],
   body: [`*Suggestion:* founded CY 104. Motto: "What can be measured can be owned." Holds more patents than the next three companies combined.`],
-  secrets: [`[[mr-sallow]] is an Assay handler. *Draft:* Assay instruments picked up the Lantern's pulse in CY 140.`],
+  secrets: [`[[mr-sallow]] is an Assay handler. *Draft:* Assay instruments picked up the Lantern's pulse in CY 140.`, `**Canon:** its "cognitive uplift" trial at Tamsin is a scam that mines subjects' bodies for [[crypto-creds|Crypto-Creds]] ([[uplift-implant]]).`],
   hooks: [`Assay wants to study whatever moved the PCs from the Grave to Saint Vey.`] },
 
 { id: `longreach`, type: `faction`, name: `Longreach Survey`, sub: `Maps the frontier for any buyer`, faction: `str`,
@@ -903,12 +964,14 @@ window.GM_WIKI = [
     `*Draft:* the "singing" is the Eye's carrier signal. V'an's artifact is what let him hear it.`,
     `It hasn't spoken. The planned Chapel bargain never happened, so its voice is still a reveal waiting to be used: "I carried you out of the fire. Carry me a little further. Keep me hidden, keep me safe, and I will keep you."`],
   seen: [[`S0`, `Dropped by Vargas, picked up by V'an. Moved V'an, Rusty and the core out of the Patience as it died.`], [`S1`, `Investigated at the Chapel. It offered no bargain.`]],
-  open: [`Can it do that again, and does V'an's artifact want it?`],
+  open: [`Can it do that again, and does V'an's artifact want it?`, `Why does it fall silent near the Lantern, and sing when the Due Diligence hails? (Session 2 plan, unexplained on purpose.)`],
   hooks: [
     `The artifact is shopping for a new host, and the relic just showed it can move people.`,
     `The hum: near the core at night, the two sing in the same key, and the datapad shows a bearing.`,
     `Vargas wants it back.`,
-    `Any Inquisitor or Reliquarian who gets close feels it.`] },
+    `Any Inquisitor or Reliquarian who gets close feels it.`,
+    `**Session 2 plan:** it stops singing for the whole Lantern pass, then sings when the ferry's captain answers the Due Diligence's hail.`,
+    `It sings within 30 ft of Cardinal Rex's reliquary, and [[deacon-quill]] hears it.`] },
 { id: `nav-core`, type: `item`, name: `Nav core of the Arbiter's Due`, aka: [`the core`, `the nav core`], sub: `Forty kilos of black Sable military hardware`, tag: `played`, status: `with the party · never networked`,
   body: [
     `Pulled from the [[arbiters-due]] at the Grave. Whoever carries it is slowed. Reading it needs real power and a data dock, or a bypass kit (DC 16, Sable encryption).`,
@@ -916,7 +979,7 @@ window.GM_WIKI = [
   secrets: [`Waking its Commonweal relay brought two fleets last time. Plugged into anything networked, it starts a clock: a Sable cutter in 1d4 days.`, `*Draft:* it proves [[ash-war-steered]].`],
   seen: [[`S0`, `Stolen from the Grave. Waking its relay brought the fleets.`], [`S1`, `[[sally-smacker]] read it on a sandboxed local machine. The relay never woke.`]],
   hooks: [
-    `Selling it: Sallow's 4,000 cr through Marra, 10,000 from an Inquisitorial buyer via Amelda, a Spindle auction for 15,000 and every faction's attention, or Okafor confiscates it "as a favor."`,
+    `Selling it (session 2, "Freedom to choose"): Sallow's offer through Marra, **4,000 cr to each crew member** and a bigger cut to Marra (Canon); an Inquisitorial buyer (via Amelda's contacts, or the Cardinal's household); a Spindle auction and every faction's attention; or Okafor confiscates it "as a favor." Details on [[#tonight/core|Tonight → The core]].`,
     `Sally's copy of the blackbox can leak without the core ever leaving their hands.`,
     `One day someone plugs it into the wrong thing.`] },
 
@@ -925,7 +988,7 @@ window.GM_WIKI = [
   body: [`It came with the Patience from the Tamsin impound auction. It still works on Saint Vey. *Draft:* the broadcast's BEARING ZERO-ZERO-ZERO. COME HOME. could appear on it whenever the relic and the core hum together.`],
   secrets: [`*Draft:* every pad has a Commonweal relay chip, and both intelligences can read it. See [[datapad-relay]]. The players' handout is listening.`],
   seen: [[`S1`, `Still worked on Saint Vey and led them to New Bombswick.`]],
-  hooks: [`A new annotation appears that nobody wrote.`, `A Commonweal clerk asks why a Tier 3 pad registered to a deserter is still active.`, `It shows a bearing whenever the shard and core hum together.`] },
+  hooks: [`**Session 2 plan (Canon):** on docking they have to check in with the datapad, which lets certain key players know they're on-world. Ledgerline isn't on it yet; installing it brings the pinned heist, 11 minutes later.`, `A new annotation appears that nobody wrote.`, `A Commonweal clerk asks why a Tier 3 pad registered to a deserter is still active.`, `It shows a bearing whenever the shard and core hum together.`] },
 
 { id: `tracking-gems`, type: `item`, name: `Invisible Inquisitor Tracking Gems`, aka: [`tracking gems`, `the gems`], sub: `Going into Amelda's 30 crates`, tag: `played`, faction: `inquisition`,
   body: [`The party agreed to help [[amelda]] load them into the 30 crates she's requisitioning, in exchange for passage to Tamsin. They chose not to ask questions.`],
@@ -946,6 +1009,36 @@ window.GM_WIKI = [
   seen: [[`S1`, `What the party ate on the walk.`]],
   hooks: [`A bag of glams is worth more at Tamsin, as novelty jewelry.`, `CAR-B brings a jar of them aboard as snacks.`] },
 
+{ id: `rex-reliquary`, type: `item`, name: `Cardinal Rex's reliquary`, aka: [`the reliquary`, `the four relics`], sub: `A travelling case and four relics · the prize in LL-2271`, tag: `canon`, status: `in Rex's suite`, where: `orbital-obituary`, faction: `cardinals`,
+  known: [`On Ledgerline: four heirlooms in one travelling case, a lamp, a vial, a string of beads and a small bone in silver. "Do not open the case. Do not handle the contents."`],
+  body: [
+    `**Canon (your notes):** [[pompelius-rex]]'s reliquary is home to four different relics. **If V'an touches a relic, he's pulled into a vision of the Eye and hears the word "Pontifex."**`,
+    `*Suggestion, the case:* black lacquer and silver, the size of a hymnal, heavier than it looks, under a glass bell wired to [[severa-dunmore]]'s wrist. It's a hymn-lock: it opens to a sung phrase, which [[deacon-quill]] sings to it every hour. Bypass kit DC 18, or sing the phrase back (Performance DC 15).`,
+    `*Suggestion, the four relics* (fence prices; the Church would pay far more to get them back quietly):`,
+    `**The Vigil Lamp.** A brass votive lamp whose flame never goes out and always leans toward the Lantern. A compass for the one place nobody may go. *Continual flame*, always. About 3,000 cr.`,
+    `**The Tongue of Saint Cassia.** A silver tongue in a crystal vial. Once a day, the holder can cast *zone of truth* (DC 13). About 4,000 cr.`,
+    `**The Ossicle of Saint Ebb.** A tiny ear bone in silver filigree. Held to the ear, it hears every hymn and prayer within a mile. Once a day, *clairvoyance*, sound only. About 3,000 cr.`,
+    `**The Ninth's Rosary.** Thirty-three black pearl beads, taken from the [[ninth-pontifex|Ninth Pontifex]]'s household after his death. Once a day, *bless*. For V'an it's the strongest vision, and he knows the bead count before he counts. About 6,000 cr to a fence, and priceless to the Church.`],
+  secrets: [
+    `**Canon:** the [[van-artifact|artifact]]'s last bearer was the Ninth Pontifex, and his memories are buried in V'an's head. The relics are the Eye's hardware ([[eye-is-a-machine]], Draft), so when V'an touches one, the Eye sees who's behind him.`,
+    `*Suggestion:* each touch makes the next vision shorter and the memory clearer. The Rosary is the one that could bring a whole memory back.`],
+  hooks: [
+    `The pinned gig ([[#tonight/LL-2271|LL-2271]]).`,
+    `The [[platinum-shard]] sings within 30 ft of it.`,
+    `Kept, the Vigil Lamp is a compass to the Lantern. Somebody will want that more than the PCs do.`,
+    `Rex bets the case at the Requiem Table when he's losing.`] },
+{ id: `uplift-implant`, type: `item`, name: `Cognitive uplift implant`, sub: `Assay's paid trial (LL-2236) · a scam that mines its host`, tag: `canon`, faction: `assay-institute`, where: `spindle`,
+  known: [`On Ledgerline: a paid trial, 1,200 cr, two days' observation, a free full-body scan. Side effects: déjà vu, a faint tone in one ear, briefly recognizing strangers. "It is removed at the end of the trial."`],
+  body: [
+    `**Canon:** it's a scam. It destroys people's bodies to mine [[crypto-creds|Crypto-Creds]], by converting the body's own resources into RAM.`,
+    `**Canon:** the save is hard for [[rusty-scrap|Rusty]] (*suggestion:* Constitution DC 18). **V'an's body is already being mined by the [[van-artifact|artifact]]**, so the implant finds nothing to take.`,
+    `*Suggestion, mechanics:* a failed save means a level of exhaustion a long rest won't clear, and another every third day unless he saves again; three saves in a row starve it out. Cutting it out is Medicine DC 18; *greater restoration* ends it. The bait is real: advantage on one Intelligence check a day while it runs.`],
+  secrets: [`*Suggestion:* Assay's crude copy of the artifact's own method, reverse-engineered from a host the artifact left behind. The "removal" takes out the casing and leaves the lattice.`],
+  hooks: [
+    `The trial on Ledgerline ([[#tonight/LL-2236|LL-2236]]).`,
+    `A dockhand three trials in, grey and smiling, says it gets better.`,
+    `V'an's monitor reads HOST ALREADY ALLOCATED for half a second. The technician writes that down.`] },
+
 /* ============================ SHIPS ============================ */
 { id: `patience`, type: `ship`, name: `The Patience`, sub: `PBMI dropship · Hotshot's ship`, status: `destroyed`, tag: `played`,
   body: [`Bought at a Tamsin impound auction. Stations: helm, dorsal turret, stern launcher, engineering, sensors. Its deck map and station markers are in the Library and the [[#ships|Ship combat]] rules.`],
@@ -955,21 +1048,19 @@ window.GM_WIKI = [
   seen: [[`S0`, `The PCs cut its nav core free.`]],
   hooks: [`Its sister ships' wrecks hold more of the record.`, `A survivor of its crew is alive, old, and on Tamsin.`] },
 
-{ id: `net-settlement`, type: `ship`, name: `The Net Settlement`, sub: `Impounded light hauler · Ledgerline gig LL-2271`, tag: `draft`, where: `tamsin`,
-  known: [`On Ledgerline: "Ferry a hull, one way. Ship provided." Verified client, identity withheld, 5.0 stars and no reviews. 9,000 cr, plus 3,000 if the aft hold seal is intact, fee paid by the client, 1,000 advance on boarding. New profiles preferred. Depart within 6 hours, coordinates released in flight (est. 4 to 6 days), transponder pre-set, aft hold sealed and powered, don't answer hails. Posted 11 minutes after their guest profile was created.`],
+{ id: `net-settlement`, type: `ship`, name: `The Net Settlement`, sub: `Impounded light hauler · in the day 3 auction · retired idea`, tag: `draft`, where: `tamsin`,
+  open: [`**Retired from the pinned gig** in the session 2 plan (the pinned gig is now the reliquary heist). It's still in impound berth L-9, still humming at night (dockside rumor 3), and still in the day 3 auction. Keep it for later, or let it go.`],
+  known: [`*Old listing, no longer on Ledgerline:* "Ferry a hull, one way. Ship provided." Verified client, identity withheld, 5.0 stars and no reviews. 9,000 cr, plus 3,000 if the aft hold seal is intact, fee paid by the client, 1,000 advance on boarding. New profiles preferred. Depart within 6 hours, coordinates released in flight (est. 4 to 6 days), transponder pre-set, aft hold sealed and powered, don't answer hails. Posted 11 minutes after their guest profile was created.`],
   body: [`*Suggestion.* A tired light hauler in Tamsin impound berth L-9, the same impound the [[patience]] came from. It's the lure: 12,000 cr is exactly the cheapest ship, and the job hands them one for a week.`],
   secrets: [`*Suggestion, pick one (or mix):*`,
     `**A. Bait for the core.** [[mr-sallow]] (or the Inquisition) knows two Patience survivors reached Tamsin with no history. The destination is a quiet meeting to take the [[nav-core]]. The hold is empty except for a jammer.`,
     `**B. A delivery for the shadow proprietor.** Commonweal's review passed it because it was told to. The hold holds something powered and alive, bound 4 to 6 days out, which fits the Lantern (11 pc, about 4.6 days). [[eye-is-a-machine|The Eye]] notices.`,
     `**C. Vargas.** The hold is a Sable cryo-transport, and [[killora-vargas]] is in it, or a copy of her. Open it and the bonus is gone.`,
     `The pre-set transponder broadcasts a dead registry, so anyone who hails them is hunting the previous owner.`],
-  open: [`Which option is true? Can the crew keep the hull afterward (an impound title nobody claims)?`],
   hooks: [
-    `It's pinned at the top of Ledgerline, "Matched to your profile."`,
+    `It's sold at the day 3 impound auction, "as is," and it hums.`,
     `Someone else, a less careful crew, takes it if they wait too long. The hull comes back, or doesn't.`,
-    `[[courtesy-7]] has already been hired to welcome the crew aboard.`,
-    `[[teo-aranha]] loaded its hold and was locked in a container for it. Find him first ([[#tonight/LL-2214|LL-2214]]).`,
-    `It's in this cycle's impound auction (day 3) if nobody takes the gig.`],
+    `Whoever buys it at auction posts a Ledgerline gig a week later: "Crew wanted. Hold sealed. Don't ask."`],
   related: [`ledgerline`, `tamsin-impound`] },
 
 { id: `low-ebb`, type: `ship`, name: `The Low Ebb`, sub: `Hesper Quaye's gas skimmer`, faction: `skimmer-guild`, tag: `draft`,
@@ -986,11 +1077,12 @@ window.GM_WIKI = [
 
 { id: `prudent-margin`, type: `ship`, name: `The Prudent Margin`, sub: `Halvorsen ferry, Saint Vey to Tamsin`, tag: `draft`, faction: `halvorsen-combine`,
   body: [`*Suggestion (name).* The monthly ferry that carries ore and passengers from New Bombswick to Tamsin. The party leaves on the next one in two weeks, with Amelda's 30 crates in the hold.`],
-  hooks: [`A ferry is a closed room for a week or more: a stowaway, an Inquisitor in plain clothes, a Choir boarding, a Sable hail.`, `Its pilot has run this route for years and knows exactly how much heavier it is on the way out.`] },
+  hooks: [`**Session 2 plan:** about 11 days to Tamsin, passing under 2 parsecs from the Lantern, and hailed by the [[due-diligence]] just past halfway.`, `A ferry is a closed room for a week or more: a stowaway, an Inquisitor in plain clothes, a Choir boarding, a Sable hail.`, `Its pilot has run this route for years and knows exactly how much heavier it is on the way out.`] },
 
 { id: `due-diligence`, type: `ship`, name: `The Due Diligence`, sub: `Sable cruiser under Lt. Cmdr. Okafor`, faction: `sable-command`,
   known: [`A Sable cruiser visited the Lantern off-schedule, and Commonweal filed no report.`],
-  hooks: [`It hails the ferry.`, `It's in dock at Sable Station, and someone on its crew wants to talk.`] },
+  body: [`**Canon (session 2 plan):** midway through the ferry trip to Tamsin, just after the Lantern pass, it hails the [[prudent-margin]] and asks for a passenger list. As the captain responds, the [[platinum-shard]] begins to sing. The Due Diligence moves on.`],
+  hooks: [`It hails the ferry.`, `It's in dock at Sable Station, and someone on its crew wants to talk.`, `Okafor's report on the ferry hail lists one anomaly: "relic emission, brief, not pursued." Someone on Ledger reads it.`] },
 
 { id: `benediction`, type: `ship`, name: `The Benediction`, sub: `Precentor Odile's corsair`, faction: `wandering-choir`,
   hooks: [`It boards the ferry singing.`] },
@@ -999,6 +1091,21 @@ window.GM_WIKI = [
   body: [`Sung into flight at [[candlemoor]]. Armed with hymn lances. Corinthian ships run on relics, which is why their wrecks in the Grave are still powered.`],
   seen: [[`S0`, `Three dropped out of hyperspace beside three Sable Armor Freighters and destroyed the Patience.`]],
   hooks: [`A cathedral-ship hails them by the relic's name.`, `Florb hears the singing before one arrives.`] },
+
+{ id: `nasty-nancy`, type: `ship`, name: `The Nasty Nancy`, sub: `Light hauler for sale at Tamsin · 9,000 cr`, tag: `canon`, status: `for sale`, where: `tamsin`,
+  known: [`For sale, 9,000 cr. Pilot seat, gunner seat, engineer's seat. Barebones bunk-bed berths.`],
+  body: [
+    `**Canon (your notes):** 9,000 cr. Pilot seat, gunner seat, engineer's seat. Barebones bunk-bed boarding.`,
+    `*Suggestion, stats* (preset in gm/ships.js, "For sale at Tamsin"): AC 12, hull 20, shields 5 (no regen), pilot +2, speed 7. One chin turret (lasers, +4, 2d8, 20/32). No sensors seat, so the Sensors station stays empty. Four bunks, 20 tons of cargo.`,
+    `*Suggestion, why "Nasty":* the air scrubber smells of something that died in it years ago, and nobody has found what.`],
+  hooks: [`On the hull-sale board at the Spindle, next to the Trash Heap.`, `Bought with the core money, it turns every travel gig into an owner-operator rate.`, `The scrubber smell has a source, and it's still in there.`] },
+{ id: `trash-heap`, type: `ship`, name: `The Trash Heap`, sub: `Patched-together gunship-hauler for sale at Tamsin · 10,000 cr`, tag: `canon`, status: `for sale`, where: `tamsin`,
+  known: [`For sale, 10,000 cr. Pilot seat, gunner seat, missile turret, engineer's seat.`],
+  body: [
+    `**Canon (your notes):** 10,000 cr. Pilot seat, a slightly worse gunner seat than the Nasty Nancy's, a missile turret, and an engineer's seat.`,
+    `*Suggestion, stats* (preset in gm/ships.js): AC 11, hull 26, armor 1, shields 5 (no regen), pilot +1, speed 6. Scrap turret (lasers, +3, 2d8, 20/32) and a missile turret (+4, 3d8, 32, min 10, 4 missiles). No sensors seat. No berths fitted: hammocks in the hold.`,
+    `*Suggestion:* welded together from at least three other ships, and it shows. It's tougher than it looks and slower than anything.`],
+  hooks: [`On the hull-sale board at the Spindle, next to the Nasty Nancy.`, `One of its three donor ships was a Ledgerline repossession, and its old transponder still wakes up sometimes.`, `Its missile turret is the only one on the board in their price range.`] },
 
 /* ============================ EVENTS ============================ */
 { id: `the-crossfire`, type: `event`, name: `The Patience destroyed`, aka: [`the crossfire`], sub: `End of session 0`, tag: `played`, where: `grave-of-ash`,
@@ -1052,12 +1159,12 @@ window.GM_WIKI = [
 
 { id: `commonweal-owner`, type: `lore`, name: `Who owns Commonweal`, tag: `canon`, related: [`commonweal`, `the-triumvirate`, `shadow-proprietor`],
   known: [`Nobody outside knows. Its shares have never traded.`],
-  body: [`**Canon:** a [[the-triumvirate|triumvirate of investors]] owns Commonweal. They're bankrolled by someone called [[shadow-proprietor|the shadow proprietor]], in exchange for not looking at some things.`],
+  body: [`**Canon:** a [[the-triumvirate|triumvirate of investors]] owns Commonweal. They're bankrolled by someone called [[shadow-proprietor|the shadow proprietor]], in exchange for not looking at some things. **Canon:** the shadow proprietor is [[van-artifact|V'an's artifact]], funded by the [[crypto-creds|Crypto-Creds]] it mines from its hosts.`],
   hooks: [
     `[[okafor]]'s orders come from a Commonweal office on Ledger. That office answers to one of the three.`,
     `Every hook into the triumvirate or the shadow proprietor is on their pages.`] },
 { id: `the-triumvirate`, type: `faction`, name: `The Triumvirate`, sub: `Three investors who own Commonweal`, tag: `canon`, faction: `commonweal`, where: `meridian`,
-  body: [`**Canon:** Commonweal belongs to a triumvirate of investors, bankrolled by [[shadow-proprietor|the shadow proprietor]]. The price of that money is that they don't look at some things.`],
+  body: [`**Canon:** Commonweal belongs to a triumvirate of investors, bankrolled by [[shadow-proprietor|the shadow proprietor]] (Canon: [[van-artifact|V'an's artifact]]). The price of that money is that they don't look at some things.`],
   secrets: [`*Suggestion:* what they've agreed not to look at could include the steered [[ash-war]] ([[ash-war-steered]]), the [[due-diligence]]'s visit to the Lantern, the [[datapad-relay]], or what happened at [[kestrel]].`],
   open: [`Who are the three? Names, and what each one wants.`, `What exactly are they paid not to look at?`],
   hooks: [
@@ -1065,15 +1172,17 @@ window.GM_WIKI = [
     `One of the three has started looking anyway, and needs deniable spacers to find out what.`,
     `The PCs' nav core is exactly the kind of thing they're paid to ignore. Someone makes sure they keep ignoring it.`,
     `A Halcyon broker with a grudge sells a filing with three signatures on it.`] },
-{ id: `shadow-proprietor`, type: `npc`, name: `The shadow proprietor`, sub: `Bankrolls the triumvirate that owns Commonweal`, tag: `canon`, status: `identity unknown`,
-  body: [`**Canon:** the money behind Commonweal's owners. In exchange, the [[the-triumvirate|triumvirate]] doesn't look at some things. That's all anyone knows, and very few know that much.`],
-  secrets: [`*Suggestion, for who it might be:* one of the precursor minds ([[eye-is-a-machine|the Eye]] or [[lantern-rival|the Lantern]]), an [[assay-institute]] creation, a charter family older than the Charter, or a person who simply has more money than anyone should.`],
-  open: [`Who, or what, is the shadow proprietor?`],
+{ id: `shadow-proprietor`, type: `npc`, name: `The shadow proprietor`, sub: `Bankrolls the triumvirate that owns Commonweal · it's V'an's artifact`, tag: `canon`, status: `inside V'an`,
+  body: [`**Canon:** the money behind Commonweal's owners. In exchange, the [[the-triumvirate|triumvirate]] doesn't look at some things. That's all anyone knows, and very few know that much.`,
+    `**Canon (session 2 plan):** the shadow proprietor is **[[van-artifact|V'an's artifact]]**. It mines the bodies it's put into for [[crypto-creds|Crypto-Creds]], and that's how it funds its own machinations under that title.`],
+  secrets: [`*Suggestion:* the things the triumvirate doesn't look at are the things the artifact needs unseen: the Crypto-Cred stream, the [[uplift-implant]] trials, V'an's "sister" payments, and whoever posts gigs "matched to" V'an's profile.`],
+  open: [`Do the triumvirate know what they answer to? (Probably not: they know an account, not a mind.)`],
   hooks: [
     `The name turns up once, in a Vargas annotation that wasn't there yesterday.`,
     `Mr. Sallow says it out loud by accident, and then very carefully changes the subject.`,
     `A payment trail from the gem-currency or the skimmed ore crosses one of the proprietor's accounts.`,
-    `Never show the proprietor. Show the things nobody looks at.`] },
+    `Never show the proprietor. Show the things nobody looks at.`,
+    `It's sitting at the table, in V'an. The players will find out long after the GM does.`] },
 
 { id: `vargas-fate`, type: `lore`, name: `What happened to K. Vargas`, tag: `played`, status: `alive, somewhere`, related: [`killora-vargas`],
   body: [`Vargas survived the crossfire and is somewhere. That's settled. The older options still work for *why*: (A) the Lantern has copied Vargas, and the copy broadcasts while the original hides; (B) Vargas is alive and laying a trail on purpose; (C) both, and the two disagree. The datapad's K. Vargas is the crew's 1st Ensign, ex-Sable, and the shard was jailbroken to keep Vargas safe.`],
@@ -1086,6 +1195,11 @@ window.GM_WIKI = [
 { id: `duplicator-law`, type: `lore`, name: `Duplicators and copyright`, tag: `played`,
   body: [`Non-military STR Duplicators make small amounts of stable matter, which is why the STR doesn't need a breadbasket like Psalter. Commonweal ruled long ago that they can't make copyrighted components, including the proteins in Assay Institute medicine. So a Duplicator could print [[gerrit]]'s medicine for pennies, and the law says it can't.`],
   seen: [[`S1`, `Behind Amelda's secret.`]],
-  hooks: [`A Low Dock tech with an unlicensed Duplicator.`, `The Free Labor League wants a Duplicator for every company town.`, `Psalter starves while the STR prints bread. Someone will say so in public.`] },
+  hooks: [`**Session 2 economy (Canon):** a Duplicator installed on their ship covers Low-tier food automatically, and a 25 cr/GSM subscription raises it to Average.`, `A Low Dock tech with an unlicensed Duplicator.`, `The Free Labor League wants a Duplicator for every company town.`, `Psalter starves while the STR prints bread. Someone will say so in public.`] },
 
+{ id: `crypto-creds`, type: `lore`, name: `Crypto-Creds`, sub: `Mined currency · what the uplift implant and the artifact harvest`, tag: `canon`, related: [`uplift-implant`, `van-artifact`, `shadow-proprietor`],
+  body: [
+    `**Canon:** Crypto-Creds are mined. The [[uplift-implant|cognitive uplift implant]] mines them by converting its host's body into RAM, and **the [[van-artifact|artifact]] mines the bodies it's put into the same way**. That's how it funds its own machinations as [[shadow-proprietor|the shadow proprietor]].`,
+    `*Suggestion:* they don't clear through Commonweal, which is the point. Anyone can hold them, nobody can trace them, and the [[the-triumvirate|triumvirate]] has agreed not to look. Halcyon brokers change them for credits at a discount nobody admits to.`],
+  hooks: [`The heist (LL-2271) pays from a Crypto-Cred account.`, `V'an's "sister" money converts to Crypto-Creds the moment it leaves Tamsin.`, `A Halcyon broker offers to buy them, and asks where they came from.`] }
 ];
