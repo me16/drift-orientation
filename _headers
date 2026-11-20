@@ -1,0 +1,3 @@
+# Cloudflare Pages: always revalidate pages and data so gig, wallet and rating updates show on reload
+/*
+  Cache-Control: no-cache

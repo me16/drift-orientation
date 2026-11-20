@@ -376,7 +376,10 @@ svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 </div>
 </div>
 
-<script src="gigs.js"></script>
+<script>/* always fetch the latest gigs, wallet and ratings: bypass any cached copy of gigs.js */
+document.write('<script src="gigs.js?v='+Date.now()+'"><\/script>');
+/* a page restored from the back/forward cache would show old numbers: reload it */
+addEventListener("pageshow",e=>{if(e.persisted)location.reload()});</script>
 <script>
 (()=>{
 const L=window.LEDGERLINE||{profile:{},gigs:[]};
