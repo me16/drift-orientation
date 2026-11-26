@@ -307,7 +307,7 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
 <div id="app" hidden>
 <div class="bar"><div class="bar-in">
  <span class="brand">GM · DRIFT</span>
- <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#session1">Last time</a><a href="#wiki">Wiki</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
+ <nav aria-label="Sections"><a href="#tonight">Tonight</a><a href="#session1">Session 1</a><a href="#wiki">Wiki</a><a href="#truths">Truths</a><a href="#cast">Cast</a><a href="#rules">Rules</a><a href="#ships">Ship combat</a><a href="#flight">Flight</a><a href="#library">Library</a></nav>
  <button class="btn" id="lockBtn" type="button">Lock</button>
 </div></div>
 
@@ -320,7 +320,35 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
 
 <!-- ============================ TONIGHT ============================ -->
 <section id="tonight">
- <h2><span class="k">S2</span>Session 2, Free Harbor Tamsin <span class="tag draft">Plan</span></h2>
+ <h2><span class="k">S2</span>Session 2, Free Harbor Tamsin <span class="tag draft">Played</span></h2>
+
+ <div class="beat" style="--c:var(--ok)">
+  <div class="beat-h"><h3>What happened at the table</h3><span class="t">played</span></div>
+  <p>The tabs below are the session 2 plan. They stay up as the Tamsin board until there's a session 3 plan. Where the table changed the plan, this box wins. Full page: <a href="#wiki/s2">Session 2</a> in the wiki.</p>
+  <ul>
+   <li><strong>The journey went as planned.</strong> The Lantern tugged on them during the pass, and Sable Command (the <a href="#wiki/due-diligence">Due Diligence</a>) hailed the ferry.</li>
+   <li><strong>The datapad has the core's data.</strong> On arrival they copied the <a href="#wiki/nav-core">nav core</a>'s contents onto <a href="#wiki/datapad">Vargas's datapad</a>. They recognized that the core's background signal, <b>the Eye's frequency</b>, matches <b>at least 70 signals on the station</b>.</li>
+   <li><strong>The Inquisitor:</strong> they spoke briefly to the <a href="#wiki/the-inquisitor">Inquisitor</a> sent to pick up <a href="#wiki/amelda">Amelda</a>'s boxes (the <a href="#wiki/tracking-gems">tracking gems</a>).</li>
+   <li><strong>Sister Perpetua:</strong> they followed the Eye's signal down to Low Dock and found <a href="#wiki/perpetua">her</a>, the pilgrim from <a href="#tonight/LL-2207">LL-2207</a>. They recognized the signal as her relic's, and she gave them a lore dump on relics and how they work.</li>
+   <li><strong>The core is sold.</strong> They gave it to <a href="#wiki/marra-tesk">Marra</a> for <b>4,000 cr each</b> (8,000 for the two of them).</li>
+   <li><strong>Two gigs done:</strong> <a href="#tonight/LL-2207">LL-2207</a>, walking the sister to her ship, and <a href="#tonight/LL-2219">LL-2219</a>, the night watch at <a href="#wiki/warehouse-6">Warehouse 6</a>, where the night passed uneventfully. Both are marked done and rated 5★ in <code>ledgerline/gigs.js</code>, and the 8,000 is in <code>profile.extra</code>.</li>
+  </ul>
+  <h4>Where they stand now</h4>
+  <ul>
+   <li><b>Money:</b> 8,000 cr from Marra plus 880 cr through Ledgerline (400 and 700 posted, less the 20% fee) makes <b>8,880 cr</b>, before living costs and V'an's 800 standing order. That's 120 short of the <a href="#wiki/nasty-nancy">Nasty Nancy</a>.</li>
+   <li><b>Ledgerline:</b> 2 rated gigs at ★ 5.0. One more rated gig makes their rating visible, and ★ 4.5 or better unlocks Premium.</li>
+   <li><b>Not done:</b> the heist (<a href="#tonight/LL-2271">LL-2271</a>) and every other gig. Nothing in Bay C was touched.</li>
+  </ul>
+  <h4>Loose threads <em>(suggestions)</em></h4>
+  <ul>
+   <li class="secret"><strong>The datapad now carries the core's data.</strong> The core was only dangerous plugged into something networked, and the datapad checks in with Commonweal. Whether that wakes anything (Sable, <a href="#wiki/datapad-relay">the relay</a>, <a href="#wiki/shadow-proprietor">the shadow proprietor</a>) is yours to decide.</li>
+   <li class="secret"><strong>Seventy relics on Tamsin.</strong> Council week draws relic-carriers: Cardinal Rex's four, Perpetua's flake, the Choir, Inquisitors. Some of the seventy are surely jailbroken. The datapad can now find them, which is a gig in itself, or a reason for an Inquisitor to want the datapad.</li>
+   <li><strong>Marra's 600:</strong> was it settled out of the sale? Record it on her page.</li>
+   <li><strong>Perpetua's lore dump:</strong> note what she told them on her wiki page so it stays consistent.</li>
+   <li><strong>Dates on the board:</strong> the heist listing still says "posted 11 min ago". If time has passed, update its <code>posted</code> / <code>expires</code> in <code>ledgerline/gigs.js</code>.</li>
+  </ul>
+ </div>
+
  <p>Wrap up New Bombswick, ride the ferry past the Lantern, dock at Tamsin without CAR-B, and choose what to do with the core. Then the city, <a href="../ledgerline/" target="_blank" rel="noopener">Ledgerline</a>, and the pinned gig: steal a Cardinal's reliquary from a casino in orbit.</p>
  <p class="dim">Built from your session 2 notes. Lines marked <b>Canon</b> or "your notes" are yours; everything else is a <em>suggestion</em>. Use the tabs: each gig has its own page (<code>#tonight/LL-2271</code>), the Money tab adds up whatever you mark at the table, and the <a href="../handouts/tamsin-costs.html" target="_blank" rel="noopener">cost sheet</a> is ready to screenshot for the players.</p>
 
@@ -345,7 +373,7 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
      </ol>
     </div>
     <div class="panel">
-     <h4>Where they stand when they dock</h4>
+     <h4>Where they stood when they docked (the plan)</h4>
      <ul>
       <li><b>Money:</b> none on Ledgerline (they don't have it yet), and whatever they carried off Saint Vey. Put any cash in <code>profile.extra</code>.</li>
       <li><b>They have:</b> the <a href="#wiki/nav-core">nav core</a> (never networked), <a href="#wiki/platinum-shard">Vargas's relic</a>, <a href="#wiki/datapad">Vargas's datapad</a>.</li>
@@ -773,7 +801,7 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
 
 <!-- ============================ LAST TIME ============================ -->
 <section id="session1">
- <h2><span class="k">S1</span>Last session: session 1, the Crescent Fields <span class="tag draft">Played</span></h2>
+ <h2><span class="k">S1</span>Session 1, the Crescent Fields <span class="tag draft">Played</span></h2>
  <p>The shard teleports them out of the dying Patience and drops them on Saint Vey. The party has three days of walking to do, a town that won't sell to them, and a supplies manager with a secret. It runs about <strong>3½ hours</strong>: waking up (15 min), the walk (45 min), New Bombswick (60–90 min), and the ferry port, which ends in a fight, a getaway or a deal. Free Harbor Tamsin is next session.</p>
 
  <div class="beat" style="--c:var(--ok)">
@@ -1251,7 +1279,7 @@ pre.paste{overflow-x:auto;background:#070918;border:1px solid var(--rule);paddin
 <!-- ============================ CAST ============================ -->
 <section id="cast">
  <h2><span class="k">02</span>Cast and secrets</h2>
- <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description. New Bombswick's people are in <a href="#session1">Last time</a>, Tamsin's in <a href="#tonight/people">Tonight → People</a>. Everyone has a fuller page, with hooks, in the <a href="#wiki">Wiki</a>. The party: <a href="#wiki/rusty-scrap">Rusty Scrap</a> (dwarven Armorer artificer, Ashborn) and <a href="#wiki/van">V'an Ski-born</a> (Talisman warlock from Meridian Prime).</p>
+ <p class="dim">Stat blocks reference the 5e SRD. Use the named monster and change its description. New Bombswick's people are in <a href="#session1">Session 1</a>, Tamsin's in <a href="#tonight/people">Tonight → People</a>. Everyone has a fuller page, with hooks, in the <a href="#wiki">Wiki</a>. The party: <a href="#wiki/rusty-scrap">Rusty Scrap</a> (dwarven Armorer artificer, Ashborn) and <a href="#wiki/van">V'an Ski-born</a> (Talisman warlock from Meridian Prime).</p>
  <div class="grid">
   <div class="stat"><h4>Marra Tesk</h4><div class="sub">Fixer, the Spindle, Tamsin</div><div class="line">Spy. Dry, quick, loyal to Vargas in her own way. Wants her 600 cr and to know what happened.</div><div class="line secret">Takes 10% from Sallow. Doesn't know who he works for, and doesn't want to.</div></div>
   <div class="stat"><h4>"Mr. Sallow"</h4><div class="sub">The buyer</div><div class="line">Spy. Grey coat, perfect manners.</div><div class="line secret">Assay Institute handler. Needs the Ash War charts to prove the fleets were steered. Afraid of whatever silenced Kestrel.</div></div>

@@ -31,7 +31,7 @@ profile: {
   device: `K. VARGAS · Tier 3`,
   holder: `Registered holder's worker profile suspended pending status review.`,
   name: `Guest worker`,
-  extra: 0,                    // savings from outside Ledgerline, in cr
+  extra: 8000,                 // savings from outside Ledgerline, in cr. S2: Marra's nav core deal, 4,000 each for Rusty and V'an
   goals: [                     // Wallet milestones, in cr: what a hull costs at Tamsin
     [1000,  `Lease deposit`],
     [3000,  `Hull Finance down payment`],
@@ -79,7 +79,7 @@ gigs: [
     `Posted 11 minutes after this guest profile was created.`] },
 
 /* ---------------- open: small ---------------- */
-{ id: `LL-2207`, cat: `Escort`, title: `Walk a pilgrim to her ship`,
+{ id: `LL-2207`, cat: `Escort`, title: `Walk a pilgrim to her ship`, status: `done`, rating: 5,
   client: `Sister Ama Reede, Wandering Choir`, cr: 4.9, crn: 31,
   pay: 400, where: `Spindle hostel to Berth 31`, when: `Tomorrow, second shift · about 2 hours`,
   posted: `3h ago`, expires: `in 1 day`,
@@ -112,7 +112,7 @@ gigs: [
     `Client has a rating below 4.0. Proceed with care.`,
     `This listing has been reposted 2 times.`] },
 
-{ id: `LL-2219`, cat: `Security`, title: `Overnight watch, bonded warehouse`,
+{ id: `LL-2219`, cat: `Security`, title: `Overnight watch, bonded warehouse`, status: `done`, rating: 5,
   client: `Halvorsen Combine · Tamsin Logistics`, cr: 4.6, crn: 540,
   pay: 700, where: `Bonded Warehouse 6, the cargo ring`, when: `One night, 22:00 to 06:00`,
   posted: `1h ago`, expires: `in 2 days`,

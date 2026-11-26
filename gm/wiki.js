@@ -32,7 +32,7 @@ window.GM_WIKI = [
     `The PCs killed the scav captain, [[tobin-kell]], and his crew, without ever learning his name. During the fight Vargas dropped her relic, the [[platinum-shard]], near the PCs. When V'an went down, he could tell something in it was "singing." He picked it up, and the PCs went back to their stations.`,
     `Then [[the-crossfire]]: three [[cathedral-ships]] and three Sable Armor Freighters dropped out of hyperspace right on top of them and ordered the Patience to stand down. Before Hotshot could answer, they opened fire, and the Patience was destroyed. *"The last thing they saw, as their vision frosted over and their blood began to boil, was a glow of warm platinum as the relic somehow moved them somewhere safe."*`,
     `**Outcome:** V'an and Rusty survived, and the core came with them. Hotshot died. Vargas and Florb were believed dead, but both turned out to be alive (see their pages).`,
-    `Differences from the plan, which is folded up under [[#session0|Last time]]: the Ashborn captain died instead of surrendering, Sable brought Armor Freighters, Corinthia brought three ships and no wormholes, and the rescue came from Vargas's relic, not a shard behind the cockpit panel.`],
+    `Differences from the plan, which is folded up under [[#session0|Session 0]]: the Ashborn captain died instead of surrendering, Sable brought Armor Freighters, Corinthia brought three ships and no wormholes, and the rescue came from Vargas's relic, not a shard behind the cockpit panel.`],
   open: [`Who was the distress signal calling? *Draft:* it was the core's Commonweal relay waking up, and that's how both fleets found them.`],
   hooks: [
     `Anyone who was in the Grave that night can turn up: an Ashborn who saw the Patience die, a Sable crewman from an Armor Freighter, a Choir singer who heard the relic answer.`,
@@ -46,12 +46,28 @@ window.GM_WIKI = [
     `"Carby Newplayer" turned out to be CAR-B ν_player, a jailbroken Halvorsen reception android. The party wants him on their crew once they have a ship.`,
     `They found out Amelda's secret and made a deal instead of a fight. They'll load invisible [[tracking-gems]] into the 30 crates she's requisitioning, and they chose not to ask questions. In exchange she gives them passage to [[tamsin]]. They leave in two galactic standard weeks.`,
     `Rumor 1 at Carby's changed: a black orb came crashing out of the sky two weeks back, then took off for the upper atmosphere. [[florb]] lives.`,
-    `The full plan is under [[#session1|Last time]].`],
+    `The full plan is under [[#session1|Session 1]].`],
   hooks: [
     `Two weeks of downtime on Saint Vey: the loading job, rest, and anything left to ask Sally, Father Pops or CAR-B.`,
     `The 30 crates ride the same ferry the PCs do.`,
     `Sally has now seen the core's blackbox. That knowledge can travel.`,
     `Somewhere above Saint Vey there's an orb.`] },
+
+{ id: `s2`, type: `session`, name: `Session 2: Free Harbor Tamsin`, tag: `played`,
+  sub: `The Lantern pass, the core sold to Marra, and two Ledgerline gigs`,
+  body: [
+    `The ferry ride went as planned: the [[lantern]] tugged on them during the pass, and Sable Command's [[due-diligence]] hailed the [[prudent-margin]].`,
+    `At [[tamsin]] they copied the [[nav-core]]'s data onto [[datapad|Vargas's datapad]], and recognized that the core's background signal, the Eye's frequency, matches at least 70 signals on the station.`,
+    `They spoke briefly to [[the-inquisitor|the Inquisitor]] sent to pick up [[amelda]]'s boxes.`,
+    `In [[low-dock]] they followed the Eye's signal to [[perpetua|Sister Perpetua]], the pilgrim from [[#tonight/LL-2207|LL-2207]], and recognized it as coming from her relic. She gave them a lore dump on relics and how they work.`,
+    `They gave the core to [[marra-tesk]] for 4,000 cr each (8,000 for the two of them).`,
+    `They took two [[ledgerline]] gigs: walking the sister to her ship ([[#tonight/LL-2207|LL-2207]]) and the night watch at [[warehouse-6]] ([[#tonight/LL-2219|LL-2219]]). The night passed uneventfully. Both are marked done, 5★ (a *suggestion*: change the ratings in ledgerline/gigs.js if the table said otherwise). Purse: 8,880 cr.`,
+    `The plan and the box "What happened at the table" are under [[#tonight|Tonight]].`],
+  open: [`Was Marra's 600 cr settled out of the sale?`, `What exactly did Perpetua tell them about relics?`, `Does copying the core's data onto a datapad that checks in with Commonweal wake anything?`],
+  hooks: [
+    `The heist ([[#tonight/LL-2271|LL-2271]]) is still pinned, and 120 cr more buys the [[nasty-nancy]].`,
+    `Seventy Eye signals on one station, and now the datapad can find every one of them.`,
+    `Bay C at Warehouse 6 is still knocking, and nobody answered.`] },
 
 /* ============================ PCs ============================ */
 { id: `rusty-scrap`, type: `pc`, name: `Rusty Scrap`, tag: `canon`,
@@ -66,7 +82,7 @@ window.GM_WIKI = [
     `**Canon:** the wrecks stay powered almost permanently, since Corinthian ships run on relics and STR ships on cold fusion. That's why the Grave still broadcasts, and how the survivors lived on them.`,
     `*Draft:* his ship's course correction is on the [[arbiters-due]] core he's carrying, so he can prove what happened to him.`,
     `The Ashborn captain the PCs killed in session 0 was [[tobin-kell]], [[sefa-kell]]'s grandson. Rusty killed one of his own people without knowing it.`],
-  seen: [[`S0`, `Crewed the Patience. Helped kill the Ashborn boarders. One of the last two people to touch Vargas's relic, so it took him along.`], [`S1`, `Woke in the Crescent Fields, walked to New Bombswick, investigated the shard and the core. The shard never spoke to him.`]],
+  seen: [[`S0`, `Crewed the Patience. Helped kill the Ashborn boarders. One of the last two people to touch Vargas's relic, so it took him along.`], [`S1`, `Woke in the Crescent Fields, walked to New Bombswick, investigated the shard and the core. The shard never spoke to him.`], [`S2`, `Rode the ferry to Tamsin, copied the core onto the datapad, sold the core to Marra for 4,000 cr, walked Sister Perpetua to her ship and sat a quiet night watch at Warehouse 6.`]],
   open: [`Which Longreach ship took him, and what was it called? Who else from it is alive?`],
   hooks: [
     `The [[nav-core]]'s blackbox shows the Longreach ship's redirection too. Seeing it is the moment Rusty learns his childhood was a murder.`,
@@ -89,7 +105,7 @@ window.GM_WIKI = [
     `**Canon:** the artifact's last bearer was the missing [[ninth-pontifex|Ninth Pontifex]]. His memories are still buried in V'an's head. If V'an touches a relic, he's pulled into a vision of the Eye and hears the word "Pontifex."`,
     `**Canon:** his body is already being mined by the artifact, for [[crypto-creds|Crypto-Creds]]. That's why the [[uplift-implant]] can't take hold in him.`,
     `**Canon:** he sends 800 cr home for his "sick sister," and he can't remember her name.`],
-  seen: [[`S0`, `Went down in the boarding fight, heard Vargas's relic "singing," and picked it up. The relic took him and Rusty out of the Patience.`], [`S1`, `Heard the shard's song fading after the teleport.`]],
+  seen: [[`S0`, `Went down in the boarding fight, heard Vargas's relic "singing," and picked it up. The relic took him and Rusty out of the Patience.`], [`S1`, `Heard the shard's song fading after the teleport.`], [`S2`, `The Lantern tugged on him during the pass. At Tamsin: sold the core to Marra (4,000 cr), found Sister Perpetua by following the Eye's signal, and took the night watch at Warehouse 6.`]],
   hooks: [
     `Commonweal clears every transaction, so **Commonweal knows where V'an's money goes**. A clerk, or [[the-triumvirate]], could hand him the trail.`,
     `He sends money home from Tamsin and the transfer bounces: there's no account in his sister's name.`,
@@ -122,7 +138,7 @@ window.GM_WIKI = [
     `*Draft:* it wants V'an on the Lantern. That's where the money goes: passage, charts, parts. The Eye wants to stop that, but it may also need what the artifact would find there.`,
     `*Draft:* rivals that need each other. Each sabotages the other only up to a point, like two heirs to one throne.`,
     `*Draft:* the relic sang to it, and it answered. Whatever it is, it speaks the Eye's language.`],
-  seen: [[`S0`, `Let V'an hear Vargas's relic singing. Nobody else in the bay did.`]],
+  seen: [[`S0`, `Let V'an hear Vargas's relic singing. Nobody else in the bay did.`], [`S2`, `Beckoned V'an toward the Lantern during the pass, as planned.`]],
   open: [`What is it, who made it, and what does it want on the Lantern? (Deliberately open.)`, `How did it get from the Ninth Pontifex to V'an, and what happened to the Ninth when it left?`],
   hooks: [
     `The money trail, through Commonweal.`,
@@ -180,10 +196,11 @@ window.GM_WIKI = [
   body: [`Dry, quick, and loyal to [[killora-vargas]] in her own way. She brokered the Grave job for [[mr-sallow]]. Vargas's datapad says: "Ask for Marra at the Spindle."`,
     `**Canon (session 2 plan):** when the datapad checks in at Tamsin, she pings them and wants to meet. The offer on the [[nav-core]] is **4,000 cr each, to every member of the crew**, with a larger cut to her as the fixer. They can try to undercut her and find a better deal (an Inquisitor, an auction), at significant risk. She can be the one who tells them about [[ledgerline]].`],
   secrets: [`Takes 10% from Sallow. She doesn't know who he works for and doesn't want to.`],
-  seen: [[`S0`, `Brokered the job (offscreen).`]],
+  seen: [[`S0`, `Brokered the job (offscreen).`], [`S2`, `Took the nav core and paid 4,000 cr to each of them.`]],
+  open: [`Was her 600 cr settled out of the core money? And has she told them anything new about Vargas?`],
   hooks: [
     `She's waiting at the Spindle when the ferry docks, because she reads the passenger manifests.`,
-    `She still has Sallow's offer for the [[nav-core]] (4,000 cr each, and a bigger cut for her), and she still wants her 600.`,
+    {t: `She still has Sallow's offer for the [[nav-core]] (4,000 cr each, and a bigger cut for her), and she still wants her 600.`, used: `S2`},
     `She has work, the kind Ledgerline won't list, for a crew that owes her.`,
     `She wants to know where Vargas is more than she wants the money. That's leverage either way.`] },
 
@@ -258,10 +275,12 @@ window.GM_WIKI = [
   body: [`*Suggestion.* Brisk, kind, and very tired of being Perpetua's minder. Posted [[#tonight/LL-2207|LL-2207]] because the Choir's own people get stopped in Low Dock.`],
   hooks: [`She's the friendly face of the Choir at Tamsin. Pirates, yes, but they pay on time and rate fairly.`] },
 
-{ id: `perpetua`, type: `npc`, name: `Sister Perpetua`, sub: `The Choir's oldest Precentor, ninety-one`, stats: `Priest (cure wounds three times)`, faction: `wandering-choir`, tag: `draft`,
+{ id: `perpetua`, type: `npc`, name: `Sister Perpetua`, sub: `The Choir's oldest Precentor, ninety-one`, stats: `Priest (cure wounds three times)`, faction: `wandering-choir`, tag: `played`, status: `aboard the Benediction`,
   body: [`*Suggestion.* Deaf in one ear, calls everyone by the wrong name, and blesses anyone who stands still. She taught [[odile-sancte]] to sing.`],
   secrets: [`Her reliquary holds a flake of the same warm platinum as [[platinum-shard|Vargas's relic]]. She can hear the shard, and knows it's been jailbroken: "Somebody's cut that one's leash. Good."`],
-  hooks: [`Walk her to Berth 31 ([[#tonight/LL-2207|LL-2207]]).`, `She stops beside V'an in the street and listens to his pocket.`] },
+  seen: [[`S2`, `Found in Low Dock: they followed the Eye's signal and recognized it as her relic's. She gave them a lore dump on relics and how they work, and they walked her to her ship (LL-2207, 5★).`]],
+  open: [`Record what she told them about relics, so later sources agree with her.`],
+  hooks: [`She heard the shard (or V'an's artifact) and said nothing about it. Next time she does.`, {t: `Walk her to Berth 31 ([[#tonight/LL-2207|LL-2207]]).`, used: `S2`}, `She stops beside V'an in the street and listens to his pocket.`] },
 
 { id: `biscuit`, type: `npc`, name: `Biscuit (HC-L4)`, aka: [`HC-L4`], sub: `Four-arm Halvorsen cargo drone, on the run from its lease`, stats: `Animated Armor, climb 30 ft, won't fight`, faction: `halvorsen-combine`, where: `spindle`, tag: `draft`,
   wants: `To buy out its own lease (1,100 cr). It has 410.`,
@@ -418,7 +437,7 @@ window.GM_WIKI = [
     `The most STR-proper person in town, which is the point. "The HCAFP serves the Syndicated Technocratic Republic, its citizens and its licensed partners."`,
     `She skims a sliver of every shipment, mostly the [[ostrava]] orders, and ships it to the [[inquisition]] through a Psalter address. She needs the money for [[gerrit]]'s Assay medicine, because [[duplicator-law]] says a Duplicator can't print it.`],
   secrets: [`She wears a [[medprol-band]] under her sleeve. If she's knocked out or restrained, a Med-Prol strike squad drops in 60 seconds.`],
-  seen: [[`S1`, `The party found out her secret. No fight. Deal: they help load invisible [[tracking-gems]] into the 30 crates she's requisitioning, no questions asked, and she gives them passage to Free Harbor Tamsin. They leave in two galactic standard weeks.`]],
+  seen: [[`S1`, `The party found out her secret. No fight. Deal: they help load invisible [[tracking-gems]] into the 30 crates she's requisitioning, no questions asked, and she gives them passage to Free Harbor Tamsin. They leave in two galactic standard weeks.`], [`S2`, `Her boxes reached Tamsin, and an Inquisitor picked them up.`]],
   hooks: [
     `She becomes a contact: small cargo off-manifest, to either side.`,
     `She knows an Inquisitorial buyer for the [[nav-core]], if they're stupid enough to want one.`,
@@ -446,9 +465,11 @@ window.GM_WIKI = [
   known: [`Rumor 5 at Carby's: "An Inquisitor came through two months back asking about jailbroken relics. Father Pops served him tea, and he left."`],
   body: [`Unnamed so far. He asked about jailbroken relics and left after tea with [[popsocopolis]].`],
   secrets: [`*Suggestion:* he's the one Amelda's [[tracking-gems]] are for, or the one buying her ore, or both.`],
+  seen: [[`S2`, `*Open:* an Inquisitor came to pick up Amelda's boxes at Tamsin, and they spoke briefly. Whether it's this man is yours to decide.`]],
+  open: [`Was the Inquisitor who collected the crates at Tamsin the same man who came through New Bombswick?`],
   hooks: [
     `He's on the ferry to Tamsin, in plain clothes.`,
-    `He meets the crates at Tamsin, and the PCs see who signs for them.`,
+    {t: `He meets the crates at Tamsin, and the PCs see who signs for them.`, used: `S2`},
     `He knows about the shard. He asks the PCs, very kindly, if they've seen one.`] },
 
 { id: `father-oren`, type: `npc`, name: `Father Oren`, sub: `Old Rite priest of Chapel Rock`, stats: `Priest`, where: `chapel-rock`, faction: `old-rite`,
@@ -563,8 +584,9 @@ window.GM_WIKI = [
 { id: `tamsin`, type: `location`, name: `Free Harbor Tamsin`, sub: `Neutral port in a hollow asteroid (DRF-01) · session 2`, handout: `loc-tamsin`, faction: `council-of-captains`,
   known: [`Run by the Council of Captains. Anyone can dock. The Spindle (hiring hall and market), Low Dock (no questions asked), Council Hall (meets monthly). Charter law doesn't apply, but Commonweal keeps every visiting citizen's tier on record. Vargas: "Tamsin dockmaster never asked my name. Asked my tonnage twice."`],
   body: [`The Patience came from a Tamsin impound auction. A ship costs 12,000 to 20,000 cr, a lease 500 cr a week plus a cut. *Suggestion:* [[ledgerline]], a Commonweal-licensed gig board, takes 20% and rates every job 1 to 5 stars. Better jobs unlock at 4.5. Its player page has a dozen small gigs and one lucrative, suspicious one: steal a Cardinal's reliquary from the [[orbital-obituary]] ([[#tonight/LL-2271|LL-2271]]).`],
+  seen: [[`S2`, `Docked. Sold the core, took two Ledgerline gigs, and found that at least 70 signals on the station share the Eye's frequency.`]],
   hooks: [
-    `The ferry docks, and [[marra-tesk]] is already waiting.`,
+    {t: `The ferry docks, and [[marra-tesk]] is already waiting.`, used: `S2`},
     `Session 2's plan is under [[#tonight|Tonight]]: every Ledgerline gig and what happens if they take it. Places: [[spindle]], [[low-dock]], [[council-hall]], [[lamplighter]], [[tamsin-impound]], [[warehouse-6]], [[ring-3]], [[dace-oduya]].`,
     `The impound auction has a ship that fits their budget and a lot of strings.`,
     `They speak at the monthly Council about something that happened on the way.`,
@@ -577,7 +599,8 @@ window.GM_WIKI = [
 
 { id: `low-dock`, type: `location`, name: `Low Dock`, sub: `Tamsin's no-questions-asked berths and container stacks`, where: `tamsin`, tag: `draft`,
   body: [`*Suggestion.* The cheap berths at the bottom of the hollow: container stacks, coffin hostels (2 cr a night), the Lamplighter, the impound. The night dockmaster is [[harl-brenn]].`],
-  hooks: [`The ferry docks here.`, `Help one dockhand and every dockhand knows.`] },
+  seen: [[`S2`, `Where they followed the Eye's signal to Sister Perpetua.`]],
+  hooks: [{t: `The ferry docks here.`, used: `S2`}, `Help one dockhand and every dockhand knows.`] },
 
 { id: `council-hall`, type: `location`, name: `Council Hall`, sub: `Where the Council of Captains sits`, where: `tamsin`, faction: `council-of-captains`, tag: `draft`,
   body: [`*Suggestion.* A converted ore hall with a ring of captains' chairs. Commonweal Notarial has a side office here. Council week starts three days after the ferry lands.`],
@@ -595,7 +618,8 @@ window.GM_WIKI = [
 { id: `warehouse-6`, type: `location`, name: `Bonded Warehouse 6`, sub: `Halvorsen bonded storage on the cargo ring`, where: `tamsin`, faction: `halvorsen-combine`, tag: `draft`,
   body: [`*Suggestion.* Bay A holds Amelda's thirty crates off the Prudent Margin (the ones with the [[tracking-gems]]) and four cases of Assay medicine. Bay C holds forty boxed ν-series reception androids bound for a wipe, and one of them, [[nu-seven]], is awake.`],
   secrets: [`The Bay C manifest lists [[car-b]] as "missing, recover on sight."`],
-  hooks: [`The night watch ([[#tonight/LL-2219|LL-2219]]).`, `The PCs' own crates end up here.`] },
+  seen: [[`S2`, `The night watch (LL-2219, 5★). The night passed uneventfully. Bay C, Nu-7 and the manifest weren't touched.`]],
+  hooks: [{t: `The night watch ([[#tonight/LL-2219|LL-2219]]).`, used: `S2`}, `The PCs' own crates end up here.`] },
 
 { id: `ring-3`, type: `location`, name: `Ring 3 hydroponics`, sub: `Tamsin's farm ring and its irrigation trunk`, where: `tamsin`, tag: `draft`,
   body: [`*Suggestion.* Lettuce, beans and algae under grow-lamps, run by a co-op. The irrigation trunk underneath is warm, waist-deep and dark, and someone cut its grate to use it as a shortcut to Council Hall.`],
@@ -641,6 +665,7 @@ window.GM_WIKI = [
 { id: `lantern`, type: `location`, name: `The Lantern`, sub: `Precursor megastructure at the center of the Drift (DRF-00)`, handout: `loc-lantern`, faction: `treaty-watch`,
   known: [`Planet-sized, gives off its own light, and nobody has found a way in. The Treaty bars landing. Outposts from both sides watch it. A friend on the STR watch says the light changes when ships get close.`],
   secrets: [`*Draft:* a second, older intelligence, now waking. See [[lantern-rival]]. The datapad's BEARING ZERO-ZERO-ZERO points here.`],
+  seen: [[`S2`, `The ferry passed within 2 pc of it. It tugged on them (V'an's artifact pulling), as planned.`]],
   hooks: [
     `The datapad lights up with a bearing whenever they're near it.`,
     `A Treaty Watch observer offers to look the other way for one approach.`,
@@ -782,6 +807,7 @@ window.GM_WIKI = [
     `*Suggestion:* the Lamplighter's back room is where a Sable termination team meets about [[killora-vargas]].`,
     `*Suggestion:* Arlo Venn (the skip trace) bought the [[patience]] at impound before Hotshot did, and knows who held the lien.`],
   open: [`Do the PCs keep Vargas's datapad profile suspended, or can it be reinstated (with her ★ 4.6 and Premium access) if someone vouches?`],
+  seen: [[`S2`, `Installed on the datapad. Two gigs done, both 5★: LL-2207 and LL-2219. The heist is still pinned.`]],
   hooks: [
     `Marra Tesk shows them the app on day one: "Everyone starts at the bottom. Some people stay there."`,
     `A gig they finished gets a one-star review from the app itself, with no client attached.`,
@@ -798,8 +824,8 @@ window.GM_WIKI = [
   known: [`Owns Brightwater and a dozen smaller worlds. Formed in CY 58 from three charter companies: Brightwater Agrarian, Tally Mercantile and Halvorsen Hospitality.`],
   secrets: [`*Suggestion:* the three were Brightwater Agrarian, Tally Mercantile and Halvorsen Hospitality. Divisions: Tally Stores, Halvorsen Hospitality, Combine Astro-Ferry. Motto: "Every hand has a place." Lowest staff turnover in the STR, because nobody can afford the fare out.`],
   body: [`Holds the ore contract at New Bombswick and runs the ferry port, [[hcafp]]. [[car-b]] was one of its reception androids.`],
-  seen: [[`S1`, `The party dealt with its port and its jailbroken property.`]],
-  hooks: [`A Halvorsen asset-recovery team, looking for CAR-B.`, `A Halvorsen warehouse at Tamsin with something in it (a Ledgerline gig).`] },
+  seen: [[`S1`, `The party dealt with its port and its jailbroken property.`], [`S2`, `The night watch at Warehouse 6 (LL-2219), a quiet night.`]],
+  hooks: [`A Halvorsen asset-recovery team, looking for CAR-B.`, {t: `A Halvorsen warehouse at Tamsin with something in it (a Ledgerline gig).`, used: `S2`}] },
 
 { id: `ostrava`, type: `faction`, name: `Ostrava Heavy Industries`, sub: `Builds most warships and sells to whoever pays`, faction: `str`, where: `varga`,
   body: [`Its Saint Vey ore orders are the ones [[amelda]] skims, 3% at a time. *Suggestion:* founded CY 92; divisions Ostrava Yards, Varga Cell and Slag Reclamation; leases factory floor to [[greaves-mott]].`],
@@ -825,7 +851,7 @@ window.GM_WIKI = [
   known: [`Wants the Treaty torn up.`],
   secrets: [`*Suggestion:* founded CY 191 under the Joint Defense Contract, funded by twelve charter companies and renewed every decade. It has filed eleven formal objections to the Treaty. Commonweal has it "under review" for unscheduled movements (general rumor 3).`],
   body: [`Three Sable Armor Freighters dropped out of hyperspace at the Grave alongside three Cathedral-ships and destroyed the Patience. [[killora-vargas]] was a Sable enforcer until Sable marked her for termination.`],
-  seen: [[`S0`, `Three Armor Freighters in the crossfire. They ordered the Patience to stand down, then fired.`]],
+  seen: [[`S0`, `Three Armor Freighters in the crossfire. They ordered the Patience to stand down, then fired.`], [`S2`, `Hailed the ferry through the Due Diligence.`]],
   hooks: [
     `From outside, the Patience's wreck shows no core. Sable will work out it left.`,
     `A Sable cutter answers any signal the nav core sends. It hasn't sent one yet, because Sally kept it off the network.`,
@@ -951,6 +977,7 @@ window.GM_WIKI = [
   known: [`About 30 ships, flagship the Cantata, an ex-cathedral-ship. They board singing and take a tenth.`],
   secrets: [`*Draft:* excommunicated for singing a hymn the Lantern answers, not the Eye.`],
   body: [`Led on the [[benediction]] by [[odile-sancte]].`],
+  seen: [[`S2`, `Walked Sister Perpetua to the Choir's ship (LL-2207).`]],
   hooks: [`A deserter from the Choir is a PC origin.`, `They stop the ferry to Tamsin.`] },
 
 /* ============================ ITEMS ============================ */
@@ -963,23 +990,24 @@ window.GM_WIKI = [
     `*Draft:* relics are pieces of the Eye's network, so a jailbroken relic is hacked hardware still running on the Eye. The Eye may know exactly who was moved, and where to.`,
     `*Draft:* the "singing" is the Eye's carrier signal. V'an's artifact is what let him hear it.`,
     `It hasn't spoken. The planned Chapel bargain never happened, so its voice is still a reveal waiting to be used: "I carried you out of the fire. Carry me a little further. Keep me hidden, keep me safe, and I will keep you."`],
-  seen: [[`S0`, `Dropped by Vargas, picked up by V'an. Moved V'an, Rusty and the core out of the Patience as it died.`], [`S1`, `Investigated at the Chapel. It offered no bargain.`]],
+  seen: [[`S0`, `Dropped by Vargas, picked up by V'an. Moved V'an, Rusty and the core out of the Patience as it died.`], [`S1`, `Investigated at the Chapel. It offered no bargain.`], [`S2`, `The Lantern pass and the hail went as planned. At Tamsin they learned the Eye's frequency (the core's background signal) is on at least 70 signals around the station.`]],
   open: [`Can it do that again, and does V'an's artifact want it?`, `Why does it fall silent near the Lantern, and sing when the Due Diligence hails? (Session 2 plan, unexplained on purpose.)`],
   hooks: [
     `The artifact is shopping for a new host, and the relic just showed it can move people.`,
     `The hum: near the core at night, the two sing in the same key, and the datapad shows a bearing.`,
     `Vargas wants it back.`,
     `Any Inquisitor or Reliquarian who gets close feels it.`,
-    `**Session 2 plan:** it stops singing for the whole Lantern pass, then sings when the ferry's captain answers the Due Diligence's hail.`,
+    {t: `**Session 2 plan:** it stops singing for the whole Lantern pass, then sings when the ferry's captain answers the Due Diligence's hail.`, used: `S2`},
     `It sings within 30 ft of Cardinal Rex's reliquary, and [[deacon-quill]] hears it.`] },
-{ id: `nav-core`, type: `item`, name: `Nav core of the Arbiter's Due`, aka: [`the core`, `the nav core`], sub: `Forty kilos of black Sable military hardware`, tag: `played`, status: `with the party · never networked`,
+{ id: `nav-core`, type: `item`, name: `Nav core of the Arbiter's Due`, aka: [`the core`, `the nav core`], sub: `Forty kilos of black Sable military hardware`, tag: `played`, status: `sold to Marra Tesk · its data copied onto the datapad`,
   body: [
     `Pulled from the [[arbiters-due]] at the Grave. Whoever carries it is slowed. Reading it needs real power and a data dock, or a bypass kit (DC 16, Sable encryption).`,
     `The blackbox: the fleet was en route to the Lantern ("Bearing zero-zero-zero, distance zero"), and then a second set of coordinates replaced the first, 25 parsecs south: the Grave of Ash. "That's not our jump." Under it, a hum like the shard's song.`],
   secrets: [`Waking its Commonweal relay brought two fleets last time. Plugged into anything networked, it starts a clock: a Sable cutter in 1d4 days.`, `*Draft:* it proves [[ash-war-steered]].`],
-  seen: [[`S0`, `Stolen from the Grave. Waking its relay brought the fleets.`], [`S1`, `[[sally-smacker]] read it on a sandboxed local machine. The relay never woke.`]],
+  seen: [[`S0`, `Stolen from the Grave. Waking its relay brought the fleets.`], [`S1`, `[[sally-smacker]] read it on a sandboxed local machine. The relay never woke.`], [`S2`, `They copied its data onto the datapad, recognized its background signal as the Eye's frequency (matched by at least 70 signals on Tamsin), then gave it to [[marra-tesk]] for 4,000 cr each.`]],
+  open: [`Where does it go after Marra (Sallow, then Assay?), and who reads the copy on the datapad?`],
   hooks: [
-    `Selling it (session 2, "Freedom to choose"): Sallow's offer through Marra, **4,000 cr to each crew member** and a bigger cut to Marra (Canon); an Inquisitorial buyer (via Amelda's contacts, or the Cardinal's household); a Spindle auction and every faction's attention; or Okafor confiscates it "as a favor." Details on [[#tonight/core|Tonight → The core]].`,
+    {t: `Selling it (session 2, "Freedom to choose"): Sallow's offer through Marra, **4,000 cr to each crew member** and a bigger cut to Marra (Canon); an Inquisitorial buyer (via Amelda's contacts, or the Cardinal's household); a Spindle auction and every faction's attention; or Okafor confiscates it "as a favor." Details on [[#tonight/core|Tonight → The core]].`, used: `S2`},
     `Sally's copy of the blackbox can leak without the core ever leaving their hands.`,
     `One day someone plugs it into the wrong thing.`] },
 
@@ -987,13 +1015,14 @@ window.GM_WIKI = [
   known: [`The players' handout. Registered to K. Vargas (Tier 3), transfer unfiled, with Vargas's annotations throughout.`],
   body: [`It came with the Patience from the Tamsin impound auction. It still works on Saint Vey. *Draft:* the broadcast's BEARING ZERO-ZERO-ZERO. COME HOME. could appear on it whenever the relic and the core hum together.`],
   secrets: [`*Draft:* every pad has a Commonweal relay chip, and both intelligences can read it. See [[datapad-relay]]. The players' handout is listening.`],
-  seen: [[`S1`, `Still worked on Saint Vey and led them to New Bombswick.`]],
-  hooks: [`**Session 2 plan (Canon):** on docking they have to check in with the datapad, which lets certain key players know they're on-world. Ledgerline isn't on it yet; installing it brings the pinned heist, 11 minutes later.`, `A new annotation appears that nobody wrote.`, `A Commonweal clerk asks why a Tier 3 pad registered to a deserter is still active.`, `It shows a bearing whenever the shard and core hum together.`] },
+  seen: [[`S1`, `Still worked on Saint Vey and led them to New Bombswick.`], [`S2`, `Checked in at Tamsin. Now holds a copy of the nav core's data. They used it to see that the core's background signal, the Eye's frequency, matches at least 70 signals on the station. Ledgerline is installed: two gigs done.`]],
+  open: [`Does carrying the core's data on a pad that checks in with Commonweal wake the relay, or tell Sable or the shadow proprietor anything?`],
+  hooks: [`*Suggestion:* it can find relics now. Seventy of them on Tamsin, and someone will pay to know which are jailbroken.`, {t: `**Session 2 plan (Canon):** on docking they have to check in with the datapad, which lets certain key players know they're on-world. Ledgerline isn't on it yet; installing it brings the pinned heist, 11 minutes later.`, used: `S2`}, `A new annotation appears that nobody wrote.`, `A Commonweal clerk asks why a Tier 3 pad registered to a deserter is still active.`, `It shows a bearing whenever the shard and core hum together.`] },
 
 { id: `tracking-gems`, type: `item`, name: `Invisible Inquisitor Tracking Gems`, aka: [`tracking gems`, `the gems`], sub: `Going into Amelda's 30 crates`, tag: `played`, faction: `inquisition`,
   body: [`The party agreed to help [[amelda]] load them into the 30 crates she's requisitioning, in exchange for passage to Tamsin. They chose not to ask questions.`],
   secrets: [`**Decided:** they're just used as a local fiat currency. Nothing sinister rides in the crates. The players don't know that, since they chose not to ask.`],
-  seen: [[`S1`, `The deal was made. The loading happens during the two-week wait.`]],
+  seen: [[`S1`, `The deal was made. The loading happens during the two-week wait.`], [`S2`, `An Inquisitor picked up the boxes at Tamsin, and the party spoke to him briefly.`]],
   hooks: [
     `The PCs assume the worst about what they loaded. Let them. A nervous moment at Tamsin customs plays very differently when the GM knows it's pocket money.`,
     `One gem ends up in a PC's pack. It spends, somewhere.`,
@@ -1077,12 +1106,14 @@ window.GM_WIKI = [
 
 { id: `prudent-margin`, type: `ship`, name: `The Prudent Margin`, sub: `Halvorsen ferry, Saint Vey to Tamsin`, tag: `draft`, faction: `halvorsen-combine`,
   body: [`*Suggestion (name).* The monthly ferry that carries ore and passengers from New Bombswick to Tamsin. The party leaves on the next one in two weeks, with Amelda's 30 crates in the hold.`],
-  hooks: [`**Session 2 plan:** about 11 days to Tamsin, passing under 2 parsecs from the Lantern, and hailed by the [[due-diligence]] just past halfway.`, `A ferry is a closed room for a week or more: a stowaway, an Inquisitor in plain clothes, a Choir boarding, a Sable hail.`, `Its pilot has run this route for years and knows exactly how much heavier it is on the way out.`] },
+  seen: [[`S2`, `Carried them past the Lantern to Tamsin. Hailed by the Due Diligence.`]],
+  hooks: [{t: `**Session 2 plan:** about 11 days to Tamsin, passing under 2 parsecs from the Lantern, and hailed by the [[due-diligence]] just past halfway.`, used: `S2`}, `A ferry is a closed room for a week or more: a stowaway, an Inquisitor in plain clothes, a Choir boarding, a Sable hail.`, `Its pilot has run this route for years and knows exactly how much heavier it is on the way out.`] },
 
 { id: `due-diligence`, type: `ship`, name: `The Due Diligence`, sub: `Sable cruiser under Lt. Cmdr. Okafor`, faction: `sable-command`,
   known: [`A Sable cruiser visited the Lantern off-schedule, and Commonweal filed no report.`],
   body: [`**Canon (session 2 plan):** midway through the ferry trip to Tamsin, just after the Lantern pass, it hails the [[prudent-margin]] and asks for a passenger list. As the captain responds, the [[platinum-shard]] begins to sing. The Due Diligence moves on.`],
-  hooks: [`It hails the ferry.`, `It's in dock at Sable Station, and someone on its crew wants to talk.`, `Okafor's report on the ferry hail lists one anomaly: "relic emission, brief, not pursued." Someone on Ledger reads it.`] },
+  seen: [[`S2`, `Hailed the Prudent Margin just past the Lantern and asked for a passenger list, as planned. It moved on.`]],
+  hooks: [{t: `It hails the ferry.`, used: `S2`}, `It's in dock at Sable Station, and someone on its crew wants to talk.`, `Okafor's report on the ferry hail lists one anomaly: "relic emission, brief, not pursued." Someone on Ledger reads it.`] },
 
 { id: `benediction`, type: `ship`, name: `The Benediction`, sub: `Precentor Odile's corsair`, faction: `wandering-choir`,
   hooks: [`It boards the ferry singing.`] },

@@ -116,6 +116,11 @@ window.GM_JOBS = [
     `**Low Dock.** She stops to bless a dockhand with a crushed hand, a child, and a drunk. Each stop costs ten minutes. Two stops are fine. Four make them late.`,
     `**The snatch.** In the container stacks, a crew of three tries for the reliquary (one jostles, one grabs, one runs).`,
     `**Berth 31.** Precentor Odile herself is at the ramp, singing the hour. She remembers that two strangers walked her teacher home.`],
+  sections: [
+    { h: `At the table (S2, played)`, t: [
+      `**Done, paid, rated 5★** (marked done in ledgerline/gigs.js; change the rating there if it went otherwise).`,
+      `They didn't start at the hostel. They found [[perpetua]] in **Low Dock** by following the Eye's signal, which the [[nav-core]]'s copied data had taught them to recognize, and knew it was coming from her reliquary.`,
+      `She gave them a **lore dump on relics and how they work**. Then they walked her to her ship.`]}],
   checks: [
     [`Keep her moving (Persuasion, or Insight to know when to let her stop)`, `DC 12 per stop`, `Another ten minutes. Four stops and the Benediction holds for her, which Odile notices.`],
     [`Spot the snatch coming (Perception)`, `DC 13`, `The runner gets the reliquary and a 30 ft lead into the stacks.`],
@@ -202,9 +207,13 @@ window.GM_JOBS = [
   foes: `3 Bandits (roof thieves with needlers). One is the previous watch, who left early and came back with friends.`,
   twist: [`If CAR-B is on the watch with them, Nell recognizes his voice through the door and calls him by his old name.`],
   out: [
+    { k: `quiet`, label: `A quiet night (played S2)`, stars: 5, t: `700 cr less the fee. Nothing happened: no thieves, no knocking they followed up. Bay C, [[nu-seven]] and CAR-B's "recover on sight" line are all still there, unseen. *Suggestion:* Halvorsen still offers the standing night contract (500 a night, Council week), so they can go back.` },
     { k: `great`, label: `Thieves stopped, Bay C shut`, stars: 5, t: `700 cr, and Halvorsen offers a standing night contract (500 a night, Council week). They know what's in Bay C, and that CAR-B is wanted.` },
     { k: `free`, label: `Freed Nell`, stars: 1, paid: false, t: `No pay, a 1-star review, and Halvorsen files a theft. Nell either joins them or disappears into Low Dock. Brightline gets the case.` },
     { k: `bad`, label: `Thieves got the medicine`, stars: 2, paid: 280, t: `Half pay. The medicine turns up in the Spindle at three times the price.` }],
+  sections: [
+    { h: `At the table (S2, played)`, t: [
+      `**Done, paid, rated 5★.** The night passed uneventfully. Nothing in "How it plays" fired, so all of it is still waiting in the warehouse.`]}],
   ties: [`warehouse-6`, `nu-seven`, `car-b`, `halvorsen-combine`, `tracking-gems`, `amelda`, `duplicator-law`],
   maps: `Repair bay for the warehouse floor. Secret lab (night) works for Bay C.`,
   read: `The kettle clicks off. In the silence after it, from somewhere behind the Bay C shutter, someone knocks three times.` },
