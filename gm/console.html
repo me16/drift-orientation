@@ -62,6 +62,8 @@ input[type=number]{font-family:var(--mono)}
 textarea{width:100%;resize:vertical;line-height:1.5;padding:8px 10px}
 input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
 label.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:500;color:var(--muted)}
+label.field{min-width:0}
+label.field>select,label.field>input{width:100%;min-width:0;max-width:100%}
 label.ck{display:inline-flex;gap:7px;align-items:center;font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
 label.ck input{width:16px;height:16px;accent-color:var(--accent);margin:0}
 .seg{display:inline-flex;border:1px solid var(--line-2);border-radius:var(--r);overflow:hidden;background:var(--sunk)}
@@ -152,7 +154,8 @@ pre.code{background:var(--sunk);border:1px solid var(--line);border-radius:var(-
 .cbts{display:grid;gap:8px}
 .cbt{display:grid;grid-template-columns:62px minmax(0,1.3fr) 54px minmax(130px,.9fr) minmax(200px,1.1fr) minmax(120px,1fr) 34px;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;transition:border-color .15s,background .15s}
 .cbt.cur{border-color:var(--accent);background:linear-gradient(90deg,var(--accent-soft),transparent 60%);box-shadow:inset 4px 0 var(--accent)}
-.cbt.down{opacity:.55}
+.cbt.down:not(.pc){opacity:.55}
+.cbt.down.pc{border-color:var(--danger)}
 .cbt.pc .nm{color:var(--info)}
 .cbt .ini{width:56px;text-align:center;font-size:18px;font-weight:600;min-height:40px;padding:0}
 .cbt .nm{width:100%;font-weight:700;font-size:15px;background:transparent;border-color:transparent;padding:2px 6px;margin-left:-6px;min-height:28px}
@@ -183,7 +186,14 @@ pre.code{background:var(--sunk);border:1px solid var(--line);border-radius:var(-
 .ds input{width:16px;height:16px;margin:0}
 .ds .s{accent-color:var(--ok)}.ds .f{accent-color:var(--danger)}
 .cbt .alert{grid-column:1/-1;margin-top:-4px}
-.addbar{display:grid;gap:12px}
+.addbar{display:block}
+.addbody{display:grid;gap:12px;min-width:0}
+.addbar summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-weight:600;list-style:none;margin:-4px 0}
+.addbar summary::-webkit-details-marker{display:none}
+.addbar summary svg{transition:transform .15s;color:var(--muted)}
+.addbar[open] summary{margin-bottom:14px}
+.addbar[open] summary svg{transform:rotate(180deg)}
+
 .addbar .pane{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
 
 /* popover */
@@ -211,6 +221,8 @@ pre.code{background:var(--sunk);border:1px solid var(--line);border-radius:var(-
 .fac th{font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
 .fac textarea{min-height:40px;font-size:13px;resize:vertical}
 .fac tr.off td{opacity:.5}
+.fx-grid{grid-template-columns:minmax(0,2fr) minmax(280px,1fr)}
+@media (max-width:1100px){.fx-grid{grid-template-columns:1fr}}
 .pips{display:flex;gap:4px;padding-top:6px}
 .pips button{width:18px;height:18px;border-radius:4px;border:1px solid var(--line-2);background:var(--sunk);padding:0;cursor:pointer}
 .pips button.on{background:var(--accent);border-color:var(--accent)}
@@ -277,8 +289,8 @@ dialog .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
   .turnbar .grow{flex:1 1 calc(100% - 110px)}
   .turnbar label.ck{order:5;flex-basis:100%}
   .turnbar #fNext{flex:1}
-  #toast{top:calc(64px + env(safe-area-inset-top,0px));bottom:auto;transform:translate(-50%,-10px)}
-  #toast.on{transform:translate(-50%,0)}
+  #toast{top:calc(62px + env(safe-area-inset-top,0px));bottom:auto;left:16px;right:16px;max-width:none;justify-content:space-between;transform:translateY(-10px)}
+  #toast.on{transform:none}
   .cbt .ini{width:48px}
   .cbt .who{grid-column:2}
   .cbt .ac{grid-column:3;grid-row:1}
@@ -294,6 +306,33 @@ dialog .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
   .res dl{grid-template-columns:1fr;gap:2px}
   .res dd{margin-bottom:6px}
   .grid,.grid.two{grid-template-columns:1fr}
+  /* 16px text stops iPhones zooming in when a field is tapped */
+  input[type=text],input[type=number],input[type=search],input:not([type]),select,textarea{font-size:16px}
+  .ph{margin-bottom:14px;gap:10px}
+  .ph .act{width:100%}
+  .addbody .pane .field{flex:1 1 90px!important}
+  .addbody .pane .field.grow{flex:1 1 100%!important}
+  .addbody .pane .btn.pri{flex:1 1 100%}
+  .addbody .pane input[type=number]{width:100%!important}
+  .card{padding:14px}
+  .card .sub{font-size:13px}
+  #rcText{height:200px}
+  .list.loot li{flex-wrap:wrap}
+  .list.loot li>.grow{flex:1 1 calc(100% - 90px)}
+  .list.loot li>.btn:nth-last-child(2){margin-left:auto}
+  .fac tr{display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"on name name" "goal goal goal" "clock att att" "last last last";align-items:center;padding:8px 6px}
+  .fac td:nth-child(1){grid-area:on;padding-right:0}
+  .fac td:nth-child(2){grid-area:name;min-width:0!important}
+  .fac td:nth-child(2) br{display:none}
+  .fac td:nth-child(2) .tag{margin:0 0 0 6px!important}
+  .fac td:nth-child(3){grid-area:goal;min-width:0!important}
+  .fac td:nth-child(4){grid-area:clock}
+  .fac td:nth-child(4) .pips{padding-top:0}
+  .fac td:nth-child(5){grid-area:att;justify-self:end}
+  .fac td:nth-child(5) select{max-width:180px}
+  .fac td:nth-child(6){grid-area:last;min-width:0!important;font-size:12.5px}
+  .fac td:nth-child(6):empty{display:none}
+  .fx-grid>.card:first-child{padding:0;background:none;border:0}
 }
 @media print{.side,.topbar,.bnav,#fab,#tray,.btn{display:none!important}.shell{display:block}}
 </style>
@@ -418,14 +457,17 @@ dialog .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
 <section data-tab="fight" data-title="Fight" hidden>
  <header class="ph"><div><h1>Ground combat</h1><p>Initiative, hit points and conditions. Ship fights go on the <a href="../combat/">tactical plot</a>.</p></div>
   <div class="act"><button class="btn" id="fEnd">End fight</button><button class="btn ghost danger" id="fClear">Clear all</button></div></header>
- <div class="card addbar">
+ <details class="card addbar" id="fAddBox" open>
+  <summary><span>Add to the fight</span><svg class="i"><use href="#i-chev"/></svg></summary>
+  <div class="addbody">
   <div class="row"><div class="seg" id="fMode" role="group" aria-label="Add"><button data-v="foe" aria-pressed="true">Foes</button><button data-v="wiki">Wiki NPC</button><button data-v="pc">PC</button></div><span class="grow"></span><label class="ck"><input type="checkbox" id="fGroup"> One initiative per foe type</label></div>
   <div class="pane" data-m="foe"><label class="field grow" style="flex:2 1 240px">Stat block<select id="fFoe"></select></label><label class="field">How many<input id="fCount" type="number" min="1" max="20" value="1" style="width:80px"></label><label class="field grow" style="flex:1 1 140px">Name (optional)<input id="fName" placeholder="Dock heavy"></label><button class="btn pri" id="fAddFoe">Add</button></div>
   <div class="pane" data-m="wiki" hidden><label class="field grow">Wiki NPC with a stat block<select id="fWiki"></select></label><button class="btn pri" id="fAddWiki">Add</button></div>
   <div class="pane" data-m="pc" hidden><label class="field grow" style="flex:1 1 140px">Name<input id="pName"></label><label class="field">AC<input id="pAc" type="number" style="width:70px"></label><label class="field">HP<input id="pHp" type="number" style="width:76px"></label><label class="field">Init bonus<input id="pInit" type="number" style="width:84px"></label><button class="btn pri" id="fAddPc">Add</button></div>
   <div class="row" id="pSaved" data-m2="pc" hidden></div>
   <p class="faint" id="fFoeInfo" style="margin:0;font-size:13px"></p>
- </div>
+  </div>
+ </details>
  <div class="turnbar" id="turnbar">
   <span class="rd" id="fRound">Not started</span>
   <span class="grow"><span class="up" id="fUp"></span> <span class="deck" id="fDeck"></span></span>
@@ -500,7 +542,7 @@ dialog .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
   <div class="row"><input id="fxLabel" placeholder="Label, e.g. Between S2 and S3" style="flex:1 1 220px"><button class="btn pri" id="fxRun">Run a faction turn</button><label class="ck"><input type="checkbox" id="fxAll"> Show inactive</label></div>
   <p class="faint" style="margin:10px 0 0;font-size:12.5px">d6 per active faction: 1 setback (clock −1) · 2–3 holds · 4–5 advances (+1) · 6 big move (+2), and the news reaches Tamsin. A full clock means the goal happens. Goals are <em>suggestions</em>; edit them.</p>
  </div>
- <div class="grid two" style="margin-top:16px;grid-template-columns:minmax(0,2fr) minmax(280px,1fr)">
+ <div class="grid fx-grid" style="margin-top:16px">
   <div class="card" style="overflow-x:auto;padding:6px 10px"><table class="fac"><thead><tr><th>On</th><th>Faction</th><th>Goal</th><th>Clock</th><th>To the party</th><th>Last move</th></tr></thead><tbody id="fxBody"></tbody></table></div>
   <div class="card"><h2>Log</h2><ul class="list" id="fxLog" style="margin-top:10px"></ul><div class="row" style="margin-top:10px"><button class="btn ghost danger" id="fxLogClear">Clear log</button></div></div>
  </div>
@@ -828,7 +870,7 @@ function rollLoot(){const ctx=$("lCtx").value,tier=+$("lTier").value,n=+$("lN").
  const c=roll(ex[0]);const items=[];const pool=(L[ctx]||[]).slice();for(let i=0;i<n&&pool.length;i++)items.push(pool.splice(rint(pool.length),1)[0]);
  loot={ctx,tier,cr:c?c.total:0,crx:ex[0],items:items.map(x=>litem(x,tier))};S.set("loot",loot);drawLoot()}
 function drawLoot(){if(!loot){$("lOut").innerHTML=`<p class="empty">Pick where they're looking, then search it.</p>`;return}const sum=loot.cr+loot.items.reduce((s,x)=>s+x.v,0);
- $("lOut").innerHTML=`<div class="card"><div class="s faint" style="font-size:12.5px">Loose credits</div><div class="big">${loot.cr} cr <span class="mono faint" style="font-size:13px;font-weight:400">${esc(loot.crx)}</span></div><ul class="list" style="margin-top:10px">${loot.items.map((x,i)=>`<li><span class="grow"><b>${esc(x.n)}</b>${x.note?`<br><span class="muted" style="font-size:13px">${esc(x.note)}</span>`:""}</span><span class="mono" style="white-space:nowrap">${x.v?x.v.toLocaleString()+" cr":"—"}</span><button class="btn sm" data-lk="${i}">Keep</button><button class="btn sm ghost" data-lr="${i}">Reroll</button></li>`).join("")}</ul><p class="muted" style="margin:12px 0 0">Total value ≈ <b>${sum.toLocaleString()} cr</b>. Low Dock pays about half for gear.</p><p class="faint" style="margin:4px 0 0;font-size:12.5px">Tiers 2–4 multiply items worth 200 cr or more.</p></div>`}
+ $("lOut").innerHTML=`<div class="card"><div class="s faint" style="font-size:12.5px">Loose credits</div><div class="big">${loot.cr} cr <span class="mono faint" style="font-size:13px;font-weight:400">${esc(loot.crx)}</span></div><ul class="list loot" style="margin-top:10px">${loot.items.map((x,i)=>`<li><span class="grow"><b>${esc(x.n)}</b>${x.note?`<br><span class="muted" style="font-size:13px">${esc(x.note)}</span>`:""}</span><span class="mono" style="white-space:nowrap">${x.v?x.v.toLocaleString()+" cr":"—"}</span><button class="btn sm" data-lk="${i}">Keep</button><button class="btn sm ghost" data-lr="${i}">Reroll</button></li>`).join("")}</ul><p class="muted" style="margin:12px 0 0">Total value ≈ <b>${sum.toLocaleString()} cr</b>. Low Dock pays about half for gear.</p><p class="faint" style="margin:4px 0 0;font-size:12.5px">Tiers 2–4 multiply items worth 200 cr or more.</p></div>`}
 function buildLoot(){loot=S.get("loot",null);drawLoot();$("lGo").onclick=rollLoot;
  $("lOut").onclick=e=>{const k=e.target.closest("[data-lk]"),r=e.target.closest("[data-lr]");if(k){const x=loot.items[+k.dataset.lk];addMade({kind:"item",name:x.n,text:`${x.v} cr. ${x.note}`,fields:{sub:`Found: ${x.v} cr`}})}
   if(r){const pool=(T.LOOT[loot.ctx]||[]).filter(p=>!loot.items.some(x=>x.n===p[0]));if(pool.length){loot.items[+r.dataset.lr]=litem(pick(pool),loot.tier);S.set("loot",loot);drawLoot()}else toast("Nothing else in that table")}}}
@@ -886,6 +928,7 @@ function nextTurn(dir){const n=F.list.length;if(!n)return;
   if(!($("fSkip").checked&&isDown(F.list[F.turn])))break}
  if(dir>0)startTurn();saveF();drawF()}
 function buildFight(){
+ if(F.round&&innerWidth<900)$("fAddBox").open=false;
  segInit("fMode",v=>{document.querySelectorAll(".addbar [data-m]").forEach(p=>p.hidden=p.dataset.m!==v);$("pSaved").hidden=v!=="pc";$("fFoeInfo").hidden=v!=="foe"});
  $("fFoe").innerHTML=FOES.map(f=>`<option value="${f.k}">${esc(f.name)} — ${esc(f.as)} (AC ${f.ac}, HP ${f.hp})</option>`).join("");
  const info=()=>{const f=FOES.find(x=>x.k===$("fFoe").value);$("fFoeInfo").textContent=f?`${f.atk.map(a=>`${a[0]} ${md(a[1])} (${a[2]})`).join(" · ")}${f.note?" · "+f.note:""}`:""};$("fFoe").onchange=info;info();
@@ -899,7 +942,7 @@ function buildFight(){
  if(!S.get("pcs",null))S.set("pcs",[]);drawPcs();
  const rollInit=()=>{if(!F.list.length){toast("Add someone first");return}const grp={};F.list.forEach(c=>{if(c.pc){if(c.ini==null)c.ini=roll("1d20"+md(c.init)).total;return}
    if($("fGroup").checked&&c.k){if(grp[c.k]==null)grp[c.k]=roll("1d20"+md(c.init)).total;c.ini=grp[c.k]}else c.ini=roll("1d20"+md(c.init)).total});
-  sortInit();F.round=1;F.turn=0;startTurn();saveF();drawF();toast("Round 1. PCs without a number were rolled for; type theirs in to reorder.")};
+  sortInit();F.round=1;F.turn=0;startTurn();saveF();drawF();if(innerWidth<900)$("fAddBox").open=false;toast("Round 1. PCs without a number were rolled for; type theirs in to reorder.")};
  $("fNext").onclick=()=>{if(!F.round)rollInit();else nextTurn(1)};
  $("fPrev").onclick=()=>{if(F.round)nextTurn(-1)};
  $("fSkip").onchange=drawF;
@@ -981,7 +1024,7 @@ function buildClocks(){let ck=S.get("clocks",null);
  const save=()=>S.set("clocks",ck);
  const draw=()=>{$("ckList").innerHTML=ck.map((c,i)=>`<div class="clk${c.fill>=c.seg?" full":""}" data-i="${i}">${clockSvg(c)}<input class="nm" value="${esc(c.name)}" data-k="name" aria-label="Clock name"><div class="mono muted" style="font-size:13px">${c.fill} / ${c.seg}${c.fill>=c.seg?` · <span class="alert">full</span>`:""}</div>
   <div class="row"><button class="btn sm icon" data-a="dn" aria-label="Empty one">−</button><button class="btn sm icon" data-a="up" aria-label="Fill one">+</button><button class="btn sm ghost danger" data-a="rm">Delete</button></div>
-  <textarea data-k="note" rows="2" placeholder="What ticks it?">${esc(c.note||"")}</textarea></div>`).join("")||`<p class="empty" style="grid-column:1/-1">No clocks yet. Name one above.</p>`;save()};
+  <textarea data-k="note" rows="3" placeholder="What ticks it?">${esc(c.note||"")}</textarea></div>`).join("")||`<p class="empty" style="grid-column:1/-1">No clocks yet. Name one above.</p>`;save()};
  const add=()=>{const n=$("ckName").value.trim();if(!n){$("ckName").focus();return}ck.push({name:n,seg:+segVal("ckSeg")||6,fill:0,col:$("ckColor").value,note:""});$("ckName").value="";draw()};
  $("ckAdd").onclick=add;$("ckName").onkeydown=e=>{if(e.key==="Enter")add()};
  $("ckList").addEventListener("click",e=>{const w=e.target.closest(".clk");if(!w)return;const i=+w.dataset.i,c=ck[i];const sg=e.target.closest("[data-s]");
