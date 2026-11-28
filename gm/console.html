@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Drift GM Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Exo+2:ital,wght@0,400;0,600;0,700;1,400&family=Michroma&family=Share+Tech+Mono&display=swap">
+<style>
+/* The GM console: at-the-table tools for the Drift. Same hardware and lock as gm/index.html. Tables live in gm/tables.js. */
+:root{
+  --void:#05060f; --panel:#0e1230; --panel-2:#151a40; --rule:#252b5a; --rule-2:#3a4282;
+  --fg:#e3e7ff; --dim:#9aa0d0; --faint:#6a70a2;
+  --amber:#ffb35c; --teal:#6ff3e0; --lil:#c9a6ff; --haz:#ff6b7a; --lan:#fff0c2; --ok:#8fe3a0;
+  --f-disp:"Michroma","Eurostile","Arial Black",sans-serif;
+  --f-body:"Exo 2","Segoe UI",system-ui,sans-serif;
+  --f-lore:"Cormorant Garamond",Georgia,serif;
+  --f-data:"Share Tech Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--void);color:var(--fg);font:400 15px/1.55 var(--f-body)}
+a{color:var(--teal)}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:1px dashed var(--amber);outline-offset:2px}
+#gate{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(255,179,92,.08),transparent 70%),var(--void)}
+.lock{width:min(420px,100%);background:var(--panel);border:1px solid var(--rule-2);border-top:2px solid var(--amber);padding:26px 24px}
+.lock h1{margin:8px 0 6px;font:400 20px/1.3 var(--f-disp);letter-spacing:.06em;text-transform:uppercase}
+.lock p{margin:0 0 16px;color:var(--dim);font-size:14.5px}
+.lock form{display:flex;gap:8px}
+.lock input{flex:1;min-width:0;background:#070918;border:1px solid var(--rule-2);padding:10px 12px;font:400 16px var(--f-data);letter-spacing:.08em}
+.lock .err{min-height:1.4em;margin:10px 0 0;font:400 13px var(--f-data);color:var(--haz)}
+.lock .back{display:inline-block;margin-top:14px;font:400 12px var(--f-data);letter-spacing:.1em;color:var(--faint)}
+.eyebrow{font:400 11px var(--f-data);letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+.lock .eyebrow{color:var(--amber)}
+
+.btn{background:var(--panel-2);border:1px solid var(--rule-2);padding:7px 12px;font:400 11.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:var(--fg);white-space:nowrap}
+.btn:hover{border-color:var(--amber);color:var(--amber)}
+.btn.go{border-color:var(--amber);color:var(--amber)}
+.btn.sm{padding:3px 7px;font-size:10.5px}
+.btn.x{color:var(--faint)}
+.btn.x:hover{color:var(--haz);border-color:var(--haz)}
+input[type=text],input[type=number],input:not([type]),select,textarea{background:#070918;border:1px solid var(--rule-2);padding:6px 8px;font:400 14px var(--f-data);min-width:0}
+textarea{width:100%;resize:vertical;line-height:1.5}
+select{padding:6px}
+label.ck{display:inline-flex;gap:6px;align-items:center;font:400 12px var(--f-data);color:var(--dim);cursor:pointer}
+
+.bar{position:sticky;top:0;z-index:20;background:rgba(14,18,48,.96);border-bottom:1px solid var(--rule);padding:0 max(16px,env(safe-area-inset-left,0px))}
+.bar-in{max-width:1200px;margin:0 auto;display:flex;gap:12px;align-items:center;padding-block:8px;overflow-x:auto;scrollbar-width:none}
+.bar-in::-webkit-scrollbar{display:none}
+.brand{font:400 11px var(--f-disp);letter-spacing:.22em;color:var(--amber);white-space:nowrap}
+.bar nav{display:flex;gap:2px;flex:1}
+.bar nav a{font:400 11.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:7px 9px;white-space:nowrap;border-bottom:2px solid transparent}
+.bar nav a:hover{color:var(--fg)}
+.bar nav a[aria-current="page"]{color:var(--amber);border-bottom-color:var(--amber)}
+.bar .side{display:flex;gap:6px}
+main{max-width:1200px;margin:0 auto;padding:22px max(16px,env(safe-area-inset-left,0px)) 120px}
+h1{margin:0 0 4px;font:400 clamp(18px,3vw,24px)/1.2 var(--f-disp);letter-spacing:.06em;text-transform:uppercase}
+.lede{margin:0 0 18px;font:italic 500 18px/1.4 var(--f-lore);color:#cfd2f2;max-width:70ch}
+h2{margin:0 0 10px;font:400 13px/1.3 var(--f-disp);letter-spacing:.12em;text-transform:uppercase;color:var(--fg)}
+h2 .k{font:400 10.5px var(--f-data);letter-spacing:.16em;color:var(--amber);margin-right:8px}
+h3{margin:14px 0 6px;font:600 12px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
+p{margin:0 0 10px}
+.hint{color:var(--faint);font-size:13px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));align-items:start}
+.grid.two{grid-template-columns:repeat(auto-fill,minmax(460px,1fr))}
+.card{background:var(--panel);border:1px solid var(--rule);padding:14px 16px;min-width:0}
+.card.hi{border-top:2px solid var(--amber)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.row>*{min-width:0}
+.out{margin-top:10px;display:grid;gap:10px}
+.res{background:#0a0d26;border:1px solid var(--rule);border-left:2px solid var(--amber);padding:10px 12px}
+.res .t{font:600 16px var(--f-body);margin:0 0 4px}
+.res .s{font:400 11px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.res dl{display:grid;grid-template-columns:max-content 1fr;gap:3px 12px;margin:6px 0}
+.res dt{font:400 11px var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-top:2px}
+.res dd{margin:0}
+.res dd[data-f]{cursor:pointer}
+.res dd[data-f]:hover{color:var(--amber)}
+.res .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.big{font:400 22px/1.3 var(--f-disp);letter-spacing:.04em;color:var(--amber);margin:6px 0}
+.lore{font:italic 500 17px/1.4 var(--f-lore);color:#d9dcf7}
+.mono{font-family:var(--f-data)}
+.tag{display:inline-block;font:400 10px var(--f-data);letter-spacing:.14em;text-transform:uppercase;padding:1px 6px;border:1px solid currentColor;color:var(--dim)}
+.tag.dom{color:var(--lil)}.tag.str{color:var(--teal)}.tag.drift{color:var(--amber)}.tag.haz{color:var(--haz)}.tag.lan{color:var(--lan)}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.list li{display:flex;gap:8px;align-items:flex-start;background:#0a0d26;border:1px solid var(--rule);padding:7px 10px}
+.list li .grow{flex:1;min-width:0}
+pre.code{background:#05071a;border:1px solid var(--rule);padding:10px;font:400 12.5px/1.45 var(--f-data);white-space:pre-wrap;word-break:break-word;max-height:360px;overflow:auto;margin:8px 0 0}
+.empty{color:var(--faint);font-style:italic}
+
+/* timer and spotlight */
+.clock-big{font:400 34px var(--f-data);letter-spacing:.06em;color:var(--fg)}
+.spot{display:grid;grid-template-columns:minmax(90px,max-content) 1fr auto auto;gap:6px 10px;align-items:center}
+.spot .barx{height:8px;background:#070918;border:1px solid var(--rule)}
+.spot .barx i{display:block;height:100%;background:var(--teal)}
+.spot .low{color:var(--amber)}
+
+/* fight */
+.fight{width:100%;border-collapse:collapse}
+.fight th{font:400 10.5px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);text-align:left;padding:6px;border-bottom:1px solid var(--rule)}
+.fight td{padding:7px 6px;border-bottom:1px solid var(--rule);vertical-align:top}
+.fight tr.cur td{background:rgba(255,179,92,.08)}
+.fight tr.cur td:first-child{box-shadow:inset 3px 0 var(--amber)}
+.fight tr.down td{opacity:.55}
+.fight .nm{font-weight:600}
+.fight .nm small{display:block;font:400 11px var(--f-data);color:var(--faint);font-weight:400}
+.fight input.n{width:54px}
+.hpb{height:6px;background:#070918;border:1px solid var(--rule);margin-top:4px;width:120px}
+.hpb i{display:block;height:100%;background:var(--ok)}
+.hpb i.mid{background:var(--amber)}.hpb i.lo{background:var(--haz)}
+.cond{display:inline-flex;gap:4px;align-items:center;font:400 10.5px var(--f-data);letter-spacing:.06em;padding:1px 6px;border:1px solid var(--lil);color:var(--lil);margin:2px 3px 0 0;cursor:pointer;background:none}
+.cond:hover{border-color:var(--haz);color:var(--haz)}
+.alert{color:var(--haz);font:400 12px var(--f-data)}
+.ds{display:flex;gap:3px;align-items:center;font:400 11px var(--f-data);color:var(--dim)}
+.ds input{margin:0}
+.round{font:400 13px var(--f-data);letter-spacing:.14em;color:var(--amber)}
+
+/* clocks */
+.clocks{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.clk{background:var(--panel);border:1px solid var(--rule);padding:12px;text-align:center}
+.clk svg{width:120px;height:120px;cursor:pointer}
+.clk input.nm{width:100%;text-align:center;font:600 15px var(--f-body);background:transparent;border:1px solid transparent}
+.clk input.nm:hover,.clk input.nm:focus{border-color:var(--rule-2)}
+.clk .row{justify-content:center;margin:6px 0 0}
+.seg{cursor:pointer}
+
+/* factions */
+.fac{width:100%;border-collapse:collapse}
+.fac td,.fac th{padding:7px 6px;border-bottom:1px solid var(--rule);vertical-align:top;text-align:left}
+.fac th{font:400 10.5px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.fac textarea{min-height:38px;font-size:13px}
+.pips{display:flex;gap:3px}
+.pips button{width:16px;height:16px;border:1px solid var(--rule-2);background:#070918;padding:0;cursor:pointer}
+.pips button.on{background:var(--amber);border-color:var(--amber)}
+.fac tr.off td{opacity:.45}
+
+/* reference */
+.ref dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:0}
+.ref dt{font:600 12.5px var(--f-body);color:var(--amber)}
+.ref dd{margin:0;font-size:14px}
+.ref table{border-collapse:collapse;width:100%;font-size:14px}
+.ref td,.ref th{border-bottom:1px solid var(--rule);padding:4px 6px;text-align:left}
+.ref th{font:400 10.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+
+/* dice tray */
+#tray{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:30;width:min(340px,calc(100vw - 28px))}
+#trayBtn{position:absolute;right:0;bottom:0;background:var(--amber);color:#1a1000;border:0;padding:10px 14px;font:400 12px var(--f-data);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.5)}
+#trayBtn .last{font-size:15px;margin-left:6px}
+#trayPanel{background:var(--panel);border:1px solid var(--rule-2);border-top:2px solid var(--amber);padding:12px;margin-bottom:46px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+#trayPanel .dice{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
+#trayPanel .dice .btn{padding:5px 8px}
+#dlog{list-style:none;margin:8px 0 0;padding:0;max-height:240px;overflow:auto;display:grid;gap:4px}
+#dlog li{font:400 12.5px var(--f-data);background:#070918;border:1px solid var(--rule);padding:5px 8px}
+#dlog li b{color:var(--amber);font-size:15px;font-weight:400}
+#dlog li .w{color:var(--dim)}
+#dlog li.crit b{color:var(--ok)}#dlog li.fumble b{color:var(--haz)}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--panel-2);border:1px solid var(--amber);padding:8px 14px;font:400 13px var(--f-data);z-index:40;pointer-events:none;opacity:0;transition:opacity .2s}
+#toast.on{opacity:1}
+
+@media (max-width:760px){
+  .grid.two{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr}
+  .fight thead{display:none}
+  .fight,.fight tbody,.fight tr,.fight td{display:block;width:100%}
+  .fight tr{border:1px solid var(--rule);margin-bottom:8px;background:var(--panel)}
+  .fight td{border:0;padding:4px 10px}
+  .fight td[data-l]::before{content:attr(data-l);display:inline-block;width:70px;font:400 10.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+  .fac thead{display:none}
+  .fac,.fac tbody,.fac tr,.fac td{display:block;width:100%}
+  .fac tr{border:1px solid var(--rule);margin-bottom:8px;background:var(--panel)}
+  .fac td{border:0}
+  .spot{grid-template-columns:minmax(70px,max-content) 1fr auto auto}
+  .res dl{grid-template-columns:1fr}
+  .res dt{padding-top:4px}
+}
+@media print{.bar,#tray,.btn{display:none!important}body{background:#fff;color:#000}.card{border-color:#999;background:#fff}}
+</style>
+</head>
+<body>
+<div id="gate">
+ <div class="lock">
+  <span class="eyebrow">Restricted partition</span>
+  <h1>Datapad maintenance mode</h1>
+  <p>This partition holds the GM's notes. If you're a player, the good stuff is the stuff you don't know yet.</p>
+  <form id="gateForm" autocomplete="off">
+   <input id="pw" type="password" placeholder="Access phrase" aria-label="Access phrase" autocomplete="current-password">
+   <button class="btn" type="submit">Unlock</button>
+  </form>
+  <p class="err" id="gateErr" aria-live="polite"></p>
+  <a class="back" href="../">← Back to the orientation packet</a>
+ </div>
+</div>
+
+<div id="app" hidden>
+<div class="bar"><div class="bar-in">
+ <span class="brand">GM · CONSOLE</span>
+ <nav id="tabs" aria-label="Console tools">
+  <a href="#table">Table</a><a href="#gen">Generate</a><a href="#travel">Travel</a><a href="#loot">Loot</a><a href="#fight">Fight</a><a href="#factions">Factions</a><a href="#clocks">Clocks</a><a href="#recap">Recap</a><a href="#ref">Reference</a>
+ </nav>
+ <div class="side"><a class="btn" href="index.html">GM page</a><button class="btn" id="backupBtn" type="button">Backup</button><button class="btn" id="lockBtn" type="button">Lock</button></div>
+</div></div>
+
+<main>
+
+<!-- ============================ TABLE ============================ -->
+<section data-tab="table">
+ <h1>At the table</h1>
+ <p class="lede">The clock, the spotlight, the oracle, and everything you made up tonight.</p>
+ <div class="grid">
+  <div class="card hi">
+   <h2><span class="k">01</span>Session clock</h2>
+   <div class="clock-big" id="tClock">0:00:00</div>
+   <div class="row"><button class="btn go" id="tGo">Start</button><button class="btn" id="tReset">Reset</button>
+    <label class="ck">Break every <select id="tBreak"><option value="0">never</option><option value="60">60 min</option><option value="90" selected>90 min</option><option value="120">120 min</option></select></label></div>
+   <p class="hint" id="tNote">Keeps running if you reload.</p>
+  </div>
+  <div class="card">
+   <h2><span class="k">02</span>Spotlight</h2>
+   <p class="hint">Tap + when someone gets a moment that's all theirs. Whoever's lowest gets the next one.</p>
+   <div class="spot" id="spot"></div>
+   <div class="row" style="margin-top:10px"><input id="spAdd" placeholder="Add a player or NPC" style="flex:1"><button class="btn" id="spAddBtn">Add</button><button class="btn" id="spReset">Zero all</button></div>
+  </div>
+  <div class="card">
+   <h2><span class="k">03</span>Oracle</h2>
+   <p class="hint">Not sure? Ask the dice. Odds shift the roll.</p>
+   <div class="row"><select id="orOdds"><option value="-1">Unlikely</option><option value="0" selected>Even</option><option value="1">Likely</option></select><button class="btn go" id="orAsk">Ask</button><button class="btn" id="orComp">Complication</button></div>
+   <div id="orOut"></div>
+  </div>
+  <div class="card">
+   <h2><span class="k">04</span>Set the scene</h2>
+   <div class="row"><select id="scPlace"><option value="tamsin">Tamsin</option><option value="ship">Aboard ship</option><option value="cor">Corinthian space</option><option value="str">STR space</option></select><button class="btn go" id="scGo">Describe</button></div>
+   <div id="scOut"></div>
+  </div>
+  <div class="card">
+   <h2><span class="k">05</span>Pull a thread</h2>
+   <p class="hint">A random unused hook from the wiki.</p>
+   <div class="row"><select id="thMet"><option value="all">Any page</option><option value="met">Already met</option><option value="new">Not met yet</option></select><select id="thType"></select><button class="btn go" id="thGo">Pull</button></div>
+   <div id="thOut"></div>
+  </div>
+  <div class="card hi" style="grid-column:1/-1">
+   <h2><span class="k">06</span>Made up tonight</h2>
+   <p class="hint">Everything you keep from the generators lands here, plus anything you type. After the session, copy the wiki stubs into <span class="mono">gm/wiki.js</span> (or send them to Claude with your recap).</p>
+   <div class="row"><select id="mkKind"><option value="npc">NPC</option><option value="location">Place</option><option value="ship">Ship</option><option value="item">Item</option><option value="note">Note</option></select><input id="mkName" placeholder="Name" style="flex:1 1 160px"><input id="mkText" placeholder="What you said about them" style="flex:3 1 240px"><button class="btn" id="mkAdd">Add</button></div>
+   <ul class="list" id="mkList"></ul>
+   <div class="row" style="margin-top:10px"><button class="btn" id="mkStubs">Show wiki stubs</button><button class="btn" id="mkCopy">Copy stubs</button><button class="btn x" id="mkClear">Clear list</button></div>
+   <pre class="code" id="mkOut" hidden></pre>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ GENERATE ============================ -->
+<section data-tab="gen" hidden>
+ <h1>Generators</h1>
+ <p class="lede">Someone the party wasn't supposed to talk to. Click any field to reroll just that line.</p>
+ <div class="card hi">
+  <div class="row">
+   <label class="ck">Culture <select id="gCult"><option value="">Mixed</option><option value="drift">Drift spacer</option><option value="str">STR citizen</option><option value="cor">Corinthian</option><option value="ash">Ashborn</option><option value="droid">Android</option></select></label>
+   <label class="ck">Faction <select id="gFac"><option value="">None</option></select></label>
+   <label class="ck">Where <select id="gWhere"></select></label>
+  </div>
+  <div class="row">
+   <button class="btn go" data-gen="npc">NPC</button><button class="btn go" data-gen="ship">Ship</button><button class="btn go" data-gen="venue">Venue</button><button class="btn go" data-gen="rumor">Rumor</button><button class="btn go" data-gen="gig">Gig</button><button class="btn go" data-gen="cargo">Cargo</button><button class="btn go" data-gen="names">5 names</button><button class="btn x" id="gClear">Clear</button>
+  </div>
+ </div>
+ <div class="grid two out" id="gOut"></div>
+</section>
+
+<!-- ============================ TRAVEL ============================ -->
+<section data-tab="travel" hidden>
+ <h1>Travel planner</h1>
+ <p class="lede">Every two days, roll a d6. On a 1, something finds them.</p>
+ <div class="card hi">
+  <div class="row">
+   <label class="ck">From <select id="trFrom"></select></label>
+   <label class="ck">Via <select id="trVia"></select></label>
+   <label class="ck">To <select id="trTo"></select></label>
+  </div>
+  <div class="row">
+   <label class="ck">Encounter on <select id="trOn"><option value="1">a 1 (rules)</option><option value="2">1–2 (dangerous)</option><option value="0">never (just flavor)</option></select></label>
+   <label class="ck"><input type="checkbox" id="trFlavor" checked> Quiet-day flavor</label>
+   <button class="btn go" id="trGo">Plot the trip</button><button class="btn" id="trCopy">Copy log</button>
+  </div>
+  <p class="hint" id="trSrc"></p>
+ </div>
+ <div id="trOut" class="out"></div>
+</section>
+
+<!-- ============================ LOOT ============================ -->
+<section data-tab="loot" hidden>
+ <h1>Loot and salvage</h1>
+ <p class="lede">Prices are what Low Dock pays, give or take a lie. gp = cr.</p>
+ <div class="card hi">
+  <div class="row">
+   <label class="ck">Found in <select id="lCtx"><option value="wreck">A wreck</option><option value="merc">A body (merc, thug)</option><option value="corporate">An STR office</option><option value="shrine">A Corinthian shrine</option><option value="market">A black-market stall</option><option value="hold">A cargo hold</option><option value="ash">An Ashborn cache</option></select></label>
+   <label class="ck">Tier <select id="lTier"><option value="1">1 (levels 1–4)</option><option value="2">2 (5–10)</option><option value="3">3 (11–16)</option><option value="4">4 (17+)</option></select></label>
+   <label class="ck">Items <select id="lN"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option></select></label>
+   <button class="btn go" id="lGo">Search it</button>
+  </div>
+ </div>
+ <div id="lOut" class="out"></div>
+</section>
+
+<!-- ============================ FIGHT ============================ -->
+<section data-tab="fight" hidden>
+ <h1>Ground combat</h1>
+ <p class="lede">Initiative, hit points and conditions. For ship fights, use the <a href="../combat/">tactical plot</a>.</p>
+ <div class="grid two">
+  <div class="card">
+   <h3>Add foes</h3>
+   <div class="row"><select id="fFoe" style="flex:1 1 220px"></select><input id="fCount" type="number" min="1" max="20" value="1" class="n" style="width:60px" aria-label="How many"><input id="fName" placeholder="Name (optional)" style="flex:1 1 120px"><button class="btn go" id="fAddFoe">Add</button></div>
+   <div class="row"><select id="fWiki" style="flex:1"></select><button class="btn" id="fAddWiki">Add NPC</button></div>
+   <p class="hint" id="fFoeInfo"></p>
+  </div>
+  <div class="card">
+   <h3>Add a PC</h3>
+   <div class="row"><input id="pName" placeholder="Name" style="flex:1 1 120px"><input id="pAc" type="number" placeholder="AC" style="width:64px"><input id="pHp" type="number" placeholder="HP" style="width:64px"><input id="pInit" type="number" placeholder="Init +" style="width:70px"><button class="btn go" id="fAddPc">Add</button></div>
+   <div class="row" id="pSaved"></div>
+   <p class="hint">PCs you add are remembered here. Their initiative is the players' roll: type it into the Init box.</p>
+  </div>
+ </div>
+ <div class="card" style="margin-top:14px">
+  <div class="row"><span class="round" id="fRound">NOT STARTED</span><span style="flex:1"></span>
+   <button class="btn go" id="fInit">Roll initiative</button><button class="btn" id="fPrev">◂ Prev</button><button class="btn go" id="fNext">Next turn ▸</button>
+   <label class="ck"><input type="checkbox" id="fGroup"> Group identical foes</label>
+   <button class="btn" id="fEnd">End fight</button><button class="btn x" id="fClear">Clear all</button></div>
+  <div style="overflow-x:auto"><table class="fight"><thead><tr><th>Init</th><th>Who</th><th>AC</th><th>HP</th><th>Damage / heal</th><th>Conditions</th><th>Attacks</th><th></th></tr></thead><tbody id="fBody"></tbody></table></div>
+  <p class="empty" id="fEmpty">No one's fighting yet.</p>
+ </div>
+</section>
+
+<!-- ============================ FACTIONS ============================ -->
+<section data-tab="factions" hidden>
+ <h1>Faction turns</h1>
+ <p class="lede">The galaxy moves while the party sleeps. Run one turn between sessions, or when a week passes in game.</p>
+ <div class="card hi">
+  <div class="row"><input id="fxLabel" placeholder="Label, e.g. Between S2 and S3" style="flex:1 1 220px"><button class="btn go" id="fxRun">Run a faction turn</button><button class="btn" id="fxCopy">Copy log</button><label class="ck"><input type="checkbox" id="fxAll"> Show inactive factions</label></div>
+  <p class="hint">d6 per active faction: 1 setback (clock −1), 2–3 holds, 4–5 advances (+1), 6 a big move (+2) and the news reaches Tamsin. A full clock means the goal happens: decide what changes. Goals are <em>suggestions</em>; edit them.</p>
+ </div>
+ <div class="card" style="margin-top:14px;overflow-x:auto"><table class="fac"><thead><tr><th>On</th><th>Faction</th><th>Goal</th><th>Clock</th><th>To the party</th><th>Last move</th></tr></thead><tbody id="fxBody"></tbody></table></div>
+ <div class="card" style="margin-top:14px"><h3>Log</h3><ul class="list" id="fxLog"></ul><div class="row" style="margin-top:8px"><button class="btn x" id="fxLogClear">Clear log</button></div></div>
+</section>
+
+<!-- ============================ CLOCKS ============================ -->
+<section data-tab="clocks" hidden>
+ <h1>Clocks</h1>
+ <p class="lede">Countdowns, heists and doom. Tap a slice to fill up to it.</p>
+ <div class="card hi"><div class="row"><input id="ckName" placeholder="What happens when it fills?" style="flex:1 1 240px"><select id="ckSeg"><option>4</option><option selected>6</option><option>8</option><option>10</option><option>12</option></select><select id="ckColor"><option value="amber">Amber</option><option value="haz">Red</option><option value="teal">Teal</option><option value="lil">Lilac</option><option value="lan">Gold</option></select><button class="btn go" id="ckAdd">Add clock</button></div></div>
+ <div class="clocks" id="ckList" style="margin-top:14px"></div>
+</section>
+
+<!-- ============================ RECAP ============================ -->
+<section data-tab="recap" hidden>
+ <h1>Session recap</h1>
+ <p class="lede">Write it once; get a player recap, a wiki session page, and every page's "seen" line.</p>
+ <div class="grid two">
+  <div class="card hi">
+   <div class="row"><input id="rcId" placeholder="Page id, e.g. s2" style="width:100px"><input id="rcName" placeholder="Session 2: title" style="flex:1"></div>
+   <div class="row"><input id="rcSub" placeholder="One line under the title" style="flex:1"></div>
+   <textarea id="rcText" rows="14" placeholder="One beat per line.&#10;Use [[id]] or [[id|words]] to link wiki pages.&#10;Start a line with ! for GM-only (left out of the player recap).&#10;&#10;The crew docked at [[tamsin]] without [[car-b]].&#10;! [[marra-tesk]] already knew they had the core."></textarea>
+   <div class="row" style="margin-top:8px"><input id="rcFind" placeholder="Find a wiki page to link…" list="rcIds" style="flex:1"><datalist id="rcIds"></datalist><button class="btn" id="rcIns">Insert link</button></div>
+   <p class="hint" id="rcWarn"></p>
+  </div>
+  <div class="card">
+   <div class="row"><label class="ck">Player recap voice <select id="rcVoice"><option value="plain">Previously on…</option><option value="commonweal">Commonweal incident digest</option><option value="dock">Dockside talk</option><option value="log">Datapad log</option></select></label><button class="btn" id="rcCopyP">Copy</button></div>
+   <pre class="code" id="rcPlayer"></pre>
+   <div class="row" style="margin-top:12px"><span class="eyebrow" style="flex:1">Wiki: session page and seen lines</span><button class="btn" id="rcCopyW">Copy</button></div>
+   <pre class="code" id="rcWiki"></pre>
+  </div>
+ </div>
+</section>
+
+<!-- ============================ REFERENCE ============================ -->
+<section data-tab="ref" hidden>
+ <h1>Quick reference</h1>
+ <p class="lede">The Drift's house rules in short, plus the 5e tables you always look up. The full rules are on the <a href="index.html#rules">GM page</a>.</p>
+ <div class="grid ref" id="refGrid"></div>
+</section>
+</main>
+
+<div id="tray">
+ <div id="trayPanel" hidden>
+  <div class="row" style="margin:0"><input id="dExpr" placeholder="2d6+3, d20, 4d6kh3 · Esc closes" style="flex:1"><button class="btn go" id="dRoll">Roll</button></div>
+  <div class="dice"><button class="btn" data-d="1d4">d4</button><button class="btn" data-d="1d6">d6</button><button class="btn" data-d="1d8">d8</button><button class="btn" data-d="1d10">d10</button><button class="btn" data-d="1d12">d12</button><button class="btn" data-d="1d20">d20</button><button class="btn" data-d="2d20kh1">Adv</button><button class="btn" data-d="2d20kl1">Dis</button><button class="btn" data-d="1d100">d100</button></div>
+  <ul id="dlog"></ul>
+ </div>
+ <button id="trayBtn" type="button" aria-expanded="false">Dice<span class="last" id="dLast"></span></button>
+</div>
+<div id="toast" role="status"></div>
+
+<!-- Data files load with a timestamp so edits show on the next reload. -->
+<script>document.write(["wiki.js","tables.js"].map(f=>'<script src="'+f+'?v='+Date.now()+'"><\/script>').join(""))</script>
+<script>
+(function(){
+"use strict";
+/* ---------- lock (same phrase and key as gm/index.html) ---------- */
+const PASS_HASH = "5682364043879558";
+const KEY = "drift-gm-unlocked";
+function cyrb53(str, seed = 7){let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677)}
+ h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return String(4294967296*(2097151&h2)+(h1>>>0))}
+const gmHash = p => cyrb53(String(p).trim().toLowerCase());
+const lockStore={get(){try{return localStorage.getItem(KEY)}catch(e){return null}},set(v){try{v?localStorage.setItem(KEY,v):localStorage.removeItem(KEY)}catch(e){}}};
+
+/* ---------- helpers ---------- */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const bt=s=>String(s).replace(/\\/g,"\\\\").replace(/`/g,"\\`").replace(/\$\{/g,"\\${");
+const rint=n=>Math.floor(Math.random()*n);
+const pick=a=>a&&a.length?a[rint(a.length)]:"";
+const slug=s=>String(s).toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g,"").trim().replace(/[\s_]+/g,"-").replace(/-+/g,"-").slice(0,40)||"page";
+const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+const PFX="gm.console.";
+const S={get(k,d){try{const v=localStorage.getItem(PFX+k);return v==null?d:JSON.parse(v)}catch(_){return d}},set(k,v){try{localStorage.setItem(PFX+k,JSON.stringify(v))}catch(_){}}};
+let toastT;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),1600)}
+async function copy(text){try{await navigator.clipboard.writeText(text);toast("Copied")}catch(_){const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Copied")}catch(e){toast("Couldn't copy")}ta.remove()}}
+
+const T=window.GM_TABLES||{};
+const W=(window.GM_WIKI||[]).filter(p=>p&&p.id);
+const WB=Object.fromEntries(W.map(p=>[p.id,p]));
+const wlink=(id,txt)=>WB[id]?`<a href="index.html#wiki/${esc(id)}">${esc(txt||WB[id].name)}</a>`:esc(txt||id);
+const plain=s=>String(s||"").replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,"$2").replace(/\[\[([^\]]+)\]\]/g,(m,id)=>id[0]==="#"?id.slice(1):(WB[id]?WB[id].name:id)).replace(/\*\*([^*]+)\*\*/g,"$1").replace(/\*([^*]+)\*/g,"$1");
+const rich=s=>esc(s).replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,(m,id,t)=>id[0]==="#"?`<a href="index.html${id}">${t}</a>`:wlink(id,t)).replace(/\[\[([^\]]+)\]\]/g,(m,id)=>id[0]==="#"?`<a href="index.html${id}">${id.slice(1)}</a>`:wlink(id)).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/\*([^*]+)\*/g,"<i>$1</i>");
+function topPower(id){let p=WB[id],n=0;while(p&&p.faction&&WB[p.faction]&&n++<8)p=WB[p.faction];if(!p)return"drift";return p.id==="corinthia"?"dom":p.id==="str"?"str":"drift"}
+const POWER_NAME={dom:"Corinthia",str:"STR",drift:"Drift"};
+
+/* ---------- dice ---------- */
+function parseRoll(expr){
+ const s=String(expr).toLowerCase().replace(/\s+/g,"").replace(/×/g,"*");
+ if(!s)return null;
+ const re=/([+-]?)(?:(\d*)d(\d+)(k[hl]\d+)?|(\d+))/gy;let m,terms=[],i=0;
+ while(i<s.length){re.lastIndex=i;m=re.exec(s);if(!m||m.index!==i)return null;
+  if(m[3])terms.push({sign:m[1]==="-"?-1:1,n:Math.min(+(m[2]||1),200),d:+m[3],k:m[4]||""});else terms.push({sign:m[1]==="-"?-1:1,c:+m[5]});
+  i=re.lastIndex;
+  if(s[i]==="*"){const mm=/^\*(\d+)/.exec(s.slice(i));if(!mm)return null;terms[terms.length-1].mul=+mm[1];i+=mm[0].length}}
+ return terms.length?terms:null}
+function roll(expr,opt={}){
+ const terms=parseRoll(expr);if(!terms)return null;
+ let total=0,parts=[],nat=null,dieCount=0;
+ for(const t of terms){
+  if(t.c!=null){total+=t.sign*t.c*(t.mul||1);parts.push((t.sign<0?"−":"+")+t.c);continue}
+  const n=opt.crit?t.n*2:t.n;const rs=[];for(let j=0;j<n;j++)rs.push(1+rint(t.d));
+  let kept=rs.slice();
+  if(t.k){const kk=+t.k.slice(2);const sorted=rs.map((v,ix)=>[v,ix]).sort((a,b)=>t.k[1]==="h"?b[0]-a[0]:a[0]-b[0]);const keep=new Set(sorted.slice(0,kk).map(x=>x[1]));kept=rs.filter((_,ix)=>keep.has(ix));parts.push((t.sign<0?"−":"+")+"["+rs.map((v,ix)=>keep.has(ix)?v:"<s>"+v+"</s>").join(",")+"]")}
+  else parts.push((t.sign<0?"−":"+")+"["+rs.join(",")+"]");
+  const sum=kept.reduce((a,b)=>a+b,0)*(t.mul||1);if(t.mul)parts[parts.length-1]+="×"+t.mul;
+  total+=t.sign*sum;
+  if(t.d===20&&kept.length===1){nat=kept[0]}dieCount++}
+ if(dieCount!==1)nat=null;
+ return{total,detail:parts.join(" ").replace(/^\+/,""),nat}}
+const dlog=S.get("dice",[]);
+function logRoll(label,expr,r,cls){if(!r)return;dlog.unshift({l:label||"",e:expr,t:r.total,d:r.detail,c:cls||(r.nat===20?"crit":r.nat===1?"fumble":"")});dlog.length=Math.min(dlog.length,40);S.set("dice",dlog);drawDice();$("dLast").textContent=r.total}
+function drawDice(){$("dlog").innerHTML=dlog.map(x=>`<li class="${x.c||""}"><b>${esc(x.t)}</b> <span class="w">${x.l?esc(x.l)+" · ":""}${esc(x.e)}</span><br>${x.d}</li>`).join("")||`<li class="w">No rolls yet.</li>`}
+function rollAndLog(expr,label,opt){const r=roll(expr,opt);if(!r){toast("Can't read "+expr);return null}logRoll(label,expr,r);toast((label?label+": ":"")+r.total);return r}
+$("trayBtn").addEventListener("click",()=>{const p=$("trayPanel");p.hidden=!p.hidden;$("trayBtn").setAttribute("aria-expanded",!p.hidden);if(!p.hidden)$("dExpr").focus()});
+$("dRoll").addEventListener("click",()=>{const e=$("dExpr").value.trim();if(e)rollAndLog(e)});
+$("dExpr").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("dRoll").click()}});
+document.querySelectorAll("[data-d]").forEach(b=>b.addEventListener("click",()=>rollAndLog(b.dataset.d,b.textContent)));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("trayPanel").hidden){$("trayPanel").hidden=true;$("trayBtn").setAttribute("aria-expanded","false");$("trayBtn").focus();return}if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();$("trayPanel").hidden=false;$("dExpr").focus()}});
+
+/* ---------- tabs ---------- */
+const TABS=[...document.querySelectorAll("section[data-tab]")].map(s=>s.dataset.tab);
+const built={};
+function route(){let t=(location.hash||"#table").slice(1).split("/")[0];if(!TABS.includes(t))t="table";
+ document.querySelectorAll("section[data-tab]").forEach(s=>s.hidden=s.dataset.tab!==t);
+ document.querySelectorAll("#tabs a").forEach(a=>a.getAttribute("href")==="#"+t?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+ if(!built[t]&&BUILD[t]){built[t]=true;BUILD[t]()}window.scrollTo(0,0)}
+
+/* ================= TABLE ================= */
+function buildTable(){
+ // session clock
+ let tm=S.get("timer",{start:null,acc:0,brk:90});$("tBreak").value=String(tm.brk||0);
+ const el=()=>tm.acc+(tm.start?Date.now()-tm.start:0);
+ const fmt=ms=>{const s=Math.floor(ms/1000);return`${Math.floor(s/3600)}:${String(Math.floor(s/60)%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`};
+ let warned=Math.floor(el()/60000/(tm.brk||1e9));
+ const tick=()=>{$("tClock").textContent=fmt(el());$("tGo").textContent=tm.start?"Pause":"Start";
+  const b=+tm.brk;if(b&&tm.start){const n=Math.floor(el()/60000/b);if(n>warned){warned=n;toast("Break time");$("tNote").textContent=`Break suggested at ${fmt(n*b*60000)}.`}}};
+ setInterval(tick,1000);tick();
+ $("tGo").onclick=()=>{if(tm.start){tm.acc=el();tm.start=null}else tm.start=Date.now();S.set("timer",tm);tick()};
+ $("tReset").onclick=()=>{tm={start:null,acc:0,brk:tm.brk};warned=0;S.set("timer",tm);$("tNote").textContent="Keeps running if you reload.";tick()};
+ $("tBreak").onchange=e=>{tm.brk=+e.target.value;warned=Math.floor(el()/60000/(tm.brk||1e9));S.set("timer",tm)};
+
+ // spotlight
+ let sp=S.get("spot",null)||W.filter(p=>p.type==="pc").map(p=>({n:p.name,c:0}));
+ const drawSp=()=>{const mx=Math.max(1,...sp.map(x=>x.c)),mn=Math.min(...sp.map(x=>x.c));
+  $("spot").innerHTML=sp.map((x,i)=>`<span class="${sp.length>1&&x.c===mn?"low":""}">${esc(x.n)}</span><span class="barx"><i style="width:${x.c/mx*100}%"></i></span><span class="mono">${x.c}</span><span><button class="btn sm" data-sp="${i}">+</button> <button class="btn sm x" data-spx="${i}" aria-label="Remove">×</button></span>`).join("")||`<span class="empty">Add the players.</span>`;S.set("spot",sp)};
+ $("spot").onclick=e=>{const a=e.target.closest("[data-sp]"),x=e.target.closest("[data-spx]");if(a)sp[+a.dataset.sp].c++;if(x)sp.splice(+x.dataset.spx,1);drawSp()};
+ $("spAddBtn").onclick=()=>{const v=$("spAdd").value.trim();if(v){sp.push({n:v,c:0});$("spAdd").value="";drawSp()}};
+ $("spReset").onclick=()=>{sp.forEach(x=>x.c=0);drawSp()};drawSp();
+
+ // oracle
+ const O=T.ORACLE||{answers:[]};
+ $("orAsk").onclick=()=>{const r=1+rint(6),odds=+$("orOdds").value,v=Math.max(1,Math.min(6,r+odds));const a=O.answers[v-1]?O.answers[v-1][0]:"?";
+  const extra=/and/.test(a)?pick(O.and):/but/.test(a)?pick(O.but):"";
+  $("orOut").innerHTML=`<div class="res"><div class="big">${esc(a)}</div>${extra?`<div class="lore">${esc(cap(extra))}.</div>`:""}<div class="s">d6 ${r}${odds?(odds>0?" +1":" −1"):""}</div></div>`};
+ $("orComp").onclick=()=>{$("orOut").innerHTML=`<div class="res"><div class="s">Complication</div><div class="big">${esc(cap(pick(O.complication)))}</div></div>`};
+
+ // scene
+ $("scGo").onclick=()=>{const sc=(T.SCENE||{})[$("scPlace").value]||{};$("scOut").innerHTML=`<div class="res"><dl><dt>See</dt><dd>${esc(cap(pick(sc.sight)))}</dd><dt>Hear</dt><dd>${esc(cap(pick(sc.sound)))}</dd><dt>Smell</dt><dd>${esc(cap(pick(sc.smell)))}</dd></dl></div>`};
+
+ // thread
+ const types=["all",...new Set(W.map(p=>p.type))];$("thType").innerHTML=types.map(t=>`<option value="${t}">${t==="all"?"Any type":cap(t)}</option>`).join("");
+ $("thGo").onclick=()=>{const met=$("thMet").value,ty=$("thType").value;const pool=[];
+  W.forEach(p=>{if(ty!=="all"&&p.type!==ty)return;const seen=p.seen&&p.seen.length;if(met==="met"&&!seen)return;if(met==="new"&&seen)return;(p.hooks||[]).forEach(h=>{const t=typeof h==="string"?h:h&&!h.used?h.t:null;if(t)pool.push([p,t])})});
+  if(!pool.length){$("thOut").innerHTML=`<p class="empty">No unused hooks match.</p>`;return}
+  const[p,t]=pick(pool);$("thOut").innerHTML=`<div class="res"><div class="s">${esc(p.type)} · ${p.seen&&p.seen.length?"met":"not met yet"}</div><div class="t">${wlink(p.id)}</div><div>${rich(t)}</div></div>`};
+
+ // made up tonight
+ drawMade();
+ $("mkAdd").onclick=()=>{const n=$("mkName").value.trim(),t=$("mkText").value.trim();if(!n&&!t)return;addMade({kind:$("mkKind").value,name:n||"Untitled",text:t});$("mkName").value=$("mkText").value=""};
+ $("mkList").onclick=e=>{const x=e.target.closest("[data-mx]");if(x){const m=S.get("made",[]);m.splice(+x.dataset.mx,1);S.set("made",m);drawMade()}};
+ $("mkStubs").onclick=()=>{const o=$("mkOut");o.hidden=!o.hidden;o.textContent=stubs()};
+ $("mkCopy").onclick=()=>copy(stubs());
+ $("mkClear").onclick=()=>{if(confirm("Clear everything you made up tonight?")){S.set("made",[]);drawMade()}};
+}
+function addMade(o){const m=S.get("made",[]);m.push(Object.assign({at:Date.now()},o));S.set("made",m);drawMade();toast("Kept: "+o.name)}
+function drawMade(){const m=S.get("made",[]);$("mkList").innerHTML=m.map((x,i)=>`<li><span class="tag">${esc(x.kind)}</span><span class="grow"><b>${esc(x.name)}</b>${x.text?" · "+esc(x.text):""}</span><button class="btn sm x" data-mx="${i}" aria-label="Remove">×</button></li>`).join("")||`<li class="empty">Nothing yet. Keep something from Generate, or type it above.</li>`;
+ if(!$("mkOut").hidden)$("mkOut").textContent=stubs()}
+function stubs(){const m=S.get("made",[]);const used=new Set(W.map(p=>p.id));
+ const lines=m.filter(x=>x.kind!=="note").map(x=>{let id=slug(x.name),n=2;while(used.has(id))id=slug(x.name)+"-"+n++;used.add(id);
+  const f=x.fields||{};const o=[`id: \`${id}\``,`type: \`${x.kind}\``,`name: \`${bt(x.name)}\``,`tag: \`played\``];
+  if(f.sub)o.push(`sub: \`${bt(f.sub)}\``);if(f.where)o.push(`where: \`${f.where}\``);if(f.faction)o.push(`faction: \`${f.faction}\``);if(f.stats)o.push(`stats: \`${bt(f.stats)}\``);if(f.wants)o.push(`wants: \`${bt(f.wants)}\``);
+  o.push(`body: [\`*Made up at the table (suggestion from the console):* ${bt(x.text||"")}\`]`);
+  if(f.secret)o.push(`secrets: [\`*Suggestion:* ${bt(f.secret)}\`]`);
+  o.push(`seen: [[\`S?\`, \`Met at the table.\`]]`);
+  o.push(`hooks: [\`${bt(f.hook||("Bring them back: "+(f.wants?"they still want "+f.wants:"they remember the party")+"."))}\`]`);
+  return"{ "+o.join(", ")+" },"});
+ const notes=m.filter(x=>x.kind==="note").map(x=>"// note: "+x.name+(x.text?" — "+x.text:""));
+ return(lines.concat(notes).join("\n"))||"// Nothing kept yet."}
+
+/* ================= GENERATE ================= */
+const CULTS=["drift","str","cor","ash","droid"];
+function culture(){return $("gCult").value||(()=>{const f=$("gFac").value;if(f){const p=topPower(f);return p==="dom"?"cor":p==="str"?"str":(f==="ashborn"?"ash":"drift")}return pick(["drift","drift","drift","str","cor","ash","droid"])})()}
+function genName(c){const N=(T.NAMES||{})[c]||T.NAMES.drift;if(c==="droid"){const a=pick(N.first);return/[-_]$/.test(a)?a+pick(N.last):a}
+ return pick(N.first)+" "+pick(N.last)}
+function npcField(c,k){const A=(T.NPC||{}).any||{},C=(T.NPC||{})[c]||{};const pool=(C[k]||[]).concat(A[k]||[]);return pick(pool)}
+function guessStats(job){job=String(job).toLowerCase();if(/sable|lictor|officer|security/.test(job))return"Guard";if(/fixer|broker|agent|auditor|adjuster|recruiter|informant|compliance/.test(job))return"Spy";if(/priest|deacon|choir|hedge/.test(job))return"Acolyte";if(/heavy|enforcer|muscle/.test(job))return"Thug";if(/pilot|scout|ranger|diver/.test(job))return"Scout";if(/android|drone|loader|unit/.test(job))return"Commoner, with Animated Armor's AC and HP";if(/clan|envoy|elder|merc/.test(job))return"Veteran";return"Commoner"}
+const GEN={
+ npc(){const c=culture(),fac=$("gFac").value,where=$("gWhere").value;const job=npcField(c,"job");
+  return{kind:"npc",c,title:genName(c),sub:`${cap(job)}${fac&&WB[fac]?" · "+WB[fac].name:""}${where&&WB[where]?" · "+WB[where].name:""}`,
+   f:{job,look:npcField(c,"look"),voice:npcField(c,"voice"),tic:npcField(c,"tic"),want:npcField(c,"want"),secret:npcField(c,"secret")},
+   order:[["job","Job"],["look","Looks"],["voice","Voice"],["tic","Tic"],["want","Wants"],["secret","Secret"]],fac,where}},
+ ship(){const S_=T.SHIPS;const nm=rint(4)===0?pick(S_.whole):`${pick(S_.a)} ${pick(S_.b)}`;return{kind:"ship",title:"The "+nm,sub:"Ship",f:{kind:pick(S_.kind),quirk:pick(S_.quirk),captain:genName(culture())},order:[["kind","Hull"],["captain","Captain"],["quirk","Quirk"]]}},
+ venue(){const V=T.VENUES;return{kind:"location",title:pick(V.a),sub:"Tamsin venue",f:{kind:pick(V.kind),feature:pick(V.feature),who:pick(V.who),owner:genName(pick(["drift","drift","ash","str"]))},order:[["kind","What"],["owner","Run by"],["feature","Known for"],["who","Crowd"]]}},
+ rumor(){const R=T.RUMOR;return{kind:"note",title:"Rumor",sub:"Overheard",f:{line:`${cap(pick(R.who))} ${pick(R.what)}.`,truth:pick(R.twist)},order:[["line","Heard"],["truth","GM: truth"]]}},
+ gig(){const G=T.GIG;const c=culture();return{kind:"gig",title:`${pick(G.verb)} ${pick(G.object)} ${pick(G.where)}`,sub:"Ledgerline-style gig",f:{cat:pick(G.cat),client:genName(c),pay:pick(G.pay),catch:pick(G.catch)},order:[["cat","Category"],["client","Client"],["pay","Pay (cr)"],["catch","GM: the catch"]]}},
+ cargo(){return{kind:"note",title:"Cargo",sub:"What's in the crate",f:{what:pick(T.CARGO),qty:`${1+rint(6)*5} units`},order:[["what","Contents"],["qty","Quantity"]]}},
+ names(){const c=$("gCult").value;const ls=[];for(let i=0;i<5;i++){const cc=c||pick(CULTS);ls.push(`${genName(cc)} (${cc})`)}return{kind:"note",title:"Names",sub:"Five on the spot",f:{list:ls.join(" · ")},order:[["list","Names"]]}}
+};
+function reroll(r,k){if(r.kind==="npc")return k==="title"?genName(r.c):npcField(r.c,k);const n=GEN[r.gen]();return k==="title"?n.title:n.f[k]}
+let gres=[];const k0=el=>el.dataset.f;
+function drawGen(){$("gOut").innerHTML=gres.map((r,i)=>`<div class="res" data-i="${i}"><div class="s">${esc(r.sub)}</div><div class="t" data-f="title" style="cursor:pointer">${esc(r.title)}</div><dl>${r.order.map(([k,l])=>`<dt>${esc(l)}</dt><dd data-f="${k}">${esc(cap(String(r.f[k])))}</dd>`).join("")}</dl>
+ ${r.kind==="npc"?`<div class="hint">Stats: ${esc(guessStats(r.f.job))} (5e SRD)</div>`:""}
+ <div class="acts">${r.kind!=="gig"&&r.kind!=="note"?`<button class="btn sm" data-a="keep">Keep</button>`:`<button class="btn sm" data-a="keep">Keep as note</button>`}${r.kind==="gig"?`<button class="btn sm" data-a="gig">Copy as gigs.js</button>`:""}${r.kind==="npc"?`<button class="btn sm" data-a="fight">Add to fight</button>`:""}<button class="btn sm x" data-a="drop">×</button></div></div>`).join("")}
+function buildGen(){
+ const facs=W.filter(p=>p.type==="faction");$("gFac").innerHTML=`<option value="">None</option>`+facs.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");
+ const locs=W.filter(p=>p.type==="location");$("gWhere").innerHTML=`<option value="">Anywhere</option>`+locs.map(p=>`<option value="${p.id}"${p.id==="tamsin"?" selected":""}>${esc(p.name)}</option>`).join("");
+ gres=S.get("gen",[]);drawGen();
+ document.querySelectorAll("[data-gen]").forEach(b=>b.onclick=()=>{gres.unshift(Object.assign(GEN[b.dataset.gen](),{gen:b.dataset.gen}));gres.length=Math.min(gres.length,12);S.set("gen",gres);drawGen()});
+ $("gClear").onclick=()=>{gres=[];S.set("gen",gres);drawGen()};
+ $("gOut").onclick=e=>{const card=e.target.closest(".res");if(!card)return;const r=gres[+card.dataset.i];
+  const f=e.target.closest("[data-f]");if(f&&r.gen&&!(r.gen==="names"&&k0(f)==="title")){const k=f.dataset.f;const v=reroll(r,k);if(k==="title")r.title=v;else r.f[k]=v;S.set("gen",gres);drawGen();return}
+  const a=e.target.closest("[data-a]");if(!a)return;const act=a.dataset.a;
+  if(act==="drop"){gres.splice(+card.dataset.i,1)}
+  else if(act==="keep"){
+   if(r.kind==="npc")addMade({kind:"npc",name:r.title,text:`${r.f.job}; ${r.f.look}; ${r.f.voice}; ${r.f.tic}.`,fields:{sub:cap(r.f.job),where:r.where||"",faction:r.fac||"",stats:guessStats(r.f.job),wants:r.f.want,secret:r.f.secret}});
+   else if(r.kind==="ship")addMade({kind:"ship",name:r.title,text:`${r.f.kind}, captain ${r.f.captain}; ${r.f.quirk}.`,fields:{sub:cap(r.f.kind)}});
+   else if(r.kind==="location")addMade({kind:"location",name:r.title,text:`A ${r.f.kind} run by ${r.f.owner}, known for ${r.f.feature}. Crowd: ${r.f.who}.`,fields:{sub:cap(r.f.kind),where:"tamsin"}});
+   else addMade({kind:"note",name:r.title,text:r.order.map(([k,l])=>l+": "+r.f[k]).join(" · ")})}
+  else if(act==="gig"){const id="LL-"+(2300+rint(700));copy(`{ id: \`${id}\`, title: \`${bt(r.title)}\`, cat: \`${r.f.cat}\`, client: \`${bt(r.f.client)}\`, cr: ${(3+Math.random()*2).toFixed(1)}, crn: ${rint(40)}, pay: ${r.f.pay},\n  where: \`Tamsin\`, when: \`one shift\`, posted: \`${1+rint(9)}h ago\`, expires: \`in ${1+rint(4)} days\`, min: 0,\n  blurb: \`${bt(cap(r.title))}.\`, notes: [\`Write the client's listing here, in their voice.\`] },\n// and in gm/jobs.js, a GM entry for ${id}. The catch (suggestion): ${r.f.catch}`)}
+  else if(act==="fight"){addCombatant(Object.assign(foeFromStats(guessStats(r.f.job))||{},{name:r.title}));toast("Added to Fight")}
+  S.set("gen",gres);drawGen()};
+}
+
+/* ================= TRAVEL ================= */
+const FALLBACK=[["eye","The Abyssal Throne","dom",[-38,0,0]],["seraphis","Seraphis","dom",[-30,1.5,7]],["candlemoor","Candlemoor","dom",[-30,0,-17]],["vigil","Vigil's Reach","dom",[-17,0,5]],["reliquary","Reliquary Fields","dom",[-45,0,19]],["psalter","Psalter","dom",[-24,0,22]],["cloister","The Cloister Moons","dom",[-51,0,-12]],["meridian","Meridian Prime","str",[38,0,-2]],["halcyon","Halcyon Exchange","str",[29,0,13]],["kestrel","Kestrel Array","str",[45,2,-24]],["brightwater","Brightwater","str",[23,0,-11]],["varga","Varga","str",[48,0,14]],["sable","Sable Station","str",[18,0,2]],["tamsin","Free Harbor Tamsin","drift",[3,0,11]],["vey","Saint Vey","drift",[-8,0,-14]],["copperline","Copperline","drift",[10,0,-5]],["ash","The Grave of Ash","drift",[-5,0,25]],["hollows","The Nine Hollows","drift",[-9,0,8]],["marrow","Marrow","drift",[11,0,26]],["lantern","The Lantern","drift",[0,0,0]],["corridor","The Null Corridor","haz",[0,0,-31]],["barge","The Lost Barge","haz",[-13,0,33]]].map(([id,name,f,pos])=>({id,name,f,pos}));
+let SYS=FALLBACK,sysSrc="built-in copy";
+async function loadSys(){try{const r=await fetch("../index.html",{cache:"no-store"});const s=await r.text();const m=s.match(/const DATA=(\[[\s\S]*?\n\]);/);if(m){const d=Function('"use strict";return '+m[1])();if(Array.isArray(d)&&d.length){SYS=d.filter(x=>x.id!=="choir").map(x=>({id:x.id,name:x.name,f:x.f,pos:x.pos}));sysSrc="the player chart (index.html)"}}}catch(_){}}
+const PC_PER_DAY=2.5;
+const d3=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+function region(p){const L=[0,0,0],A=(SYS.find(s=>s.id==="ash")||{pos:[-5,0,25]}).pos;
+ if(d3(p,L)<=5)return"lantern";if(d3(p,A)<=6)return"ash";if(Math.abs(p[0])<=13&&p[2]<-24)return"corridor";if(p[0]<-13)return"dom";if(p[0]>13)return"str";return"drift"}
+const RNAME={dom:"Corinthian space",str:"STR space",drift:"The Drift",lantern:"Near the Lantern",corridor:"Null Corridor edge",ash:"The Grave of Ash"};
+const RTAG={dom:"dom",str:"str",drift:"drift",lantern:"lan",corridor:"haz",ash:"haz"};
+let trip=null;
+function plotTrip(){const g=id=>SYS.find(s=>s.id===id);const a=g($("trFrom").value),v=g($("trVia").value),b=g($("trTo").value);if(!a||!b||a===b){toast("Pick two different places");return}
+ const legs=v&&v!==a&&v!==b?[[a,v],[v,b]]:[[a,b]];const on=+$("trOn").value,flav=$("trFlavor").checked;
+ const days=[],warn=new Set();let day=0;
+ legs.forEach(([p,q])=>{const dist=d3(p.pos,q.pos),n=Math.max(1,Math.round(dist/PC_PER_DAY));
+  for(let i=1;i<=n;i++){day++;const t=i/n;const pos=p.pos.map((x,k)=>x+(q.pos[k]-x)*t);const r=region(pos);
+   if(r==="corridor")warn.add("The route skims the Null Corridor: drives, lights and comms fail inside. Ships coast on the current.");
+   const eye=SYS.find(s=>s.id==="eye");if(eye&&d3(pos,eye.pos)<=6)warn.add("The route passes the Abyssal Throne: permit only. Trespassers are fired on.");
+   if(r==="lantern")warn.add("The route passes within 5 pc of the Lantern: Treaty Watch pickets, and the Eye notices.");
+   const row={day,r,pos:pos.map(x=>+x.toFixed(1)),leg:`${p.name} → ${q.name}`,arrive:i===n?q.name:""};
+   if(day%2===0&&on>0){row.d6=1+rint(6);if(row.d6<=on)row.enc=pick(T.TRAVEL[r]||T.TRAVEL.drift)}
+   if(!row.enc&&flav)row.flav=pick(T.TRAVEL.quiet);
+   days.push(row)}});
+ const total=legs.reduce((s,[p,q])=>s+d3(p.pos,q.pos),0);
+ trip={a:a.name,b:b.name,v:legs.length>1?v.name:"",total,days,warn:[...warn]};S.set("trip",trip);drawTrip()}
+function drawTrip(){if(!trip){$("trOut").innerHTML="";return}
+ const enc=trip.days.filter(d=>d.enc).length;
+ $("trOut").innerHTML=`<div class="card hi"><div class="big">${esc(trip.a)} → ${trip.v?esc(trip.v)+" → ":""}${esc(trip.b)}</div><p class="mono">${trip.total.toFixed(1)} pc · ${trip.days.length} day${trip.days.length>1?"s":""} at ${PC_PER_DAY} pc/day · ${enc} encounter${enc===1?"":"s"}</p>${trip.warn.map(w=>`<p class="alert">⚠ ${esc(w)}</p>`).join("")}</div>
+ <ul class="list">${trip.days.map((d,i)=>`<li><span class="mono" style="min-width:52px">Day ${d.day}</span><span class="grow"><span class="tag ${RTAG[d.r]}">${esc(RNAME[d.r])}</span>${d.d6?` <span class="mono hint">d6 ${d.d6}</span>`:""}${d.arrive?` <b>Arrive: ${esc(d.arrive)}</b>`:""}<br>${d.enc?`<b style="color:var(--haz)">Encounter.</b> ${esc(d.enc)}`:d.flav?`<span class="hint">${esc(d.flav)}</span>`:""}</span>${d.enc||d.flav?`<button class="btn sm" data-tr="${i}">Reroll</button>`:""}</li>`).join("")}</ul>`}
+function tripText(){if(!trip)return"";return`${trip.a} → ${trip.v?trip.v+" → ":""}${trip.b}: ${trip.total.toFixed(1)} pc, ${trip.days.length} days\n`+trip.warn.map(w=>"! "+w+"\n").join("")+trip.days.map(d=>`Day ${d.day} (${RNAME[d.r]})${d.d6?" d6 "+d.d6:""}${d.arrive?" ARRIVE "+d.arrive:""}: ${d.enc?"ENCOUNTER: "+d.enc:d.flav||"—"}`).join("\n")}
+async function buildTravel(){await loadSys();const opt=(sel)=>SYS.map(s=>`<option value="${s.id}"${s.id===sel?" selected":""}>${esc(s.name)}</option>`).join("");
+ $("trFrom").innerHTML=opt("tamsin");$("trTo").innerHTML=opt("copperline");$("trVia").innerHTML=`<option value="">Direct</option>`+opt("");
+ $("trSrc").textContent=`Positions from ${sysSrc}. Days are rounded like the chart's: distance ÷ ${PC_PER_DAY}, at least 1.`;
+ trip=S.get("trip",null);drawTrip();$("trGo").onclick=plotTrip;$("trCopy").onclick=()=>copy(tripText());
+ $("trOut").onclick=e=>{const b=e.target.closest("[data-tr]");if(!b)return;const d=trip.days[+b.dataset.tr];if(d.enc)d.enc=pick(T.TRAVEL[d.r]||T.TRAVEL.drift);else d.flav=pick(T.TRAVEL.quiet);S.set("trip",trip);drawTrip()}}
+
+/* ================= LOOT ================= */
+let loot=null;
+function rollLoot(){const ctx=$("lCtx").value,tier=+$("lTier").value,n=+$("lN").value;const L=T.LOOT||{};const ex=(L.credits||{})[tier]||["2d6×5"];
+ const c=roll(ex[0]);const items=[];const pool=(L[ctx]||[]).slice();for(let i=0;i<n&&pool.length;i++)items.push(pool.splice(rint(pool.length),1)[0]);
+ const scale=[1,1,2.5,6,15][tier]||1;
+ loot={ctx,tier,cr:c?c.total:0,crx:ex[0],items:items.map(x=>({n:x[0],v:Math.round(x[1]*(x[1]>=200?scale:1)),note:x[2]||""}))};S.set("loot",loot);drawLoot()}
+function drawLoot(){if(!loot){$("lOut").innerHTML="";return}const sum=loot.cr+loot.items.reduce((s,x)=>s+x.v,0);
+ $("lOut").innerHTML=`<div class="card hi"><div class="big">${loot.cr} cr <span class="hint mono">(${esc(loot.crx)})</span></div><ul class="list">${loot.items.map((x,i)=>`<li><span class="grow"><b>${esc(x.n)}</b>${x.note?` <span class="hint">· ${esc(x.note)}</span>`:""}</span><span class="mono">${x.v?x.v+" cr":"—"}</span><button class="btn sm" data-lk="${i}">Keep</button><button class="btn sm" data-lr="${i}">Reroll</button></li>`).join("")}</ul><p class="mono" style="margin-top:8px">Resale total ≈ ${sum} cr (Low Dock pays about half for gear)</p><p class="hint">Higher tiers scale the big-ticket items. Values of 200 cr and up are multiplied by the tier.</p></div>`}
+function buildLoot(){loot=S.get("loot",null);drawLoot();$("lGo").onclick=rollLoot;
+ $("lOut").onclick=e=>{const k=e.target.closest("[data-lk]"),r=e.target.closest("[data-lr]");if(k){const x=loot.items[+k.dataset.lk];addMade({kind:"item",name:x.n,text:`${x.v} cr. ${x.note}`,fields:{sub:`Found: ${x.v} cr`}})}
+  if(r){const pool=(T.LOOT[loot.ctx]||[]).filter(p=>!loot.items.some(x=>x.n===p[0]));if(pool.length){const x=pick(pool);const scale=[1,1,2.5,6,15][loot.tier]||1;loot.items[+r.dataset.lr]={n:x[0],v:Math.round(x[1]*(x[1]>=200?scale:1)),note:x[2]||""};S.set("loot",loot);drawLoot()}}}}
+
+/* ================= FIGHT ================= */
+let F=S.get("fight",{list:[],round:0,turn:0});
+const saveF=()=>S.set("fight",F);
+const FOES=T.FOES||[];
+function foeFromStats(stats){if(!stats)return null;const s=String(stats).toLowerCase();let best=null;FOES.forEach(f=>{const n=f.name.toLowerCase();if(s.startsWith(n)&&(!best||n.length>best.name.length))best=f});
+ if(!best)return null;const o={k:best.k,ac:best.ac,hp:best.hp,init:best.init,atk:best.atk,note:best.note||"",as:best.name};
+ if(/animated armor's ac and hp/.test(s)){const a=FOES.find(f=>f.k==="armor");if(a){o.ac=a.ac;o.hp=a.hp}}
+ if(stats.length>best.name.length+2)o.note=(o.note?o.note+" ":"")+"Wiki: "+stats;return o}
+let uid=Date.now();
+function addCombatant(o){F.list.push(Object.assign({id:uid++,name:"?",ac:10,hp:10,max:o.hp||10,tmp:0,init:0,ini:null,cond:[],conc:false,pc:false,ds:[0,0],atk:[],note:""},o,{max:o.max||o.hp||10}));saveF();drawF()}
+const md=n=>(n<0?"-":"+")+Math.abs(n||0);
+function drawF(){const tb=$("fBody");$("fEmpty").hidden=F.list.length>0;
+ $("fRound").textContent=F.round?`ROUND ${F.round}${F.list[F.turn]?" · UP: "+F.list[F.turn].name:""}`:"NOT STARTED";
+ tb.innerHTML=F.list.map((c,i)=>{const pct=Math.max(0,c.hp)/c.max*100;const cls=pct>50?"":pct>25?"mid":"lo";
+  return`<tr class="${F.round&&i===F.turn?"cur":""} ${c.hp<=0?"down":""}" data-i="${i}">
+  <td data-l="Init"><input class="n" type="number" value="${c.ini==null?"":c.ini}" data-k="ini" aria-label="Initiative"></td>
+  <td class="nm" data-l="Who"><input value="${esc(c.name)}" data-k="name" style="width:150px;font-weight:600" aria-label="Name"><small>${c.pc?"PC":esc(c.as||"")}${c.note?" · "+esc(c.note):""}</small></td>
+  <td data-l="AC"><input class="n" type="number" value="${c.ac}" data-k="ac" aria-label="AC"></td>
+  <td data-l="HP"><span class="mono">${c.hp}/${c.max}${c.tmp?` <span style="color:var(--teal)">+${c.tmp}</span>`:""}</span><div class="hpb"><i class="${cls}" style="width:${pct}%"></i></div>
+   ${c.pc&&c.hp<=0?`<div class="ds">Saves ✓${[0,1,2].map(j=>`<input type="checkbox" data-ds="0" data-j="${j}"${c.ds[0]>j?" checked":""}>`).join("")} ✗${[0,1,2].map(j=>`<input type="checkbox" data-ds="1" data-j="${j}"${c.ds[1]>j?" checked":""}>`).join("")}</div>`:""}</td>
+  <td data-l="Dmg/heal"><input class="n" type="number" min="0" data-amt aria-label="Amount"> <button class="btn sm" data-a="dmg">Dmg</button> <button class="btn sm" data-a="heal">Heal</button> <button class="btn sm" data-a="tmp">Temp</button>
+   <div><label class="ck"><input type="checkbox" data-a="conc"${c.conc?" checked":""}> Concentrating</label></div>${c.alert?`<div class="alert">${esc(c.alert)}</div>`:""}</td>
+  <td data-l="Cond">${c.cond.map((x,j)=>`<button class="cond" data-cx="${j}" title="${esc((T.CONDITIONS||{})[x.n]||"")} (click to remove)">${esc(x.n)}${x.r?" "+x.r:""}</button>`).join("")}
+   <div class="row" style="margin:4px 0 0"><select data-csel style="max-width:130px"><option value="">+ condition</option>${Object.keys(T.CONDITIONS||{}).map(k=>`<option>${k}</option>`).join("")}</select><input class="n" type="number" min="0" placeholder="rds" data-crd style="width:52px" aria-label="Rounds"></div></td>
+  <td data-l="Attacks">${(c.atk||[]).map((a,j)=>`<button class="btn sm" data-atk="${j}" title="${esc(a[0])}: +${a[1]} to hit, ${esc(a[2])}">${esc(a[0].split(/[\/(×]/)[0].trim())} +${a[1]}</button> `).join("")}</td>
+  <td><button class="btn sm" data-a="up" aria-label="Move up">▴</button><button class="btn sm" data-a="dn" aria-label="Move down">▾</button> <button class="btn sm x" data-a="rm" aria-label="Remove">×</button></td></tr>`}).join("")}
+function dmgOf(s){return String(s).split(/[,(]/)[0].trim()}
+function sortInit(){F.list.sort((a,b)=>(b.ini??-99)-(a.ini??-99)||(b.init||0)-(a.init||0))}
+function buildFight(){
+ $("fFoe").innerHTML=FOES.map(f=>`<option value="${f.k}">${esc(f.name)} · AC ${f.ac} · HP ${f.hp} — ${esc(f.as)}</option>`).join("");
+ const info=()=>{const f=FOES.find(x=>x.k===$("fFoe").value);$("fFoeInfo").textContent=f?`${f.name}: ${f.atk.map(a=>`${a[0]} +${a[1]} (${a[2]})`).join("; ")}. ${f.note||""}`:""};$("fFoe").onchange=info;info();
+ const npcs=W.filter(p=>p.type==="npc"&&p.stats&&!/^dead/.test(p.status||""));$("fWiki").innerHTML=`<option value="">From the wiki…</option>`+npcs.map(p=>`<option value="${p.id}">${esc(p.name)} (${esc(String(p.stats).slice(0,40))})</option>`).join("");
+ $("fAddFoe").onclick=()=>{const f=FOES.find(x=>x.k===$("fFoe").value);if(!f)return;const n=Math.max(1,Math.min(20,+$("fCount").value||1));const base=$("fName").value.trim()||f.as.split(",")[0].trim();
+  for(let i=0;i<n;i++)addCombatant({name:n>1?`${cap(base)} ${i+1}`:cap(base),as:f.name,k:f.k,ac:f.ac,hp:f.hp,init:f.init,atk:f.atk,note:f.note||""});$("fName").value=""};
+ $("fAddWiki").onclick=()=>{const p=WB[$("fWiki").value];if(!p)return;const o=foeFromStats(p.stats)||{ac:10,hp:10,init:0,note:"Wiki: "+p.stats};addCombatant(Object.assign(o,{name:p.name}))};
+ const drawPcs=()=>{const pcs=S.get("pcs",[]);$("pSaved").innerHTML=pcs.map((p,i)=>`<button class="btn sm" data-pc="${i}">+ ${esc(p.name)} (AC ${p.ac}, HP ${p.hp})</button><button class="btn sm x" data-pcx="${i}" aria-label="Forget">×</button>`).join("")||`<span class="hint">Rusty and V'an's numbers aren't on the wiki yet: add them once and they'll stay here.</span>`};
+ $("fAddPc").onclick=()=>{const name=$("pName").value.trim();if(!name)return;const p={name,ac:+$("pAc").value||10,hp:+$("pHp").value||10,init:+$("pInit").value||0};const pcs=S.get("pcs",[]).filter(x=>x.name!==name);pcs.push(p);S.set("pcs",pcs);drawPcs();addCombatant(Object.assign({pc:true},p));["pName","pAc","pHp","pInit"].forEach(k=>$(k).value="")};
+ $("pSaved").onclick=e=>{const a=e.target.closest("[data-pc]"),x=e.target.closest("[data-pcx]");const pcs=S.get("pcs",[]);if(a){const p=pcs[+a.dataset.pc];addCombatant(Object.assign({pc:true},p))}if(x){pcs.splice(+x.dataset.pcx,1);S.set("pcs",pcs);drawPcs()}};
+ if(!S.get("pcs",null)){const pcs=W.filter(p=>p.type==="pc").map(p=>({name:p.name,ac:10,hp:10,init:0}));S.set("pcs",pcs)}drawPcs();
+ $("fInit").onclick=()=>{const grp={};F.list.forEach(c=>{if(c.pc){if(c.ini==null){c.ini=roll("1d20"+md(c.init)).total}return}
+   if($("fGroup").checked&&c.k){if(grp[c.k]==null)grp[c.k]=roll("1d20"+md(c.init)).total;c.ini=grp[c.k]}else c.ini=roll("1d20"+md(c.init)).total});
+  sortInit();F.round=1;F.turn=0;saveF();drawF();toast("Round 1");startTurn()};
+ $("fNext").onclick=()=>{if(!F.list.length)return;if(!F.round){$("fInit").click();return}F.turn++;if(F.turn>=F.list.length){F.turn=0;F.round++;toast("Round "+F.round)}startTurn();saveF();drawF()};
+ $("fPrev").onclick=()=>{if(!F.round)return;F.turn--;if(F.turn<0){if(F.round>1){F.round--;F.turn=F.list.length-1}else F.turn=0}saveF();drawF()};
+ $("fEnd").onclick=()=>{F.list=F.list.filter(c=>c.pc);F.list.forEach(c=>{c.ini=null;c.cond=[];c.alert="";c.ds=[0,0]});F.round=0;F.turn=0;saveF();drawF()};
+ $("fClear").onclick=()=>{if(confirm("Remove everyone from the fight?")){F={list:[],round:0,turn:0};saveF();drawF()}};
+ const tb=$("fBody");
+ tb.addEventListener("change",e=>{const tr=e.target.closest("tr");if(!tr||e.target.matches("[data-amt],[data-crd]"))return;const c=F.list[+tr.dataset.i];const k=e.target.dataset.k;
+  if(k==="ini"){c.ini=e.target.value===""?null:+e.target.value;if(F.round){const cur=F.list[F.turn];sortInit();F.turn=Math.max(0,F.list.indexOf(cur))}else sortInit()}
+  else if(k==="name")c.name=e.target.value;else if(k==="ac")c.ac=+e.target.value;
+  else if(e.target.matches("[data-csel]")&&e.target.value){const rd=+tr.querySelector("[data-crd]").value||0;c.cond.push({n:e.target.value,r:rd||0});if(e.target.value==="Concentrating")c.conc=true}
+  else if(e.target.dataset.a==="conc")c.conc=e.target.checked;
+  else if(e.target.matches("[data-ds]")){const w=+e.target.dataset.ds;c.ds[w]=tr.querySelectorAll(`[data-ds="${w}"]:checked`).length;if(c.ds[0]>=3){toast(c.name+" is stable")}if(c.ds[1]>=3)toast(c.name+" has died")}
+  saveF();drawF()});
+ tb.addEventListener("click",e=>{const tr=e.target.closest("tr");if(!tr)return;const i=+tr.dataset.i,c=F.list[i];
+  const cx=e.target.closest("[data-cx]");if(cx){const rm=c.cond.splice(+cx.dataset.cx,1)[0];if(rm&&rm.n==="Concentrating")c.conc=false;saveF();drawF();return}
+  const at=e.target.closest("[data-atk]");if(at){const a=c.atk[+at.dataset.atk];const hit=roll("1d20"+md(a[1]));const crit=hit.nat===20;logRoll(`${c.name}: ${a[0]} to hit`,"1d20"+md(a[1]),hit);const dm=roll(dmgOf(a[2]),{crit});if(dm)logRoll(`${c.name}: damage${crit?" (crit)":""}${/\(|,/.test(a[2])?" · "+a[2].split(/[(,]/).slice(1).join(",").replace(/\)$/,""):""}`,dmgOf(a[2]),dm,crit?"crit":"");
+   toast(`${hit.total} to hit · ${dm?dm.total:"?"} dmg`);return}
+  const b=e.target.closest("[data-a]");if(!b||b.type==="checkbox")return;const act=b.dataset.a;const amt=+tr.querySelector("[data-amt]").value||0;c.alert="";
+  if(act==="dmg"&&amt){let d=amt;if(c.tmp){const t=Math.min(c.tmp,d);c.tmp-=t;d-=t}const was=c.hp;c.hp=Math.max(c.pc?0:-c.max,c.hp-d);
+   if(c.pc&&was<=0&&amt){c.ds[1]=Math.min(3,c.ds[1]+1);c.alert="Damage at 0 HP: one failed death save (two on a crit)."}
+   if(c.pc&&was>0&&d-was>=c.max)c.alert="Massive damage: instant death.";
+   if(c.conc&&amt)c.alert=(c.alert?c.alert+" ":"")+`Concentration: Con save DC ${Math.max(10,Math.floor(amt/2))}.`;
+   if(c.hp<=0&&!c.pc)c.alert=(c.alert?c.alert+" ":"")+"Down.";}
+  else if(act==="heal"&&amt){if(c.hp<=0)c.ds=[0,0];c.hp=Math.min(c.max,Math.max(0,c.hp)+amt)}
+  else if(act==="tmp"&&amt){c.tmp=Math.max(c.tmp,amt)}
+  else if(act==="rm"){F.list.splice(i,1);if(F.turn>=F.list.length)F.turn=0}
+  else if(act==="up"&&i>0){[F.list[i-1],F.list[i]]=[F.list[i],F.list[i-1]]}
+  else if(act==="dn"&&i<F.list.length-1){[F.list[i+1],F.list[i]]=[F.list[i],F.list[i+1]]}
+  saveF();drawF()});
+ drawF()}
+function startTurn(){const c=F.list[F.turn];if(!c)return;c.alert="";c.cond=c.cond.filter(x=>{if(x.r>0){x.r--;if(x.r===0){toast(`${c.name}: ${x.n} ends`);return false}}return true})}
+
+/* ================= FACTIONS ================= */
+function buildFactions(){
+ const FX=T.FACTIONS||{};const facs=W.filter(p=>p.type==="faction");
+ let st=S.get("fx",null);if(!st){st={};facs.forEach(p=>st[p.id]={on:!!FX[p.id],goal:FX[p.id]?FX[p.id].goal:"",clock:0,att:0,last:""})}
+ facs.forEach(p=>{if(!st[p.id])st[p.id]={on:false,goal:FX[p.id]?FX[p.id].goal:"",clock:0,att:0,last:""}});
+ let log=S.get("fxlog",[]);
+ const save=()=>{S.set("fx",st);S.set("fxlog",log)};
+ const ORDER={dom:0,str:1,drift:2};
+ const draw=()=>{const all=$("fxAll").checked;$("fxBody").innerHTML=facs.slice().sort((a,b)=>ORDER[topPower(a.id)]-ORDER[topPower(b.id)]||a.name.localeCompare(b.name)).filter(p=>all||st[p.id].on).map(p=>{const s=st[p.id],pw=topPower(p.id);
+  return`<tr class="${s.on?"":"off"}" data-id="${p.id}"><td><input type="checkbox" data-k="on"${s.on?" checked":""} aria-label="Active"></td>
+  <td style="min-width:150px">${wlink(p.id)}<br><span class="tag ${pw}">${POWER_NAME[pw]}</span></td>
+  <td style="min-width:220px"><textarea data-k="goal" rows="3" aria-label="Goal">${esc(s.goal)}</textarea></td>
+  <td><div class="pips">${[1,2,3,4,5,6].map(n=>`<button data-clk="${n}" class="${s.clock>=n?"on":""}" aria-label="${n} of 6"></button>`).join("")}</div>${s.clock>=6?`<div class="alert">Goal reached</div>`:""}</td>
+  <td><select data-k="att">${[-3,-2,-1,0,1,2,3].map(v=>`<option value="${v}"${s.att===v?" selected":""}>${v>0?"+"+v:v} ${["hunting them","hostile","wary","indifferent","curious","friendly","allied"][v+3]}</option>`).join("")}</select></td>
+  <td style="min-width:180px" class="hint">${esc(s.last||"—")}</td></tr>`}).join("");
+  $("fxLog").innerHTML=log.map(l=>`<li><span class="grow">${l.h?`<b>${esc(l.h)}</b>`:rich(l.t)}</span></li>`).join("")||`<li class="empty">No turns run yet.</li>`};
+ $("fxAll").onchange=draw;
+ $("fxBody").addEventListener("change",e=>{const tr=e.target.closest("tr");if(!tr)return;const s=st[tr.dataset.id];const k=e.target.dataset.k;if(k==="on")s.on=e.target.checked;if(k==="goal")s.goal=e.target.value;if(k==="att")s.att=+e.target.value;save();draw()});
+ $("fxBody").addEventListener("click",e=>{const b=e.target.closest("[data-clk]");if(!b)return;const s=st[e.target.closest("tr").dataset.id];const n=+b.dataset.clk;s.clock=s.clock===n?n-1:n;save();draw()});
+ const SETBACK=["loses a ship, a deal or a friend","is embarrassed in public","has an internal quarrel","is investigated by a rival","loses money it can't explain"];
+ const HOLD=["consolidates","waits and watches","spends the week on paperwork","quietly recruits"];
+ $("fxRun").onclick=()=>{const label=$("fxLabel").value.trim()||new Date().toLocaleDateString();const out=[{h:label}];
+  facs.forEach(p=>{const s=st[p.id];if(!s.on)return;const d=1+rint(6);const mv=(FX[p.id]&&FX[p.id].moves)||["makes a move toward its goal"];let t;
+   if(d===1){s.clock=Math.max(0,s.clock-1);t=`setback: ${pick(SETBACK)}`}
+   else if(d<=3){t=pick(HOLD)}
+   else if(d<=5){s.clock=Math.min(6,s.clock+1);t=pick(mv)}
+   else{s.clock=Math.min(6,s.clock+2);t=pick(mv)+". The news reaches Tamsin (a rumor, or a ticker line)"}
+   s.last=`d6 ${d}: ${t}`;out.push({t:`[[${p.id}]] (d6 ${d}, clock ${s.clock}/6) ${t}.${s.clock>=6?" **Goal reached: decide what changes.**":""}`})});
+  log=out.concat(log).slice(0,200);save();draw();toast("Faction turn done")};
+ $("fxCopy").onclick=()=>copy(log.map(l=>l.h?"\n# "+l.h:"- "+plain(l.t)).join("\n").trim());
+ $("fxLogClear").onclick=()=>{if(confirm("Clear the faction log?")){log=[];save();draw()}};
+ save();draw()}
+
+/* ================= CLOCKS ================= */
+const CCOL={amber:"var(--amber)",haz:"var(--haz)",teal:"var(--teal)",lil:"var(--lil)",lan:"var(--lan)"};
+function clockSvg(c){const n=c.seg,R=54,cx=60,cy=60;let s="";for(let i=0;i<n;i++){const a0=(i/n)*2*Math.PI-Math.PI/2,a1=((i+1)/n)*2*Math.PI-Math.PI/2;
+  const x0=cx+R*Math.cos(a0),y0=cy+R*Math.sin(a0),x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1);
+  s+=`<path class="seg" data-s="${i+1}" d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${R},${R} 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${i<c.fill?CCOL[c.col]||CCOL.amber:"#070918"}" stroke="#3a4282" stroke-width="1.5"/>`}
+ return`<svg viewBox="0 0 120 120" role="img" aria-label="${c.fill} of ${n}">${s}<circle cx="60" cy="60" r="${R}" fill="none" stroke="${CCOL[c.col]||CCOL.amber}" stroke-width="2"/></svg>`}
+function buildClocks(){let ck=S.get("clocks",null);
+ if(!ck)ck=[{name:"Sable finds out who carried the core",seg:6,fill:0,col:"haz",note:"Suggestion: tick it when the party networks the core, flashes the relic, or uses the datapad's real registration."}];
+ const save=()=>S.set("clocks",ck);
+ const draw=()=>{$("ckList").innerHTML=ck.map((c,i)=>`<div class="clk" data-i="${i}">${clockSvg(c)}<input class="nm" value="${esc(c.name)}" data-k="name" aria-label="Clock name"><div class="mono">${c.fill} / ${c.seg}${c.fill>=c.seg?` <span class="alert">FULL</span>`:""}</div>
+  <div class="row"><button class="btn sm" data-a="dn">−</button><button class="btn sm" data-a="up">+</button><button class="btn sm x" data-a="rm">Delete</button></div>
+  <textarea data-k="note" rows="2" placeholder="Notes: what ticks it" style="margin-top:8px;font-size:12.5px">${esc(c.note||"")}</textarea></div>`).join("")||`<p class="empty">No clocks yet.</p>`;save()};
+ $("ckAdd").onclick=()=>{const n=$("ckName").value.trim();if(!n)return;ck.push({name:n,seg:+$("ckSeg").value,fill:0,col:$("ckColor").value,note:""});$("ckName").value="";draw()};
+ $("ckList").addEventListener("click",e=>{const w=e.target.closest(".clk");if(!w)return;const c=ck[+w.dataset.i];const sg=e.target.closest("[data-s]");
+  if(sg){const n=+sg.getAttribute("data-s");c.fill=c.fill===n?n-1:n;if(c.fill>=c.seg)toast(c.name+": full");draw();return}
+  const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="up"){c.fill=Math.min(c.seg,c.fill+1);if(c.fill>=c.seg)toast(c.name+": full")}if(b.dataset.a==="dn")c.fill=Math.max(0,c.fill-1);if(b.dataset.a==="rm"&&confirm("Delete this clock?"))ck.splice(+w.dataset.i,1);draw()});
+ $("ckList").addEventListener("change",e=>{const w=e.target.closest(".clk");if(!w)return;ck[+w.dataset.i][e.target.dataset.k]=e.target.value;save()});
+ draw()}
+
+/* ================= RECAP ================= */
+const CW_TAIL=["No citizens were inconvenienced.","Persons involved hold no citizen tier.","The matter is closed.","Records have been updated.","Commonweal thanks residents for their patience.","No further action is required."];
+function buildRecap(){
+ const st=S.get("recap",{id:"",name:"",sub:"",text:"",voice:"plain"});
+ const sessN=W.filter(p=>p.type==="session").length;
+ $("rcId").value=st.id||`s${sessN}`;$("rcName").value=st.name||`Session ${sessN}: `;$("rcSub").value=st.sub||"";$("rcText").value=st.text||"";$("rcVoice").value=st.voice||"plain";
+ $("rcIds").innerHTML=W.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("");
+ const lines=()=>$("rcText").value.split("\n").map(s=>s.trim()).filter(Boolean).map(s=>s.replace(/^[-*•]\s+/,""));
+ const upd=()=>{const L=lines();const sid=($("rcId").value.trim()||"s?").toLowerCase();const S_=sid.toUpperCase();
+  S.set("recap",{id:$("rcId").value,name:$("rcName").value,sub:$("rcSub").value,text:$("rcText").value,voice:$("rcVoice").value});
+  // player recap
+  const pub=L.filter(l=>!l.startsWith("!")).map(plain);const v=$("rcVoice").value;let p="";
+  if(!pub.length)p="(Write some beats on the left.)";
+  else if(v==="plain")p="Previously…\n\n"+pub.map(l=>"• "+l).join("\n");
+  else if(v==="commonweal")p="COMMONWEAL INCIDENT DIGEST · Free Harbor Tamsin · CY 312\nFor resident information only.\n\n"+pub.map((l,i)=>`${String(i+1).padStart(2,"0")}. ${l}${i%2?" "+CW_TAIL[i%CW_TAIL.length]:""}`).join("\n");
+  else if(v==="dock")p="Overheard at the Lamplighter:\n\n"+pub.map((l,i)=>`"${["Heard","Word is","Swear on the Eye,","My cousin says","Don't repeat this, but"][i%5]} ${l[0].toLowerCase()+l.slice(1)}"`).join("\n");
+  else p="DATAPAD LOG · K. VARGAS (holder) · auto-recovered\n\n"+pub.map((l,i)=>`[${String(8+i).padStart(2,"0")}:${String(rint(60)).padStart(2,"0")}] ${l}`).join("\n");
+  $("rcPlayer").textContent=p;
+  // wiki
+  const body=L.map(l=>l.startsWith("!")?"**GM:** "+l.slice(1).trim():l);
+  const ids=new Map(),bad=new Set();L.forEach(l=>{const re=/\[\[([^\]|#][^\]|]*)(?:\|[^\]]+)?\]\]/g;let m;while((m=re.exec(l))){const id=m[1].trim();if(!WB[id]){bad.add(id);continue}if(!ids.has(id))ids.set(id,[]);ids.get(id).push(plain(l.replace(/^!\s*/,"")))}});
+  let w=`{ id: \`${sid}\`, type: \`session\`, name: \`${bt($("rcName").value.trim())}\`, tag: \`played\`,\n  sub: \`${bt($("rcSub").value.trim())}\`,\n  body: [\n${body.map(b=>`    \`${bt(b)}\``).join(",\n")}],\n  hooks: [\`Write what's left hanging from this session.\`] },`;
+  if(ids.size){w+="\n\n// Add a seen line to each page that appeared:\n"+[...ids].map(([id,ls])=>`// ${id}:\n  [\`${S_}\`, \`${bt(ls.join(" "))}\`],`).join("\n")}
+  const unseen=[...ids.keys()].filter(id=>!(WB[id].seen&&WB[id].seen.length));if(unseen.length)w+=`\n\n// First time at the table (mark their intro hooks used: {t, used: \`${S_}\`}): ${unseen.join(", ")}`;
+  $("rcWiki").textContent=w;
+  $("rcWarn").innerHTML=bad.size?`<span class="alert">Not a wiki page: ${[...bad].map(esc).join(", ")}. Add a page, or check the id.</span>`:`${ids.size} wiki page${ids.size===1?"":"s"} linked.`};
+ ["rcId","rcName","rcSub","rcText"].forEach(k=>$(k).addEventListener("input",upd));$("rcVoice").onchange=upd;
+ $("rcIns").onclick=()=>{const id=$("rcFind").value.trim();if(!id)return;const ta=$("rcText");const s=ta.selectionStart??ta.value.length;const ins=`[[${id}]]`;ta.value=ta.value.slice(0,s)+ins+ta.value.slice(ta.selectionEnd??s);ta.focus();ta.selectionStart=ta.selectionEnd=s+ins.length;$("rcFind").value="";upd()};
+ $("rcCopyP").onclick=()=>copy($("rcPlayer").textContent);$("rcCopyW").onclick=()=>copy($("rcWiki").textContent);
+ upd()}
+
+/* ================= REFERENCE ================= */
+function buildRef(){const C=T.CONDITIONS||{};const card=(h,inner,span)=>`<div class="card"${span?' style="grid-column:1/-1"':""}><h2>${h}</h2>${inner}</div>`;
+ const dl=o=>`<dl>${Object.entries(o).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
+ const tbl=(h,rows)=>`<table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")}</table>`;
+ $("refGrid").innerHTML=[
+  card("Difficulty",tbl(["DC","Task"],[["5","Very easy"],["10","Easy"],["15","Medium"],["20","Hard"],["25","Very hard"],["30","Nearly impossible"]])+`<h3>Hacking (house rule)</h3><p>Int + bypass kit, 1 minute (1 action at disadvantage). DC 10 civilian · 13 company · 16 Sable or Commonweal · 20 near the Lantern. Fail by 5+: alarm or trace.</p>`),
+  card("Cover and light",tbl(["Cover","Effect"],[["Half","+2 AC and Dex saves"],["Three-quarters","+5 AC and Dex saves"],["Total","Can't be targeted directly"]])+`<h3>Light</h3><p>Dim light: disadvantage on sight Perception. Darkness: effectively blinded. Suit lamp: 30 ft.</p>`),
+  card("Improvised damage",tbl(["Level","Setback","Dangerous","Deadly"],[["1–4","1d10","2d10","4d10"],["5–10","2d10","4d10","10d10"],["11–16","4d10","10d10","18d10"],["17–20","10d10","18d10","24d10"]])+`<p class="hint">Falling: 1d6 per 10 ft, max 20d6. Thrown into a bulkhead in zero-g: 1d6 per 10 ft drifted.</p>`),
+  card("Space and vacuum",dl({"Zero-g":"Difficult terrain without magboots or handholds.","Push off":"Full speed in a straight line; can't stop until you hit something.","Shoved":"Drift 10 ft per round (Acrobatics DC 10 to grab hold).","No suit":"Hold-breath rules plus 2d6 cold per turn.","Suit breach":"Crit in vacuum: 1 minute of air until patched (action, DC 10).","Null Corridor":"Antimagic field; drives, lights, comms and energy weapons fail. Blades and kinetic guns work. Suits: 4 hours passive air."})),
+  card("Faith and the Eye",dl({"Divine spells":"The Eye answering. Work everywhere but the Null Corridor.","Near a relic":"Once per long rest, maximize the healing of one spell.","Relic in hand":"Serves as a holy symbol for any divine caster.","The hymn":"Lets a divine caster cast in the Corridor, but the Lantern hears."})),
+  card("Money and travel",dl({"Credits":"gp = cr. Scrip is half value in the Drift.","Drive":"2.5 pc a day. Every 2 days roll d6; on a 1, an encounter.","Status":"Higher tier than an STR official: advantage. Lower: disadvantage.","Stim":"Potion of healing, 2d4+2, 50 cr.","Vac suit":"50 cr, 4 hours of air.","Power cells":"20 shots for 1 cr."})),
+  card("Reskins",tbl(["5e","In the Drift"],[["Hand crossbow","Holdout pistol"],["Light crossbow","Sidearm or carbine"],["Heavy crossbow","Scattergun"],["Longbow","Longrifle"],["Shortbow","Needler"],["Dagger, shortsword","Vibro-knife, mono-blade"],["Mace, club","Stun baton (nonlethal free)"],["Greataxe, greatsword","Breaching cutter"],["Healer's kit","Medkit"],["Thieves' tools","Bypass kit"]])),
+  card("Dying and concentration",dl({"0 HP":"Death save each turn: 10+ success, 9− fail. Three of either ends it. Nat 20: up with 1 HP. Nat 1: two fails.","Hit at 0":"One failed save; a crit is two. Damage ≥ max HP left over: dead.","Stabilize":"Medicine DC 10 or a medkit.","Concentration":"Con save on damage: DC 10 or half the damage, higher. Breaks if incapacitated."})),
+  card("Conditions",dl(C),true)
+ ].join("")}
+
+const BUILD={table:buildTable,gen:buildGen,travel:buildTravel,loot:buildLoot,fight:buildFight,factions:buildFactions,clocks:buildClocks,recap:buildRecap,ref:buildRef};
+
+/* ---------- backup ---------- */
+$("backupBtn").onclick=()=>{const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PFX))o[k]=localStorage.getItem(k)}
+ const choice=prompt("Type EXPORT to download a backup of the console (clocks, factions, fight, notes), or IMPORT to load one.","EXPORT");if(!choice)return;
+ if(/^export$/i.test(choice.trim())){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,1)],{type:"application/json"}));a.download=`drift-console-${new Date().toISOString().slice(0,10)}.json`;a.click()}
+ else if(/^import$/i.test(choice.trim())){const inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";inp.onchange=async()=>{try{const o2=JSON.parse(await inp.files[0].text());Object.entries(o2).forEach(([k,v])=>{if(k.startsWith(PFX)&&typeof v==="string")localStorage.setItem(k,v)});location.reload()}catch(e){alert("That file isn't a console backup.")}};inp.click()}};
+
+/* ---------- open ---------- */
+function open(){$("gate").hidden=true;$("app").hidden=false;drawDice();if(dlog[0])$("dLast").textContent=dlog[0].t;route();window.addEventListener("hashchange",route)}
+$("gateForm").addEventListener("submit",e=>{e.preventDefault();const h=gmHash($("pw").value);if(h===PASS_HASH){lockStore.set(h);open()}else{$("gateErr").textContent="That phrase doesn't open this partition.";$("pw").select()}});
+$("lockBtn").addEventListener("click",()=>{lockStore.set(null);location.reload()});
+if(lockStore.get()===PASS_HASH)open();else $("pw").focus();
+})();
+</script>
+</body></html>
