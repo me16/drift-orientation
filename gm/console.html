@@ -3,188 +3,331 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Drift GM Console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&family=Exo+2:ital,wght@0,400;0,600;0,700;1,400&family=Michroma&family=Share+Tech+Mono&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<script>try{var t=localStorage.getItem("gm.console.theme");if(t==='"dark"'||t==='"light"')document.documentElement.dataset.theme=JSON.parse(t)}catch(e){}</script>
 <style>
-/* The GM console: at-the-table tools for the Drift. Same hardware and lock as gm/index.html. Tables live in gm/tables.js. */
+/* GM console: a working tool, not an in-world prop. Light and dark themes; tables live in gm/tables.js. */
 :root{
-  --void:#05060f; --panel:#0e1230; --panel-2:#151a40; --rule:#252b5a; --rule-2:#3a4282;
-  --fg:#e3e7ff; --dim:#9aa0d0; --faint:#6a70a2;
-  --amber:#ffb35c; --teal:#6ff3e0; --lil:#c9a6ff; --haz:#ff6b7a; --lan:#fff0c2; --ok:#8fe3a0;
-  --f-disp:"Michroma","Eurostile","Arial Black",sans-serif;
-  --f-body:"Exo 2","Segoe UI",system-ui,sans-serif;
-  --f-lore:"Cormorant Garamond",Georgia,serif;
-  --f-data:"Share Tech Mono",ui-monospace,Menlo,monospace;
-  color-scheme:dark;
+  --bg:#0f1117; --surface:#171a23; --surface-2:#1f2330; --sunk:#0b0d12; --line:#272c3b; --line-2:#394055;
+  --text:#e8eaf0; --muted:#a0a7ba; --faint:#6e7589;
+  --accent:#ffb35c; --accent-ink:#1d1200; --accent-soft:rgba(255,179,92,.12);
+  --danger:#ff6b7a; --danger-soft:rgba(255,107,122,.12); --ok:#5fd08a; --info:#62e0cf; --lil:#c3a3ff;
+  --dom:#c3a3ff; --str:#62e0cf; --drift:#ffb35c; --haz:#ff6b7a; --lan:#f3e2a6;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+  --f:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --r:8px; color-scheme:dark;
 }
+:root[data-theme="light"]{
+  --bg:#f5f6f8; --surface:#ffffff; --surface-2:#f0f2f6; --sunk:#eef0f4; --line:#e1e4ea; --line-2:#c9cfd9;
+  --text:#151922; --muted:#555e72; --faint:#8a91a3;
+  --accent:#b85f00; --accent-ink:#ffffff; --accent-soft:rgba(184,95,0,.1);
+  --danger:#cf2f42; --danger-soft:rgba(207,47,66,.08); --ok:#178a4a; --info:#0a7f75; --lil:#6d43c9;
+  --dom:#6d43c9; --str:#0a7f75; --drift:#b85f00; --haz:#cf2f42; --lan:#8a6d00;
+  --shadow:0 10px 30px rgba(20,25,40,.15); color-scheme:light;
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#f5f6f8; --surface:#ffffff; --surface-2:#f0f2f6; --sunk:#eef0f4; --line:#e1e4ea; --line-2:#c9cfd9;
+  --text:#151922; --muted:#555e72; --faint:#8a91a3;
+  --accent:#b85f00; --accent-ink:#ffffff; --accent-soft:rgba(184,95,0,.1);
+  --danger:#cf2f42; --danger-soft:rgba(207,47,66,.08); --ok:#178a4a; --info:#0a7f75; --lil:#6d43c9;
+  --dom:#6d43c9; --str:#0a7f75; --drift:#b85f00; --haz:#cf2f42; --lan:#8a6d00;
+  --shadow:0 10px 30px rgba(20,25,40,.15); color-scheme:light;
+}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--void);color:var(--fg);font:400 15px/1.55 var(--f-body)}
-a{color:var(--teal)}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:400 14.5px/1.5 var(--f);-webkit-font-smoothing:antialiased}
+a{color:var(--info)}
 [hidden]{display:none!important}
 button,input,select,textarea{font:inherit;color:inherit}
-:focus-visible{outline:1px dashed var(--amber);outline-offset:2px}
-#gate{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(ellipse 60% 50% at 50% 40%,rgba(255,179,92,.08),transparent 70%),var(--void)}
-.lock{width:min(420px,100%);background:var(--panel);border:1px solid var(--rule-2);border-top:2px solid var(--amber);padding:26px 24px}
-.lock h1{margin:8px 0 6px;font:400 20px/1.3 var(--f-disp);letter-spacing:.06em;text-transform:uppercase}
-.lock p{margin:0 0 16px;color:var(--dim);font-size:14.5px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--muted)} .faint{color:var(--faint)}
+svg.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* controls */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;padding:0 12px;border-radius:var(--r);border:1px solid var(--line-2);background:var(--surface-2);color:var(--text);font-weight:500;font-size:13.5px;cursor:pointer;white-space:nowrap;text-decoration:none}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.ghost:hover{background:var(--surface-2);color:var(--text)}
+.btn.danger{color:var(--danger)}
+.btn.danger:hover{border-color:var(--danger);background:var(--danger-soft)}
+.btn.sm{min-height:28px;padding:0 9px;font-size:12.5px}
+.btn.icon{padding:0;width:34px}
+.btn.sm.icon{width:28px}
+.btn.lg{min-height:42px;padding:0 18px;font-size:15px}
+input[type=text],input[type=number],input[type=search],input:not([type]),select,textarea{background:var(--sunk);border:1px solid var(--line-2);border-radius:var(--r);min-height:34px;padding:6px 10px;min-width:0;font-size:14px}
+input[type=number]{font-family:var(--mono)}
+textarea{width:100%;resize:vertical;line-height:1.5;padding:8px 10px}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
+label.field{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:500;color:var(--muted)}
+label.ck{display:inline-flex;gap:7px;align-items:center;font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+label.ck input{width:16px;height:16px;accent-color:var(--accent);margin:0}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:var(--r);overflow:hidden;background:var(--sunk)}
+.seg button{border:0;background:none;padding:0 12px;min-height:32px;font-size:13px;color:var(--muted);cursor:pointer}
+.seg button+button{border-left:1px solid var(--line-2)}
+.seg button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row+.row{margin-top:8px}
+.grow{flex:1;min-width:0}
+.kbd{display:inline-block;font:500 11px var(--mono);padding:1px 5px;border:1px solid var(--line-2);border-bottom-width:2px;border-radius:4px;color:var(--muted);background:var(--surface-2)}
+.tag{display:inline-flex;align-items:center;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:99px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.tag.dom{color:var(--dom)}.tag.str{color:var(--str)}.tag.drift{color:var(--drift)}.tag.haz{color:var(--haz)}.tag.lan{color:var(--lan)}
+.alert{color:var(--danger);font-size:12.5px;font-weight:500}
+.empty{color:var(--faint);font-size:13.5px;padding:14px;text-align:center;border:1px dashed var(--line-2);border-radius:var(--r)}
+
+/* gate */
+#gate{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px 16px}
+.lock{width:min(400px,100%);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:28px;box-shadow:var(--shadow)}
+.lock h1{margin:0 0 6px;font-size:20px;font-weight:700}
+.lock p{margin:0 0 18px;color:var(--muted)}
 .lock form{display:flex;gap:8px}
-.lock input{flex:1;min-width:0;background:#070918;border:1px solid var(--rule-2);padding:10px 12px;font:400 16px var(--f-data);letter-spacing:.08em}
-.lock .err{min-height:1.4em;margin:10px 0 0;font:400 13px var(--f-data);color:var(--haz)}
-.lock .back{display:inline-block;margin-top:14px;font:400 12px var(--f-data);letter-spacing:.1em;color:var(--faint)}
-.eyebrow{font:400 11px var(--f-data);letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
-.lock .eyebrow{color:var(--amber)}
+.lock input{flex:1}
+.lock .err{min-height:1.4em;margin:10px 0 0;color:var(--danger);font-size:13px}
+.lock .back{display:inline-block;margin-top:10px;font-size:13px;color:var(--faint)}
 
-.btn{background:var(--panel-2);border:1px solid var(--rule-2);padding:7px 12px;font:400 11.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;color:var(--fg);white-space:nowrap}
-.btn:hover{border-color:var(--amber);color:var(--amber)}
-.btn.go{border-color:var(--amber);color:var(--amber)}
-.btn.sm{padding:3px 7px;font-size:10.5px}
-.btn.x{color:var(--faint)}
-.btn.x:hover{color:var(--haz);border-color:var(--haz)}
-input[type=text],input[type=number],input:not([type]),select,textarea{background:#070918;border:1px solid var(--rule-2);padding:6px 8px;font:400 14px var(--f-data);min-width:0}
-textarea{width:100%;resize:vertical;line-height:1.5}
-select{padding:6px}
-label.ck{display:inline-flex;gap:6px;align-items:center;font:400 12px var(--f-data);color:var(--dim);cursor:pointer}
+/* shell */
+.shell{display:grid;grid-template-columns:232px 1fr;min-height:100vh;min-height:100dvh}
+.side{position:sticky;top:0;height:100vh;height:100dvh;overflow-y:auto;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:16px 12px}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 16px;font-weight:700;font-size:15px}
+.brand b{display:grid;place-items:center;width:28px;height:28px;border-radius:7px;background:var(--accent);color:var(--accent-ink);font-size:13px}
+.brand small{display:block;font-weight:500;font-size:11.5px;color:var(--faint)}
+.nav-g{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:14px 10px 6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:7px;color:var(--muted);text-decoration:none;font-weight:500}
+.nav a:hover{background:var(--surface-2);color:var(--text)}
+.nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.nav a .k{margin-left:auto;font:500 11px var(--mono);color:var(--faint)}
+.nav a .badge{margin-left:auto;font-size:11px;font-weight:600;padding:0 7px;border-radius:99px;background:var(--accent);color:var(--accent-ink)}
+.nav a .badge+.k{margin-left:6px}
+.side-foot{margin-top:auto;padding-top:16px;display:grid;gap:4px}
+.side-foot .btn{justify-content:flex-start;width:100%}
+main{min-width:0;padding:28px clamp(16px,3vw,40px) 120px;max-width:1280px;width:100%}
+.ph{display:flex;gap:16px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-bottom:20px}
+.ph h1{margin:0;font-size:24px;font-weight:700;letter-spacing:-.01em}
+.ph p{margin:4px 0 0;color:var(--muted);max-width:70ch}
+.ph .act{display:flex;gap:8px;flex-wrap:wrap}
+.topbar,.bnav{display:none}
 
-.bar{position:sticky;top:0;z-index:20;background:rgba(14,18,48,.96);border-bottom:1px solid var(--rule);padding:0 max(16px,env(safe-area-inset-left,0px))}
-.bar-in{max-width:1200px;margin:0 auto;display:flex;gap:12px;align-items:center;padding-block:8px;overflow-x:auto;scrollbar-width:none}
-.bar-in::-webkit-scrollbar{display:none}
-.brand{font:400 11px var(--f-disp);letter-spacing:.22em;color:var(--amber);white-space:nowrap}
-.bar nav{display:flex;gap:2px;flex:1}
-.bar nav a{font:400 11.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;padding:7px 9px;white-space:nowrap;border-bottom:2px solid transparent}
-.bar nav a:hover{color:var(--fg)}
-.bar nav a[aria-current="page"]{color:var(--amber);border-bottom-color:var(--amber)}
-.bar .side{display:flex;gap:6px}
-main{max-width:1200px;margin:0 auto;padding:22px max(16px,env(safe-area-inset-left,0px)) 120px}
-h1{margin:0 0 4px;font:400 clamp(18px,3vw,24px)/1.2 var(--f-disp);letter-spacing:.06em;text-transform:uppercase}
-.lede{margin:0 0 18px;font:italic 500 18px/1.4 var(--f-lore);color:#cfd2f2;max-width:70ch}
-h2{margin:0 0 10px;font:400 13px/1.3 var(--f-disp);letter-spacing:.12em;text-transform:uppercase;color:var(--fg)}
-h2 .k{font:400 10.5px var(--f-data);letter-spacing:.16em;color:var(--amber);margin-right:8px}
-h3{margin:14px 0 6px;font:600 12px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--amber)}
-p{margin:0 0 10px}
-.hint{color:var(--faint);font-size:13px}
-.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));align-items:start}
-.grid.two{grid-template-columns:repeat(auto-fill,minmax(460px,1fr))}
-.card{background:var(--panel);border:1px solid var(--rule);padding:14px 16px;min-width:0}
-.card.hi{border-top:2px solid var(--amber)}
-.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
-.row>*{min-width:0}
-.out{margin-top:10px;display:grid;gap:10px}
-.res{background:#0a0d26;border:1px solid var(--rule);border-left:2px solid var(--amber);padding:10px 12px}
-.res .t{font:600 16px var(--f-body);margin:0 0 4px}
-.res .s{font:400 11px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
-.res dl{display:grid;grid-template-columns:max-content 1fr;gap:3px 12px;margin:6px 0}
-.res dt{font:400 11px var(--f-data);letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding-top:2px}
+/* cards */
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:start}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.card.wide{grid-column:1/-1}
+.card h2{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:15px;font-weight:600}
+.card h2 svg.i{color:var(--accent)}
+.card .sub{margin:0 0 12px;color:var(--muted);font-size:13px}
+.card h3{margin:16px 0 8px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
+.out{display:grid;gap:12px;margin-top:16px}
+.res{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;animation:pop .18s ease-out}
+.res.inner{background:var(--sunk);margin-top:12px}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.res .s{font-size:12px;font-weight:500;color:var(--faint)}
+.res .t{font-size:17px;font-weight:700;margin:2px 0 8px}
+.res dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0}
+.res dt{font-size:12.5px;color:var(--faint);padding-top:1px}
 .res dd{margin:0}
-.res dd[data-f]{cursor:pointer}
-.res dd[data-f]:hover{color:var(--amber)}
-.res .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.big{font:400 22px/1.3 var(--f-disp);letter-spacing:.04em;color:var(--amber);margin:6px 0}
-.lore{font:italic 500 17px/1.4 var(--f-lore);color:#d9dcf7}
-.mono{font-family:var(--f-data)}
-.tag{display:inline-block;font:400 10px var(--f-data);letter-spacing:.14em;text-transform:uppercase;padding:1px 6px;border:1px solid currentColor;color:var(--dim)}
-.tag.dom{color:var(--lil)}.tag.str{color:var(--teal)}.tag.drift{color:var(--amber)}.tag.haz{color:var(--haz)}.tag.lan{color:var(--lan)}
+.rr{cursor:pointer;border-radius:4px;transition:background .12s}
+.rr:hover{background:var(--accent-soft)}
+.res .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.big{font-size:24px;font-weight:700;letter-spacing:-.01em;color:var(--accent);margin:2px 0 4px}
+.lore{font-size:15px;color:var(--text)}
 .list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-.list li{display:flex;gap:8px;align-items:flex-start;background:#0a0d26;border:1px solid var(--rule);padding:7px 10px}
-.list li .grow{flex:1;min-width:0}
-pre.code{background:#05071a;border:1px solid var(--rule);padding:10px;font:400 12.5px/1.45 var(--f-data);white-space:pre-wrap;word-break:break-word;max-height:360px;overflow:auto;margin:8px 0 0}
-.empty{color:var(--faint);font-style:italic}
+.list li{display:flex;gap:10px;align-items:flex-start;background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:8px 10px}
+pre.code{background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);padding:12px;font:400 12.5px/1.5 var(--mono);white-space:pre-wrap;word-break:break-word;max-height:380px;overflow:auto;margin:8px 0 0}
 
-/* timer and spotlight */
-.clock-big{font:400 34px var(--f-data);letter-spacing:.06em;color:var(--fg)}
-.spot{display:grid;grid-template-columns:minmax(90px,max-content) 1fr auto auto;gap:6px 10px;align-items:center}
-.spot .barx{height:8px;background:#070918;border:1px solid var(--rule)}
-.spot .barx i{display:block;height:100%;background:var(--teal)}
-.spot .low{color:var(--amber)}
+/* table tab */
+.clock-big{font:500 40px/1 var(--mono);letter-spacing:-.02em;margin:6px 0 14px}
+.spot{display:grid;grid-template-columns:minmax(80px,max-content) 1fr 28px auto;gap:8px 10px;align-items:center}
+.spot .barx{height:8px;background:var(--sunk);border-radius:99px;overflow:hidden}
+.spot .barx i{display:block;height:100%;background:var(--info);border-radius:99px;transition:width .2s}
+.spot .low{color:var(--accent);font-weight:600}
+.spot .low::after{content:" · next";font-weight:400;font-size:12px;color:var(--faint)}
 
 /* fight */
-.fight{width:100%;border-collapse:collapse}
-.fight th{font:400 10.5px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--faint);text-align:left;padding:6px;border-bottom:1px solid var(--rule)}
-.fight td{padding:7px 6px;border-bottom:1px solid var(--rule);vertical-align:top}
-.fight tr.cur td{background:rgba(255,179,92,.08)}
-.fight tr.cur td:first-child{box-shadow:inset 3px 0 var(--amber)}
-.fight tr.down td{opacity:.55}
-.fight .nm{font-weight:600}
-.fight .nm small{display:block;font:400 11px var(--f-data);color:var(--faint);font-weight:400}
-.fight input.n{width:54px}
-.hpb{height:6px;background:#070918;border:1px solid var(--rule);margin-top:4px;width:120px}
-.hpb i{display:block;height:100%;background:var(--ok)}
-.hpb i.mid{background:var(--amber)}.hpb i.lo{background:var(--haz)}
-.cond{display:inline-flex;gap:4px;align-items:center;font:400 10.5px var(--f-data);letter-spacing:.06em;padding:1px 6px;border:1px solid var(--lil);color:var(--lil);margin:2px 3px 0 0;cursor:pointer;background:none}
-.cond:hover{border-color:var(--haz);color:var(--haz)}
-.alert{color:var(--haz);font:400 12px var(--f-data)}
-.ds{display:flex;gap:3px;align-items:center;font:400 11px var(--f-data);color:var(--dim)}
-.ds input{margin:0}
-.round{font:400 13px var(--f-data);letter-spacing:.14em;color:var(--amber)}
+.turnbar{position:sticky;top:0;z-index:5;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;margin:16px 0 12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.12)}
+.turnbar .rd{font:600 13px var(--mono);color:var(--accent);background:var(--accent-soft);padding:4px 10px;border-radius:99px}
+.turnbar .up{font-weight:700;font-size:16px}
+.turnbar .deck{color:var(--muted);font-size:13px}
+.cbts{display:grid;gap:8px}
+.cbt{display:grid;grid-template-columns:62px minmax(0,1.3fr) 54px minmax(130px,.9fr) minmax(200px,1.1fr) minmax(120px,1fr) 34px;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;transition:border-color .15s,background .15s}
+.cbt.cur{border-color:var(--accent);background:linear-gradient(90deg,var(--accent-soft),transparent 60%);box-shadow:inset 4px 0 var(--accent)}
+.cbt.down{opacity:.55}
+.cbt.pc .nm{color:var(--info)}
+.cbt .ini{width:56px;text-align:center;font-size:18px;font-weight:600;min-height:40px;padding:0}
+.cbt .nm{width:100%;font-weight:700;font-size:15px;background:transparent;border-color:transparent;padding:2px 6px;margin-left:-6px;min-height:28px}
+.cbt .nm:hover{border-color:var(--line-2)}
+.cbt .who small{display:block;color:var(--faint);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cbt .ac{display:grid;place-items:center;text-align:center}
+.cbt .ac input{width:50px;text-align:center;font-weight:600;padding:0;min-height:32px}
+.cbt .ac span{font-size:10.5px;color:var(--faint);font-weight:600;letter-spacing:.06em}
+.hp .n{font:600 16px var(--mono)}
+.hp .n small{font-size:12px;color:var(--faint);font-weight:400}
+.hp .n .tmp{color:var(--info);font-size:13px}
+.hpb{height:6px;background:var(--sunk);border-radius:99px;overflow:hidden;margin-top:5px}
+.hpb i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .25s}
+.hpb i.mid{background:var(--accent)}.hpb i.lo{background:var(--danger)}
+.hpin{display:flex;gap:4px;align-items:center}
+.hpin input{width:64px;text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;align-items:center}
+.cond{display:inline-flex;gap:4px;align-items:center;font-size:12px;font-weight:600;padding:1px 8px;border-radius:99px;border:1px solid var(--lil);color:var(--lil);background:transparent;cursor:pointer;min-height:22px}
+.cond:hover{border-color:var(--danger);color:var(--danger);text-decoration:line-through}
+.cond.add{border-style:dashed;border-color:var(--line-2);color:var(--muted);font-weight:500}
+.cond.add:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+.cond.conc{border-color:var(--info);color:var(--info)}
+.cond.conc.off{border-color:var(--line-2);color:var(--faint);font-weight:500}
+.cond.conc.off:hover,.cond.conc:hover{text-decoration:none;border-color:var(--info);color:var(--info)}
+.atks{display:flex;flex-wrap:wrap;gap:4px}
+.cbt .more{grid-column:1/-1;display:flex;gap:14px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);padding-top:10px;font-size:13px;color:var(--muted)}
+.ds{display:inline-flex;gap:4px;align-items:center;font-size:12.5px}
+.ds input{width:16px;height:16px;margin:0}
+.ds .s{accent-color:var(--ok)}.ds .f{accent-color:var(--danger)}
+.cbt .alert{grid-column:1/-1;margin-top:-4px}
+.addbar{display:grid;gap:12px}
+.addbar .pane{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+
+/* popover */
+#pop{position:fixed;z-index:60;width:300px;max-width:calc(100vw - 24px);background:var(--surface);border:1px solid var(--line-2);border-radius:12px;box-shadow:var(--shadow);padding:12px}
+#pop .grid3{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;margin-top:10px;max-height:300px;overflow:auto}
+#pop .grid3 button{text-align:left;border:1px solid var(--line);background:var(--surface-2);border-radius:6px;padding:6px 8px;font-size:13px;cursor:pointer}
+#pop .grid3 button:hover{border-color:var(--lil);color:var(--lil)}
+#pop .desc{font-size:12px;color:var(--muted);min-height:3em;margin-top:8px}
 
 /* clocks */
-.clocks{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
-.clk{background:var(--panel);border:1px solid var(--rule);padding:12px;text-align:center}
-.clk svg{width:120px;height:120px;cursor:pointer}
-.clk input.nm{width:100%;text-align:center;font:600 15px var(--f-body);background:transparent;border:1px solid transparent}
-.clk input.nm:hover,.clk input.nm:focus{border-color:var(--rule-2)}
-.clk .row{justify-content:center;margin:6px 0 0}
-.seg{cursor:pointer}
+.clocks{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.clk{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.clk.full{border-color:var(--danger)}
+.clk svg{width:130px;height:130px;cursor:pointer;display:block;margin:4px auto 8px}
+.clk svg path{transition:fill .15s}
+.clk svg path:hover{opacity:.8}
+.clk input.nm{width:100%;text-align:center;font-weight:600;font-size:15px;background:transparent;border-color:transparent}
+.clk input.nm:hover{border-color:var(--line-2)}
+.clk .row{justify-content:center;margin-top:8px}
+.clk textarea{margin-top:10px;font-size:13px}
 
 /* factions */
-.fac{width:100%;border-collapse:collapse}
-.fac td,.fac th{padding:7px 6px;border-bottom:1px solid var(--rule);vertical-align:top;text-align:left}
-.fac th{font:400 10.5px var(--f-data);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
-.fac textarea{min-height:38px;font-size:13px}
-.pips{display:flex;gap:3px}
-.pips button{width:16px;height:16px;border:1px solid var(--rule-2);background:#070918;padding:0;cursor:pointer}
-.pips button.on{background:var(--amber);border-color:var(--amber)}
-.fac tr.off td{opacity:.45}
+.fac{width:100%;border-collapse:separate;border-spacing:0}
+.fac td,.fac th{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+.fac th{font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
+.fac textarea{min-height:40px;font-size:13px;resize:vertical}
+.fac tr.off td{opacity:.5}
+.pips{display:flex;gap:4px;padding-top:6px}
+.pips button{width:18px;height:18px;border-radius:4px;border:1px solid var(--line-2);background:var(--sunk);padding:0;cursor:pointer}
+.pips button.on{background:var(--accent);border-color:var(--accent)}
 
 /* reference */
-.ref dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:0}
-.ref dt{font:600 12.5px var(--f-body);color:var(--amber)}
-.ref dd{margin:0;font-size:14px}
-.ref table{border-collapse:collapse;width:100%;font-size:14px}
-.ref td,.ref th{border-bottom:1px solid var(--rule);padding:4px 6px;text-align:left}
-.ref th{font:400 10.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+.ref dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0}
+.ref dt{font-weight:600;color:var(--accent);font-size:13.5px}
+.ref dd{margin:0;font-size:13.5px}
+.ref table{border-collapse:collapse;width:100%;font-size:13.5px}
+.ref td,.ref th{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left}
+.ref th{font-size:11.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--faint)}
+.ref p{margin:0 0 8px;font-size:13.5px}
 
-/* dice tray */
-#tray{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:30;width:min(340px,calc(100vw - 28px))}
-#trayBtn{position:absolute;right:0;bottom:0;background:var(--amber);color:#1a1000;border:0;padding:10px 14px;font:400 12px var(--f-data);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.5)}
-#trayBtn .last{font-size:15px;margin-left:6px}
-#trayPanel{background:var(--panel);border:1px solid var(--rule-2);border-top:2px solid var(--amber);padding:12px;margin-bottom:46px;box-shadow:0 8px 30px rgba(0,0,0,.6)}
-#trayPanel .dice{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
-#trayPanel .dice .btn{padding:5px 8px}
-#dlog{list-style:none;margin:8px 0 0;padding:0;max-height:240px;overflow:auto;display:grid;gap:4px}
-#dlog li{font:400 12.5px var(--f-data);background:#070918;border:1px solid var(--rule);padding:5px 8px}
-#dlog li b{color:var(--amber);font-size:15px;font-weight:400}
-#dlog li .w{color:var(--dim)}
-#dlog li.crit b{color:var(--ok)}#dlog li.fumble b{color:var(--haz)}
-#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--panel-2);border:1px solid var(--amber);padding:8px 14px;font:400 13px var(--f-data);z-index:40;pointer-events:none;opacity:0;transition:opacity .2s}
-#toast.on{opacity:1}
+/* dice */
+#fab{position:fixed;right:max(18px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));z-index:40;display:flex;align-items:center;gap:8px;min-height:46px;padding:0 16px 0 14px;border-radius:99px;border:0;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:14px;cursor:pointer;box-shadow:var(--shadow)}
+#fab svg.i{width:20px;height:20px}
+#fab .last{font:600 16px var(--mono);padding-left:8px;border-left:1px solid color-mix(in srgb,var(--accent-ink) 30%,transparent)}
+#fab .last:empty{display:none}
+#tray{position:fixed;right:max(18px,env(safe-area-inset-right,0px));bottom:76px;z-index:41;width:min(360px,calc(100vw - 24px));background:var(--surface);border:1px solid var(--line-2);border-radius:14px;box-shadow:var(--shadow);padding:14px;display:grid;gap:10px}
+#tray .head{display:flex;align-items:center;justify-content:space-between}
+#tray .head b{font-size:14px}
+#tray .dice{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+#tray .dice .btn{padding:0;font-family:var(--mono);font-size:13px}
+#dlog{list-style:none;margin:0;padding:0;max-height:260px;overflow:auto;display:grid;gap:4px}
+#dlog li{display:grid;grid-template-columns:46px 1fr;gap:8px;align-items:center;font-size:12.5px;background:var(--sunk);border-radius:6px;padding:6px 8px}
+#dlog li b{font:600 18px var(--mono);text-align:center;color:var(--text)}
+#dlog li .w{color:var(--muted);overflow:hidden}
+#dlog li .d{font-family:var(--mono);color:var(--faint);font-size:11.5px}
+#dlog li.crit b{color:var(--ok)}#dlog li.fumble b{color:var(--danger)}
+#dlog li:first-child{outline:1px solid var(--accent)}
 
-@media (max-width:760px){
-  .grid.two{grid-template-columns:1fr}
-  .grid{grid-template-columns:1fr}
-  .fight thead{display:none}
-  .fight,.fight tbody,.fight tr,.fight td{display:block;width:100%}
-  .fight tr{border:1px solid var(--rule);margin-bottom:8px;background:var(--panel)}
-  .fight td{border:0;padding:4px 10px}
-  .fight td[data-l]::before{content:attr(data-l);display:inline-block;width:70px;font:400 10.5px var(--f-data);letter-spacing:.12em;text-transform:uppercase;color:var(--faint)}
+/* toast, dialogs */
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,10px);z-index:70;display:flex;gap:12px;align-items:center;background:var(--text);color:var(--bg);padding:10px 14px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;max-width:calc(100vw - 32px)}
+#toast.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#toast button{background:none;border:0;color:var(--accent);font-weight:700;cursor:pointer;padding:2px 4px}
+:root[data-theme="light"] #toast button{color:#ffb35c}
+dialog{border:1px solid var(--line-2);border-radius:14px;background:var(--surface);color:var(--text);padding:22px;width:min(460px,calc(100vw - 32px));box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(5,6,12,.55)}
+dialog h2{margin:0 0 6px;font-size:18px}
+dialog p{color:var(--muted);margin:0 0 14px}
+dialog .keys{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;align-items:center;font-size:14px}
+dialog .foot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+
+/* mobile */
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .side{position:fixed;inset:0 auto 0 0;width:min(280px,85vw);z-index:80;transform:translateX(-105%);transition:transform .2s;box-shadow:var(--shadow)}
+  .side.open{transform:none}
+  .scrim{position:fixed;inset:0;z-index:79;background:rgba(5,6,12,.5)}
+  .topbar{display:flex;position:sticky;top:0;z-index:30;align-items:center;gap:10px;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top,0px));background:var(--surface);border-bottom:1px solid var(--line)}
+  .topbar b{font-size:16px;flex:1}
+  main{padding:18px 16px 140px}
+  .ph h1{font-size:21px}
+  .bnav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:35;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .bnav a,.bnav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 7px;font-size:11px;font-weight:500;color:var(--muted);text-decoration:none;background:none;border:0;cursor:pointer}
+  .bnav a[aria-current="page"]{color:var(--accent)}
+  .bnav svg.i{width:20px;height:20px}
+  #fab{bottom:calc(68px + env(safe-area-inset-bottom,0px));right:14px}
+  #tray{bottom:calc(126px + env(safe-area-inset-bottom,0px));right:12px}
+  .turnbar{top:57px}
+  .cbt{grid-template-columns:52px minmax(0,1fr) auto;gap:8px 10px}
+  .cbt .more>.grow{flex-basis:100%;order:-1}
+  .turnbar{gap:8px}
+  .turnbar .grow{flex:1 1 calc(100% - 110px)}
+  .turnbar label.ck{order:5;flex-basis:100%}
+  .turnbar #fNext{flex:1}
+  #toast{top:calc(64px + env(safe-area-inset-top,0px));bottom:auto;transform:translate(-50%,-10px)}
+  #toast.on{transform:translate(-50%,0)}
+  .cbt .ini{width:48px}
+  .cbt .who{grid-column:2}
+  .cbt .ac{grid-column:3;grid-row:1}
+  .cbt .hp{grid-column:1/3}
+  .cbt .hpin{grid-column:1/-1}
+  .cbt .hpin input{flex:1}
+  .cbt .atks{grid-column:1/-1}
+  .cbt .tgl{grid-column:3;grid-row:2;justify-self:end}
   .fac thead{display:none}
   .fac,.fac tbody,.fac tr,.fac td{display:block;width:100%}
-  .fac tr{border:1px solid var(--rule);margin-bottom:8px;background:var(--panel)}
-  .fac td{border:0}
-  .spot{grid-template-columns:minmax(70px,max-content) 1fr auto auto}
-  .res dl{grid-template-columns:1fr}
-  .res dt{padding-top:4px}
+  .fac tr{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;padding:6px 4px;background:var(--surface)}
+  .fac td{border:0;padding:6px 10px}
+  .res dl{grid-template-columns:1fr;gap:2px}
+  .res dd{margin-bottom:6px}
+  .grid,.grid.two{grid-template-columns:1fr}
 }
-@media print{.bar,#tray,.btn{display:none!important}body{background:#fff;color:#000}.card{border-color:#999;background:#fff}}
+@media print{.side,.topbar,.bnav,#fab,#tray,.btn{display:none!important}.shell{display:block}}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+ <symbol id="i-fight" viewBox="0 0 24 24"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" y1="14" x2="9" y2="18"/><line x1="7" y1="17" x2="4" y2="20"/><line x1="3" y1="19" x2="5" y2="21"/></symbol>
+ <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></symbol>
+ <symbol id="i-gen" viewBox="0 0 24 24"><path d="M12 3l1.8 4.9L19 9.7l-5.2 1.8L12 16.4l-1.8-4.9L5 9.7l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></symbol>
+ <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2.5"/><path d="M8.5 19H17a3.5 3.5 0 0 0 0-7H7a3.5 3.5 0 0 1 0-7h8.5"/><circle cx="18" cy="5" r="2.5"/></symbol>
+ <symbol id="i-loot" viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/></symbol>
+ <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></symbol>
+ <symbol id="i-notes" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></symbol>
+ <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5V21h16v-4"/></symbol>
+ <symbol id="i-dice" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/></symbol>
+ <symbol id="i-menu" viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></symbol>
+ <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/></symbol>
+ <symbol id="i-x" viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+ <symbol id="i-chev" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+ <symbol id="i-back" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+ <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 3v12"/><polyline points="7 10 12 15 17 10"/><path d="M5 21h14"/></symbol>
+ <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+ <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+ <symbol id="i-key" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/></symbol>
+</svg>
+
 <div id="gate">
  <div class="lock">
-  <span class="eyebrow">Restricted partition</span>
-  <h1>Datapad maintenance mode</h1>
+  <h1>GM console</h1>
   <p>This partition holds the GM's notes. If you're a player, the good stuff is the stuff you don't know yet.</p>
   <form id="gateForm" autocomplete="off">
    <input id="pw" type="password" placeholder="Access phrase" aria-label="Access phrase" autocomplete="current-password">
-   <button class="btn" type="submit">Unlock</button>
+   <button class="btn pri" type="submit">Unlock</button>
   </form>
   <p class="err" id="gateErr" aria-live="polite"></p>
   <a class="back" href="../">← Back to the orientation packet</a>
@@ -192,200 +335,233 @@ pre.code{background:#05071a;border:1px solid var(--rule);padding:10px;font:400 1
 </div>
 
 <div id="app" hidden>
-<div class="bar"><div class="bar-in">
- <span class="brand">GM · CONSOLE</span>
- <nav id="tabs" aria-label="Console tools">
-  <a href="#table">Table</a><a href="#gen">Generate</a><a href="#travel">Travel</a><a href="#loot">Loot</a><a href="#fight">Fight</a><a href="#factions">Factions</a><a href="#clocks">Clocks</a><a href="#recap">Recap</a><a href="#ref">Reference</a>
- </nav>
- <div class="side"><a class="btn" href="index.html">GM page</a><button class="btn" id="backupBtn" type="button">Backup</button><button class="btn" id="lockBtn" type="button">Lock</button></div>
-</div></div>
+<div class="topbar"><button class="btn icon ghost" id="menuBtn" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button><b id="topTitle">Table</b></div>
+<div class="shell">
+ <aside class="side" id="side" aria-label="Console">
+  <div class="brand"><b>D</b><span>Drift console<small>GM tools · CY 312</small></span></div>
+  <nav class="nav" id="tabs" aria-label="Tools">
+   <div class="nav-g">At the table</div>
+   <a href="#table"><svg class="i"><use href="#i-table"/></svg>Table<span class="badge" id="bTable" hidden></span><span class="k">1</span></a>
+   <a href="#fight"><svg class="i"><use href="#i-fight"/></svg>Fight<span class="badge" id="bFight" hidden></span><span class="k">2</span></a>
+   <a href="#clocks"><svg class="i"><use href="#i-clock"/></svg>Clocks<span class="k">3</span></a>
+   <div class="nav-g">Improvise</div>
+   <a href="#gen"><svg class="i"><use href="#i-gen"/></svg>Generate<span class="k">4</span></a>
+   <a href="#travel"><svg class="i"><use href="#i-route"/></svg>Travel<span class="k">5</span></a>
+   <a href="#loot"><svg class="i"><use href="#i-loot"/></svg>Loot<span class="k">6</span></a>
+   <div class="nav-g">Between sessions</div>
+   <a href="#factions"><svg class="i"><use href="#i-flag"/></svg>Factions<span class="k">7</span></a>
+   <a href="#recap"><svg class="i"><use href="#i-notes"/></svg>Recap<span class="k">8</span></a>
+   <a href="#ref"><svg class="i"><use href="#i-book"/></svg>Reference<span class="k">9</span></a>
+  </nav>
+  <div class="side-foot">
+   <a class="btn ghost" href="index.html"><svg class="i"><use href="#i-back"/></svg>GM page</a>
+   <button class="btn ghost" id="themeBtn" type="button"><svg class="i"><use href="#i-sun"/></svg><span id="themeLbl">Theme: auto</span></button>
+   <button class="btn ghost" id="helpBtn" type="button"><svg class="i"><use href="#i-key"/></svg>Shortcuts <span class="kbd" style="margin-left:auto">?</span></button>
+   <button class="btn ghost" id="backupBtn" type="button"><svg class="i"><use href="#i-save"/></svg>Backup</button>
+   <button class="btn ghost" id="lockBtn" type="button"><svg class="i"><use href="#i-lock"/></svg>Lock</button>
+  </div>
+ </aside>
+ <div class="scrim" id="scrim" hidden></div>
 
 <main>
 
 <!-- ============================ TABLE ============================ -->
-<section data-tab="table">
- <h1>At the table</h1>
- <p class="lede">The clock, the spotlight, the oracle, and everything you made up tonight.</p>
+<section data-tab="table" data-title="Table">
+ <header class="ph"><div><h1>At the table</h1><p>The clock, the spotlight, the oracle, and everything you make up tonight.</p></div></header>
  <div class="grid">
-  <div class="card hi">
-   <h2><span class="k">01</span>Session clock</h2>
+  <div class="card">
+   <h2><svg class="i"><use href="#i-clock"/></svg>Session clock</h2>
    <div class="clock-big" id="tClock">0:00:00</div>
-   <div class="row"><button class="btn go" id="tGo">Start</button><button class="btn" id="tReset">Reset</button>
+   <div class="row"><button class="btn pri" id="tGo">Start</button><button class="btn" id="tReset">Reset</button>
     <label class="ck">Break every <select id="tBreak"><option value="0">never</option><option value="60">60 min</option><option value="90" selected>90 min</option><option value="120">120 min</option></select></label></div>
-   <p class="hint" id="tNote">Keeps running if you reload.</p>
+   <p class="faint" id="tNote" style="margin:10px 0 0;font-size:12.5px">Keeps running if you reload.</p>
   </div>
   <div class="card">
-   <h2><span class="k">02</span>Spotlight</h2>
-   <p class="hint">Tap + when someone gets a moment that's all theirs. Whoever's lowest gets the next one.</p>
+   <h2>Spotlight</h2>
+   <p class="sub">Tap + when someone gets a moment that's all theirs. The lowest is marked "next".</p>
    <div class="spot" id="spot"></div>
-   <div class="row" style="margin-top:10px"><input id="spAdd" placeholder="Add a player or NPC" style="flex:1"><button class="btn" id="spAddBtn">Add</button><button class="btn" id="spReset">Zero all</button></div>
+   <div class="row" style="margin-top:12px"><input id="spAdd" placeholder="Add a player" class="grow"><button class="btn" id="spAddBtn">Add</button><button class="btn ghost" id="spReset">Reset</button></div>
   </div>
   <div class="card">
-   <h2><span class="k">03</span>Oracle</h2>
-   <p class="hint">Not sure? Ask the dice. Odds shift the roll.</p>
-   <div class="row"><select id="orOdds"><option value="-1">Unlikely</option><option value="0" selected>Even</option><option value="1">Likely</option></select><button class="btn go" id="orAsk">Ask</button><button class="btn" id="orComp">Complication</button></div>
+   <h2>Oracle</h2>
+   <p class="sub">Not sure? Ask the dice.</p>
+   <div class="row"><div class="seg" id="orOdds" role="group" aria-label="Odds"><button data-v="-1">Unlikely</button><button data-v="0" aria-pressed="true">Even</button><button data-v="1">Likely</button></div></div>
+   <div class="row"><button class="btn pri" id="orAsk">Ask</button><button class="btn" id="orComp">Complication</button></div>
    <div id="orOut"></div>
   </div>
   <div class="card">
-   <h2><span class="k">04</span>Set the scene</h2>
-   <div class="row"><select id="scPlace"><option value="tamsin">Tamsin</option><option value="ship">Aboard ship</option><option value="cor">Corinthian space</option><option value="str">STR space</option></select><button class="btn go" id="scGo">Describe</button></div>
+   <h2>Set the scene</h2>
+   <p class="sub">One sight, one sound, one smell.</p>
+   <div class="row"><div class="seg" id="scPlace" role="group" aria-label="Place"><button data-v="tamsin" aria-pressed="true">Tamsin</button><button data-v="ship">Ship</button><button data-v="cor">Corinthia</button><button data-v="str">STR</button></div></div>
+   <div class="row"><button class="btn pri" id="scGo">Describe</button></div>
    <div id="scOut"></div>
   </div>
   <div class="card">
-   <h2><span class="k">05</span>Pull a thread</h2>
-   <p class="hint">A random unused hook from the wiki.</p>
-   <div class="row"><select id="thMet"><option value="all">Any page</option><option value="met">Already met</option><option value="new">Not met yet</option></select><select id="thType"></select><button class="btn go" id="thGo">Pull</button></div>
+   <h2>Pull a thread</h2>
+   <p class="sub">A random unused hook from the wiki.</p>
+   <div class="row"><select id="thMet"><option value="all">Any page</option><option value="met">Already met</option><option value="new">Not met yet</option></select><select id="thType" class="grow"></select></div>
+   <div class="row"><button class="btn pri" id="thGo">Pull</button></div>
    <div id="thOut"></div>
   </div>
-  <div class="card hi" style="grid-column:1/-1">
-   <h2><span class="k">06</span>Made up tonight</h2>
-   <p class="hint">Everything you keep from the generators lands here, plus anything you type. After the session, copy the wiki stubs into <span class="mono">gm/wiki.js</span> (or send them to Claude with your recap).</p>
-   <div class="row"><select id="mkKind"><option value="npc">NPC</option><option value="location">Place</option><option value="ship">Ship</option><option value="item">Item</option><option value="note">Note</option></select><input id="mkName" placeholder="Name" style="flex:1 1 160px"><input id="mkText" placeholder="What you said about them" style="flex:3 1 240px"><button class="btn" id="mkAdd">Add</button></div>
-   <ul class="list" id="mkList"></ul>
-   <div class="row" style="margin-top:10px"><button class="btn" id="mkStubs">Show wiki stubs</button><button class="btn" id="mkCopy">Copy stubs</button><button class="btn x" id="mkClear">Clear list</button></div>
+  <div class="card wide">
+   <h2>Made up tonight</h2>
+   <p class="sub">What you keep from Generate and Loot lands here, plus anything you type. After the session, copy the wiki stubs into <span class="mono">gm/wiki.js</span>, or send them to Claude with your recap.</p>
+   <div class="row"><select id="mkKind"><option value="npc">NPC</option><option value="location">Place</option><option value="ship">Ship</option><option value="item">Item</option><option value="note">Note</option></select><input id="mkName" placeholder="Name" style="flex:1 1 160px"><input id="mkText" placeholder="What you said about them" style="flex:3 1 240px"><button class="btn pri" id="mkAdd">Add</button></div>
+   <ul class="list" id="mkList" style="margin-top:12px"></ul>
+   <div class="row" style="margin-top:12px"><button class="btn" id="mkStubs">Show wiki stubs</button><button class="btn" id="mkCopy">Copy stubs</button><span class="grow"></span><button class="btn ghost danger" id="mkClear">Clear list</button></div>
    <pre class="code" id="mkOut" hidden></pre>
   </div>
  </div>
 </section>
 
+<!-- ============================ FIGHT ============================ -->
+<section data-tab="fight" data-title="Fight" hidden>
+ <header class="ph"><div><h1>Ground combat</h1><p>Initiative, hit points and conditions. Ship fights go on the <a href="../combat/">tactical plot</a>.</p></div>
+  <div class="act"><button class="btn" id="fEnd">End fight</button><button class="btn ghost danger" id="fClear">Clear all</button></div></header>
+ <div class="card addbar">
+  <div class="row"><div class="seg" id="fMode" role="group" aria-label="Add"><button data-v="foe" aria-pressed="true">Foes</button><button data-v="wiki">Wiki NPC</button><button data-v="pc">PC</button></div><span class="grow"></span><label class="ck"><input type="checkbox" id="fGroup"> One initiative per foe type</label></div>
+  <div class="pane" data-m="foe"><label class="field grow" style="flex:2 1 240px">Stat block<select id="fFoe"></select></label><label class="field">How many<input id="fCount" type="number" min="1" max="20" value="1" style="width:80px"></label><label class="field grow" style="flex:1 1 140px">Name (optional)<input id="fName" placeholder="Dock heavy"></label><button class="btn pri" id="fAddFoe">Add</button></div>
+  <div class="pane" data-m="wiki" hidden><label class="field grow">Wiki NPC with a stat block<select id="fWiki"></select></label><button class="btn pri" id="fAddWiki">Add</button></div>
+  <div class="pane" data-m="pc" hidden><label class="field grow" style="flex:1 1 140px">Name<input id="pName"></label><label class="field">AC<input id="pAc" type="number" style="width:70px"></label><label class="field">HP<input id="pHp" type="number" style="width:76px"></label><label class="field">Init bonus<input id="pInit" type="number" style="width:84px"></label><button class="btn pri" id="fAddPc">Add</button></div>
+  <div class="row" id="pSaved" data-m2="pc" hidden></div>
+  <p class="faint" id="fFoeInfo" style="margin:0;font-size:13px"></p>
+ </div>
+ <div class="turnbar" id="turnbar">
+  <span class="rd" id="fRound">Not started</span>
+  <span class="grow"><span class="up" id="fUp"></span> <span class="deck" id="fDeck"></span></span>
+  <label class="ck"><input type="checkbox" id="fSkip" checked> Skip downed foes</label>
+  <button class="btn" id="fPrev" title="Previous turn (P)">← Prev</button>
+  <button class="btn pri lg" id="fNext" title="Next turn (N)">Roll initiative</button>
+ </div>
+ <div class="cbts" id="fBody"></div>
+ <p class="empty" id="fEmpty">No one's fighting yet. Add foes and PCs above, then roll initiative.</p>
+</section>
+
+<!-- ============================ CLOCKS ============================ -->
+<section data-tab="clocks" data-title="Clocks" hidden>
+ <header class="ph"><div><h1>Clocks</h1><p>Countdowns, heists and doom. Tap a slice to fill up to it; tap the last filled slice to empty it.</p></div></header>
+ <div class="card"><div class="row"><input id="ckName" placeholder="What happens when it fills?" style="flex:1 1 240px"><div class="seg" id="ckSeg" role="group" aria-label="Segments"><button data-v="4">4</button><button data-v="6" aria-pressed="true">6</button><button data-v="8">8</button><button data-v="12">12</button></div><select id="ckColor" aria-label="Color"><option value="accent">Amber</option><option value="danger">Red</option><option value="info">Teal</option><option value="lil">Lilac</option></select><button class="btn pri" id="ckAdd">Add clock</button></div></div>
+ <div class="clocks" id="ckList" style="margin-top:16px"></div>
+</section>
+
 <!-- ============================ GENERATE ============================ -->
-<section data-tab="gen" hidden>
- <h1>Generators</h1>
- <p class="lede">Someone the party wasn't supposed to talk to. Click any field to reroll just that line.</p>
- <div class="card hi">
+<section data-tab="gen" data-title="Generate" hidden>
+ <header class="ph"><div><h1>Generate</h1><p>Someone the party wasn't supposed to talk to. Click any underlined line to reroll just that line. <span class="kbd">G</span> repeats the last one.</p></div></header>
+ <div class="card">
   <div class="row">
-   <label class="ck">Culture <select id="gCult"><option value="">Mixed</option><option value="drift">Drift spacer</option><option value="str">STR citizen</option><option value="cor">Corinthian</option><option value="ash">Ashborn</option><option value="droid">Android</option></select></label>
-   <label class="ck">Faction <select id="gFac"><option value="">None</option></select></label>
-   <label class="ck">Where <select id="gWhere"></select></label>
+   <label class="field">Culture<select id="gCult"><option value="">Mixed</option><option value="drift">Drift spacer</option><option value="str">STR citizen</option><option value="cor">Corinthian</option><option value="ash">Ashborn</option><option value="droid">Android</option></select></label>
+   <label class="field grow" style="flex:1 1 180px">Faction<select id="gFac"><option value="">None</option></select></label>
+   <label class="field grow" style="flex:1 1 180px">Where<select id="gWhere"></select></label>
   </div>
-  <div class="row">
-   <button class="btn go" data-gen="npc">NPC</button><button class="btn go" data-gen="ship">Ship</button><button class="btn go" data-gen="venue">Venue</button><button class="btn go" data-gen="rumor">Rumor</button><button class="btn go" data-gen="gig">Gig</button><button class="btn go" data-gen="cargo">Cargo</button><button class="btn go" data-gen="names">5 names</button><button class="btn x" id="gClear">Clear</button>
+  <div class="row" style="margin-top:14px">
+   <button class="btn pri" data-gen="npc">NPC</button><button class="btn" data-gen="ship">Ship</button><button class="btn" data-gen="venue">Venue</button><button class="btn" data-gen="rumor">Rumor</button><button class="btn" data-gen="gig">Gig</button><button class="btn" data-gen="cargo">Cargo</button><button class="btn" data-gen="names">5 names</button><span class="grow"></span><button class="btn ghost" id="gClear">Clear results</button>
   </div>
  </div>
  <div class="grid two out" id="gOut"></div>
 </section>
 
 <!-- ============================ TRAVEL ============================ -->
-<section data-tab="travel" hidden>
- <h1>Travel planner</h1>
- <p class="lede">Every two days, roll a d6. On a 1, something finds them.</p>
- <div class="card hi">
+<section data-tab="travel" data-title="Travel" hidden>
+ <header class="ph"><div><h1>Travel</h1><p>Every two days, roll a d6. On a 1, something finds them.</p></div><div class="act"><button class="btn" id="trCopy">Copy log</button></div></header>
+ <div class="card">
   <div class="row">
-   <label class="ck">From <select id="trFrom"></select></label>
-   <label class="ck">Via <select id="trVia"></select></label>
-   <label class="ck">To <select id="trTo"></select></label>
+   <label class="field grow" style="flex:1 1 170px">From<select id="trFrom"></select></label>
+   <label class="field grow" style="flex:1 1 170px">Via<select id="trVia"></select></label>
+   <label class="field grow" style="flex:1 1 170px">To<select id="trTo"></select></label>
   </div>
-  <div class="row">
-   <label class="ck">Encounter on <select id="trOn"><option value="1">a 1 (rules)</option><option value="2">1–2 (dangerous)</option><option value="0">never (just flavor)</option></select></label>
+  <div class="row" style="margin-top:12px">
+   <label class="ck">Encounter on <select id="trOn"><option value="1">a 1 (rules)</option><option value="2">1–2 (dangerous)</option><option value="0">never</option></select></label>
    <label class="ck"><input type="checkbox" id="trFlavor" checked> Quiet-day flavor</label>
-   <button class="btn go" id="trGo">Plot the trip</button><button class="btn" id="trCopy">Copy log</button>
+   <span class="grow"></span><button class="btn pri" id="trGo">Plot the trip</button>
   </div>
-  <p class="hint" id="trSrc"></p>
+  <p class="faint" id="trSrc" style="margin:10px 0 0;font-size:12.5px"></p>
  </div>
  <div id="trOut" class="out"></div>
 </section>
 
 <!-- ============================ LOOT ============================ -->
-<section data-tab="loot" hidden>
- <h1>Loot and salvage</h1>
- <p class="lede">Prices are what Low Dock pays, give or take a lie. gp = cr.</p>
- <div class="card hi">
+<section data-tab="loot" data-title="Loot" hidden>
+ <header class="ph"><div><h1>Loot</h1><p>Prices are what Low Dock pays, give or take a lie. gp = cr.</p></div></header>
+ <div class="card">
   <div class="row">
-   <label class="ck">Found in <select id="lCtx"><option value="wreck">A wreck</option><option value="merc">A body (merc, thug)</option><option value="corporate">An STR office</option><option value="shrine">A Corinthian shrine</option><option value="market">A black-market stall</option><option value="hold">A cargo hold</option><option value="ash">An Ashborn cache</option></select></label>
-   <label class="ck">Tier <select id="lTier"><option value="1">1 (levels 1–4)</option><option value="2">2 (5–10)</option><option value="3">3 (11–16)</option><option value="4">4 (17+)</option></select></label>
-   <label class="ck">Items <select id="lN"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option></select></label>
-   <button class="btn go" id="lGo">Search it</button>
+   <label class="field grow" style="flex:2 1 200px">Found in<select id="lCtx"><option value="wreck">A wreck</option><option value="merc">A body (merc, thug)</option><option value="corporate">An STR office</option><option value="shrine">A Corinthian shrine</option><option value="market">A black-market stall</option><option value="hold">A cargo hold</option><option value="ash">An Ashborn cache</option></select></label>
+   <label class="field">Tier<select id="lTier"><option value="1">1 (levels 1–4)</option><option value="2">2 (5–10)</option><option value="3">3 (11–16)</option><option value="4">4 (17+)</option></select></label>
+   <label class="field">Items<select id="lN"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>6</option></select></label>
+   <button class="btn pri" id="lGo">Search it</button>
   </div>
  </div>
  <div id="lOut" class="out"></div>
 </section>
 
-<!-- ============================ FIGHT ============================ -->
-<section data-tab="fight" hidden>
- <h1>Ground combat</h1>
- <p class="lede">Initiative, hit points and conditions. For ship fights, use the <a href="../combat/">tactical plot</a>.</p>
- <div class="grid two">
-  <div class="card">
-   <h3>Add foes</h3>
-   <div class="row"><select id="fFoe" style="flex:1 1 220px"></select><input id="fCount" type="number" min="1" max="20" value="1" class="n" style="width:60px" aria-label="How many"><input id="fName" placeholder="Name (optional)" style="flex:1 1 120px"><button class="btn go" id="fAddFoe">Add</button></div>
-   <div class="row"><select id="fWiki" style="flex:1"></select><button class="btn" id="fAddWiki">Add NPC</button></div>
-   <p class="hint" id="fFoeInfo"></p>
-  </div>
-  <div class="card">
-   <h3>Add a PC</h3>
-   <div class="row"><input id="pName" placeholder="Name" style="flex:1 1 120px"><input id="pAc" type="number" placeholder="AC" style="width:64px"><input id="pHp" type="number" placeholder="HP" style="width:64px"><input id="pInit" type="number" placeholder="Init +" style="width:70px"><button class="btn go" id="fAddPc">Add</button></div>
-   <div class="row" id="pSaved"></div>
-   <p class="hint">PCs you add are remembered here. Their initiative is the players' roll: type it into the Init box.</p>
-  </div>
- </div>
- <div class="card" style="margin-top:14px">
-  <div class="row"><span class="round" id="fRound">NOT STARTED</span><span style="flex:1"></span>
-   <button class="btn go" id="fInit">Roll initiative</button><button class="btn" id="fPrev">◂ Prev</button><button class="btn go" id="fNext">Next turn ▸</button>
-   <label class="ck"><input type="checkbox" id="fGroup"> Group identical foes</label>
-   <button class="btn" id="fEnd">End fight</button><button class="btn x" id="fClear">Clear all</button></div>
-  <div style="overflow-x:auto"><table class="fight"><thead><tr><th>Init</th><th>Who</th><th>AC</th><th>HP</th><th>Damage / heal</th><th>Conditions</th><th>Attacks</th><th></th></tr></thead><tbody id="fBody"></tbody></table></div>
-  <p class="empty" id="fEmpty">No one's fighting yet.</p>
- </div>
-</section>
-
 <!-- ============================ FACTIONS ============================ -->
-<section data-tab="factions" hidden>
- <h1>Faction turns</h1>
- <p class="lede">The galaxy moves while the party sleeps. Run one turn between sessions, or when a week passes in game.</p>
- <div class="card hi">
-  <div class="row"><input id="fxLabel" placeholder="Label, e.g. Between S2 and S3" style="flex:1 1 220px"><button class="btn go" id="fxRun">Run a faction turn</button><button class="btn" id="fxCopy">Copy log</button><label class="ck"><input type="checkbox" id="fxAll"> Show inactive factions</label></div>
-  <p class="hint">d6 per active faction: 1 setback (clock −1), 2–3 holds, 4–5 advances (+1), 6 a big move (+2) and the news reaches Tamsin. A full clock means the goal happens: decide what changes. Goals are <em>suggestions</em>; edit them.</p>
+<section data-tab="factions" data-title="Factions" hidden>
+ <header class="ph"><div><h1>Faction turns</h1><p>The galaxy moves while the party sleeps. Run one turn between sessions, or when a week passes in game.</p></div><div class="act"><button class="btn" id="fxCopy">Copy log</button></div></header>
+ <div class="card">
+  <div class="row"><input id="fxLabel" placeholder="Label, e.g. Between S2 and S3" style="flex:1 1 220px"><button class="btn pri" id="fxRun">Run a faction turn</button><label class="ck"><input type="checkbox" id="fxAll"> Show inactive</label></div>
+  <p class="faint" style="margin:10px 0 0;font-size:12.5px">d6 per active faction: 1 setback (clock −1) · 2–3 holds · 4–5 advances (+1) · 6 big move (+2), and the news reaches Tamsin. A full clock means the goal happens. Goals are <em>suggestions</em>; edit them.</p>
  </div>
- <div class="card" style="margin-top:14px;overflow-x:auto"><table class="fac"><thead><tr><th>On</th><th>Faction</th><th>Goal</th><th>Clock</th><th>To the party</th><th>Last move</th></tr></thead><tbody id="fxBody"></tbody></table></div>
- <div class="card" style="margin-top:14px"><h3>Log</h3><ul class="list" id="fxLog"></ul><div class="row" style="margin-top:8px"><button class="btn x" id="fxLogClear">Clear log</button></div></div>
-</section>
-
-<!-- ============================ CLOCKS ============================ -->
-<section data-tab="clocks" hidden>
- <h1>Clocks</h1>
- <p class="lede">Countdowns, heists and doom. Tap a slice to fill up to it.</p>
- <div class="card hi"><div class="row"><input id="ckName" placeholder="What happens when it fills?" style="flex:1 1 240px"><select id="ckSeg"><option>4</option><option selected>6</option><option>8</option><option>10</option><option>12</option></select><select id="ckColor"><option value="amber">Amber</option><option value="haz">Red</option><option value="teal">Teal</option><option value="lil">Lilac</option><option value="lan">Gold</option></select><button class="btn go" id="ckAdd">Add clock</button></div></div>
- <div class="clocks" id="ckList" style="margin-top:14px"></div>
+ <div class="grid two" style="margin-top:16px;grid-template-columns:minmax(0,2fr) minmax(280px,1fr)">
+  <div class="card" style="overflow-x:auto;padding:6px 10px"><table class="fac"><thead><tr><th>On</th><th>Faction</th><th>Goal</th><th>Clock</th><th>To the party</th><th>Last move</th></tr></thead><tbody id="fxBody"></tbody></table></div>
+  <div class="card"><h2>Log</h2><ul class="list" id="fxLog" style="margin-top:10px"></ul><div class="row" style="margin-top:10px"><button class="btn ghost danger" id="fxLogClear">Clear log</button></div></div>
+ </div>
 </section>
 
 <!-- ============================ RECAP ============================ -->
-<section data-tab="recap" hidden>
- <h1>Session recap</h1>
- <p class="lede">Write it once; get a player recap, a wiki session page, and every page's "seen" line.</p>
+<section data-tab="recap" data-title="Recap" hidden>
+ <header class="ph"><div><h1>Session recap</h1><p>Write it once; get a player recap, a wiki session page, and every page's "seen" line.</p></div></header>
  <div class="grid two">
-  <div class="card hi">
-   <div class="row"><input id="rcId" placeholder="Page id, e.g. s2" style="width:100px"><input id="rcName" placeholder="Session 2: title" style="flex:1"></div>
-   <div class="row"><input id="rcSub" placeholder="One line under the title" style="flex:1"></div>
-   <textarea id="rcText" rows="14" placeholder="One beat per line.&#10;Use [[id]] or [[id|words]] to link wiki pages.&#10;Start a line with ! for GM-only (left out of the player recap).&#10;&#10;The crew docked at [[tamsin]] without [[car-b]].&#10;! [[marra-tesk]] already knew they had the core."></textarea>
-   <div class="row" style="margin-top:8px"><input id="rcFind" placeholder="Find a wiki page to link…" list="rcIds" style="flex:1"><datalist id="rcIds"></datalist><button class="btn" id="rcIns">Insert link</button></div>
-   <p class="hint" id="rcWarn"></p>
+  <div class="card">
+   <div class="row"><label class="field">Page id<input id="rcId" placeholder="s2" style="width:90px"></label><label class="field grow">Title<input id="rcName" placeholder="Session 2: title"></label></div>
+   <div class="row"><label class="field grow">One line under the title<input id="rcSub"></label></div>
+   <label class="field" style="margin-top:8px">Beats<textarea id="rcText" rows="14" placeholder="One beat per line.&#10;Use [[id]] or [[id|words]] to link wiki pages.&#10;Start a line with ! for GM-only.&#10;&#10;The crew docked at [[tamsin]] without [[car-b]].&#10;! [[marra-tesk]] already knew they had the core."></textarea></label>
+   <div class="row" style="margin-top:8px"><input id="rcFind" placeholder="Find a wiki page to link…" list="rcIds" class="grow"><datalist id="rcIds"></datalist><button class="btn" id="rcIns">Insert link</button></div>
+   <p class="faint" id="rcWarn" style="margin:8px 0 0;font-size:12.5px"></p>
   </div>
   <div class="card">
-   <div class="row"><label class="ck">Player recap voice <select id="rcVoice"><option value="plain">Previously on…</option><option value="commonweal">Commonweal incident digest</option><option value="dock">Dockside talk</option><option value="log">Datapad log</option></select></label><button class="btn" id="rcCopyP">Copy</button></div>
+   <div class="row"><h2 class="grow" style="margin:0">For the players</h2><select id="rcVoice" aria-label="Voice"><option value="plain">Previously on…</option><option value="commonweal">Commonweal incident digest</option><option value="dock">Dockside talk</option><option value="log">Datapad log</option></select><button class="btn" id="rcCopyP">Copy</button></div>
    <pre class="code" id="rcPlayer"></pre>
-   <div class="row" style="margin-top:12px"><span class="eyebrow" style="flex:1">Wiki: session page and seen lines</span><button class="btn" id="rcCopyW">Copy</button></div>
+   <div class="row" style="margin-top:16px"><h2 class="grow" style="margin:0">For the wiki</h2><button class="btn" id="rcCopyW">Copy</button></div>
    <pre class="code" id="rcWiki"></pre>
   </div>
  </div>
 </section>
 
 <!-- ============================ REFERENCE ============================ -->
-<section data-tab="ref" hidden>
- <h1>Quick reference</h1>
- <p class="lede">The Drift's house rules in short, plus the 5e tables you always look up. The full rules are on the <a href="index.html#rules">GM page</a>.</p>
+<section data-tab="ref" data-title="Reference" hidden>
+ <header class="ph"><div><h1>Quick reference</h1><p>The Drift's house rules in short, plus the 5e tables you always look up. Full rules are on the <a href="index.html#rules">GM page</a>.</p></div><div class="act"><input type="search" id="refQ" placeholder="Filter…" style="width:200px"></div></header>
  <div class="grid ref" id="refGrid"></div>
 </section>
 </main>
-
-<div id="tray">
- <div id="trayPanel" hidden>
-  <div class="row" style="margin:0"><input id="dExpr" placeholder="2d6+3, d20, 4d6kh3 · Esc closes" style="flex:1"><button class="btn go" id="dRoll">Roll</button></div>
-  <div class="dice"><button class="btn" data-d="1d4">d4</button><button class="btn" data-d="1d6">d6</button><button class="btn" data-d="1d8">d8</button><button class="btn" data-d="1d10">d10</button><button class="btn" data-d="1d12">d12</button><button class="btn" data-d="1d20">d20</button><button class="btn" data-d="2d20kh1">Adv</button><button class="btn" data-d="2d20kl1">Dis</button><button class="btn" data-d="1d100">d100</button></div>
-  <ul id="dlog"></ul>
- </div>
- <button id="trayBtn" type="button" aria-expanded="false">Dice<span class="last" id="dLast"></span></button>
 </div>
-<div id="toast" role="status"></div>
+
+<nav class="bnav" aria-label="Tools">
+ <a href="#table"><svg class="i"><use href="#i-table"/></svg>Table</a>
+ <a href="#fight"><svg class="i"><use href="#i-fight"/></svg>Fight</a>
+ <a href="#gen"><svg class="i"><use href="#i-gen"/></svg>Generate</a>
+ <a href="#clocks"><svg class="i"><use href="#i-clock"/></svg>Clocks</a>
+ <button type="button" id="moreBtn"><svg class="i"><use href="#i-more"/></svg>More</button>
+</nav>
+
+<div id="tray" hidden>
+ <div class="head"><b>Dice</b><span class="faint" style="font-size:12px"><span class="kbd">/</span> open · <span class="kbd">Esc</span> close</span></div>
+ <div class="row" style="flex-wrap:nowrap"><input id="dExpr" placeholder="2d6+3, 4d6kh3, d20-1" class="grow"><button class="btn pri" id="dRoll">Roll</button></div>
+ <div class="dice"><button class="btn sm" data-d="1d4">d4</button><button class="btn sm" data-d="1d6">d6</button><button class="btn sm" data-d="1d8">d8</button><button class="btn sm" data-d="1d10">d10</button><button class="btn sm" data-d="1d12">d12</button><button class="btn sm" data-d="1d20">d20</button><button class="btn sm" data-d="2d20kh1">Adv</button><button class="btn sm" data-d="2d20kl1">Dis</button><button class="btn sm" data-d="1d100">d100</button><button class="btn sm ghost" id="dClear" title="Clear history">Clear</button></div>
+ <ul id="dlog"></ul>
+</div>
+<button id="fab" type="button" aria-expanded="false" aria-controls="tray"><svg class="i"><use href="#i-dice"/></svg>Dice<span class="last" id="dLast"></span></button>
+</div>
+
+<div id="pop" hidden></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="dlgHelp"><h2>Keyboard shortcuts</h2><p>Anywhere outside a text box.</p>
+ <div class="keys"><span><span class="kbd">1</span>–<span class="kbd">9</span></span><span>Switch tool</span><span class="kbd">/</span><span>Open the dice tray</span><span class="kbd">Esc</span><span>Close the tray, a popup or this</span><span class="kbd">N</span> <span>Fight: next turn (rolls initiative first)</span><span class="kbd">P</span><span>Fight: previous turn</span><span class="kbd">G</span><span>Generate: again, same kind</span><span class="kbd">?</span><span>This list</span><span><span class="kbd">Enter</span></span><span>Fight HP box: damage. <span class="kbd">Shift</span>+<span class="kbd">Enter</span>: heal.</span></div>
+ <div class="foot"><button class="btn pri" data-close>Close</button></div></dialog>
+<dialog id="dlgBackup"><h2>Backup</h2><p>Clocks, factions, the fight, your notes and settings live in this browser only. Save a file to move them to another device, or to be safe.</p>
+ <div class="row"><button class="btn pri" id="bkExport"><svg class="i"><use href="#i-save"/></svg>Download backup</button><button class="btn" id="bkImport">Load a backup…</button></div>
+ <p class="faint" style="margin:16px 0 6px;font-size:12.5px">Start over: clears every console setting in this browser (not the wiki or the GM page).</p>
+ <button class="btn ghost danger" id="bkReset">Reset the console…</button>
+ <div class="foot"><button class="btn" data-close>Close</button></div></dialog>
 
 <!-- Data files load with a timestamp so edits show on the next reload. -->
 <script>document.write(["wiki.js","tables.js"].map(f=>'<script src="'+f+'?v='+Date.now()+'"><\/script>').join(""))</script>
@@ -408,10 +584,17 @@ const rint=n=>Math.floor(Math.random()*n);
 const pick=a=>a&&a.length?a[rint(a.length)]:"";
 const slug=s=>String(s).toLowerCase().normalize("NFKD").replace(/[^\w\s-]/g,"").trim().replace(/[\s_]+/g,"-").replace(/-+/g,"-").slice(0,40)||"page";
 const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+const ico=(n,c)=>`<svg class="i${c?" "+c:""}"><use href="#i-${n}"/></svg>`;
 const PFX="gm.console.";
 const S={get(k,d){try{const v=localStorage.getItem(PFX+k);return v==null?d:JSON.parse(v)}catch(_){return d}},set(k,v){try{localStorage.setItem(PFX+k,JSON.stringify(v))}catch(_){}}};
-let toastT;function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),1600)}
+let toastT;
+function toast(m,undo){const t=$("toast");t.innerHTML=`<span>${esc(m)}</span>${undo?`<button type="button">Undo</button>`:""}`;t.classList.add("on");clearTimeout(toastT);
+ if(undo)t.querySelector("button").onclick=()=>{undo();t.classList.remove("on");toast("Restored")};
+ toastT=setTimeout(()=>t.classList.remove("on"),undo?6000:1800)}
 async function copy(text){try{await navigator.clipboard.writeText(text);toast("Copied")}catch(_){const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");toast("Copied")}catch(e){toast("Couldn't copy")}ta.remove()}}
+function segVal(id){const b=$(id).querySelector('[aria-pressed="true"]');return b?b.dataset.v:""}
+function segInit(id,cb){$(id).addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;$(id).querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));cb&&cb(b.dataset.v)})}
+document.querySelectorAll("dialog [data-close]").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
 
 const T=window.GM_TABLES||{};
 const W=(window.GM_WIKI||[]).filter(p=>p&&p.id);
@@ -421,6 +604,12 @@ const plain=s=>String(s||"").replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,"$2").replac
 const rich=s=>esc(s).replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g,(m,id,t)=>id[0]==="#"?`<a href="index.html${id}">${t}</a>`:wlink(id,t)).replace(/\[\[([^\]]+)\]\]/g,(m,id)=>id[0]==="#"?`<a href="index.html${id}">${id.slice(1)}</a>`:wlink(id)).replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>").replace(/\*([^*]+)\*/g,"<i>$1</i>");
 function topPower(id){let p=WB[id],n=0;while(p&&p.faction&&WB[p.faction]&&n++<8)p=WB[p.faction];if(!p)return"drift";return p.id==="corinthia"?"dom":p.id==="str"?"str":"drift"}
 const POWER_NAME={dom:"Corinthia",str:"STR",drift:"Drift"};
+
+/* ---------- theme ---------- */
+const THEMES=["auto","dark","light"];
+function applyTheme(t){if(t==="auto")delete document.documentElement.dataset.theme;else document.documentElement.dataset.theme=t;$("themeLbl").textContent="Theme: "+t}
+let theme=S.get("theme","auto");applyTheme(theme);
+$("themeBtn").onclick=()=>{theme=THEMES[(THEMES.indexOf(theme)+1)%3];S.set("theme",theme);applyTheme(theme)};
 
 /* ---------- dice ---------- */
 function parseRoll(expr){
@@ -446,74 +635,97 @@ function roll(expr,opt={}){
   if(t.d===20&&kept.length===1){nat=kept[0]}dieCount++}
  if(dieCount!==1)nat=null;
  return{total,detail:parts.join(" ").replace(/^\+/,""),nat}}
-const dlog=S.get("dice",[]);
+const md=n=>(n<0?"-":"+")+Math.abs(n||0);
+let dlog=S.get("dice",[]);
 function logRoll(label,expr,r,cls){if(!r)return;dlog.unshift({l:label||"",e:expr,t:r.total,d:r.detail,c:cls||(r.nat===20?"crit":r.nat===1?"fumble":"")});dlog.length=Math.min(dlog.length,40);S.set("dice",dlog);drawDice();$("dLast").textContent=r.total}
-function drawDice(){$("dlog").innerHTML=dlog.map(x=>`<li class="${x.c||""}"><b>${esc(x.t)}</b> <span class="w">${x.l?esc(x.l)+" · ":""}${esc(x.e)}</span><br>${x.d}</li>`).join("")||`<li class="w">No rolls yet.</li>`}
-function rollAndLog(expr,label,opt){const r=roll(expr,opt);if(!r){toast("Can't read "+expr);return null}logRoll(label,expr,r);toast((label?label+": ":"")+r.total);return r}
-$("trayBtn").addEventListener("click",()=>{const p=$("trayPanel");p.hidden=!p.hidden;$("trayBtn").setAttribute("aria-expanded",!p.hidden);if(!p.hidden)$("dExpr").focus()});
+function drawDice(){$("dlog").innerHTML=dlog.map(x=>`<li class="${x.c||""}"><b>${esc(x.t)}</b><span class="w">${x.l?esc(x.l):esc(x.e)}<br><span class="d">${x.l?esc(x.e)+" · ":""}${x.d}</span></span></li>`).join("")||`<li class="w" style="grid-template-columns:1fr">No rolls yet.</li>`}
+function rollAndLog(expr,label,opt){const r=roll(expr,opt);if(!r){toast("Can't read “"+expr+"”");return null}logRoll(label,expr,r);toast((label?label+": ":"")+r.total+(r.nat===20?" · natural 20":r.nat===1?" · natural 1":""));return r}
+function tray(open){$("tray").hidden=!open;$("fab").setAttribute("aria-expanded",open);if(open)$("dExpr").focus()}
+$("fab").addEventListener("click",()=>tray($("tray").hidden));
 $("dRoll").addEventListener("click",()=>{const e=$("dExpr").value.trim();if(e)rollAndLog(e)});
 $("dExpr").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("dRoll").click()}});
+$("dClear").onclick=()=>{const old=dlog;dlog=[];S.set("dice",dlog);drawDice();$("dLast").textContent="";toast("History cleared",()=>{dlog=old;S.set("dice",dlog);drawDice()})};
 document.querySelectorAll("[data-d]").forEach(b=>b.addEventListener("click",()=>rollAndLog(b.dataset.d,b.textContent)));
-document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("trayPanel").hidden){$("trayPanel").hidden=true;$("trayBtn").setAttribute("aria-expanded","false");$("trayBtn").focus();return}if(e.key==="/"&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();$("trayPanel").hidden=false;$("dExpr").focus()}});
 
-/* ---------- tabs ---------- */
+/* ---------- navigation ---------- */
 const TABS=[...document.querySelectorAll("section[data-tab]")].map(s=>s.dataset.tab);
+const ORDER=["table","fight","clocks","gen","travel","loot","factions","recap","ref"];
+let curTab="table";
 const built={};
-function route(){let t=(location.hash||"#table").slice(1).split("/")[0];if(!TABS.includes(t))t="table";
+function route(){let t=(location.hash||"#table").slice(1).split("/")[0];if(!TABS.includes(t))t="table";curTab=t;
  document.querySelectorAll("section[data-tab]").forEach(s=>s.hidden=s.dataset.tab!==t);
- document.querySelectorAll("#tabs a").forEach(a=>a.getAttribute("href")==="#"+t?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
- if(!built[t]&&BUILD[t]){built[t]=true;BUILD[t]()}window.scrollTo(0,0)}
+ document.querySelectorAll("#tabs a, .bnav a").forEach(a=>a.getAttribute("href")==="#"+t?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+ const sec=document.querySelector(`section[data-tab="${t}"]`);$("topTitle").textContent=sec.dataset.title;document.title=sec.dataset.title+" · Drift GM Console";
+ if(!built[t]&&BUILD[t]){built[t]=true;BUILD[t]()}drawer(false);window.scrollTo(0,0)}
+function drawer(open){$("side").classList.toggle("open",open);$("scrim").hidden=!open}
+$("menuBtn").onclick=()=>drawer(true);$("moreBtn").onclick=()=>drawer(true);$("scrim").onclick=()=>drawer(false);
+function badges(){const m=S.get("made",[]).length;$("bTable").hidden=!m;$("bTable").textContent=m;const f=S.get("fight",{round:0});$("bFight").hidden=!f.round;$("bFight").textContent="R"+f.round}
+
+/* ---------- keyboard ---------- */
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"){if(!$("pop").hidden){closePop();return}if(!$("tray").hidden){tray(false);$("fab").focus();return}if($("side").classList.contains("open")){drawer(false);return}}
+ if(e.ctrlKey||e.metaKey||e.altKey)return;
+ const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;if(document.querySelector("dialog[open]"))return;
+ if(e.key==="/"){e.preventDefault();tray(true);return}
+ if(e.key==="?"){e.preventDefault();$("dlgHelp").showModal();return}
+ if(/^[1-9]$/.test(e.key)){location.hash="#"+ORDER[+e.key-1];return}
+ const k=e.key.toLowerCase();
+ if(curTab==="fight"&&k==="n"){e.preventDefault();$("fNext").click()}
+ if(curTab==="fight"&&k==="p"){e.preventDefault();$("fPrev").click()}
+ if(curTab==="gen"&&k==="g"&&lastGen){e.preventDefault();runGen(lastGen)}
+});
+$("helpBtn").onclick=()=>$("dlgHelp").showModal();
+
+/* ---------- popover ---------- */
+let popClose=null;
+function openPop(anchor,html,bind){const p=$("pop");p.innerHTML=html;p.hidden=false;const r=anchor.getBoundingClientRect();const w=p.offsetWidth,h=p.offsetHeight;
+ let x=Math.min(Math.max(12,r.left),innerWidth-w-12),y=r.bottom+6;if(y+h>innerHeight-12)y=Math.max(12,r.top-h-6);p.style.left=x+"px";p.style.top=y+"px";bind&&bind(p);
+ setTimeout(()=>{popClose=e=>{if(!p.contains(e.target))closePop()};document.addEventListener("pointerdown",popClose)},0)}
+function closePop(){$("pop").hidden=true;if(popClose)document.removeEventListener("pointerdown",popClose);popClose=null}
 
 /* ================= TABLE ================= */
 function buildTable(){
- // session clock
  let tm=S.get("timer",{start:null,acc:0,brk:90});$("tBreak").value=String(tm.brk||0);
  const el=()=>tm.acc+(tm.start?Date.now()-tm.start:0);
  const fmt=ms=>{const s=Math.floor(ms/1000);return`${Math.floor(s/3600)}:${String(Math.floor(s/60)%60).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`};
  let warned=Math.floor(el()/60000/(tm.brk||1e9));
- const tick=()=>{$("tClock").textContent=fmt(el());$("tGo").textContent=tm.start?"Pause":"Start";
-  const b=+tm.brk;if(b&&tm.start){const n=Math.floor(el()/60000/b);if(n>warned){warned=n;toast("Break time");$("tNote").textContent=`Break suggested at ${fmt(n*b*60000)}.`}}};
+ const tick=()=>{$("tClock").textContent=fmt(el());$("tGo").textContent=tm.start?"Pause":(tm.acc?"Resume":"Start");$("tGo").classList.toggle("pri",!tm.start);
+  const b=+tm.brk;if(b&&tm.start){const n=Math.floor(el()/60000/b);if(n>warned){warned=n;toast("Time for a break");$("tNote").textContent=`Break suggested at ${fmt(n*b*60000)}.`}}};
  setInterval(tick,1000);tick();
  $("tGo").onclick=()=>{if(tm.start){tm.acc=el();tm.start=null}else tm.start=Date.now();S.set("timer",tm);tick()};
- $("tReset").onclick=()=>{tm={start:null,acc:0,brk:tm.brk};warned=0;S.set("timer",tm);$("tNote").textContent="Keeps running if you reload.";tick()};
+ $("tReset").onclick=()=>{const old=Object.assign({},tm);tm={start:null,acc:0,brk:tm.brk};warned=0;S.set("timer",tm);$("tNote").textContent="Keeps running if you reload.";tick();toast("Clock reset",()=>{tm=old;S.set("timer",tm);tick()})};
  $("tBreak").onchange=e=>{tm.brk=+e.target.value;warned=Math.floor(el()/60000/(tm.brk||1e9));S.set("timer",tm)};
 
- // spotlight
  let sp=S.get("spot",null)||W.filter(p=>p.type==="pc").map(p=>({n:p.name,c:0}));
  const drawSp=()=>{const mx=Math.max(1,...sp.map(x=>x.c)),mn=Math.min(...sp.map(x=>x.c));
-  $("spot").innerHTML=sp.map((x,i)=>`<span class="${sp.length>1&&x.c===mn?"low":""}">${esc(x.n)}</span><span class="barx"><i style="width:${x.c/mx*100}%"></i></span><span class="mono">${x.c}</span><span><button class="btn sm" data-sp="${i}">+</button> <button class="btn sm x" data-spx="${i}" aria-label="Remove">×</button></span>`).join("")||`<span class="empty">Add the players.</span>`;S.set("spot",sp)};
- $("spot").onclick=e=>{const a=e.target.closest("[data-sp]"),x=e.target.closest("[data-spx]");if(a)sp[+a.dataset.sp].c++;if(x)sp.splice(+x.dataset.spx,1);drawSp()};
+  $("spot").innerHTML=sp.map((x,i)=>`<span class="${sp.length>1&&x.c===mn?"low":""}">${esc(x.n)}</span><span class="barx"><i style="width:${x.c/mx*100}%"></i></span><span class="mono" style="text-align:right">${x.c}</span><span class="row" style="flex-wrap:nowrap;gap:4px"><button class="btn sm" data-sp="${i}" aria-label="Spotlight for ${esc(x.n)}">+</button><button class="btn sm icon ghost" data-spx="${i}" aria-label="Remove ${esc(x.n)}">${ico("x")}</button></span>`).join("")||`<span class="faint" style="grid-column:1/-1">Add the players.</span>`;S.set("spot",sp)};
+ $("spot").onclick=e=>{const a=e.target.closest("[data-sp]"),x=e.target.closest("[data-spx]");if(a)sp[+a.dataset.sp].c++;if(x){const old=JSON.stringify(sp);const n=sp.splice(+x.dataset.spx,1)[0];toast(`Removed ${n.n}`,()=>{sp=JSON.parse(old);drawSp()})}drawSp()};
  $("spAddBtn").onclick=()=>{const v=$("spAdd").value.trim();if(v){sp.push({n:v,c:0});$("spAdd").value="";drawSp()}};
- $("spReset").onclick=()=>{sp.forEach(x=>x.c=0);drawSp()};drawSp();
+ $("spAdd").onkeydown=e=>{if(e.key==="Enter")$("spAddBtn").click()};
+ $("spReset").onclick=()=>{const old=JSON.stringify(sp);sp.forEach(x=>x.c=0);drawSp();toast("Spotlight reset",()=>{sp=JSON.parse(old);drawSp()})};drawSp();
 
- // oracle
- const O=T.ORACLE||{answers:[]};
- $("orAsk").onclick=()=>{const r=1+rint(6),odds=+$("orOdds").value,v=Math.max(1,Math.min(6,r+odds));const a=O.answers[v-1]?O.answers[v-1][0]:"?";
+ const O=T.ORACLE||{answers:[]};segInit("orOdds");segInit("scPlace",()=>$("scGo").click());
+ $("orAsk").onclick=()=>{const r=1+rint(6),odds=+segVal("orOdds"),v=Math.max(1,Math.min(6,r+odds));const a=O.answers[v-1]?O.answers[v-1][0]:"?";
   const extra=/and/.test(a)?pick(O.and):/but/.test(a)?pick(O.but):"";
-  $("orOut").innerHTML=`<div class="res"><div class="big">${esc(a)}</div>${extra?`<div class="lore">${esc(cap(extra))}.</div>`:""}<div class="s">d6 ${r}${odds?(odds>0?" +1":" −1"):""}</div></div>`};
- $("orComp").onclick=()=>{$("orOut").innerHTML=`<div class="res"><div class="s">Complication</div><div class="big">${esc(cap(pick(O.complication)))}</div></div>`};
-
- // scene
- $("scGo").onclick=()=>{const sc=(T.SCENE||{})[$("scPlace").value]||{};$("scOut").innerHTML=`<div class="res"><dl><dt>See</dt><dd>${esc(cap(pick(sc.sight)))}</dd><dt>Hear</dt><dd>${esc(cap(pick(sc.sound)))}</dd><dt>Smell</dt><dd>${esc(cap(pick(sc.smell)))}</dd></dl></div>`};
-
- // thread
+  $("orOut").innerHTML=`<div class="res inner"><div class="big">${esc(a)}</div>${extra?`<div class="lore">${esc(cap(extra))}.</div>`:""}<div class="s" style="margin-top:6px">d6 ${r}${odds?(odds>0?" +1":" −1"):""}</div></div>`};
+ $("orComp").onclick=()=>{$("orOut").innerHTML=`<div class="res inner"><div class="s">Complication</div><div class="big" style="font-size:19px">${esc(cap(pick(O.complication)))}</div></div>`};
+ $("scGo").onclick=()=>{const sc=(T.SCENE||{})[segVal("scPlace")]||{};$("scOut").innerHTML=`<div class="res inner"><dl><dt>See</dt><dd>${esc(cap(pick(sc.sight)))}</dd><dt>Hear</dt><dd>${esc(cap(pick(sc.sound)))}</dd><dt>Smell</dt><dd>${esc(cap(pick(sc.smell)))}</dd></dl></div>`};
  const types=["all",...new Set(W.map(p=>p.type))];$("thType").innerHTML=types.map(t=>`<option value="${t}">${t==="all"?"Any type":cap(t)}</option>`).join("");
  $("thGo").onclick=()=>{const met=$("thMet").value,ty=$("thType").value;const pool=[];
   W.forEach(p=>{if(ty!=="all"&&p.type!==ty)return;const seen=p.seen&&p.seen.length;if(met==="met"&&!seen)return;if(met==="new"&&seen)return;(p.hooks||[]).forEach(h=>{const t=typeof h==="string"?h:h&&!h.used?h.t:null;if(t)pool.push([p,t])})});
-  if(!pool.length){$("thOut").innerHTML=`<p class="empty">No unused hooks match.</p>`;return}
-  const[p,t]=pick(pool);$("thOut").innerHTML=`<div class="res"><div class="s">${esc(p.type)} · ${p.seen&&p.seen.length?"met":"not met yet"}</div><div class="t">${wlink(p.id)}</div><div>${rich(t)}</div></div>`};
-
- // made up tonight
+  if(!pool.length){$("thOut").innerHTML=`<div class="res inner faint">No unused hooks match.</div>`;return}
+  const[p,t]=pick(pool);$("thOut").innerHTML=`<div class="res inner"><div class="s">${esc(cap(p.type))} · ${p.seen&&p.seen.length?"met":"not met yet"}</div><div class="t">${wlink(p.id)}</div><div>${rich(t)}</div></div>`};
  drawMade();
- $("mkAdd").onclick=()=>{const n=$("mkName").value.trim(),t=$("mkText").value.trim();if(!n&&!t)return;addMade({kind:$("mkKind").value,name:n||"Untitled",text:t});$("mkName").value=$("mkText").value=""};
- $("mkList").onclick=e=>{const x=e.target.closest("[data-mx]");if(x){const m=S.get("made",[]);m.splice(+x.dataset.mx,1);S.set("made",m);drawMade()}};
- $("mkStubs").onclick=()=>{const o=$("mkOut");o.hidden=!o.hidden;o.textContent=stubs()};
+ const addTyped=()=>{const n=$("mkName").value.trim(),t=$("mkText").value.trim();if(!n&&!t)return;addMade({kind:$("mkKind").value,name:n||"Untitled",text:t});$("mkName").value=$("mkText").value="";$("mkName").focus()};
+ $("mkAdd").onclick=addTyped;["mkName","mkText"].forEach(k=>$(k).onkeydown=e=>{if(e.key==="Enter")addTyped()});
+ $("mkList").onclick=e=>{const x=e.target.closest("[data-mx]");if(x){const m=S.get("made",[]);const old=JSON.stringify(m);const r=m.splice(+x.dataset.mx,1)[0];S.set("made",m);drawMade();toast(`Removed ${r.name}`,()=>{S.set("made",JSON.parse(old));drawMade()})}};
+ $("mkStubs").onclick=()=>{const o=$("mkOut");o.hidden=!o.hidden;$("mkStubs").textContent=o.hidden?"Show wiki stubs":"Hide wiki stubs";o.textContent=stubs()};
  $("mkCopy").onclick=()=>copy(stubs());
- $("mkClear").onclick=()=>{if(confirm("Clear everything you made up tonight?")){S.set("made",[]);drawMade()}};
+ $("mkClear").onclick=()=>{const old=localStorage.getItem(PFX+"made");if(!S.get("made",[]).length)return;S.set("made",[]);drawMade();toast("List cleared",()=>{localStorage.setItem(PFX+"made",old);drawMade()})};
 }
-function addMade(o){const m=S.get("made",[]);m.push(Object.assign({at:Date.now()},o));S.set("made",m);drawMade();toast("Kept: "+o.name)}
-function drawMade(){const m=S.get("made",[]);$("mkList").innerHTML=m.map((x,i)=>`<li><span class="tag">${esc(x.kind)}</span><span class="grow"><b>${esc(x.name)}</b>${x.text?" · "+esc(x.text):""}</span><button class="btn sm x" data-mx="${i}" aria-label="Remove">×</button></li>`).join("")||`<li class="empty">Nothing yet. Keep something from Generate, or type it above.</li>`;
- if(!$("mkOut").hidden)$("mkOut").textContent=stubs()}
+function addMade(o){const m=S.get("made",[]);m.push(Object.assign({at:Date.now()},o));S.set("made",m);drawMade();toast("Kept in Table → Made up tonight")}
+function drawMade(){const m=S.get("made",[]);$("mkList").innerHTML=m.map((x,i)=>`<li><span class="tag">${esc(x.kind)}</span><span class="grow"><b>${esc(x.name)}</b>${x.text?` <span class="muted">· ${esc(x.text)}</span>`:""}</span><button class="btn sm icon ghost" data-mx="${i}" aria-label="Remove">${ico("x")}</button></li>`).join("")||`<li class="faint" style="justify-content:center">Nothing yet. Keep something from Generate or Loot, or type it above.</li>`;
+ if(!$("mkOut").hidden)$("mkOut").textContent=stubs();badges()}
 function stubs(){const m=S.get("made",[]);const used=new Set(W.map(p=>p.id));
  const lines=m.filter(x=>x.kind!=="note").map(x=>{let id=slug(x.name),n=2;while(used.has(id))id=slug(x.name)+"-"+n++;used.add(id);
   const f=x.fields||{};const o=[`id: \`${id}\``,`type: \`${x.kind}\``,`name: \`${bt(x.name)}\``,`tag: \`played\``];
@@ -533,47 +745,49 @@ function genName(c){const N=(T.NAMES||{})[c]||T.NAMES.drift;if(c==="droid"){cons
  return pick(N.first)+" "+pick(N.last)}
 function npcField(c,k){const A=(T.NPC||{}).any||{},C=(T.NPC||{})[c]||{};const pool=(C[k]||[]).concat(A[k]||[]);return pick(pool)}
 function guessStats(job){job=String(job).toLowerCase();if(/sable|lictor|officer|security/.test(job))return"Guard";if(/fixer|broker|agent|auditor|adjuster|recruiter|informant|compliance/.test(job))return"Spy";if(/priest|deacon|choir|hedge/.test(job))return"Acolyte";if(/heavy|enforcer|muscle/.test(job))return"Thug";if(/pilot|scout|ranger|diver/.test(job))return"Scout";if(/android|drone|loader|unit/.test(job))return"Commoner, with Animated Armor's AC and HP";if(/clan|envoy|elder|merc/.test(job))return"Veteran";return"Commoner"}
+const CULT_NAME={drift:"Drift spacer",str:"STR citizen",cor:"Corinthian",ash:"Ashborn",droid:"Android"};
 const GEN={
  npc(){const c=culture(),fac=$("gFac").value,where=$("gWhere").value;const job=npcField(c,"job");
-  return{kind:"npc",c,title:genName(c),sub:`${cap(job)}${fac&&WB[fac]?" · "+WB[fac].name:""}${where&&WB[where]?" · "+WB[where].name:""}`,
+  return{kind:"npc",c,title:genName(c),sub:[CULT_NAME[c],fac&&WB[fac]?WB[fac].name:"",where&&WB[where]?WB[where].name:""].filter(Boolean).join(" · "),
    f:{job,look:npcField(c,"look"),voice:npcField(c,"voice"),tic:npcField(c,"tic"),want:npcField(c,"want"),secret:npcField(c,"secret")},
    order:[["job","Job"],["look","Looks"],["voice","Voice"],["tic","Tic"],["want","Wants"],["secret","Secret"]],fac,where}},
  ship(){const S_=T.SHIPS;const nm=rint(4)===0?pick(S_.whole):`${pick(S_.a)} ${pick(S_.b)}`;return{kind:"ship",title:"The "+nm,sub:"Ship",f:{kind:pick(S_.kind),quirk:pick(S_.quirk),captain:genName(culture())},order:[["kind","Hull"],["captain","Captain"],["quirk","Quirk"]]}},
- venue(){const V=T.VENUES;return{kind:"location",title:pick(V.a),sub:"Tamsin venue",f:{kind:pick(V.kind),feature:pick(V.feature),who:pick(V.who),owner:genName(pick(["drift","drift","ash","str"]))},order:[["kind","What"],["owner","Run by"],["feature","Known for"],["who","Crowd"]]}},
- rumor(){const R=T.RUMOR;return{kind:"note",title:"Rumor",sub:"Overheard",f:{line:`${cap(pick(R.who))} ${pick(R.what)}.`,truth:pick(R.twist)},order:[["line","Heard"],["truth","GM: truth"]]}},
- gig(){const G=T.GIG;const c=culture();return{kind:"gig",title:`${pick(G.verb)} ${pick(G.object)} ${pick(G.where)}`,sub:"Ledgerline-style gig",f:{cat:pick(G.cat),client:genName(c),pay:pick(G.pay),catch:pick(G.catch)},order:[["cat","Category"],["client","Client"],["pay","Pay (cr)"],["catch","GM: the catch"]]}},
+ venue(){const V=T.VENUES;return{kind:"location",title:pick(V.a),sub:"Venue on Tamsin",f:{kind:pick(V.kind),feature:pick(V.feature),who:pick(V.who),owner:genName(pick(["drift","drift","ash","str"]))},order:[["kind","What"],["owner","Run by"],["feature","Known for"],["who","Crowd"]]}},
+ rumor(){const R=T.RUMOR;return{kind:"note",title:"Rumor",sub:"Overheard",f:{line:`${cap(pick(R.who))} ${pick(R.what)}.`,truth:pick(R.twist)},order:[["line","Heard"],["truth","The truth (GM)"]]}},
+ gig(){const G=T.GIG;const c=culture();return{kind:"gig",title:`${pick(G.verb)} ${pick(G.object)} ${pick(G.where)}`,sub:"Gig",f:{cat:pick(G.cat),client:genName(c),pay:pick(G.pay),catch:pick(G.catch)},order:[["cat","Category"],["client","Client"],["pay","Pay (cr)"],["catch","The catch (GM)"]]}},
  cargo(){return{kind:"note",title:"Cargo",sub:"What's in the crate",f:{what:pick(T.CARGO),qty:`${1+rint(6)*5} units`},order:[["what","Contents"],["qty","Quantity"]]}},
- names(){const c=$("gCult").value;const ls=[];for(let i=0;i<5;i++){const cc=c||pick(CULTS);ls.push(`${genName(cc)} (${cc})`)}return{kind:"note",title:"Names",sub:"Five on the spot",f:{list:ls.join(" · ")},order:[["list","Names"]]}}
+ names(){const c=$("gCult").value;const ls=[];for(let i=0;i<5;i++){const cc=c||pick(CULTS);ls.push(`${genName(cc)} (${CULT_NAME[cc]})`)}return{kind:"note",title:"Names",sub:"Five on the spot",f:{list:ls.join("\n")},order:[["list","Names"]]}}
 };
 function reroll(r,k){if(r.kind==="npc")return k==="title"?genName(r.c):npcField(r.c,k);const n=GEN[r.gen]();return k==="title"?n.title:n.f[k]}
-let gres=[];const k0=el=>el.dataset.f;
-function drawGen(){$("gOut").innerHTML=gres.map((r,i)=>`<div class="res" data-i="${i}"><div class="s">${esc(r.sub)}</div><div class="t" data-f="title" style="cursor:pointer">${esc(r.title)}</div><dl>${r.order.map(([k,l])=>`<dt>${esc(l)}</dt><dd data-f="${k}">${esc(cap(String(r.f[k])))}</dd>`).join("")}</dl>
- ${r.kind==="npc"?`<div class="hint">Stats: ${esc(guessStats(r.f.job))} (5e SRD)</div>`:""}
- <div class="acts">${r.kind!=="gig"&&r.kind!=="note"?`<button class="btn sm" data-a="keep">Keep</button>`:`<button class="btn sm" data-a="keep">Keep as note</button>`}${r.kind==="gig"?`<button class="btn sm" data-a="gig">Copy as gigs.js</button>`:""}${r.kind==="npc"?`<button class="btn sm" data-a="fight">Add to fight</button>`:""}<button class="btn sm x" data-a="drop">×</button></div></div>`).join("")}
+let gres=[],lastGen=null;
+function runGen(g){lastGen=g;gres.unshift(Object.assign(GEN[g](),{gen:g}));gres.length=Math.min(gres.length,12);S.set("gen",gres);drawGen()}
+function drawGen(){$("gOut").innerHTML=gres.map((r,i)=>`<div class="res" data-i="${i}"><div class="s">${esc(r.sub)}</div><div class="t"><span class="${r.gen!=="names"&&r.gen!=="rumor"&&r.gen!=="cargo"?"rr":""}" data-f="title" title="Reroll">${esc(r.title)}</span></div><dl>${r.order.map(([k,l])=>`<dt>${esc(l)}</dt><dd><span class="rr" data-f="${k}" title="Reroll this line" style="white-space:pre-line">${esc(cap(String(r.f[k])))}</span></dd>`).join("")}</dl>
+ ${r.kind==="npc"?`<p class="faint" style="margin:8px 0 0;font-size:12.5px">Stats: ${esc(guessStats(r.f.job))} (5e SRD)</p>`:""}
+ <div class="acts"><button class="btn sm" data-a="keep">${r.kind==="gig"||r.kind==="note"?"Keep as note":"Keep"}</button>${r.kind==="gig"?`<button class="btn sm" data-a="gig">Copy for gigs.js</button>`:""}${r.kind==="npc"?`<button class="btn sm" data-a="fight">Add to fight</button>`:""}<span class="grow"></span><button class="btn sm icon ghost" data-a="drop" aria-label="Dismiss">${ico("x")}</button></div></div>`).join("")||`<p class="empty">Pick something to generate.</p>`}
 function buildGen(){
  const facs=W.filter(p=>p.type==="faction");$("gFac").innerHTML=`<option value="">None</option>`+facs.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join("");
  const locs=W.filter(p=>p.type==="location");$("gWhere").innerHTML=`<option value="">Anywhere</option>`+locs.map(p=>`<option value="${p.id}"${p.id==="tamsin"?" selected":""}>${esc(p.name)}</option>`).join("");
  gres=S.get("gen",[]);drawGen();
- document.querySelectorAll("[data-gen]").forEach(b=>b.onclick=()=>{gres.unshift(Object.assign(GEN[b.dataset.gen](),{gen:b.dataset.gen}));gres.length=Math.min(gres.length,12);S.set("gen",gres);drawGen()});
- $("gClear").onclick=()=>{gres=[];S.set("gen",gres);drawGen()};
+ document.querySelectorAll("[data-gen]").forEach(b=>b.onclick=()=>runGen(b.dataset.gen));
+ $("gClear").onclick=()=>{const old=gres;gres=[];S.set("gen",gres);drawGen();toast("Results cleared",()=>{gres=old;S.set("gen",gres);drawGen()})};
  $("gOut").onclick=e=>{const card=e.target.closest(".res");if(!card)return;const r=gres[+card.dataset.i];
-  const f=e.target.closest("[data-f]");if(f&&r.gen&&!(r.gen==="names"&&k0(f)==="title")){const k=f.dataset.f;const v=reroll(r,k);if(k==="title")r.title=v;else r.f[k]=v;S.set("gen",gres);drawGen();return}
+  const f=e.target.closest(".rr[data-f]");if(f&&r.gen){const k=f.dataset.f;const v=reroll(r,k);if(k==="title")r.title=v;else r.f[k]=v;S.set("gen",gres);drawGen();return}
   const a=e.target.closest("[data-a]");if(!a)return;const act=a.dataset.a;
   if(act==="drop"){gres.splice(+card.dataset.i,1)}
   else if(act==="keep"){
    if(r.kind==="npc")addMade({kind:"npc",name:r.title,text:`${r.f.job}; ${r.f.look}; ${r.f.voice}; ${r.f.tic}.`,fields:{sub:cap(r.f.job),where:r.where||"",faction:r.fac||"",stats:guessStats(r.f.job),wants:r.f.want,secret:r.f.secret}});
    else if(r.kind==="ship")addMade({kind:"ship",name:r.title,text:`${r.f.kind}, captain ${r.f.captain}; ${r.f.quirk}.`,fields:{sub:cap(r.f.kind)}});
    else if(r.kind==="location")addMade({kind:"location",name:r.title,text:`A ${r.f.kind} run by ${r.f.owner}, known for ${r.f.feature}. Crowd: ${r.f.who}.`,fields:{sub:cap(r.f.kind),where:"tamsin"}});
-   else addMade({kind:"note",name:r.title,text:r.order.map(([k,l])=>l+": "+r.f[k]).join(" · ")})}
+   else addMade({kind:"note",name:r.title,text:r.order.map(([k,l])=>l+": "+String(r.f[k]).replace(/\n/g,", ")).join(" · ")})}
   else if(act==="gig"){const id="LL-"+(2300+rint(700));copy(`{ id: \`${id}\`, title: \`${bt(r.title)}\`, cat: \`${r.f.cat}\`, client: \`${bt(r.f.client)}\`, cr: ${(3+Math.random()*2).toFixed(1)}, crn: ${rint(40)}, pay: ${r.f.pay},\n  where: \`Tamsin\`, when: \`one shift\`, posted: \`${1+rint(9)}h ago\`, expires: \`in ${1+rint(4)} days\`, min: 0,\n  blurb: \`${bt(cap(r.title))}.\`, notes: [\`Write the client's listing here, in their voice.\`] },\n// and in gm/jobs.js, a GM entry for ${id}. The catch (suggestion): ${r.f.catch}`)}
-  else if(act==="fight"){addCombatant(Object.assign(foeFromStats(guessStats(r.f.job))||{},{name:r.title}));toast("Added to Fight")}
+  else if(act==="fight"){addCombatant(Object.assign(foeFromStats(guessStats(r.f.job))||{},{name:r.title}));toast(`${r.title} added to Fight`)}
   S.set("gen",gres);drawGen()};
 }
 
 /* ================= TRAVEL ================= */
 const FALLBACK=[["eye","The Abyssal Throne","dom",[-38,0,0]],["seraphis","Seraphis","dom",[-30,1.5,7]],["candlemoor","Candlemoor","dom",[-30,0,-17]],["vigil","Vigil's Reach","dom",[-17,0,5]],["reliquary","Reliquary Fields","dom",[-45,0,19]],["psalter","Psalter","dom",[-24,0,22]],["cloister","The Cloister Moons","dom",[-51,0,-12]],["meridian","Meridian Prime","str",[38,0,-2]],["halcyon","Halcyon Exchange","str",[29,0,13]],["kestrel","Kestrel Array","str",[45,2,-24]],["brightwater","Brightwater","str",[23,0,-11]],["varga","Varga","str",[48,0,14]],["sable","Sable Station","str",[18,0,2]],["tamsin","Free Harbor Tamsin","drift",[3,0,11]],["vey","Saint Vey","drift",[-8,0,-14]],["copperline","Copperline","drift",[10,0,-5]],["ash","The Grave of Ash","drift",[-5,0,25]],["hollows","The Nine Hollows","drift",[-9,0,8]],["marrow","Marrow","drift",[11,0,26]],["lantern","The Lantern","drift",[0,0,0]],["corridor","The Null Corridor","haz",[0,0,-31]],["barge","The Lost Barge","haz",[-13,0,33]]].map(([id,name,f,pos])=>({id,name,f,pos}));
-let SYS=FALLBACK,sysSrc="built-in copy";
-async function loadSys(){try{const r=await fetch("../index.html",{cache:"no-store"});const s=await r.text();const m=s.match(/const DATA=(\[[\s\S]*?\n\]);/);if(m){const d=Function('"use strict";return '+m[1])();if(Array.isArray(d)&&d.length){SYS=d.filter(x=>x.id!=="choir").map(x=>({id:x.id,name:x.name,f:x.f,pos:x.pos}));sysSrc="the player chart (index.html)"}}}catch(_){}}
+let SYS=FALLBACK,sysSrc="the console's built-in copy";
+async function loadSys(){try{const r=await fetch("../index.html",{cache:"no-store"});const s=await r.text();const m=s.match(/const DATA=(\[[\s\S]*?\n\]);/);if(m){const d=Function('"use strict";return '+m[1])();if(Array.isArray(d)&&d.length){SYS=d.filter(x=>x.id!=="choir").map(x=>({id:x.id,name:x.name,f:x.f,pos:x.pos}));sysSrc="the player chart"}}}catch(_){}}
 const PC_PER_DAY=2.5;
 const d3=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
 function region(p){const L=[0,0,0],A=(SYS.find(s=>s.id==="ash")||{pos:[-5,0,25]}).pos;
@@ -589,107 +803,137 @@ function plotTrip(){const g=id=>SYS.find(s=>s.id===id);const a=g($("trFrom").val
    if(r==="corridor")warn.add("The route skims the Null Corridor: drives, lights and comms fail inside. Ships coast on the current.");
    const eye=SYS.find(s=>s.id==="eye");if(eye&&d3(pos,eye.pos)<=6)warn.add("The route passes the Abyssal Throne: permit only. Trespassers are fired on.");
    if(r==="lantern")warn.add("The route passes within 5 pc of the Lantern: Treaty Watch pickets, and the Eye notices.");
-   const row={day,r,pos:pos.map(x=>+x.toFixed(1)),leg:`${p.name} → ${q.name}`,arrive:i===n?q.name:""};
+   const row={day,r,leg:`${p.name} → ${q.name}`,arrive:i===n?q.name:""};
    if(day%2===0&&on>0){row.d6=1+rint(6);if(row.d6<=on)row.enc=pick(T.TRAVEL[r]||T.TRAVEL.drift)}
    if(!row.enc&&flav)row.flav=pick(T.TRAVEL.quiet);
    days.push(row)}});
  const total=legs.reduce((s,[p,q])=>s+d3(p.pos,q.pos),0);
  trip={a:a.name,b:b.name,v:legs.length>1?v.name:"",total,days,warn:[...warn]};S.set("trip",trip);drawTrip()}
-function drawTrip(){if(!trip){$("trOut").innerHTML="";return}
+function drawTrip(){if(!trip){$("trOut").innerHTML=`<p class="empty">Pick a route and plot the trip.</p>`;return}
  const enc=trip.days.filter(d=>d.enc).length;
- $("trOut").innerHTML=`<div class="card hi"><div class="big">${esc(trip.a)} → ${trip.v?esc(trip.v)+" → ":""}${esc(trip.b)}</div><p class="mono">${trip.total.toFixed(1)} pc · ${trip.days.length} day${trip.days.length>1?"s":""} at ${PC_PER_DAY} pc/day · ${enc} encounter${enc===1?"":"s"}</p>${trip.warn.map(w=>`<p class="alert">⚠ ${esc(w)}</p>`).join("")}</div>
- <ul class="list">${trip.days.map((d,i)=>`<li><span class="mono" style="min-width:52px">Day ${d.day}</span><span class="grow"><span class="tag ${RTAG[d.r]}">${esc(RNAME[d.r])}</span>${d.d6?` <span class="mono hint">d6 ${d.d6}</span>`:""}${d.arrive?` <b>Arrive: ${esc(d.arrive)}</b>`:""}<br>${d.enc?`<b style="color:var(--haz)">Encounter.</b> ${esc(d.enc)}`:d.flav?`<span class="hint">${esc(d.flav)}</span>`:""}</span>${d.enc||d.flav?`<button class="btn sm" data-tr="${i}">Reroll</button>`:""}</li>`).join("")}</ul>`}
+ $("trOut").innerHTML=`<div class="card"><div class="big">${esc(trip.a)} → ${trip.v?esc(trip.v)+" → ":""}${esc(trip.b)}</div><p class="muted" style="margin:0">${trip.total.toFixed(1)} pc · <b>${trip.days.length} day${trip.days.length>1?"s":""}</b> at ${PC_PER_DAY} pc/day · <b>${enc} encounter${enc===1?"":"s"}</b></p>${trip.warn.map(w=>`<p class="alert" style="margin:8px 0 0">⚠ ${esc(w)}</p>`).join("")}</div>
+ <ul class="list">${trip.days.map((d,i)=>`<li${d.enc?' style="border-color:var(--danger);background:var(--danger-soft)"':""}><span class="mono faint" style="min-width:56px">Day ${d.day}</span><span class="grow"><span class="tag ${RTAG[d.r]}">${esc(RNAME[d.r])}</span>${d.d6?` <span class="mono faint" style="font-size:12px">d6 ${d.d6}</span>`:""}${d.arrive?` <b>· Arrive at ${esc(d.arrive)}</b>`:""}<br>${d.enc?`<b style="color:var(--danger)">Encounter.</b> ${esc(d.enc)}`:d.flav?`<span class="muted">${esc(d.flav)}</span>`:""}</span>${d.enc||d.flav?`<button class="btn sm ghost" data-tr="${i}">Reroll</button>`:""}</li>`).join("")}</ul>`}
 function tripText(){if(!trip)return"";return`${trip.a} → ${trip.v?trip.v+" → ":""}${trip.b}: ${trip.total.toFixed(1)} pc, ${trip.days.length} days\n`+trip.warn.map(w=>"! "+w+"\n").join("")+trip.days.map(d=>`Day ${d.day} (${RNAME[d.r]})${d.d6?" d6 "+d.d6:""}${d.arrive?" ARRIVE "+d.arrive:""}: ${d.enc?"ENCOUNTER: "+d.enc:d.flav||"—"}`).join("\n")}
 async function buildTravel(){await loadSys();const opt=(sel)=>SYS.map(s=>`<option value="${s.id}"${s.id===sel?" selected":""}>${esc(s.name)}</option>`).join("");
  $("trFrom").innerHTML=opt("tamsin");$("trTo").innerHTML=opt("copperline");$("trVia").innerHTML=`<option value="">Direct</option>`+opt("");
- $("trSrc").textContent=`Positions from ${sysSrc}. Days are rounded like the chart's: distance ÷ ${PC_PER_DAY}, at least 1.`;
- trip=S.get("trip",null);drawTrip();$("trGo").onclick=plotTrip;$("trCopy").onclick=()=>copy(tripText());
+ $("trSrc").textContent=`Positions from ${sysSrc}. Days are distance ÷ ${PC_PER_DAY}, rounded, at least 1, like the chart.`;
+ trip=S.get("trip",null);drawTrip();$("trGo").onclick=plotTrip;$("trCopy").onclick=()=>trip?copy(tripText()):toast("Plot a trip first");
  $("trOut").onclick=e=>{const b=e.target.closest("[data-tr]");if(!b)return;const d=trip.days[+b.dataset.tr];if(d.enc)d.enc=pick(T.TRAVEL[d.r]||T.TRAVEL.drift);else d.flav=pick(T.TRAVEL.quiet);S.set("trip",trip);drawTrip()}}
 
 /* ================= LOOT ================= */
 let loot=null;
+const lscale=t=>[1,1,2.5,6,15][t]||1;
+const litem=(x,t)=>({n:x[0],v:Math.round(x[1]*(x[1]>=200?lscale(t):1)),note:x[2]||""});
 function rollLoot(){const ctx=$("lCtx").value,tier=+$("lTier").value,n=+$("lN").value;const L=T.LOOT||{};const ex=(L.credits||{})[tier]||["2d6×5"];
  const c=roll(ex[0]);const items=[];const pool=(L[ctx]||[]).slice();for(let i=0;i<n&&pool.length;i++)items.push(pool.splice(rint(pool.length),1)[0]);
- const scale=[1,1,2.5,6,15][tier]||1;
- loot={ctx,tier,cr:c?c.total:0,crx:ex[0],items:items.map(x=>({n:x[0],v:Math.round(x[1]*(x[1]>=200?scale:1)),note:x[2]||""}))};S.set("loot",loot);drawLoot()}
-function drawLoot(){if(!loot){$("lOut").innerHTML="";return}const sum=loot.cr+loot.items.reduce((s,x)=>s+x.v,0);
- $("lOut").innerHTML=`<div class="card hi"><div class="big">${loot.cr} cr <span class="hint mono">(${esc(loot.crx)})</span></div><ul class="list">${loot.items.map((x,i)=>`<li><span class="grow"><b>${esc(x.n)}</b>${x.note?` <span class="hint">· ${esc(x.note)}</span>`:""}</span><span class="mono">${x.v?x.v+" cr":"—"}</span><button class="btn sm" data-lk="${i}">Keep</button><button class="btn sm" data-lr="${i}">Reroll</button></li>`).join("")}</ul><p class="mono" style="margin-top:8px">Resale total ≈ ${sum} cr (Low Dock pays about half for gear)</p><p class="hint">Higher tiers scale the big-ticket items. Values of 200 cr and up are multiplied by the tier.</p></div>`}
+ loot={ctx,tier,cr:c?c.total:0,crx:ex[0],items:items.map(x=>litem(x,tier))};S.set("loot",loot);drawLoot()}
+function drawLoot(){if(!loot){$("lOut").innerHTML=`<p class="empty">Pick where they're looking, then search it.</p>`;return}const sum=loot.cr+loot.items.reduce((s,x)=>s+x.v,0);
+ $("lOut").innerHTML=`<div class="card"><div class="s faint" style="font-size:12.5px">Loose credits</div><div class="big">${loot.cr} cr <span class="mono faint" style="font-size:13px;font-weight:400">${esc(loot.crx)}</span></div><ul class="list" style="margin-top:10px">${loot.items.map((x,i)=>`<li><span class="grow"><b>${esc(x.n)}</b>${x.note?`<br><span class="muted" style="font-size:13px">${esc(x.note)}</span>`:""}</span><span class="mono" style="white-space:nowrap">${x.v?x.v.toLocaleString()+" cr":"—"}</span><button class="btn sm" data-lk="${i}">Keep</button><button class="btn sm ghost" data-lr="${i}">Reroll</button></li>`).join("")}</ul><p class="muted" style="margin:12px 0 0">Total value ≈ <b>${sum.toLocaleString()} cr</b>. Low Dock pays about half for gear.</p><p class="faint" style="margin:4px 0 0;font-size:12.5px">Tiers 2–4 multiply items worth 200 cr or more.</p></div>`}
 function buildLoot(){loot=S.get("loot",null);drawLoot();$("lGo").onclick=rollLoot;
  $("lOut").onclick=e=>{const k=e.target.closest("[data-lk]"),r=e.target.closest("[data-lr]");if(k){const x=loot.items[+k.dataset.lk];addMade({kind:"item",name:x.n,text:`${x.v} cr. ${x.note}`,fields:{sub:`Found: ${x.v} cr`}})}
-  if(r){const pool=(T.LOOT[loot.ctx]||[]).filter(p=>!loot.items.some(x=>x.n===p[0]));if(pool.length){const x=pick(pool);const scale=[1,1,2.5,6,15][loot.tier]||1;loot.items[+r.dataset.lr]={n:x[0],v:Math.round(x[1]*(x[1]>=200?scale:1)),note:x[2]||""};S.set("loot",loot);drawLoot()}}}}
+  if(r){const pool=(T.LOOT[loot.ctx]||[]).filter(p=>!loot.items.some(x=>x.n===p[0]));if(pool.length){loot.items[+r.dataset.lr]=litem(pick(pool),loot.tier);S.set("loot",loot);drawLoot()}else toast("Nothing else in that table")}}}
 
 /* ================= FIGHT ================= */
 let F=S.get("fight",{list:[],round:0,turn:0});
-const saveF=()=>S.set("fight",F);
+const saveF=()=>{S.set("fight",F);badges()};
 const FOES=T.FOES||[];
 function foeFromStats(stats){if(!stats)return null;const s=String(stats).toLowerCase();let best=null;FOES.forEach(f=>{const n=f.name.toLowerCase();if(s.startsWith(n)&&(!best||n.length>best.name.length))best=f});
  if(!best)return null;const o={k:best.k,ac:best.ac,hp:best.hp,init:best.init,atk:best.atk,note:best.note||"",as:best.name};
  if(/animated armor's ac and hp/.test(s)){const a=FOES.find(f=>f.k==="armor");if(a){o.ac=a.ac;o.hp=a.hp}}
  if(stats.length>best.name.length+2)o.note=(o.note?o.note+" ":"")+"Wiki: "+stats;return o}
 let uid=Date.now();
-function addCombatant(o){F.list.push(Object.assign({id:uid++,name:"?",ac:10,hp:10,max:o.hp||10,tmp:0,init:0,ini:null,cond:[],conc:false,pc:false,ds:[0,0],atk:[],note:""},o,{max:o.max||o.hp||10}));saveF();drawF()}
-const md=n=>(n<0?"-":"+")+Math.abs(n||0);
+function addCombatant(o){const c=Object.assign({id:uid++,name:"?",ac:10,hp:10,tmp:0,init:0,ini:null,cond:[],conc:false,pc:false,ds:[0,0],atk:[],note:""},o);c.max=o.max||o.hp||10;
+ if(F.round)c.ini=roll("1d20"+md(c.init)).total;F.list.push(c);if(F.round){const cur=F.list[F.turn];sortInit();F.turn=Math.max(0,F.list.indexOf(cur))}saveF();drawF()}
+const isDown=c=>c.hp<=0&&!c.pc;
 function drawF(){const tb=$("fBody");$("fEmpty").hidden=F.list.length>0;
- $("fRound").textContent=F.round?`ROUND ${F.round}${F.list[F.turn]?" · UP: "+F.list[F.turn].name:""}`:"NOT STARTED";
- tb.innerHTML=F.list.map((c,i)=>{const pct=Math.max(0,c.hp)/c.max*100;const cls=pct>50?"":pct>25?"mid":"lo";
-  return`<tr class="${F.round&&i===F.turn?"cur":""} ${c.hp<=0?"down":""}" data-i="${i}">
-  <td data-l="Init"><input class="n" type="number" value="${c.ini==null?"":c.ini}" data-k="ini" aria-label="Initiative"></td>
-  <td class="nm" data-l="Who"><input value="${esc(c.name)}" data-k="name" style="width:150px;font-weight:600" aria-label="Name"><small>${c.pc?"PC":esc(c.as||"")}${c.note?" · "+esc(c.note):""}</small></td>
-  <td data-l="AC"><input class="n" type="number" value="${c.ac}" data-k="ac" aria-label="AC"></td>
-  <td data-l="HP"><span class="mono">${c.hp}/${c.max}${c.tmp?` <span style="color:var(--teal)">+${c.tmp}</span>`:""}</span><div class="hpb"><i class="${cls}" style="width:${pct}%"></i></div>
-   ${c.pc&&c.hp<=0?`<div class="ds">Saves ✓${[0,1,2].map(j=>`<input type="checkbox" data-ds="0" data-j="${j}"${c.ds[0]>j?" checked":""}>`).join("")} ✗${[0,1,2].map(j=>`<input type="checkbox" data-ds="1" data-j="${j}"${c.ds[1]>j?" checked":""}>`).join("")}</div>`:""}</td>
-  <td data-l="Dmg/heal"><input class="n" type="number" min="0" data-amt aria-label="Amount"> <button class="btn sm" data-a="dmg">Dmg</button> <button class="btn sm" data-a="heal">Heal</button> <button class="btn sm" data-a="tmp">Temp</button>
-   <div><label class="ck"><input type="checkbox" data-a="conc"${c.conc?" checked":""}> Concentrating</label></div>${c.alert?`<div class="alert">${esc(c.alert)}</div>`:""}</td>
-  <td data-l="Cond">${c.cond.map((x,j)=>`<button class="cond" data-cx="${j}" title="${esc((T.CONDITIONS||{})[x.n]||"")} (click to remove)">${esc(x.n)}${x.r?" "+x.r:""}</button>`).join("")}
-   <div class="row" style="margin:4px 0 0"><select data-csel style="max-width:130px"><option value="">+ condition</option>${Object.keys(T.CONDITIONS||{}).map(k=>`<option>${k}</option>`).join("")}</select><input class="n" type="number" min="0" placeholder="rds" data-crd style="width:52px" aria-label="Rounds"></div></td>
-  <td data-l="Attacks">${(c.atk||[]).map((a,j)=>`<button class="btn sm" data-atk="${j}" title="${esc(a[0])}: +${a[1]} to hit, ${esc(a[2])}">${esc(a[0].split(/[\/(×]/)[0].trim())} +${a[1]}</button> `).join("")}</td>
-  <td><button class="btn sm" data-a="up" aria-label="Move up">▴</button><button class="btn sm" data-a="dn" aria-label="Move down">▾</button> <button class="btn sm x" data-a="rm" aria-label="Remove">×</button></td></tr>`}).join("")}
-function dmgOf(s){return String(s).split(/[,(]/)[0].trim()}
+ $("fRound").textContent=F.round?`Round ${F.round}`:"Not started";
+ const cur=F.list[F.turn];
+ let deck="";if(F.round&&F.list.length>1){for(let j=1;j<=F.list.length;j++){const c=F.list[(F.turn+j)%F.list.length];if(!($("fSkip").checked&&isDown(c))){deck=c===cur?"":c.name;break}}}
+ $("fUp").textContent=F.round&&cur?cur.name+"'s turn":(F.list.length?"Ready when you are":"");
+ $("fDeck").textContent=deck?`· on deck: ${deck}`:"";
+ $("fNext").textContent=F.round?"Next turn →":"Roll initiative";
+ $("fPrev").hidden=!F.round;
+ tb.innerHTML=F.list.map((c,i)=>{const pct=Math.max(0,c.hp)/c.max*100;const cls=pct>50?"":pct>25?"mid":"lo";const open=c.open;
+  return`<div class="cbt${F.round&&i===F.turn?" cur":""}${c.hp<=0?" down":""}${c.pc?" pc":""}" data-i="${i}">
+  <input class="ini" type="number" value="${c.ini==null?"":c.ini}" data-k="ini" aria-label="Initiative for ${esc(c.name)}" placeholder="–">
+  <div class="who"><input class="nm" value="${esc(c.name)}" data-k="name" aria-label="Name"><small title="${esc(c.note)}">${c.pc?"PC":esc(c.as||"")}${c.note?" · "+esc(c.note):""}</small>
+   <div class="chips">${c.cond.map((x,j)=>`<button class="cond" data-cx="${j}" title="${esc((T.CONDITIONS||{})[x.n]||"")} · click to remove">${esc(x.n)}${x.r?` · ${x.r}`:""}</button>`).join("")}<button class="cond conc${c.conc?"":" off"}" data-a="conc" title="Concentrating: Con save on damage, DC 10 or half the damage">${c.conc?"Concentrating":"Conc."}</button><button class="cond add" data-a="addc">+ Condition</button></div></div>
+  <div class="ac"><input type="number" value="${c.ac}" data-k="ac" aria-label="AC"><span>AC</span></div>
+  <div class="hp"><div class="n">${c.hp}<small> / ${c.max}</small>${c.tmp?` <span class="tmp">+${c.tmp} temp</span>`:""}</div><div class="hpb"><i class="${cls}" style="width:${pct}%"></i></div>
+   ${c.pc&&c.hp<=0?`<div class="ds" style="margin-top:6px">Saves ${[0,1,2].map(j=>`<input class="s" type="checkbox" data-ds="0" data-j="${j}"${c.ds[0]>j?" checked":""} aria-label="Success ${j+1}">`).join("")} Fails ${[0,1,2].map(j=>`<input class="f" type="checkbox" data-ds="1" data-j="${j}"${c.ds[1]>j?" checked":""} aria-label="Failure ${j+1}">`).join("")}</div>`:""}</div>
+  <div class="hpin"><input type="number" min="0" data-amt placeholder="HP" aria-label="Amount for ${esc(c.name)}" title="Enter: damage · Shift+Enter: heal"><button class="btn sm" data-a="dmg">Damage</button><button class="btn sm" data-a="heal">Heal</button></div>
+  <div class="atks">${(c.atk||[]).map((a,j)=>`<button class="btn sm" data-atk="${j}" title="${esc(a[0])}: ${md(a[1])} to hit, ${esc(a[2])}">${esc(a[0].split(/[\/(×]/)[0].trim())} ${md(a[1])}</button>`).join("")}</div>
+  <button class="btn sm icon ghost tgl" data-a="more" aria-expanded="${!!open}" aria-label="More for ${esc(c.name)}">${ico("more")}</button>
+  ${c.alert?`<div class="alert">${esc(c.alert)}</div>`:""}
+  ${open?`<div class="more"><button class="btn sm" data-a="tmp">Set temp HP</button><label class="ck">Max HP <input type="number" data-k="max" value="${c.max}" style="width:70px"></label><label class="ck">Init bonus <input type="number" data-k="init" value="${c.init||0}" style="width:64px"></label><span class="grow">${c.note?esc(c.note):""}</span><button class="btn sm ghost" data-a="up">Move up</button><button class="btn sm ghost" data-a="dn">Move down</button><button class="btn sm ghost danger" data-a="rm">Remove</button></div>`:""}
+  </div>`}).join("");
+ if(F.round){const el=tb.querySelector(".cbt.cur");if(el){const r=el.getBoundingClientRect();if(r.top<80||r.bottom>innerHeight-90)el.scrollIntoView({block:"center",behavior:"smooth"})}}}
 function sortInit(){F.list.sort((a,b)=>(b.ini??-99)-(a.ini??-99)||(b.init||0)-(a.init||0))}
+function startTurn(){const c=F.list[F.turn];if(!c)return;c.alert="";c.cond=c.cond.filter(x=>{if(x.r>0){x.r--;if(x.r===0){toast(`${c.name}: ${x.n} ends`);return false}}return true})}
+function applyHp(i,act,amt){const c=F.list[i];if(!amt)return;c.alert="";
+ if(act==="dmg"){let d=amt;if(c.tmp){const t=Math.min(c.tmp,d);c.tmp-=t;d-=t}const was=c.hp;c.hp=Math.max(c.pc?0:-c.max,c.hp-d);
+  if(c.pc&&was>0&&d-was>=c.max)c.alert="Massive damage: instant death.";
+  else if(c.pc&&was<=0){c.ds[1]=Math.min(3,c.ds[1]+1);c.alert="Damage at 0 HP: one failed death save (two on a crit)."}
+  else if(c.pc&&c.hp===0)c.alert="Down: death saves start on their turn.";
+  if(c.conc)c.alert=(c.alert?c.alert+" ":"")+`Concentration: Con save DC ${Math.max(10,Math.floor(amt/2))}.`;
+  if(c.hp<=0&&!c.pc)c.alert=(c.alert?c.alert+" ":"")+"Down.";
+  toast(`${c.name} takes ${amt}`)}
+ else if(act==="heal"){if(c.hp<=0)c.ds=[0,0];c.hp=Math.min(c.max,Math.max(0,c.hp)+amt);toast(`${c.name} heals ${amt}`)}
+ else if(act==="tmp"){c.tmp=Math.max(c.tmp,amt)}
+ saveF();drawF();const inp=$("fBody").querySelector(`.cbt[data-i="${i}"] [data-amt]`);if(inp&&act!=="tmp")inp.focus()}
+function nextTurn(dir){const n=F.list.length;if(!n)return;
+ for(let k=0;k<n;k++){F.turn+=dir;if(F.turn>=n){F.turn=0;F.round++;toast("Round "+F.round)}if(F.turn<0){if(F.round>1){F.round--;F.turn=n-1}else{F.turn=0;break}}
+  if(!($("fSkip").checked&&isDown(F.list[F.turn])))break}
+ if(dir>0)startTurn();saveF();drawF()}
 function buildFight(){
- $("fFoe").innerHTML=FOES.map(f=>`<option value="${f.k}">${esc(f.name)} · AC ${f.ac} · HP ${f.hp} — ${esc(f.as)}</option>`).join("");
- const info=()=>{const f=FOES.find(x=>x.k===$("fFoe").value);$("fFoeInfo").textContent=f?`${f.name}: ${f.atk.map(a=>`${a[0]} +${a[1]} (${a[2]})`).join("; ")}. ${f.note||""}`:""};$("fFoe").onchange=info;info();
- const npcs=W.filter(p=>p.type==="npc"&&p.stats&&!/^dead/.test(p.status||""));$("fWiki").innerHTML=`<option value="">From the wiki…</option>`+npcs.map(p=>`<option value="${p.id}">${esc(p.name)} (${esc(String(p.stats).slice(0,40))})</option>`).join("");
+ segInit("fMode",v=>{document.querySelectorAll(".addbar [data-m]").forEach(p=>p.hidden=p.dataset.m!==v);$("pSaved").hidden=v!=="pc";$("fFoeInfo").hidden=v!=="foe"});
+ $("fFoe").innerHTML=FOES.map(f=>`<option value="${f.k}">${esc(f.name)} — ${esc(f.as)} (AC ${f.ac}, HP ${f.hp})</option>`).join("");
+ const info=()=>{const f=FOES.find(x=>x.k===$("fFoe").value);$("fFoeInfo").textContent=f?`${f.atk.map(a=>`${a[0]} ${md(a[1])} (${a[2]})`).join(" · ")}${f.note?" · "+f.note:""}`:""};$("fFoe").onchange=info;info();
+ const npcs=W.filter(p=>p.type==="npc"&&p.stats&&!/^dead/.test(p.status||""));$("fWiki").innerHTML=npcs.map(p=>`<option value="${p.id}">${esc(p.name)} — ${esc(String(p.stats).slice(0,48))}</option>`).join("");
  $("fAddFoe").onclick=()=>{const f=FOES.find(x=>x.k===$("fFoe").value);if(!f)return;const n=Math.max(1,Math.min(20,+$("fCount").value||1));const base=$("fName").value.trim()||f.as.split(",")[0].trim();
-  for(let i=0;i<n;i++)addCombatant({name:n>1?`${cap(base)} ${i+1}`:cap(base),as:f.name,k:f.k,ac:f.ac,hp:f.hp,init:f.init,atk:f.atk,note:f.note||""});$("fName").value=""};
- $("fAddWiki").onclick=()=>{const p=WB[$("fWiki").value];if(!p)return;const o=foeFromStats(p.stats)||{ac:10,hp:10,init:0,note:"Wiki: "+p.stats};addCombatant(Object.assign(o,{name:p.name}))};
- const drawPcs=()=>{const pcs=S.get("pcs",[]);$("pSaved").innerHTML=pcs.map((p,i)=>`<button class="btn sm" data-pc="${i}">+ ${esc(p.name)} (AC ${p.ac}, HP ${p.hp})</button><button class="btn sm x" data-pcx="${i}" aria-label="Forget">×</button>`).join("")||`<span class="hint">Rusty and V'an's numbers aren't on the wiki yet: add them once and they'll stay here.</span>`};
- $("fAddPc").onclick=()=>{const name=$("pName").value.trim();if(!name)return;const p={name,ac:+$("pAc").value||10,hp:+$("pHp").value||10,init:+$("pInit").value||0};const pcs=S.get("pcs",[]).filter(x=>x.name!==name);pcs.push(p);S.set("pcs",pcs);drawPcs();addCombatant(Object.assign({pc:true},p));["pName","pAc","pHp","pInit"].forEach(k=>$(k).value="")};
- $("pSaved").onclick=e=>{const a=e.target.closest("[data-pc]"),x=e.target.closest("[data-pcx]");const pcs=S.get("pcs",[]);if(a){const p=pcs[+a.dataset.pc];addCombatant(Object.assign({pc:true},p))}if(x){pcs.splice(+x.dataset.pcx,1);S.set("pcs",pcs);drawPcs()}};
- if(!S.get("pcs",null)){const pcs=W.filter(p=>p.type==="pc").map(p=>({name:p.name,ac:10,hp:10,init:0}));S.set("pcs",pcs)}drawPcs();
- $("fInit").onclick=()=>{const grp={};F.list.forEach(c=>{if(c.pc){if(c.ini==null){c.ini=roll("1d20"+md(c.init)).total}return}
+  for(let i=0;i<n;i++)addCombatant({name:n>1?`${cap(base)} ${i+1}`:cap(base),as:f.name,k:f.k,ac:f.ac,hp:f.hp,init:f.init,atk:f.atk,note:f.note||""});$("fName").value="";toast(`Added ${n} × ${f.name}`)};
+ $("fAddWiki").onclick=()=>{const p=WB[$("fWiki").value];if(!p)return;const o=foeFromStats(p.stats)||{ac:10,hp:10,init:0,note:"Wiki: "+p.stats};addCombatant(Object.assign(o,{name:p.name}));toast(`Added ${p.name}`)};
+ const drawPcs=()=>{const pcs=S.get("pcs",[]);$("pSaved").innerHTML=(pcs.length?`<span class="faint" style="font-size:12.5px">Saved:</span>`:"")+pcs.map((p,i)=>`<span class="row" style="gap:2px;flex-wrap:nowrap"><button class="btn sm" data-pc="${i}">+ ${esc(p.name)} <span class="faint">AC ${p.ac} · HP ${p.hp}</span></button><button class="btn sm icon ghost" data-pcx="${i}" aria-label="Forget ${esc(p.name)}">${ico("x")}</button></span>`).join("")||`<span class="faint" style="font-size:12.5px">Rusty's and V'an's numbers aren't on the wiki yet: add them once and they'll be saved here.</span>`};
+ $("fAddPc").onclick=()=>{const name=$("pName").value.trim();if(!name){$("pName").focus();return}const p={name,ac:+$("pAc").value||10,hp:+$("pHp").value||10,init:+$("pInit").value||0};const pcs=S.get("pcs",[]).filter(x=>x.name!==name);pcs.push(p);S.set("pcs",pcs);drawPcs();addCombatant(Object.assign({pc:true},p));["pName","pAc","pHp","pInit"].forEach(k=>$(k).value="");toast(`Added ${name}`)};
+ $("pSaved").onclick=e=>{const a=e.target.closest("[data-pc]"),x=e.target.closest("[data-pcx]");const pcs=S.get("pcs",[]);if(a){const p=pcs[+a.dataset.pc];if(F.list.some(c=>c.pc&&c.name===p.name)){toast(`${p.name} is already in the fight`);return}addCombatant(Object.assign({pc:true},p));toast(`Added ${p.name}`)}if(x){const old=JSON.stringify(pcs);const r=pcs.splice(+x.dataset.pcx,1)[0];S.set("pcs",pcs);drawPcs();toast(`Forgot ${r.name}`,()=>{S.set("pcs",JSON.parse(old));drawPcs()})}};
+ if(!S.get("pcs",null))S.set("pcs",[]);drawPcs();
+ const rollInit=()=>{if(!F.list.length){toast("Add someone first");return}const grp={};F.list.forEach(c=>{if(c.pc){if(c.ini==null)c.ini=roll("1d20"+md(c.init)).total;return}
    if($("fGroup").checked&&c.k){if(grp[c.k]==null)grp[c.k]=roll("1d20"+md(c.init)).total;c.ini=grp[c.k]}else c.ini=roll("1d20"+md(c.init)).total});
-  sortInit();F.round=1;F.turn=0;saveF();drawF();toast("Round 1");startTurn()};
- $("fNext").onclick=()=>{if(!F.list.length)return;if(!F.round){$("fInit").click();return}F.turn++;if(F.turn>=F.list.length){F.turn=0;F.round++;toast("Round "+F.round)}startTurn();saveF();drawF()};
- $("fPrev").onclick=()=>{if(!F.round)return;F.turn--;if(F.turn<0){if(F.round>1){F.round--;F.turn=F.list.length-1}else F.turn=0}saveF();drawF()};
- $("fEnd").onclick=()=>{F.list=F.list.filter(c=>c.pc);F.list.forEach(c=>{c.ini=null;c.cond=[];c.alert="";c.ds=[0,0]});F.round=0;F.turn=0;saveF();drawF()};
- $("fClear").onclick=()=>{if(confirm("Remove everyone from the fight?")){F={list:[],round:0,turn:0};saveF();drawF()}};
+  sortInit();F.round=1;F.turn=0;startTurn();saveF();drawF();toast("Round 1. PCs without a number were rolled for; type theirs in to reorder.")};
+ $("fNext").onclick=()=>{if(!F.round)rollInit();else nextTurn(1)};
+ $("fPrev").onclick=()=>{if(F.round)nextTurn(-1)};
+ $("fSkip").onchange=drawF;
+ $("fEnd").onclick=()=>{if(!F.list.length)return;const old=JSON.stringify(F);F.list=F.list.filter(c=>c.pc);F.list.forEach(c=>{c.ini=null;c.cond=[];c.alert="";c.ds=[0,0];c.conc=false});F.round=0;F.turn=0;saveF();drawF();toast("Fight over: foes cleared, PCs kept",()=>{F=JSON.parse(old);saveF();drawF()})};
+ $("fClear").onclick=()=>{if(!F.list.length)return;const old=JSON.stringify(F);F={list:[],round:0,turn:0};saveF();drawF();toast("Everyone removed",()=>{F=JSON.parse(old);saveF();drawF()})};
  const tb=$("fBody");
- tb.addEventListener("change",e=>{const tr=e.target.closest("tr");if(!tr||e.target.matches("[data-amt],[data-crd]"))return;const c=F.list[+tr.dataset.i];const k=e.target.dataset.k;
-  if(k==="ini"){c.ini=e.target.value===""?null:+e.target.value;if(F.round){const cur=F.list[F.turn];sortInit();F.turn=Math.max(0,F.list.indexOf(cur))}else sortInit()}
-  else if(k==="name")c.name=e.target.value;else if(k==="ac")c.ac=+e.target.value;
-  else if(e.target.matches("[data-csel]")&&e.target.value){const rd=+tr.querySelector("[data-crd]").value||0;c.cond.push({n:e.target.value,r:rd||0});if(e.target.value==="Concentrating")c.conc=true}
-  else if(e.target.dataset.a==="conc")c.conc=e.target.checked;
-  else if(e.target.matches("[data-ds]")){const w=+e.target.dataset.ds;c.ds[w]=tr.querySelectorAll(`[data-ds="${w}"]:checked`).length;if(c.ds[0]>=3){toast(c.name+" is stable")}if(c.ds[1]>=3)toast(c.name+" has died")}
+ tb.addEventListener("change",e=>{const row=e.target.closest(".cbt");if(!row||e.target.matches("[data-amt]"))return;const c=F.list[+row.dataset.i];const k=e.target.dataset.k;
+  if(k==="ini"){c.ini=e.target.value===""?null:+e.target.value;const cur=F.list[F.turn];sortInit();F.turn=Math.max(0,F.list.indexOf(cur))}
+  else if(k==="name")c.name=e.target.value;else if(k==="ac")c.ac=+e.target.value;else if(k==="max"){c.max=Math.max(1,+e.target.value||1);c.hp=Math.min(c.hp,c.max)}else if(k==="init")c.init=+e.target.value||0;
+  else if(e.target.matches("[data-ds]")){const w=+e.target.dataset.ds;c.ds[w]=row.querySelectorAll(`[data-ds="${w}"]:checked`).length;if(c.ds[0]>=3)toast(c.name+" is stable");if(c.ds[1]>=3)toast(c.name+" has died")}
   saveF();drawF()});
- tb.addEventListener("click",e=>{const tr=e.target.closest("tr");if(!tr)return;const i=+tr.dataset.i,c=F.list[i];
-  const cx=e.target.closest("[data-cx]");if(cx){const rm=c.cond.splice(+cx.dataset.cx,1)[0];if(rm&&rm.n==="Concentrating")c.conc=false;saveF();drawF();return}
-  const at=e.target.closest("[data-atk]");if(at){const a=c.atk[+at.dataset.atk];const hit=roll("1d20"+md(a[1]));const crit=hit.nat===20;logRoll(`${c.name}: ${a[0]} to hit`,"1d20"+md(a[1]),hit);const dm=roll(dmgOf(a[2]),{crit});if(dm)logRoll(`${c.name}: damage${crit?" (crit)":""}${/\(|,/.test(a[2])?" · "+a[2].split(/[(,]/).slice(1).join(",").replace(/\)$/,""):""}`,dmgOf(a[2]),dm,crit?"crit":"");
-   toast(`${hit.total} to hit · ${dm?dm.total:"?"} dmg`);return}
-  const b=e.target.closest("[data-a]");if(!b||b.type==="checkbox")return;const act=b.dataset.a;const amt=+tr.querySelector("[data-amt]").value||0;c.alert="";
-  if(act==="dmg"&&amt){let d=amt;if(c.tmp){const t=Math.min(c.tmp,d);c.tmp-=t;d-=t}const was=c.hp;c.hp=Math.max(c.pc?0:-c.max,c.hp-d);
-   if(c.pc&&was<=0&&amt){c.ds[1]=Math.min(3,c.ds[1]+1);c.alert="Damage at 0 HP: one failed death save (two on a crit)."}
-   if(c.pc&&was>0&&d-was>=c.max)c.alert="Massive damage: instant death.";
-   if(c.conc&&amt)c.alert=(c.alert?c.alert+" ":"")+`Concentration: Con save DC ${Math.max(10,Math.floor(amt/2))}.`;
-   if(c.hp<=0&&!c.pc)c.alert=(c.alert?c.alert+" ":"")+"Down.";}
-  else if(act==="heal"&&amt){if(c.hp<=0)c.ds=[0,0];c.hp=Math.min(c.max,Math.max(0,c.hp)+amt)}
-  else if(act==="tmp"&&amt){c.tmp=Math.max(c.tmp,amt)}
-  else if(act==="rm"){F.list.splice(i,1);if(F.turn>=F.list.length)F.turn=0}
+ tb.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches("[data-amt]")){e.preventDefault();applyHp(+e.target.closest(".cbt").dataset.i,e.shiftKey?"heal":"dmg",+e.target.value||0)}});
+ tb.addEventListener("click",e=>{const row=e.target.closest(".cbt");if(!row)return;const i=+row.dataset.i,c=F.list[i];
+  const cx=e.target.closest("[data-cx]");if(cx){c.cond.splice(+cx.dataset.cx,1);saveF();drawF();return}
+  const at=e.target.closest("[data-atk]");if(at){const a=c.atk[+at.dataset.atk];const hit=roll("1d20"+md(a[1]));const crit=hit.nat===20;logRoll(`${c.name}: ${a[0]} to hit`,"1d20"+md(a[1]),hit);
+   const dexp=String(a[2]).split(/[,(]/)[0].trim(),extra=String(a[2]).slice(dexp.length).replace(/^[\s,(]+|\)$/g,"");const dm=roll(dexp,{crit});if(dm)logRoll(`${c.name}: damage${crit?" (crit)":""}${extra?" · "+extra:""}`,dexp,dm,crit?"crit":"");
+   toast(`${a[0].split(/[\/(×]/)[0].trim()}: ${hit.total} to hit${crit?" (CRIT)":hit.nat===1?" (nat 1)":""} · ${dm?dm.total:"?"} damage`);return}
+  const b=e.target.closest("[data-a]");if(!b)return;const act=b.dataset.a;const amt=+row.querySelector("[data-amt]").value||0;
+  if(act==="dmg"||act==="heal"||act==="tmp"){if(!amt){row.querySelector("[data-amt]").focus();toast("Type an amount first");return}applyHp(i,act,amt);return}
+  if(act==="conc"){c.conc=!c.conc}
+  else if(act==="addc"){condPop(b,i);return}
+  else if(act==="more"){c.open=!c.open}
+  else if(act==="rm"){const old=JSON.stringify(F);F.list.splice(i,1);if(F.turn>=F.list.length)F.turn=0;else if(i<F.turn)F.turn--;saveF();drawF();toast(`Removed ${c.name}`,()=>{F=JSON.parse(old);saveF();drawF()});return}
   else if(act==="up"&&i>0){[F.list[i-1],F.list[i]]=[F.list[i],F.list[i-1]]}
   else if(act==="dn"&&i<F.list.length-1){[F.list[i+1],F.list[i]]=[F.list[i],F.list[i+1]]}
   saveF();drawF()});
  drawF()}
-function startTurn(){const c=F.list[F.turn];if(!c)return;c.alert="";c.cond=c.cond.filter(x=>{if(x.r>0){x.r--;if(x.r===0){toast(`${c.name}: ${x.n} ends`);return false}}return true})}
+function condPop(anchor,i){const C=T.CONDITIONS||{};let dur=0;
+ openPop(anchor,`<div class="row" style="justify-content:space-between"><b>Add a condition</b><span class="faint" style="font-size:12px">to ${esc(F.list[i].name)}</span></div>
+  <div class="row" style="margin-top:8px"><span class="faint" style="font-size:12.5px">Lasts</span><div class="seg" id="popDur"><button data-v="0" aria-pressed="true">Until removed</button><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="10">10 rds</button></div></div>
+  <div class="grid3">${Object.keys(C).filter(k=>k!=="Concentrating").map(k=>`<button data-c="${esc(k)}">${esc(k)}</button>`).join("")}</div><div class="desc" id="popDesc">Hover a condition to see what it does.</div>`,p=>{
+  segInit("popDur",v=>dur=+v);
+  p.querySelector(".grid3").addEventListener("mouseover",e=>{const b=e.target.closest("[data-c]");if(b)$("popDesc").textContent=C[b.dataset.c]||""});
+  p.querySelector(".grid3").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;F.list[i].cond.push({n:b.dataset.c,r:dur});closePop();saveF();drawF()})})}
 
 /* ================= FACTIONS ================= */
 function buildFactions(){
@@ -698,48 +942,52 @@ function buildFactions(){
  facs.forEach(p=>{if(!st[p.id])st[p.id]={on:false,goal:FX[p.id]?FX[p.id].goal:"",clock:0,att:0,last:""}});
  let log=S.get("fxlog",[]);
  const save=()=>{S.set("fx",st);S.set("fxlog",log)};
- const ORDER={dom:0,str:1,drift:2};
- const draw=()=>{const all=$("fxAll").checked;$("fxBody").innerHTML=facs.slice().sort((a,b)=>ORDER[topPower(a.id)]-ORDER[topPower(b.id)]||a.name.localeCompare(b.name)).filter(p=>all||st[p.id].on).map(p=>{const s=st[p.id],pw=topPower(p.id);
-  return`<tr class="${s.on?"":"off"}" data-id="${p.id}"><td><input type="checkbox" data-k="on"${s.on?" checked":""} aria-label="Active"></td>
-  <td style="min-width:150px">${wlink(p.id)}<br><span class="tag ${pw}">${POWER_NAME[pw]}</span></td>
-  <td style="min-width:220px"><textarea data-k="goal" rows="3" aria-label="Goal">${esc(s.goal)}</textarea></td>
-  <td><div class="pips">${[1,2,3,4,5,6].map(n=>`<button data-clk="${n}" class="${s.clock>=n?"on":""}" aria-label="${n} of 6"></button>`).join("")}</div>${s.clock>=6?`<div class="alert">Goal reached</div>`:""}</td>
-  <td><select data-k="att">${[-3,-2,-1,0,1,2,3].map(v=>`<option value="${v}"${s.att===v?" selected":""}>${v>0?"+"+v:v} ${["hunting them","hostile","wary","indifferent","curious","friendly","allied"][v+3]}</option>`).join("")}</select></td>
-  <td style="min-width:180px" class="hint">${esc(s.last||"—")}</td></tr>`}).join("");
-  $("fxLog").innerHTML=log.map(l=>`<li><span class="grow">${l.h?`<b>${esc(l.h)}</b>`:rich(l.t)}</span></li>`).join("")||`<li class="empty">No turns run yet.</li>`};
+ const ORD={dom:0,str:1,drift:2};
+ const draw=()=>{const all=$("fxAll").checked;$("fxBody").innerHTML=facs.slice().sort((a,b)=>ORD[topPower(a.id)]-ORD[topPower(b.id)]||a.name.localeCompare(b.name)).filter(p=>all||st[p.id].on).map(p=>{const s=st[p.id],pw=topPower(p.id);
+  return`<tr class="${s.on?"":"off"}" data-id="${p.id}"><td><label class="ck"><input type="checkbox" data-k="on"${s.on?" checked":""} aria-label="Active"></label></td>
+  <td style="min-width:150px"><b>${wlink(p.id)}</b><br><span class="tag ${pw}" style="margin-top:4px">${POWER_NAME[pw]}</span></td>
+  <td style="min-width:220px"><textarea data-k="goal" rows="2" aria-label="Goal">${esc(s.goal)}</textarea></td>
+  <td><div class="pips">${[1,2,3,4,5,6].map(n=>`<button data-clk="${n}" class="${s.clock>=n?"on":""}" aria-label="Clock ${n} of 6"></button>`).join("")}</div>${s.clock>=6?`<div class="alert" style="margin-top:4px">Goal reached</div>`:""}</td>
+  <td><select data-k="att" aria-label="Standing">${[-3,-2,-1,0,1,2,3].map(v=>`<option value="${v}"${s.att===v?" selected":""}>${v>0?"+"+v:v} ${["hunting them","hostile","wary","indifferent","curious","friendly","allied"][v+3]}</option>`).join("")}</select></td>
+  <td style="min-width:160px;font-size:13px" class="muted">${esc(s.last||"—")}</td></tr>`}).join("");
+  $("fxLog").innerHTML=log.map(l=>l.h?`<li style="background:none;border:0;padding:8px 0 0"><b>${esc(l.h)}</b></li>`:`<li style="font-size:13.5px"><span class="grow">${rich(l.t)}</span></li>`).join("")||`<li class="faint" style="justify-content:center">No turns run yet.</li>`};
  $("fxAll").onchange=draw;
- $("fxBody").addEventListener("change",e=>{const tr=e.target.closest("tr");if(!tr)return;const s=st[tr.dataset.id];const k=e.target.dataset.k;if(k==="on")s.on=e.target.checked;if(k==="goal")s.goal=e.target.value;if(k==="att")s.att=+e.target.value;save();draw()});
+ $("fxBody").addEventListener("change",e=>{const tr=e.target.closest("tr");if(!tr)return;const s=st[tr.dataset.id];const k=e.target.dataset.k;if(k==="on")s.on=e.target.checked;if(k==="goal")s.goal=e.target.value;if(k==="att")s.att=+e.target.value;save();if(k!=="goal")draw()});
  $("fxBody").addEventListener("click",e=>{const b=e.target.closest("[data-clk]");if(!b)return;const s=st[e.target.closest("tr").dataset.id];const n=+b.dataset.clk;s.clock=s.clock===n?n-1:n;save();draw()});
  const SETBACK=["loses a ship, a deal or a friend","is embarrassed in public","has an internal quarrel","is investigated by a rival","loses money it can't explain"];
  const HOLD=["consolidates","waits and watches","spends the week on paperwork","quietly recruits"];
- $("fxRun").onclick=()=>{const label=$("fxLabel").value.trim()||new Date().toLocaleDateString();const out=[{h:label}];
-  facs.forEach(p=>{const s=st[p.id];if(!s.on)return;const d=1+rint(6);const mv=(FX[p.id]&&FX[p.id].moves)||["makes a move toward its goal"];let t;
+ $("fxRun").onclick=()=>{const label=$("fxLabel").value.trim()||new Date().toLocaleDateString();const out=[{h:label}];let n=0;
+  facs.forEach(p=>{const s=st[p.id];if(!s.on)return;n++;const d=1+rint(6);const mv=(FX[p.id]&&FX[p.id].moves)||["makes a move toward its goal"];let t;
    if(d===1){s.clock=Math.max(0,s.clock-1);t=`setback: ${pick(SETBACK)}`}
    else if(d<=3){t=pick(HOLD)}
    else if(d<=5){s.clock=Math.min(6,s.clock+1);t=pick(mv)}
    else{s.clock=Math.min(6,s.clock+2);t=pick(mv)+". The news reaches Tamsin (a rumor, or a ticker line)"}
-   s.last=`d6 ${d}: ${t}`;out.push({t:`[[${p.id}]] (d6 ${d}, clock ${s.clock}/6) ${t}.${s.clock>=6?" **Goal reached: decide what changes.**":""}`})});
-  log=out.concat(log).slice(0,200);save();draw();toast("Faction turn done")};
- $("fxCopy").onclick=()=>copy(log.map(l=>l.h?"\n# "+l.h:"- "+plain(l.t)).join("\n").trim());
- $("fxLogClear").onclick=()=>{if(confirm("Clear the faction log?")){log=[];save();draw()}};
+   s.last=`d6 ${d}: ${t}`;out.push({t:`**[[${p.id}]]** (d6 ${d}, clock ${s.clock}/6): ${t}.${s.clock>=6?" **Goal reached: decide what changes.**":""}`})});
+  if(!n){toast("Turn on at least one faction");return}
+  log=out.concat(log).slice(0,200);save();draw();toast(`Faction turn done: ${n} factions`)};
+ $("fxCopy").onclick=()=>log.length?copy(log.map(l=>l.h?"\n# "+l.h:"- "+plain(l.t)).join("\n").trim()):toast("Run a turn first");
+ $("fxLogClear").onclick=()=>{if(!log.length)return;const old=log;log=[];save();draw();toast("Log cleared",()=>{log=old;save();draw()})};
  save();draw()}
 
 /* ================= CLOCKS ================= */
-const CCOL={amber:"var(--amber)",haz:"var(--haz)",teal:"var(--teal)",lil:"var(--lil)",lan:"var(--lan)"};
-function clockSvg(c){const n=c.seg,R=54,cx=60,cy=60;let s="";for(let i=0;i<n;i++){const a0=(i/n)*2*Math.PI-Math.PI/2,a1=((i+1)/n)*2*Math.PI-Math.PI/2;
+const CCOL={accent:"var(--accent)",danger:"var(--danger)",info:"var(--info)",lil:"var(--lil)",amber:"var(--accent)",haz:"var(--danger)",teal:"var(--info)",lan:"var(--lan)"};
+function clockSvg(c){const n=c.seg,R=56,cx=60,cy=60,col=CCOL[c.col]||CCOL.accent;let s="";for(let i=0;i<n;i++){const a0=(i/n)*2*Math.PI-Math.PI/2,a1=((i+1)/n)*2*Math.PI-Math.PI/2;
   const x0=cx+R*Math.cos(a0),y0=cy+R*Math.sin(a0),x1=cx+R*Math.cos(a1),y1=cy+R*Math.sin(a1);
-  s+=`<path class="seg" data-s="${i+1}" d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${R},${R} 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" fill="${i<c.fill?CCOL[c.col]||CCOL.amber:"#070918"}" stroke="#3a4282" stroke-width="1.5"/>`}
- return`<svg viewBox="0 0 120 120" role="img" aria-label="${c.fill} of ${n}">${s}<circle cx="60" cy="60" r="${R}" fill="none" stroke="${CCOL[c.col]||CCOL.amber}" stroke-width="2"/></svg>`}
+  s+=`<path data-s="${i+1}" d="M${cx},${cy} L${x0.toFixed(2)},${y0.toFixed(2)} A${R},${R} 0 0 1 ${x1.toFixed(2)},${y1.toFixed(2)} Z" style="fill:${i<c.fill?col:"var(--sunk)"};stroke:var(--surface);stroke-width:2.5"><title>Fill to ${i+1}</title></path>`}
+ return`<svg viewBox="0 0 120 120" role="img" aria-label="${c.fill} of ${n}">${s}<circle cx="60" cy="60" r="${R}" fill="none" style="stroke:${col}" stroke-width="2"/></svg>`}
 function buildClocks(){let ck=S.get("clocks",null);
- if(!ck)ck=[{name:"Sable finds out who carried the core",seg:6,fill:0,col:"haz",note:"Suggestion: tick it when the party networks the core, flashes the relic, or uses the datapad's real registration."}];
+ if(!ck)ck=[{name:"Sable finds out who carried the core",seg:6,fill:0,col:"danger",note:"Suggestion: tick it when the party networks the core, flashes the relic, or uses the datapad's real registration."}];
+ segInit("ckSeg");
  const save=()=>S.set("clocks",ck);
- const draw=()=>{$("ckList").innerHTML=ck.map((c,i)=>`<div class="clk" data-i="${i}">${clockSvg(c)}<input class="nm" value="${esc(c.name)}" data-k="name" aria-label="Clock name"><div class="mono">${c.fill} / ${c.seg}${c.fill>=c.seg?` <span class="alert">FULL</span>`:""}</div>
-  <div class="row"><button class="btn sm" data-a="dn">−</button><button class="btn sm" data-a="up">+</button><button class="btn sm x" data-a="rm">Delete</button></div>
-  <textarea data-k="note" rows="2" placeholder="Notes: what ticks it" style="margin-top:8px;font-size:12.5px">${esc(c.note||"")}</textarea></div>`).join("")||`<p class="empty">No clocks yet.</p>`;save()};
- $("ckAdd").onclick=()=>{const n=$("ckName").value.trim();if(!n)return;ck.push({name:n,seg:+$("ckSeg").value,fill:0,col:$("ckColor").value,note:""});$("ckName").value="";draw()};
- $("ckList").addEventListener("click",e=>{const w=e.target.closest(".clk");if(!w)return;const c=ck[+w.dataset.i];const sg=e.target.closest("[data-s]");
+ const draw=()=>{$("ckList").innerHTML=ck.map((c,i)=>`<div class="clk${c.fill>=c.seg?" full":""}" data-i="${i}">${clockSvg(c)}<input class="nm" value="${esc(c.name)}" data-k="name" aria-label="Clock name"><div class="mono muted" style="font-size:13px">${c.fill} / ${c.seg}${c.fill>=c.seg?` · <span class="alert">full</span>`:""}</div>
+  <div class="row"><button class="btn sm icon" data-a="dn" aria-label="Empty one">−</button><button class="btn sm icon" data-a="up" aria-label="Fill one">+</button><button class="btn sm ghost danger" data-a="rm">Delete</button></div>
+  <textarea data-k="note" rows="2" placeholder="What ticks it?">${esc(c.note||"")}</textarea></div>`).join("")||`<p class="empty" style="grid-column:1/-1">No clocks yet. Name one above.</p>`;save()};
+ const add=()=>{const n=$("ckName").value.trim();if(!n){$("ckName").focus();return}ck.push({name:n,seg:+segVal("ckSeg")||6,fill:0,col:$("ckColor").value,note:""});$("ckName").value="";draw()};
+ $("ckAdd").onclick=add;$("ckName").onkeydown=e=>{if(e.key==="Enter")add()};
+ $("ckList").addEventListener("click",e=>{const w=e.target.closest(".clk");if(!w)return;const i=+w.dataset.i,c=ck[i];const sg=e.target.closest("[data-s]");
   if(sg){const n=+sg.getAttribute("data-s");c.fill=c.fill===n?n-1:n;if(c.fill>=c.seg)toast(c.name+": full");draw();return}
-  const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="up"){c.fill=Math.min(c.seg,c.fill+1);if(c.fill>=c.seg)toast(c.name+": full")}if(b.dataset.a==="dn")c.fill=Math.max(0,c.fill-1);if(b.dataset.a==="rm"&&confirm("Delete this clock?"))ck.splice(+w.dataset.i,1);draw()});
+  const b=e.target.closest("[data-a]");if(!b)return;if(b.dataset.a==="up"){c.fill=Math.min(c.seg,c.fill+1);if(c.fill>=c.seg)toast(c.name+": full")}if(b.dataset.a==="dn")c.fill=Math.max(0,c.fill-1);
+  if(b.dataset.a==="rm"){const old=JSON.stringify(ck);ck.splice(i,1);draw();toast(`Deleted “${c.name}”`,()=>{ck=JSON.parse(old);draw()});return}draw()});
  $("ckList").addEventListener("change",e=>{const w=e.target.closest(".clk");if(!w)return;ck[+w.dataset.i][e.target.dataset.k]=e.target.value;save()});
  draw()}
 
@@ -751,55 +999,58 @@ function buildRecap(){
  $("rcId").value=st.id||`s${sessN}`;$("rcName").value=st.name||`Session ${sessN}: `;$("rcSub").value=st.sub||"";$("rcText").value=st.text||"";$("rcVoice").value=st.voice||"plain";
  $("rcIds").innerHTML=W.map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("");
  const lines=()=>$("rcText").value.split("\n").map(s=>s.trim()).filter(Boolean).map(s=>s.replace(/^[-*•]\s+/,""));
- const upd=()=>{const L=lines();const sid=($("rcId").value.trim()||"s?").toLowerCase();const S_=sid.toUpperCase();
+ const upd=()=>{const L=lines();const sid=($("rcId").value.trim()||"s?").toLowerCase();const SID=sid.toUpperCase();
   S.set("recap",{id:$("rcId").value,name:$("rcName").value,sub:$("rcSub").value,text:$("rcText").value,voice:$("rcVoice").value});
-  // player recap
   const pub=L.filter(l=>!l.startsWith("!")).map(plain);const v=$("rcVoice").value;let p="";
-  if(!pub.length)p="(Write some beats on the left.)";
+  if(!pub.length)p="Write some beats on the left.";
   else if(v==="plain")p="Previously…\n\n"+pub.map(l=>"• "+l).join("\n");
   else if(v==="commonweal")p="COMMONWEAL INCIDENT DIGEST · Free Harbor Tamsin · CY 312\nFor resident information only.\n\n"+pub.map((l,i)=>`${String(i+1).padStart(2,"0")}. ${l}${i%2?" "+CW_TAIL[i%CW_TAIL.length]:""}`).join("\n");
   else if(v==="dock")p="Overheard at the Lamplighter:\n\n"+pub.map((l,i)=>`"${["Heard","Word is","Swear on the Eye,","My cousin says","Don't repeat this, but"][i%5]} ${l[0].toLowerCase()+l.slice(1)}"`).join("\n");
-  else p="DATAPAD LOG · K. VARGAS (holder) · auto-recovered\n\n"+pub.map((l,i)=>`[${String(8+i).padStart(2,"0")}:${String(rint(60)).padStart(2,"0")}] ${l}`).join("\n");
+  else p="DATAPAD LOG · K. VARGAS (holder) · auto-recovered\n\n"+pub.map((l,i)=>`[${String(8+i).padStart(2,"0")}:${String((i*17+7)%60).padStart(2,"0")}] ${l}`).join("\n");
   $("rcPlayer").textContent=p;
-  // wiki
   const body=L.map(l=>l.startsWith("!")?"**GM:** "+l.slice(1).trim():l);
   const ids=new Map(),bad=new Set();L.forEach(l=>{const re=/\[\[([^\]|#][^\]|]*)(?:\|[^\]]+)?\]\]/g;let m;while((m=re.exec(l))){const id=m[1].trim();if(!WB[id]){bad.add(id);continue}if(!ids.has(id))ids.set(id,[]);ids.get(id).push(plain(l.replace(/^!\s*/,"")))}});
-  let w=`{ id: \`${sid}\`, type: \`session\`, name: \`${bt($("rcName").value.trim())}\`, tag: \`played\`,\n  sub: \`${bt($("rcSub").value.trim())}\`,\n  body: [\n${body.map(b=>`    \`${bt(b)}\``).join(",\n")}],\n  hooks: [\`Write what's left hanging from this session.\`] },`;
-  if(ids.size){w+="\n\n// Add a seen line to each page that appeared:\n"+[...ids].map(([id,ls])=>`// ${id}:\n  [\`${S_}\`, \`${bt(ls.join(" "))}\`],`).join("\n")}
-  const unseen=[...ids.keys()].filter(id=>!(WB[id].seen&&WB[id].seen.length));if(unseen.length)w+=`\n\n// First time at the table (mark their intro hooks used: {t, used: \`${S_}\`}): ${unseen.join(", ")}`;
+  let w=L.length?`{ id: \`${sid}\`, type: \`session\`, name: \`${bt($("rcName").value.trim())}\`, tag: \`played\`,\n  sub: \`${bt($("rcSub").value.trim())}\`,\n  body: [\n${body.map(b=>`    \`${bt(b)}\``).join(",\n")}],\n  hooks: [\`Write what's left hanging from this session.\`] },`:"Write some beats on the left.";
+  if(ids.size){w+="\n\n// Add a seen line to each page that appeared:\n"+[...ids].map(([id,ls])=>`// ${id}:\n  [\`${SID}\`, \`${bt(ls.join(" "))}\`],`).join("\n")}
+  const unseen=[...ids.keys()].filter(id=>!(WB[id].seen&&WB[id].seen.length));if(unseen.length)w+=`\n\n// First time at the table (mark their intro hooks used: {t, used: \`${SID}\`}): ${unseen.join(", ")}`;
   $("rcWiki").textContent=w;
   $("rcWarn").innerHTML=bad.size?`<span class="alert">Not a wiki page: ${[...bad].map(esc).join(", ")}. Add a page, or check the id.</span>`:`${ids.size} wiki page${ids.size===1?"":"s"} linked.`};
  ["rcId","rcName","rcSub","rcText"].forEach(k=>$(k).addEventListener("input",upd));$("rcVoice").onchange=upd;
- $("rcIns").onclick=()=>{const id=$("rcFind").value.trim();if(!id)return;const ta=$("rcText");const s=ta.selectionStart??ta.value.length;const ins=`[[${id}]]`;ta.value=ta.value.slice(0,s)+ins+ta.value.slice(ta.selectionEnd??s);ta.focus();ta.selectionStart=ta.selectionEnd=s+ins.length;$("rcFind").value="";upd()};
+ const ins=()=>{let id=$("rcFind").value.trim();if(!id)return;if(!WB[id]){const m=W.find(p=>p.name.toLowerCase()===id.toLowerCase());if(m)id=m.id}const ta=$("rcText");const s=ta.selectionStart??ta.value.length;const txt=`[[${id}]]`;ta.value=ta.value.slice(0,s)+txt+ta.value.slice(ta.selectionEnd??s);ta.focus();ta.selectionStart=ta.selectionEnd=s+txt.length;$("rcFind").value="";upd()};
+ $("rcIns").onclick=ins;$("rcFind").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();ins()}};
  $("rcCopyP").onclick=()=>copy($("rcPlayer").textContent);$("rcCopyW").onclick=()=>copy($("rcWiki").textContent);
  upd()}
 
 /* ================= REFERENCE ================= */
-function buildRef(){const C=T.CONDITIONS||{};const card=(h,inner,span)=>`<div class="card"${span?' style="grid-column:1/-1"':""}><h2>${h}</h2>${inner}</div>`;
+function buildRef(){const C=T.CONDITIONS||{};const card=(h,inner,wide)=>`<div class="card${wide?" wide":""}"><h2>${h}</h2>${inner}</div>`;
  const dl=o=>`<dl>${Object.entries(o).map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
  const tbl=(h,rows)=>`<table><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr>${rows.map(r=>`<tr>${r.map(x=>`<td>${x}</td>`).join("")}</tr>`).join("")}</table>`;
  $("refGrid").innerHTML=[
   card("Difficulty",tbl(["DC","Task"],[["5","Very easy"],["10","Easy"],["15","Medium"],["20","Hard"],["25","Very hard"],["30","Nearly impossible"]])+`<h3>Hacking (house rule)</h3><p>Int + bypass kit, 1 minute (1 action at disadvantage). DC 10 civilian · 13 company · 16 Sable or Commonweal · 20 near the Lantern. Fail by 5+: alarm or trace.</p>`),
   card("Cover and light",tbl(["Cover","Effect"],[["Half","+2 AC and Dex saves"],["Three-quarters","+5 AC and Dex saves"],["Total","Can't be targeted directly"]])+`<h3>Light</h3><p>Dim light: disadvantage on sight Perception. Darkness: effectively blinded. Suit lamp: 30 ft.</p>`),
-  card("Improvised damage",tbl(["Level","Setback","Dangerous","Deadly"],[["1–4","1d10","2d10","4d10"],["5–10","2d10","4d10","10d10"],["11–16","4d10","10d10","18d10"],["17–20","10d10","18d10","24d10"]])+`<p class="hint">Falling: 1d6 per 10 ft, max 20d6. Thrown into a bulkhead in zero-g: 1d6 per 10 ft drifted.</p>`),
+  card("Improvised damage",tbl(["Level","Setback","Dangerous","Deadly"],[["1–4","1d10","2d10","4d10"],["5–10","2d10","4d10","10d10"],["11–16","4d10","10d10","18d10"],["17–20","10d10","18d10","24d10"]])+`<p class="muted" style="margin-top:8px">Falling: 1d6 per 10 ft, max 20d6. Thrown into a bulkhead in zero-g: 1d6 per 10 ft drifted.</p>`),
   card("Space and vacuum",dl({"Zero-g":"Difficult terrain without magboots or handholds.","Push off":"Full speed in a straight line; can't stop until you hit something.","Shoved":"Drift 10 ft per round (Acrobatics DC 10 to grab hold).","No suit":"Hold-breath rules plus 2d6 cold per turn.","Suit breach":"Crit in vacuum: 1 minute of air until patched (action, DC 10).","Null Corridor":"Antimagic field; drives, lights, comms and energy weapons fail. Blades and kinetic guns work. Suits: 4 hours passive air."})),
   card("Faith and the Eye",dl({"Divine spells":"The Eye answering. Work everywhere but the Null Corridor.","Near a relic":"Once per long rest, maximize the healing of one spell.","Relic in hand":"Serves as a holy symbol for any divine caster.","The hymn":"Lets a divine caster cast in the Corridor, but the Lantern hears."})),
   card("Money and travel",dl({"Credits":"gp = cr. Scrip is half value in the Drift.","Drive":"2.5 pc a day. Every 2 days roll d6; on a 1, an encounter.","Status":"Higher tier than an STR official: advantage. Lower: disadvantage.","Stim":"Potion of healing, 2d4+2, 50 cr.","Vac suit":"50 cr, 4 hours of air.","Power cells":"20 shots for 1 cr."})),
   card("Reskins",tbl(["5e","In the Drift"],[["Hand crossbow","Holdout pistol"],["Light crossbow","Sidearm or carbine"],["Heavy crossbow","Scattergun"],["Longbow","Longrifle"],["Shortbow","Needler"],["Dagger, shortsword","Vibro-knife, mono-blade"],["Mace, club","Stun baton (nonlethal free)"],["Greataxe, greatsword","Breaching cutter"],["Healer's kit","Medkit"],["Thieves' tools","Bypass kit"]])),
   card("Dying and concentration",dl({"0 HP":"Death save each turn: 10+ success, 9− fail. Three of either ends it. Nat 20: up with 1 HP. Nat 1: two fails.","Hit at 0":"One failed save; a crit is two. Damage ≥ max HP left over: dead.","Stabilize":"Medicine DC 10 or a medkit.","Concentration":"Con save on damage: DC 10 or half the damage, higher. Breaks if incapacitated."})),
   card("Conditions",dl(C),true)
- ].join("")}
+ ].join("");
+ $("refQ").oninput=e=>{const q=e.target.value.trim().toLowerCase();$("refGrid").querySelectorAll(".card").forEach(c=>{c.hidden=q&&!c.textContent.toLowerCase().includes(q)})}}
 
 const BUILD={table:buildTable,gen:buildGen,travel:buildTravel,loot:buildLoot,fight:buildFight,factions:buildFactions,clocks:buildClocks,recap:buildRecap,ref:buildRef};
 
 /* ---------- backup ---------- */
-$("backupBtn").onclick=()=>{const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PFX))o[k]=localStorage.getItem(k)}
- const choice=prompt("Type EXPORT to download a backup of the console (clocks, factions, fight, notes), or IMPORT to load one.","EXPORT");if(!choice)return;
- if(/^export$/i.test(choice.trim())){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,1)],{type:"application/json"}));a.download=`drift-console-${new Date().toISOString().slice(0,10)}.json`;a.click()}
- else if(/^import$/i.test(choice.trim())){const inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";inp.onchange=async()=>{try{const o2=JSON.parse(await inp.files[0].text());Object.entries(o2).forEach(([k,v])=>{if(k.startsWith(PFX)&&typeof v==="string")localStorage.setItem(k,v)});location.reload()}catch(e){alert("That file isn't a console backup.")}};inp.click()}};
+$("backupBtn").onclick=()=>{drawer(false);$("dlgBackup").showModal()};
+$("bkExport").onclick=()=>{const o={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith(PFX))o[k]=localStorage.getItem(k)}
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,1)],{type:"application/json"}));a.download=`drift-console-${new Date().toISOString().slice(0,10)}.json`;a.click();toast("Backup downloaded")};
+$("bkImport").onclick=()=>{const inp=document.createElement("input");inp.type="file";inp.accept=".json,application/json";inp.onchange=async()=>{try{const o2=JSON.parse(await inp.files[0].text());let n=0;Object.entries(o2).forEach(([k,v])=>{if(k.startsWith(PFX)&&typeof v==="string"){localStorage.setItem(k,v);n++}});if(!n)throw 0;location.reload()}catch(e){toast("That file isn't a console backup")}};inp.click()};
+let resetArm=0;$("bkReset").onclick=()=>{if(Date.now()-resetArm>4000){resetArm=Date.now();$("bkReset").textContent="Click again to reset everything";return}
+ Object.keys(localStorage).filter(k=>k.startsWith(PFX)).forEach(k=>localStorage.removeItem(k));location.reload()};
+$("dlgBackup").addEventListener("close",()=>{resetArm=0;$("bkReset").textContent="Reset the console…"});
 
 /* ---------- open ---------- */
-function open(){$("gate").hidden=true;$("app").hidden=false;drawDice();if(dlog[0])$("dLast").textContent=dlog[0].t;route();window.addEventListener("hashchange",route)}
+function open(){$("gate").hidden=true;$("app").hidden=false;drawDice();if(dlog[0])$("dLast").textContent=dlog[0].t;badges();route();window.addEventListener("hashchange",route)}
 $("gateForm").addEventListener("submit",e=>{e.preventDefault();const h=gmHash($("pw").value);if(h===PASS_HASH){lockStore.set(h);open()}else{$("gateErr").textContent="That phrase doesn't open this partition.";$("pw").select()}});
 $("lockBtn").addEventListener("click",()=>{lockStore.set(null);location.reload()});
 if(lockStore.get()===PASS_HASH)open();else $("pw").focus();
